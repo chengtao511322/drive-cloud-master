@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.marketing.mapper.CouponGetMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.marketing.pojo.entity.CouponGetEntity">
+        <id column="id" property="id" />
+        <result column="user_name" property="userName" />
+        <result column="phone" property="phone" />
+        <result column="user_id" property="userId" />
+        <result column="coupon_id" property="couponId" />
+        <result column="status" property="status" />
+        <result column="get_time" property="getTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="coupon_code" property="couponCode" />
+        <result column="get_type" property="getType" />
+        <result column="use_time" property="useTime" />
+        <result column="period_time_start" property="periodTimeStart" />
+        <result column="period_time_end" property="periodTimeEnd" />
+        <result column="operating_position" property="operatingPosition" />
+        <result column="source" property="source" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="create_time" property="createTime" />
+        <result column="promote_user_id" property="promoteUserId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, user_name, phone, user_id, coupon_id, status, get_time, update_time, coupon_code, get_type, use_time, period_time_start, period_time_end, operating_position, source, tenant_id, create_time, promote_user_id
+    </sql>
+
+    <select id="findCouponPageListByActivityId" parameterType="com.drive.marketing.pojo.dto.CouponGetPageQueryParam" resultType="com.drive.marketing.pojo.vo.ActivityCouponGetVo">
+       SELECT
+            t1.user_id as userId,
+            t1.user_id as couponId,
+            t1.`status` as `status`,
+            t1.get_time as getTime,
+            t1.get_type as getType,
+            t1.coupon_code as couponCode,
+            t1.period_time_start as periodTimeStart,
+            t1.period_time_end as periodTimeEnd,
+            t1.promote_user_id as promoteUserId,
+            t2.type as type,
+            t2.name as name,
+            t2.amount as  amount,
+            t2.min_point as minPoint,
+            t2.note as note,
+            t2.use_day as useDay,
+            t2.tenant_id as tenantId
+        FROM
+            mark_coupon_get t1
+        LEFT JOIN mark_coupon t2 ON t1.coupon_id = t2.id
+        <where>
+            ${ew.sqlSegment}
+        </where>
+
+    </select>
+
+</mapper>

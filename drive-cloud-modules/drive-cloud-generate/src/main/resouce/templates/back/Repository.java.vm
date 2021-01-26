@@ -1,0 +1,15 @@
+package ${cfg.modulesPack}.repository;
+
+import ${cfg.modulesPack}.pojo.dto.${entity}EditParam;
+import ${cfg.modulesPack}.pojo.dto.${entity}PageQueryParam;
+import com.drive.common.core.base.BaseRepository;
+
+/**
+ *
+ * $!{table.comment} 服务类
+ *
+ * @author ${author}
+ */
+public interface ${entity}Repository extends BaseRepository<${entity}PageQueryParam, ${entity}EditParam>{
+}
+

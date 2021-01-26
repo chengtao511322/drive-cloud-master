@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.basics.mapper.ChannelMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.basics.pojo.entity.ChannelEntity">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="icon_path" property="iconPath" />
+        <result column="sort" property="sort" />
+        <result column="status" property="status" />
+        <result column="is_delete" property="isDelete" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="add_user" property="addUser" />
+        <result column="parent_id" property="parentId" />
+        <result column="click_url" property="clickUrl" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="android_show" property="androidShow" />
+        <result column="ios_show" property="iosShow" />
+        <result column="description" property="description" />
+        <result column="activity_explain" property="activityExplain" />
+        <result column="rule_explain" property="ruleExplain" />
+        <result column="column_group" property="columnGroup" />
+        <result column="command" property="command" />
+        <result column="auth" property="auth" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, name, icon_path, sort, status, is_delete, create_time, update_time, add_user, parent_id, click_url, tenant_id, android_show, ios_show, description, activity_explain, rule_explain, column_group, command, auth
+    </sql>
+
+</mapper>

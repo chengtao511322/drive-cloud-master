@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.marketing.mapper.CouponMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.marketing.pojo.entity.CouponEntity">
+        <id column="id" property="id" />
+        <result column="type" property="type" />
+        <result column="name" property="name" />
+        <result column="platform" property="platform" />
+        <result column="publish_count" property="publishCount" />
+        <result column="amount" property="amount" />
+        <result column="per_limit" property="perLimit" />
+        <result column="min_point" property="minPoint" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="use_type" property="useType" />
+        <result column="note" property="note" />
+        <result column="use_count" property="useCount" />
+        <result column="receive_count" property="receiveCount" />
+        <result column="enable_time" property="enableTime" />
+        <result column="code" property="code" />
+        <result column="member_level" property="memberLevel" />
+        <result column="release_time" property="releaseTime" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="status" property="status" />
+        <result column="is_delete" property="isDelete" />
+        <result column="click_url" property="clickUrl" />
+        <result column="use_day" property="useDay" />
+        <result column="operating_position" property="operatingPosition" />
+        <result column="operator" property="operator" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="get_type" property="getType" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, type, name, platform, publish_count, amount, per_limit, min_point, start_time, end_time, use_type, note, use_count, receive_count, enable_time, code, member_level, release_time, create_time, update_time, status, is_delete, click_url, use_day, operating_position, operator, tenant_id, get_type
+    </sql>
+
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.marketing.mapper.ActivityProjectSettingMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.marketing.pojo.entity.ActivityProjectSettingEntity">
+        <id column="id" property="id" />
+        <result column="project_id" property="projectId" />
+        <result column="project_name" property="projectName" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="deduct_amount" property="deductAmount" />
+        <result column="promotion_amount" property="promotionAmount" />
+        <result column="channel_manager_amount" property="channelManagerAmount" />
+        <result column="activity_id" property="activityId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, project_id, project_name, tenant_id, deduct_amount, promotion_amount, channel_manager_amount, activity_id
+    </sql>
+
+    <delete id="deleteByCondition" parameterType="com.drive.marketing.pojo.entity.ActivityProjectSettingEntity">
+        delete from activity_project_setting
+        <where>
+            AND  activity_id = #{activityId}
+        </where>
+
+    </delete>
+
+    <delete id="deleteByActivityId" parameterType="java.lang.String">
+        delete from activity_project_setting
+        <where>
+            AND  activity_id = #{activityId}
+        </where>
+
+    </delete>
+
+</mapper>

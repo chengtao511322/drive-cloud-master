@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.CoachInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.CoachInfoEntity">
+        <id column="id" property="id" />
+        <result column="province_id" property="provinceId" />
+        <result column="city_id" property="cityId" />
+        <result column="area_id" property="areaId" />
+        <result column="phone" property="phone" />
+        <result column="password" property="password" />
+        <result column="real_name" property="realName" />
+        <result column="id_card" property="idCard" />
+        <result column="id_card_path_positive" property="idCardPathPositive" />
+        <result column="id_card_path_negative" property="idCardPathNegative" />
+        <result column="email" property="email" />
+        <result column="age" property="age" />
+        <result column="teach_years" property="teachYears" />
+        <result column="sex" property="sex" />
+        <result column="teach_license_path" property="teachLicensePath" />
+        <result column="teach_license_no" property="teachLicenseNo" />
+        <result column="is_vip" property="isVip" />
+        <result column="status" property="status" />
+        <result column="recommend_code_self" property="recommendCodeSelf" />
+        <result column="recommend_user_id" property="recommendUserId" />
+        <result column="recommend_user_type" property="recommendUserType" />
+        <result column="recommend_date" property="recommendDate" />
+        <result column="appraise_grade" property="appraiseGrade" />
+        <result column="toke_key" property="tokeKey" />
+        <result column="car_photo_path" property="carPhotoPath" />
+        <result column="brand_model" property="brandModel" />
+        <result column="color" property="color" />
+        <result column="vehicle_no" property="vehicleNo" />
+        <result column="work_path" property="workPath" />
+        <result column="driving_license_path" property="drivingLicensePath" />
+        <result column="car_frame_no" property="carFrameNo" />
+        <result column="engine_displace" property="engineDisplace" />
+        <result column="engine_id" property="engineId" />
+        <result column="latitude" property="latitude" />
+        <result column="longitude" property="longitude" />
+        <result column="owner_name" property="ownerName" />
+        <result column="certify_date" property="certifyDate" />
+        <result column="license_on" property="licenseOn" />
+        <result column="license_off" property="licenseOff" />
+        <result column="examine_result_explain" property="examineResultExplain" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="insurance_path" property="insurancePath" />
+        <result column="insurance_start_date" property="insuranceStartDate" />
+        <result column="insurance_end_date" property="insuranceEndDate" />
+        <result column="car_type" property="carType" />
+        <result column="car_school_id" property="carSchoolId" />
+        <result column="train_coach_charge_percent" property="trainCoachChargePercent" />
+        <result column="car_charge_percent" property="carChargePercent" />
+        <result column="service_change_percent" property="serviceChangePercent" />
+        <result column="operator_id" property="operatorId" />
+        <result column="auto_send_class" property="autoSendClass" />
+        <result column="performance_affiliation" property="performanceAffiliation" />
+        <result column="top_sort" property="topSort" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, province_id, city_id, area_id, phone, password, real_name, id_card, id_card_path_positive, id_card_path_negative, email, age, teach_years, sex, teach_license_path, teach_license_no, is_vip, status, recommend_code_self, recommend_user_id, recommend_user_type, recommend_date, appraise_grade, toke_key, car_photo_path, brand_model, color, vehicle_no, work_path, driving_license_path, car_frame_no, engine_displace, engine_id, latitude, longitude, owner_name, certify_date, license_on, license_off, examine_result_explain, create_time, update_time, insurance_path, insurance_start_date, insurance_end_date, car_type, car_school_id, train_coach_charge_percent, car_charge_percent, service_change_percent, operator_id, auto_send_class, performance_affiliation, top_sort
+    </sql>
+
+</mapper>

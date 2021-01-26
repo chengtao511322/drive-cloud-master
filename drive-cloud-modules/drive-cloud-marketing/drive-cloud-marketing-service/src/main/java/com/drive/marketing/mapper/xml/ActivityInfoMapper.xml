@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.marketing.mapper.ActivityInfoMapper">
+  <resultMap id="BaseResultMap" type="com.drive.marketing.pojo.entity.ActivityInfoEntity">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="zone_name" jdbcType="VARCHAR" property="zoneName" />
+    <result column="zone_img_path" jdbcType="VARCHAR" property="zoneImgPath" />
+    <result column="zone_title" jdbcType="VARCHAR" property="zoneTitle" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="add_user" jdbcType="VARCHAR" property="addUser" />
+    <result column="template" jdbcType="VARCHAR" property="template" />
+    <result column="hot" jdbcType="INTEGER" property="hot" />
+    <result column="type" jdbcType="BIGINT" property="type" />
+    <result column="rule_id" jdbcType="VARCHAR" property="ruleId" />
+    <result column="activity_price" jdbcType="DECIMAL" property="activityPrice" />
+    <result column="original_cost" jdbcType="DECIMAL" property="originalCost" />
+    <result column="strategy_bean_id" jdbcType="VARCHAR" property="strategyBeanId" />
+    <result column="operating_position" jdbcType="VARCHAR" property="operatingPosition" />
+    <result column="is_first" jdbcType="BIGINT" property="isFirst" />
+    <result column="tenant_id" jdbcType="VARCHAR" property="tenantId" />
+    <result column="description" jdbcType="LONGVARCHAR" property="description" />
+    <result column="static_link" jdbcType="LONGVARCHAR" property="staticLink" />
+  </resultMap>
+
+
+  <select id="getActivityCouponRelation" parameterType="java.lang.String" resultType="com.drive.marketing.pojo.vo.ActivityCouponRelationVo">
+      SELECT
+              t1.id as couponId,
+              t1.name,
+              t1.type,
+              t1.publish_count as publishCount,
+              t1.use_count as useCount,
+              t1.amount,
+              t1.receive_count as receiveCount,
+              COUNT(t2.coupon_id) as couponNum,
+              t2.id
+      FROM mark_coupon t1
+      LEFT JOIN activity_coupon_relation t2 ON t2.coupon_id =t1.id
+      WHERE
+          t2.activity_id=#{activityId}
+
+  GROUP BY t2.coupon_id
+
+  </select>
+
+  <select id="getActivityCouponRelationByCondition" parameterType="com.drive.marketing.pojo.dto.ActivityCouponRelationEditParam" resultType="com.drive.marketing.pojo.vo.ActivityCouponRelationVo">
+      SELECT
+              t1.id as couponId,
+              t1.name,
+              t1.type,
+              t1.publish_count as publishCount,
+              t1.use_count as useCount,
+              t1.amount,
+              t1.receive_count as receiveCount,
+              COUNT(t2.coupon_id) as couponNum,
+              t2.id
+      FROM mark_coupon t1
+      LEFT JOIN activity_coupon_relation t2 ON t2.coupon_id =t1.id
+      WHERE
+          t2.activity_id=#{activityId}
+      AND t2.project_id=#{projectId}
+
+  </select>
+</mapper>

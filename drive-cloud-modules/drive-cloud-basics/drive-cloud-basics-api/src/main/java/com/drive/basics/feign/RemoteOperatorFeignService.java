@@ -1,0 +1,19 @@
+package com.drive.basics.feign;
+
+import com.drive.basics.factory.OperatorFallbackFactory;
+import com.drive.basics.pojo.vo.OperatorVo;
+import com.drive.common.core.biz.ResObject;
+import com.drive.common.core.constant.ServiceNameConstants;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+@FeignClient(contextId = "RemoteOperatorFeignService", value = ServiceNameConstants.BASICS_SERVICE, fallbackFactory = OperatorFallbackFactory.class)
+public interface RemoteOperatorFeignService {
+
+    /**
+     * 获取运营商基础信息
+     */
+    @GetMapping(value = "/operator/{id}")
+    ResObject<OperatorVo> get(@PathVariable("id") String id);
+}

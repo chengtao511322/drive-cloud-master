@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.marketing.mapper.ActivityPromoteAuthMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.marketing.pojo.entity.ActivityPromoteAuthEntity">
+        <result column="activity_id" property="activityId" />
+        <result column="user_id" property="userId" />
+        <result column="channel_id" property="channelId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            activity_id, user_id, channel_id
+    </sql>
+
+</mapper>

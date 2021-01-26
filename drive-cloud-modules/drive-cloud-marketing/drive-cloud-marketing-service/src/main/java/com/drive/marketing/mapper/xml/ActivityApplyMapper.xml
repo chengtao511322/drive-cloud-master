@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.marketing.mapper.ActivityApplyMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.marketing.pojo.entity.ActivityApplyEntity">
+        <result column="id" property="id" />
+        <result column="user_name" property="userName" />
+        <result column="phone" property="phone" />
+        <result column="activity_name" property="activityName" />
+        <result column="user_id" property="userId" />
+        <result column="activity_id" property="activityId" />
+        <result column="apply_time" property="applyTime" />
+        <result column="add_user" property="addUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="status" property="status" />
+        <result column="is_delete" property="isDelete" />
+        <result column="operating_position" property="operatingPosition" />
+        <result column="operator" property="operator" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="promote_user_id" property="promoteUserId" />
+        <result column="project_id" property="projectId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, user_name, phone, activity_name, user_id, activity_id, apply_time, add_user, create_time, update_time, status, is_delete, operating_position, operator, tenant_id, promote_user_id, project_id
+    </sql>
+
+</mapper>

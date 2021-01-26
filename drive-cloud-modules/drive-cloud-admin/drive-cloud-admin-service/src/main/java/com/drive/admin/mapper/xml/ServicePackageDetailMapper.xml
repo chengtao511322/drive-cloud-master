@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.ServicePackageDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.ServicePackageDetailEntity">
+        <id column="id" property="id" />
+        <result column="service_package_id" property="servicePackageId" />
+        <result column="service_item_price_id" property="serviceItemPriceId" />
+        <result column="status" property="status" />
+        <result column="is_delete" property="isDelete" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, service_package_id, service_item_price_id, status, is_delete, create_time, update_time
+    </sql>
+
+    <delete id="delByCondition" parameterType="com.drive.admin.pojo.dto.ServicePackageDetailPageQueryParam" >
+        DELETE
+            FROM
+        t_service_package_detail
+        <where>
+            <if test="@cn.hutool.core.util.StrUtil@isNotEmpty(servicePackageId)">
+                AND service_package_id = #{servicePackageId}
+            </if>
+            <if test="@cn.hutool.core.util.StrUtil@isNotEmpty(serviceItemPriceId)">
+                AND service_item_price_id = #{serviceItemPriceId}
+            </if>
+        </where>
+    </delete>
+    <!--AND t1.STATUS = 1-->
+    <select id="getPublishStatus" parameterType="java.lang.String" resultType="java.lang.Integer">
+            SELECT
+                COUNT(1)
+            FROM
+                t_service_package_detail t1
+            LEFT JOIN one_fee_system_price t2 on t2.id=t1.service_package_id
+            WHERE
+                t1.is_delete = '0'
+            AND (
+                t1.service_item_price_id = #{serviceItemPriceId}
+            AND t2.is_delete=0
+            AND t2.`status`=1
+            )
+
+    </select>
+
+</mapper>

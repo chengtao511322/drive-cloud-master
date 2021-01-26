@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.marketing.mapper.ActivityCouponRelationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.marketing.pojo.entity.ActivityCouponRelationEntity">
+        <id column="id" property="id" />
+        <result column="coupon_id" property="couponId" />
+        <result column="activity_id" property="activityId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, coupon_id, activity_id
+    </sql>
+
+
+
+    <delete id="removeBatch" parameterType="java.util.List">
+        delete from activity_coupon_relation t where t.activity_id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item.activityId,jdbcType=VARCHAR}
+        </foreach>
+    </delete>
+
+    <!--根据 条件删除活动优惠券配置-->
+    <delete id="deleteByCondition" parameterType="com.drive.marketing.pojo.entity.ActivityCouponRelationEntity">
+        delete from activity_coupon_relation
+        <where>
+            AND  activity_id = #{activityId}
+            AND  coupon_id = #{couponId}
+        </where>
+
+    </delete>
+
+
+    <delete id="deleteByActivityId" parameterType="java.lang.String">
+        delete from activity_coupon_relation
+        <where>
+            AND  activity_id = #{activityId}
+        </where>
+
+    </delete>
+
+
+</mapper>

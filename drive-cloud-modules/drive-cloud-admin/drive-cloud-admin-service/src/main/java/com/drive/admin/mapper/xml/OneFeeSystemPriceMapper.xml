@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.OneFeeSystemPriceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.OneFeeSystemPriceEntity">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="drive_type" property="driveType" />
+        <result column="class_type" property="classType" />
+        <result column="price" property="price" />
+        <result column="coach_subject_type_2" property="coachSubjectType2" />
+        <result column="coach_subject_type_3" property="coachSubjectType3" />
+        <result column="school_subject_type_2" property="schoolSubjectType2" />
+        <result column="school_subject_type_3" property="schoolSubjectType3" />
+        <result column="operator_change_money" property="operatorChangeMoney" />
+        <result column="service_change_money" property="serviceChangeMoney" />
+        <result column="details" property="details" />
+        <result column="bonus" property="bonus" />
+        <result column="test_not_pass_withhold_money" property="testNotPassWithholdMoney" />
+        <result column="is_delete" property="isDelete" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="operator_id" property="operatorId" />
+        <result column="subject_1_cost_free_number" property="subject1CostFreeNumber" />
+        <result column="subject_2_cost_free_number" property="subject2CostFreeNumber" />
+        <result column="subject_3_cost_free_number" property="subject3CostFreeNumber" />
+        <result column="subject_4_cost_free_number" property="subject4CostFreeNumber" />
+        <result column="price_introduce" property="priceIntroduce" />
+        <result column="driving_flow" property="drivingFlow" />
+        <result column="class_grade" property="classGrade" />
+        <result column="original_price" property="originalPrice" />
+        <result column="is_upgrade" property="isUpgrade" />
+        <result column="status" property="status" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, name, drive_type, class_type, price, coach_subject_type_2, coach_subject_type_3, school_subject_type_2, school_subject_type_3, operator_change_money, service_change_money, details, bonus, test_not_pass_withhold_money, is_delete, create_time, update_time, operator_id, subject_1_cost_free_number, subject_2_cost_free_number, subject_3_cost_free_number, subject_4_cost_free_number, price_introduce, driving_flow, class_grade, original_price, is_upgrade, status
+    </sql>
+
+    <select id="getServicePackageTree" parameterType="java.lang.String" resultType="com.drive.admin.pojo.dto.TreeNodeCategoryDto">
+        SELECT
+            id,
+          id as value,
+            class_type as type,
+            `name` as label
+        FROM
+            one_fee_system_price
+        WHERE
+            is_delete = 0
+        AND
+            `status` = 1
+        AND
+            operator_id = #{tenantId}
+
+
+    </select>
+
+</mapper>

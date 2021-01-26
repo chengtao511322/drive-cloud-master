@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>drive-cloud-modules</artifactId>
+        <groupId>com.drive</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>drive-cloud-marketing</artifactId>
+    <packaging>pom</packaging>
+    <name>drive-cloud-marketing</name>
+    <description>促销营销服务平台</description>
+    <url>http://www.xuechexwz.com</url>
+    <modules>
+        <module>drive-cloud-marketing-api</module>
+        <module>drive-cloud-marketing-service</module>
+    </modules>
+
+</project>

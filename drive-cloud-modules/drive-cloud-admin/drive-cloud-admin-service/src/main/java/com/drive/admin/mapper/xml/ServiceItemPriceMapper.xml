@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.ServiceItemPriceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.ServiceItemPriceEntity">
+        <id column="id" property="id" />
+        <result column="service_type" property="serviceType" />
+        <result column="service_item_id" property="serviceItemId" />
+        <result column="price" property="price" />
+        <result column="status" property="status" />
+        <result column="is_delete" property="isDelete" />
+        <result column="operator_id" property="operatorId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, service_type, service_item_id, price, status, is_delete, operator_id, create_time, update_time
+    </sql>
+
+    <!-- 关联service_item表 -->
+    <select id="queryList" parameterType="com.drive.admin.pojo.dto.ServiceItemPricePageQueryParam" resultType="com.drive.admin.pojo.vo.ServiceItemPriceVo">
+        SELECT
+            tsip.id as id,
+            tsip.service_type as serviceType,
+            tsip.service_item_id,
+            tsip.price,
+            tsip.status,
+            tsip.is_delete,
+            tsip.operator_id as operatorId,
+            tsip.create_time AS createTime,
+            tsip.update_time AS updateTime,
+            tsip.service_item_describe AS serviceItemPriceDescribe,
+            tsi.name as serviceItemName,
+            tsi.service_item_describe as serviceItemDescribe
+        FROM t_service_item_price tsip
+        LEFT JOIN t_service_item tsi
+        ON tsip.service_item_id = tsi.id
+        ${ew.customSqlSegment}
+    </select>
+    <select id="getQueryListById" parameterType="com.drive.admin.pojo.dto.ServiceItemPricePageQueryParam" resultType="com.drive.admin.pojo.vo.ServiceItemPriceVo">
+        SELECT
+            tsip.id as id,
+            tsip.service_type as serviceType,
+            tsip.service_item_id,
+            tsip.price,
+            tsip.status,
+            tsip.is_delete,
+            tsip.operator_id as operatorId,
+            tsip.create_time AS createTime,
+            tsip.update_time AS updateTime,
+            tsip.service_item_describe AS serviceItemPriceDescribe,
+            tsi.name as serviceItemName,
+            tsp.id as servicePackageItemId,
+            tsp.unit,
+            tsp.unit_number as unitNumber,
+            tsp.no_unit_describe AS noUnitDescribe,
+            tsp.unit_describe AS unitDescribe,
+            tsp.service_provider AS serviceProvider,
+            tsp.value,
+            tsp.service_description AS serviceDescription,
+            tsp.service_item_type AS serviceItemType,
+            tsi.service_item_describe as serviceItemDescribe
+        FROM t_service_item_price tsip
+        LEFT JOIN t_service_item tsi
+        ON tsip.service_item_id = tsi.id
+        LEFT JOIN t_service_package_detail tsp
+        on tsp.service_item_price_id = tsip.id
+        ${ew.customSqlSegment}
+    </select>
+
+</mapper>

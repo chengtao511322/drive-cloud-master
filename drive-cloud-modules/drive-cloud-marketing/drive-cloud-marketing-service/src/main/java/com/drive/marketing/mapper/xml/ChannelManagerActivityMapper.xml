@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.marketing.mapper.ChannelManagerActivityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.marketing.pojo.entity.ChannelManagerActivityEntity">
+        <id column="channel_manager_id" property="channelManagerId" />
+        <result column="activity_id" property="activityId" />
+        <result column="activity_name" property="activityName" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            channel_manager_id, activity_id, activity_name
+    </sql>
+
+    <select id="findPage" parameterType="com.drive.marketing.pojo.dto.ChannelManagerActivityPageQueryParam" resultType="com.drive.marketing.pojo.vo.ChannelManagerActivityVo">
+        SELECT
+            t1.id,
+            t1.channel_manager_id,
+            t1.activity_id,
+            t1.activity_name,
+            t1.user_id,
+            t1.create_time,
+            t1.project_id,
+            t1.deduct_amount,
+            t1.promotion_amount,
+            t1.channel_manager_amount,
+            t1.project_name,
+            t1.project_amount,
+            t1.STATUS,
+            t1.is_delete,
+            t1.promotion_user_id,
+            t1.promotion_type,
+        (SELECT COUNT(1) FROM mark_coupon_get t2 WHERE t2.promote_user_id = t1.promotion_user_id AND t2.source =t1.activity_id GROUP BY t2.promote_user_id) as promotionUserTotal
+        FROM
+            mark_channel_manager_activity t1
+            ${ew.customSqlSegment}
+    </select>
+</mapper>

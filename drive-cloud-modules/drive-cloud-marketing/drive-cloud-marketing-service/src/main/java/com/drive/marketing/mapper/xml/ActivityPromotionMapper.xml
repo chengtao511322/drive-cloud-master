@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.marketing.mapper.ActivityPromotionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.marketing.pojo.entity.ActivityPromotionEntity">
+        <result column="promotion_user_id" property="promotionUserId" />
+        <result column="promotion_type" property="promotionType" />
+        <result column="apply_pre" property="applyPre" />
+        <result column="promotion_phone" property="promotionPhone" />
+        <result column="promotion_user_name" property="promotionUserName" />
+        <result column="activity_id" property="activityId" />
+        <result column="promotion_amount" property="promotionAmount" />
+        <result column="project_id" property="projectId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            promotion_user_id, promotion_type, apply_pre, promotion_phone, promotion_user_name, activity_id, promotion_amount, project_id
+    </sql>
+
+</mapper>

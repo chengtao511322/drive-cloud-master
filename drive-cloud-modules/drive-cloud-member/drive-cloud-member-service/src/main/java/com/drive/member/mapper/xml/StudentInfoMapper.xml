@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.member.mapper.StudentInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.member.pojo.entity.StudentInfoEntity">
+        <id column="id" property="id" />
+        <result column="province_id" property="provinceId" />
+        <result column="city_id" property="cityId" />
+        <result column="area_id" property="areaId" />
+        <result column="phone" property="phone" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="id_card" property="idCard" />
+        <result column="real_name" property="realName" />
+        <result column="age" property="age" />
+        <result column="sex" property="sex" />
+        <result column="email" property="email" />
+        <result column="recommend_code_self" property="recommendCodeSelf" />
+        <result column="recommend_user_id" property="recommendUserId" />
+        <result column="recommend_user_type" property="recommendUserType" />
+        <result column="recommend_income_type" property="recommendIncomeType" />
+        <result column="recommend_date" property="recommendDate" />
+        <result column="head_url" property="headUrl" />
+        <result column="wechat_openid" property="wechatOpenid" />
+        <result column="qq_openid" property="qqOpenid" />
+        <result column="token_key" property="tokenKey" />
+        <result column="status" property="status" />
+        <result column="login_time" property="loginTime" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="subject1_test_result_type" property="subject1TestResultType" />
+        <result column="subject2_test_result_type" property="subject2TestResultType" />
+        <result column="subject3_test_result_type" property="subject3TestResultType" />
+        <result column="subject4_test_result_type" property="subject4TestResultType" />
+        <result column="channel" property="channel" />
+        <result column="phone_id" property="phoneId" />
+        <result column="operator_id" property="operatorId" />
+        <result column="platform" property="platform" />
+        <result column="logon_channel" property="logonChannel" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, province_id, city_id, area_id, phone, username, password, id_card, real_name, age, sex, email, recommend_code_self, recommend_user_id, recommend_user_type, recommend_income_type, recommend_date, head_url, wechat_openid, qq_openid, token_key, status, login_time, create_time, update_time, subject1_test_result_type, subject2_test_result_type, subject3_test_result_type, subject4_test_result_type, channel, phone_id, operator_id, platform, logon_channel
+    </sql>
+
+</mapper>
