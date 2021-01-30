@@ -73,7 +73,7 @@ public class  ServiceItemRepositoryImpl extends BaseController<ServiceItemPageQu
         QueryWrapper queryWrapper= this.getQueryWrapper(serviceItemMapStruct, param);
         // 如 queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"phone",param.getPhone());
         List<ServiceItemEntity> pageList = serviceItemService.list(queryWrapper);
-        List<ServiceItemVo> serviceItemVoList = serviceItemMapStruct.toVoList(pageList);
+        List<ServiceItemVo> serviceItemVoList = BeanConvertUtils.copyList(pageList,ServiceItemVo.class);
         log.info(this.getClass() + "findList-方法请求结果{}",serviceItemVoList);
         if (serviceItemVoList == null){
             log.error("数据空");

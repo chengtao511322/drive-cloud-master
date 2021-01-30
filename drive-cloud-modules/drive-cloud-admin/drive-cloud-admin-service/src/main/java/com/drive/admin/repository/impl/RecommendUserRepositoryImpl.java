@@ -1,35 +1,35 @@
 package com.drive.admin.repository.impl;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.drive.admin.pojo.entity.RecommendUserEntity;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import com.drive.common.core.base.BaseController;
+import com.drive.admin.repository.RecommendUserRepository;
+import com.drive.admin.pojo.entity.*;
+import com.drive.admin.pojo.vo.*;
+import com.drive.admin.pojo.dto.*;
+import com.drive.admin.service.mapstruct.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.drive.admin.pojo.dto.RecommendUserEditParam;
-import com.drive.admin.pojo.dto.RecommendUserPageQueryParam;
-import com.drive.admin.pojo.entity.RecommendUserEntity;
-import com.drive.admin.pojo.entity.StudentInfoEntity;
-import com.drive.admin.pojo.vo.RecommendUserVo;
-import com.drive.admin.repository.RecommendUserRepository;
-import com.drive.admin.service.RecommendUserService;
-import com.drive.admin.service.StudentInfoService;
-import com.drive.admin.service.mapstruct.RecommendUserMapStruct;
-import com.drive.common.core.base.BaseController;
+import cn.hutool.core.util.StrUtil;
 import com.drive.common.core.biz.R;
-import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.utils.BeanConvertUtils;
 import lombok.extern.slf4j.Slf4j;
+import com.drive.common.core.biz.ResObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
+import com.drive.admin.service.RecommendUserService;
+import com.drive.common.data.utils.ExcelUtils;
 import java.util.List;
+import java.util.Arrays;
+import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Service;
 
                                                                             
 /**
  *
- * 推广商信息 服务类
+ * 推广人员信息表 服务类
  *
  * @author xiaoguo
  */
@@ -42,12 +42,14 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
     @Autowired
     private RecommendUserMapStruct recommendUserMapStruct;
 
-    @Autowired
-    private StudentInfoService studentInfoService;
-
-    /**
-    * *推广商信息 分页列表
-    **/
+    /*
+     *功能描述
+     * @author xiaoguo
+     * @description 推广人员信息表 分页列表
+     * @date 2020/2/12 17:09
+     * @param  * @param RecommendUserPageQueryParam
+     * @return
+     */
     @Override
     public ResObject pageList(RecommendUserPageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
@@ -75,7 +77,7 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
     }
 
     /**
-     * *通过ID获取推广商信息 列表
+     * *通过ID获取推广人员信息表 列表
      **/
     @Override
     public ResObject getInfo(String id) {
@@ -85,14 +87,6 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
         }
         RecommendUserEntity recommendUser = recommendUserService.getById(id);
         RecommendUserVo recommendUserVo = BeanConvertUtils.copy(recommendUser, RecommendUserVo.class);
-        // 查询手机
-        StudentInfoEntity studentInfoEntity = studentInfoService.getById(recommendUserVo.getStudentId());
-        if (studentInfoEntity != null){
-            // 设置手机
-            recommendUserVo.setPhone(studentInfoEntity.getPhone());
-            // 设置姓名
-            recommendUserVo.setRealName(studentInfoEntity.getRealName());
-        }
         log.info(this.getClass() + "getInfo-方法请求结果{}",recommendUserVo);
         if (recommendUserVo ==null){
             log.error("活动数据对象空");
@@ -102,7 +96,7 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
     }
 
     /**
-     * *保存推广商信息 信息
+     * *保存推广人员信息表 信息
      **/
     @Override
     public ResObject save(RecommendUserEditParam installParam) {
@@ -119,7 +113,7 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
     }
 
     /**
-     * *修改推广商信息 信息
+     * *修改推广人员信息表 信息
      **/
     @Override
     public ResObject update(RecommendUserEditParam updateParam) {
@@ -136,15 +130,19 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
     }
 
     /**
-     * *删除推广商信息 信息
+     * *删除推广人员信息表 信息
      **/
     @Override
     public ResObject deleteByIds(String[] ids) {
+        if (ids.length <= 0){
+            log.error("数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
         return R.toRes(recommendUserService.removeByIds(Arrays.asList(ids)));
     }
 
     /**
-     * *通过id删除推广商信息 信息
+     * *通过id删除推广人员信息表 信息
      **/
     @Override
     public ResObject deleteById(String id) {
@@ -162,11 +160,16 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
     }
 
     /**
-     * *导出推广商信息 信息
+     * *导出推广人员信息表 信息
      **/
     @Override
-    public ResObject exportXls(RecommendUserPageQueryParam param, HttpServletResponse response) {
-        return null;
+    public ResObject exportXls(RecommendUserPageQueryParam param, HttpServletResponse response)throws IOException {
+        log.info(this.getClass() + "exportXls方法请求参数{}",param);
+        QueryWrapper queryWrapper = this.getQueryWrapper(recommendUserMapStruct, param);
+        List<RecommendUserEntity> list = recommendUserService.list(queryWrapper);
+        List<RecommendUserVo>recommendUserList = recommendUserMapStruct.toVoList(list);
+        ExcelUtils.exportExcel(recommendUserList, RecommendUserVo.class, "", new ExportParams(), response);
+        return R.success("导出成功");
     }
 
     /**
@@ -174,10 +177,15 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
      **/
     @Override
     public ResObject changeStatus(RecommendUserEditParam param) {
-
+        log.info(this.getClass() + "changeStatus方法请求参数{}",param);
+        if (StrUtil.isEmpty(param.getId())){
+            log.error("ID数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
         RecommendUserEntity RecommendUserEntity = new RecommendUserEntity();
         RecommendUserEntity.setId(param.getId());
         RecommendUserEntity.setStatus(param.getStatus());
+        //RecommendUserEntity.setUpdateTime()
         Boolean result = recommendUserService.updateById(RecommendUserEntity);
         log.info(this.getClass() +"changeStatus方法请求对象参数{}，请求结果{}",RecommendUserEntity,result);
         // 判断结果

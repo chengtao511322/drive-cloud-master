@@ -6,9 +6,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.pojo.dto.StudentInfoEditParam;
 import com.drive.admin.pojo.dto.StudentInfoPageQueryParam;
+import com.drive.admin.pojo.entity.RecommendUserEntity;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.admin.repository.StudentInfoRepository;
+import com.drive.admin.service.AreaService;
+import com.drive.admin.service.RecommendUserService;
 import com.drive.admin.service.StudentInfoService;
 import com.drive.admin.service.mapstruct.StudentInfoMapStruct;
 import com.drive.common.core.base.BaseController;
@@ -23,8 +26,9 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
-                                                                                                                                            
+
 /**
  *
  * 学员信息表 服务类
@@ -37,8 +41,14 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
 
     @Autowired
     private StudentInfoService studentInfoService;
+
+    @Autowired
+    private AreaService areaService;
     @Autowired
     private StudentInfoMapStruct studentInfoMapStruct;
+
+    @Autowired
+    private RecommendUserService recommendUserService;
 
     /**
     * *学员信息表 分页列表
@@ -47,8 +57,25 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
     public ResObject pageList(StudentInfoPageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
         Page<StudentInfoEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<StudentInfoEntity> pageList = studentInfoService.page(page, this.getQueryWrapper(studentInfoMapStruct, param));
+        QueryWrapper queryWrapper = this.getQueryWrapper(studentInfoMapStruct, param);
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"phone",param.getVaguePhoneSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueUserNameSearch()),"username",param.getVagueUserNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"real_name",param.getVagueRealNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueEmailSearch()),"email",param.getVagueEmailSearch());
+        IPage<StudentInfoEntity> pageList = studentInfoService.page(page,queryWrapper);
         Page<StudentInfoVo> studentInfoVoPage = studentInfoMapStruct.toVoList(pageList);
+        // List<Problem> problemList = problemByExample.stream().filter(problem -> "空调制冷".equals(problem.getProTitle()) || "李一一的难题1".equals(problem.getProTitle())).collect(Collectors.toList());
+        studentInfoVoPage.getRecords().stream().forEach(item ->{
+           if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
+           if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
+           if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
+            // 查询推广人员
+            if (StrUtil.isNotEmpty(item.getRecommendUserId())){
+                StudentInfoEntity studentInfo = studentInfoService.getById(item.getRecommendUserId());
+                item.setRecommendUserName(studentInfo.getRealName());
+                item.setRecommendUserPhone(studentInfo.getPhone());
+            }
+        });
         log.info(this.getClass() + "pageList-方法请求结果{}",studentInfoVoPage);
         return R.success(studentInfoVoPage);
     }

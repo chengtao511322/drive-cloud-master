@@ -5,6 +5,7 @@ import cn.afterturn.easypoi.excel.annotation.Excel;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -44,5 +45,7 @@ public class DictTypeVo {
 
 	// 更新时间
 	private LocalDateTime updateTime;
+
+	private List<DictItemVo> dictItemVoList;
 
 }

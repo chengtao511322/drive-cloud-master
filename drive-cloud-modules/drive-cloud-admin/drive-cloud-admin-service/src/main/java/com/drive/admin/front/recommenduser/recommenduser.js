@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
-
-// 分页查询推广商信息列表
+                                      
+// 分页查询推广人员信息表列表
 export function listPageRecommendUser(query) {
   return request({
     url: '/admin/recommendUser/pageList',
@@ -11,7 +11,7 @@ export function listPageRecommendUser(query) {
 }
 
 
-// 分页查询推广商信息列表
+// 分页查询推广人员信息表列表
 export function listRecommendUser(query) {
   return request({
     url: '/admin/recommendUser/findList',
@@ -20,7 +20,7 @@ export function listRecommendUser(query) {
   })
 }
 
-// 查询推广商信息详细
+// 查询推广人员信息表详细
 export function getRecommendUser(id) {
   return request({
     url: '/admin/recommendUser/' + id,
@@ -28,7 +28,7 @@ export function getRecommendUser(id) {
   })
 }
 
-// 新增推广商信息
+// 新增推广人员信息表
 export function addRecommendUser(data) {
   return request({
     url: '/admin/recommendUser',
@@ -37,7 +37,7 @@ export function addRecommendUser(data) {
   })
 }
 
-// 修改推广商信息
+// 修改推广人员信息表
 export function updateRecommendUser(data) {
   return request({
     url: '/admin/recommendUser',
@@ -46,7 +46,7 @@ export function updateRecommendUser(data) {
   })
 }
 
-// 删除推广商信息
+// 删除推广人员信息表
 export function delRecommendUser(id) {
   return request({
     url: '/admin/recommendUser/' + id,
@@ -55,7 +55,7 @@ export function delRecommendUser(id) {
 }
 
 
-// 状态启用/停用推广商信息
+// 状态启用/停用推广人员信息表
 export function changeStatus(data) {
   return request({
     url: '/admin/recommendUser/changeStatus',
@@ -64,7 +64,7 @@ export function changeStatus(data) {
   })
 }
 
-// 导出推广商信息
+// 导出推广人员信息表
 export function exportRecommendUser(query) {
   return request({
     url: '/admin/recommendUser/exportXls',

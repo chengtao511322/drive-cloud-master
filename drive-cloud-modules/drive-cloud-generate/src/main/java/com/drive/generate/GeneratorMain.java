@@ -27,7 +27,7 @@ import java.util.Map;
 public class GeneratorMain {
 
     //生成文件所在项目路径
-    private static String baseProjectPath = "D:\\git\\drive-cloud-master\\drive-cloud-modules\\drive-cloud-basics\\drive-cloud-basics-service\\";
+    private static String baseProjectPath = "D:\\git\\drive-cloud-master\\drive-cloud-modules\\drive-cloud-admin\\drive-cloud-admin-service\\";
 
 
     //文件存放路径
@@ -42,7 +42,7 @@ public class GeneratorMain {
 
     //数据库连接参数配置  driverprince_production
     private static String driverName = "com.mysql.cj.jdbc.Driver";
-    private static String url = "jdbc:mysql://125.0.8.191:3304/drive_public?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai";
+    private static String url = "jdbc:mysql://125.0.8.191:3306/driverprince_production?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai";
     private static String username = "root";
     private static String password = "xiaoguo";
 
@@ -50,14 +50,14 @@ public class GeneratorMain {
     private static Boolean fileOverride = true;
 
     //table前缀
-    private static String prefix = "base";
+    private static String prefix = "t_";
 
     //模块名称
-    private static String modulesName = "basics";
+    private static String modulesName = "admin";
 
     //要生成的表名templatestemplates
     private static String[] tables = {
-            "base_category",
+            "t_student_coach_appraise",
     };
 
 

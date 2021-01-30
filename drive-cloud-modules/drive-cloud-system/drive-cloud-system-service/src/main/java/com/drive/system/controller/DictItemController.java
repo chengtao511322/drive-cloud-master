@@ -13,6 +13,7 @@ import com.drive.system.pojo.dto.DictItemEditParam;
 import com.drive.system.pojo.dto.DictItemPageQueryParam;
 import com.drive.system.pojo.entity.DictItemEntity;
 import com.drive.system.pojo.vo.DictItemVo;
+import com.drive.system.repository.DictItemRepository;
 import com.drive.system.service.DictItemService;
 import com.drive.system.service.mapstruct.DictItemMapStruct;
 import io.swagger.annotations.Api;
@@ -45,6 +46,9 @@ public class DictItemController extends BaseController<DictItemPageQueryParam, D
     private DictItemService dictItemService;
     @Autowired
     private DictItemMapStruct dictItemMapStruct;
+
+    @Autowired
+    private DictItemRepository dictItemRepository;
 
     /**
      * 字典数据 分页列表
@@ -132,6 +136,11 @@ public class DictItemController extends BaseController<DictItemPageQueryParam, D
     public ResObject dictType(@PathVariable String dictCode) {
         List<DictItemEntity> list = dictItemService.getItemByDictCode(dictCode);
         return R.success(list);
+    }
+
+    @GetMapping(value = "/allList")
+    public ResObject allList() {
+        return dictItemRepository.allList();
     }
 
 }

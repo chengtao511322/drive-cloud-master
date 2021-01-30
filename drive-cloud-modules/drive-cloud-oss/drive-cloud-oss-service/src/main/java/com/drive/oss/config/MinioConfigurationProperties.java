@@ -33,7 +33,7 @@ public class MinioConfigurationProperties {
 
     private Duration readTimeout = Duration.ofSeconds(10);
 
-    private boolean checkBucket = true;
+    private boolean checkBucket = false;
 
     private boolean createBucket = true;
 

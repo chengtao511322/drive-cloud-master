@@ -45,7 +45,6 @@ public class UserServiceImpl extends BaseService<UserMapper, UserEntity> impleme
     @Autowired
     private UserMapStruct userMapStruct;
 
-    @DataScope(deptAlias = "d", userAlias = "u")
     @Override
     public IPage<UserVo> getUserList(Page page, QueryWrapper<UserEntity> wrapper){
         return page.setRecords(this.baseMapper.getUserList(page, wrapper));

@@ -18,7 +18,7 @@ INSERT INTO `sys_menu`(
         `update_time`
         )
 VALUES (
-        '推广商信息管理',
+        '推广人员信息表管理',
         'admin:recommendUser:list',
         2,
         'recommendUser',
@@ -60,7 +60,7 @@ INSERT INTO `sys_menu`(
         `update_time`
         )
 VALUES (
-        '推广商信息查询',
+        '推广人员信息表查询',
         'admin:recommendUser:query',
         3,
         '',
@@ -98,7 +98,7 @@ INSERT INTO `sys_menu`(
         `update_time`
         )
 VALUES (
-        '推广商信息新增',
+        '推广人员信息表新增',
         'admin:recommendUser:add',
         3,
         '',
@@ -137,7 +137,7 @@ INSERT INTO `sys_menu`(
         `update_time`
         )
 VALUES (
-        '推广商信息修改',
+        '推广人员信息表修改',
         'admin:recommendUser:edit',
         3,
         '',
@@ -175,7 +175,7 @@ INSERT INTO `sys_menu`(
         `update_time`
         )
 VALUES (
-        '推广商信息删除',
+        '推广人员信息表删除',
         'admin:recommendUser:delete',
         3,
         '',
@@ -212,7 +212,7 @@ INSERT INTO `sys_menu`(
         `update_time`
         )
 VALUES (
-        '推广商信息导出',
+        '推广人员信息表导出',
         'admin:recommendUser:export',
         3,
         '',

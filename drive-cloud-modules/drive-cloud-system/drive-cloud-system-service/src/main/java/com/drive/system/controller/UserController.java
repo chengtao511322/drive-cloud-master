@@ -10,6 +10,7 @@ import com.drive.common.core.constant.Constants;
 import com.drive.common.core.enums.EventLogEnum;
 import com.drive.common.core.utils.StringUtils;
 import com.drive.common.data.utils.ExcelUtils;
+import com.drive.common.datascope.annotation.DataScope;
 import com.drive.common.log.annotation.EventLog;
 import com.drive.common.security.utils.SecurityUtils;
 import com.drive.system.pojo.UserInfo;
@@ -19,6 +20,7 @@ import com.drive.system.pojo.entity.RoleEntity;
 import com.drive.system.pojo.entity.UserEntity;
 import com.drive.system.pojo.vo.MenuVo;
 import com.drive.system.pojo.vo.UserVo;
+import com.drive.system.repository.UserRepository;
 import com.drive.system.service.MenuService;
 import com.drive.system.service.PostService;
 import com.drive.system.service.RoleService;
@@ -60,6 +62,9 @@ public class UserController extends BaseController<UserPageQueryParam, UserEntit
     @Autowired
     private MenuService menuService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     /**
      * 用户信息 分页列表
      */
@@ -67,9 +72,7 @@ public class UserController extends BaseController<UserPageQueryParam, UserEntit
     @PreAuthorize("hasPermission('/user',  'system:user:query')")
     @GetMapping(value = "/pageList")
     public ResObject pageList(@Valid UserPageQueryParam param) {
-        Page<UserEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<UserVo> pageList = userService.getUserList(page, this.getQueryWrapper(userMapStruct, param));
-        return R.success(pageList);
+        return userRepository.pageList(param);
     }
 
     /**
@@ -138,7 +141,6 @@ public class UserController extends BaseController<UserPageQueryParam, UserEntit
         // 管理员admin账号不能删除
         List<Long> userIdList = Arrays.asList(userIds);
         userIdList.remove(Constants.ADMIN_USER_ID);
-
         return R.toRes(userService.removeByIds(userIdList));
     }
 

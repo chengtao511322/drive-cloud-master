@@ -1,14 +1,15 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import lombok.Data;
 
+import lombok.Data;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
 /**
- * 推广商信息
+ * 推广人员信息表
  *
  * @author xiaoguo
  */
@@ -87,10 +88,5 @@ public class RecommendUserVo {
 	// VIP课时提成百分比
 	@Excel(name = "VIP课时提成百分比", width = 20)
 	private BigDecimal vipClassTiemPercent;
-	@Excel(name = "手机号", width = 20)
-	private String phone;
-
-	@Excel(name = "姓名", width = 20)
-	private String realName;
 
 }

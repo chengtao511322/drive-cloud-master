@@ -34,4 +34,6 @@ public abstract class BasePageQueryParam implements java.io.Serializable{
     // 模糊查询 key
     private String vagueSearch;
 
+    private SearchQueryParam searchQueryParam;
+
 }

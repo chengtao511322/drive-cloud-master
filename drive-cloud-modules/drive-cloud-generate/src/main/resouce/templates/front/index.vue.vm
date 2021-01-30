@@ -146,7 +146,7 @@
 </template>
 
 <script>
-    import { list${entity}, get${entity}, del${entity}, add${entity}, update${entity}, export${entity} } from "@/api/${cfg.moduleName}/${className}";
+    import { list${entity},listPage${entity}, get${entity}, del${entity}, add${entity}, update${entity}, export${entity} } from "@/api/${cfg.moduleName}/${className}";
 
     export default {
         name: "${entity}",
@@ -189,13 +189,14 @@
             };
         },
         created() {
-            this.getList();
+            // 初始化分页数据
+            this.getListPage();
         },
         methods: {
             /** 查询${table.comment}列表 */
-            getList() {
+            getListPage() {
                 this.loading = true;
-                list${entity}(this.queryParams).then(response => {
+                listPage${entity}(this.queryParams).then(response => {
                     this.${className}List = response.data.records;
                     this.total = response.data.total;
                     this.loading = false;

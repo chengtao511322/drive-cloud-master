@@ -1,5 +1,6 @@
 package com.drive.oss.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.constant.Constants;
@@ -15,12 +16,15 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
@@ -57,10 +61,11 @@ public class MinioController {
         int begin = filename.indexOf(".");
         int last = filename.length();
         String ext = filename.substring(begin, last);
-        String pathSrc = Constants.UPLOAD_HEAD_IMAGES+File.separator+LocalDate.now().toString()+ File.separator+Instant.now().toEpochMilli() +  ext;
+        String pathSrc = Constants.UPLOAD_HEAD_IMAGES+"/"+LocalDate.now().toString()+"/"+Instant.now().toEpochMilli() +  ext;
         Path path = Paths.get(pathSrc);
         //String path = Constants.UPLOAD_HEAD_IMAGES+"/"+LocalDate.now().toString()+"/"+Instant.now().toEpochMilli() +  ext;
-
+        //Path path = Paths.get(LocalDate.now().toString(), Instant.now().toEpochMilli() +  ext);
+        // Path newDir = Files.createDirectories(path);
         minioService.upload(path, file.getInputStream(), file.getContentType());
 
         Map result = new HashMap();
@@ -68,6 +73,27 @@ public class MinioController {
         result.put("filePath",  "/" + minioConfig.getBucket()+ "/" + path);
         return R.success(result);
     }
+
+    @PostMapping(value = "/uploadHeadImg")
+    public ResObject uploadHeadImg(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        R result = new R();
+        String savePath = "";
+//      String bizPath = request.getParameter("path");
+        String bizPath = request.getHeader("path");
+        log.info("bizPath:{}", bizPath);
+
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile file = multipartRequest.getFile("file");// 获取上传文件对象
+        String filename = file.getOriginalFilename();
+        int begin = filename.indexOf(".");
+        int last = filename.length();
+        String ext = filename.substring(begin, last);
+        String pathSrc = Constants.UPLOAD_HEAD_IMAGES+"/"+filename;
+        minioService.uploadHeadImg(file,pathSrc);
+        return R.success(pathSrc);
+    }
+
 
     @ApiOperation("获取文件")
     @GetMapping("/{object}")

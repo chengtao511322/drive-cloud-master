@@ -2,6 +2,7 @@ package com.drive.admin.pojo.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 
@@ -18,9 +19,11 @@ public class ServiceItemEditParam {
     private String id;
 
     // 服务名称
+    @NotBlank(message = "服务名称不能为空")
     private String name;
 
     // 服务类型（报名、科一、科二、科三、科四）
+    @NotBlank(message = "服务类型不能为空")
     private String serviceType;
 
     // 是否删除（1、是，0、否）

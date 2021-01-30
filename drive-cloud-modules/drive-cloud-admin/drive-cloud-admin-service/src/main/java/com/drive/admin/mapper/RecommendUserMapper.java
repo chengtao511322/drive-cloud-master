@@ -1,10 +1,10 @@
 package com.drive.admin.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.drive.admin.pojo.entity.RecommendUserEntity;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
- * 推广商信息 Mapper 接口
+ * 推广人员信息表 Mapper 接口
  *
  * @author xiaoguo
  */

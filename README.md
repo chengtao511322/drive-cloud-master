@@ -100,3 +100,85 @@ drive-cloud
 
 
 ## 演示图
+
+
+
+
+//被注释的元素，值必须是一个字符串，不能为null，且调用trim()后，长度必须大于0
+@NotBlank(message = "")
+
+//被注释的元素，值不能为null,但可以为"空"，用于基本数据类型的非空校验上，而且被其标注的字段可以使用 @size、@Max、@Min 等对字段数值进行大小的控制
+@NotNull(message = "")
+
+//被注释的的元素，值不能为null，且长度必须大于0，一般用在集合类上面
+@NotEmpty(message = "")
+
+//被注释的元素必须符合指定的正则表达式。
+@Pattern(regexp = "", message = "")
+
+//被注释的元素的大小必须在指定的范围内。
+@Size(min =, max =)
+
+//被注释的元素，值必须是一个数字，且值必须大于等于指定的最小值
+@Min(value = long以内的值, message = "")
+
+//被注释的元素，值必须是一个数字，且值必须小于等于指定的最大值
+@Max(value = long以内的值, message = "")
+
+//被注释的元素，值必须是一个数字，其值必须大于等于指定的最小值
+@DecimalMin(value = 可以是小数, message = "")
+
+//被注释的元素，值必须是一个数字，其值必须小于等于指定的最大值
+@DecimalMax(value = 可以是小数, message = "")
+
+//被注释的元素，值必须为null
+@Null(message = "")
+
+//被注释的元素必须是一个数字，其值必须在可接受的范围内
+@Digits(integer =, fraction =)
+
+//被注释的元素，值必须为true
+@AssertTrue(message = "")
+
+//被注释的元素，值必须为false
+@AssertFalse(message = "")
+
+//被注释的元素必须是一个过去的日期
+@Past(message = "")
+
+//被注释的元素必须是一个将来的日期
+@Future(message = "")
+
+//被注释的元素必须是电子邮件地址
+@Email(regexp = "", message = "")
+//被注释的元素必须在合适的范围内
+@Range(min =, max =, message = "")
+
+//被注释的字符串的大小必须在指定的范围内
+@Length(min =, max =, message = "")
+
+
+
+
+# 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+# 不要设置过大，如果过大，启动项目会报错：打开文件数过多
+
+server.undertow.io-threads=16
+
+# 阻塞任务线程池, 当执行类似servlet请求阻塞IO操作, undertow会从这个线程池中取得线程
+# 它的值设置取决于系统线程执行任务的阻塞系数，默认值是IO线程数*8
+
+server.undertow.worker-threads=256
+
+# 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作,有点类似netty的池化内存管理
+# 每块buffer的空间大小,越小的空间被利用越充分，不要设置太大，以免影响其他应用，合适即可
+
+server.undertow.buffer-size=1024
+
+# 每个区分配的buffer数量 , 所以pool的大小是buffer-size * buffers-per-region
+
+server.undertow.buffers-per-region=1024
+
+# 是否分配的直接内存(NIO直接分配的堆外内存)
+
+server.undertow.direct-buffers=true

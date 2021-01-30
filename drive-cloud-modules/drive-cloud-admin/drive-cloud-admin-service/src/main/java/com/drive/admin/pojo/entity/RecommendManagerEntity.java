@@ -1,8 +1,6 @@
 package com.drive.admin.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.drive.common.core.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,6 +20,7 @@ public class RecommendManagerEntity extends BaseEntity {
 
 
 	// id
+	@TableId(type= IdType.ID_WORKER)
 	private String id;
 
 	// 学员id

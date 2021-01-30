@@ -1,5 +1,6 @@
 package com.drive.system.factory;
 
+import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.system.api.RemoteUserService;
 import com.drive.system.pojo.UserInfo;
@@ -24,7 +25,7 @@ public class UserFallbackFactory implements FallbackFactory<RemoteUserService> {
             @Override
             public ResObject<UserInfo> getUserInfo(String username) {
                 log.error("异常");
-                return null;
+                return R.failure();
             }
         };
     }

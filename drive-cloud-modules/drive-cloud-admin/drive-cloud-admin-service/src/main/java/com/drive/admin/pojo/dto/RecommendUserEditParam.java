@@ -1,13 +1,13 @@
 package com.drive.admin.pojo.dto;
 
-import lombok.Data;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.Data;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 
 /**
- * 推广商信息
+ * 推广人员信息表
  *
  * @author xiaoguo
  */

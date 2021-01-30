@@ -24,5 +24,7 @@ public class ActivityPromoteAuthEntity extends BaseEntity {
 
 	// 栏目ID
 	private String channelId;
+	// 租户ID
+	private String tenantId;
 
 }

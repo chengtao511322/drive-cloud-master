@@ -1,3 +1,4 @@
+/*
 package com.drive.gateway.filter;
 
 import com.alibaba.fastjson.JSON;
@@ -14,11 +15,13 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+*/
 /**
  * 验证码过滤器
  *
  * @author xiaoguo
- */
+ *//*
+
 @Component
 @Slf4j
 public class AppAuthFilter extends AbstractGatewayFilterFactory<Object> {
@@ -43,28 +46,14 @@ public class AppAuthFilter extends AbstractGatewayFilterFactory<Object> {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
 
-            // 非登录请求，不处理
-            if (!StringUtils.containsIgnoreCase(request.getURI().getPath(), AUTH_URL)) {
-                return chain.filter(exchange);
-            }
 
-            // 刷新token请求，不处理
-            String grantType = request.getQueryParams().getFirst(GRANT_TYPE);
-            if (StringUtils.containsIgnoreCase(request.getURI().getPath(), AUTH_URL) && StringUtils.containsIgnoreCase(grantType, REFRESH_TOKEN)) {
-                return chain.filter(exchange);
-            }
-
-            // 消息头存在内容，且不存在验证码参数，不处理
-            String header = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-            if (StringUtils.isNotEmpty(header) && StringUtils.startsWith(header, BASIC_)
-                    && !request.getQueryParams().containsKey(CODE) && !request.getQueryParams().containsKey(UUID)) {
-                return chain.filter(exchange);
-            }
             try {
 
                 log.info("app鉴定");
-               /* captchaService.checkCaptcha(request.getQueryParams().getFirst(CODE),
-                        request.getQueryParams().getFirst(UUID));*/
+               */
+/* captchaService.checkCaptcha(request.getQueryParams().getFirst(CODE),
+                        request.getQueryParams().getFirst(UUID));*//*
+
             } catch (Exception e) {
                 ServerHttpResponse response = exchange.getResponse();
                 response.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
@@ -75,3 +64,4 @@ public class AppAuthFilter extends AbstractGatewayFilterFactory<Object> {
         };
     }
 }
+*/

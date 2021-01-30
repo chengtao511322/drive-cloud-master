@@ -13,13 +13,14 @@ import java.io.Serializable;
  */
 public class BaseController<Q extends BasePageQueryParam, E extends Serializable> {
 
+
+
     /**
      * 封装查询参数
      */
     public QueryWrapper getQueryWrapper(BaseMapStruct baseMapStruct, Q param) {
         QueryWrapper<E> queryWrapper = new QueryWrapper<>();
         queryWrapper.setEntity((E) baseMapStruct.pageQueryParamToEntity(param));
-
         String sortColumn = param.getSortColumn();
         String underSortColumn = StringUtils.lowerCamelToLowerUnderscore(sortColumn);
         if (param.getIsAsc()) {

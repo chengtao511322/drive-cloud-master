@@ -34,7 +34,8 @@
             tsip.update_time AS updateTime,
             tsip.service_item_describe AS serviceItemPriceDescribe,
             tsi.name as serviceItemName,
-            tsi.service_item_describe as serviceItemDescribe
+            tsi.service_item_describe as serviceItemDescribe,
+            tsip.price_describe as priceDescribe
         FROM t_service_item_price tsip
         LEFT JOIN t_service_item tsi
         ON tsip.service_item_id = tsi.id
@@ -62,7 +63,8 @@
             tsp.value,
             tsp.service_description AS serviceDescription,
             tsp.service_item_type AS serviceItemType,
-            tsi.service_item_describe as serviceItemDescribe
+            tsi.service_item_describe as serviceItemDescribe,
+            tsip.price_describe as priceDescribe
         FROM t_service_item_price tsip
         LEFT JOIN t_service_item tsi
         ON tsip.service_item_id = tsi.id

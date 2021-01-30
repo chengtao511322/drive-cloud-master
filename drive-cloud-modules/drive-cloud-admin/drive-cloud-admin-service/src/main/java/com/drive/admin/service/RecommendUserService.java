@@ -5,10 +5,17 @@ import com.drive.admin.pojo.entity.RecommendUserEntity;
 
 /**
  *
- * 推广商信息 服务类
+ * 推广人员信息表 服务类
  *
  * @author xiaoguo
  */
 public interface RecommendUserService extends IService<RecommendUserEntity>{
+
+    /**
+     * 通过学员ID查询
+     * @param studentId
+     * @return
+     */
+    RecommendUserEntity getRecommendUserByStudentId(String studentId);
 }
 

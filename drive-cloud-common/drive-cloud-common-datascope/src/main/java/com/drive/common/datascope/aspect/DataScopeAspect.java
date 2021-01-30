@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
 public class DataScopeAspect {
 
     @Autowired
-    private RemoteUserService userService;
+    private RemoteUserService remoteUserService;
 
 
     @Before("@annotation(dataScope)")
@@ -48,7 +48,7 @@ public class DataScopeAspect {
         }
         // 获取当前的用户
         String username = SecurityUtils.getUsername();
-        UserInfo userInfo = userService.getUserInfo(username).getData();
+        UserInfo userInfo = remoteUserService.getUserInfo(username).getData();
         UserVo currentUser = userInfo.getUserVo();
 
         if (currentUser != null) {

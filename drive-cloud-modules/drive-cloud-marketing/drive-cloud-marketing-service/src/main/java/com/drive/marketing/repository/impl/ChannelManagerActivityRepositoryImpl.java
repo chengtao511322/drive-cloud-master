@@ -22,6 +22,7 @@ import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.marketing.pojo.dto.ActivityCouponRelationEditParam;
 import com.drive.marketing.pojo.dto.ChannelManagerActivityEditParam;
 import com.drive.marketing.pojo.dto.ChannelManagerActivityPageQueryParam;
+import com.drive.marketing.pojo.entity.ActivityPromoteAuthEntity;
 import com.drive.marketing.pojo.entity.ChannelManagerActivityEntity;
 import com.drive.marketing.pojo.entity.CouponEntity;
 import com.drive.marketing.pojo.entity.CouponGetEntity;
@@ -36,6 +37,7 @@ import com.drive.marketing.service.mapstruct.CouponGetMapStruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -439,6 +441,7 @@ public class ChannelManagerActivityRepositoryImpl implements ChannelManagerActiv
     }
 
     @Override
+    @Transactional
     public ResObject saveBatch(List<ChannelManagerActivityEditParam> channelManagerActivityEditParam) {
         List<ChannelManagerActivityEntity> channelManagerActivity = BeanConvertUtils.copyList(channelManagerActivityEditParam,ChannelManagerActivityEntity.class);
         List<ChannelManagerActivityEntity> channelManagerActivityList = new ArrayList<>();
@@ -497,28 +500,40 @@ public class ChannelManagerActivityRepositoryImpl implements ChannelManagerActiv
 
         };
         if (channelManagerActivityList !=null){
-
             // 设置权限
             String channelId = channelManagerActivityEditParam.get(0).getChannelId();
+            String activityId = channelManagerActivityEditParam.get(0).getActivityId();
+            String userId = channelManagerActivityEditParam.get(0).getUserId();
+            String tenantId = channelManagerActivityEditParam.get(0).getTenantId();
             if (StrUtil.isNotEmpty(channelId)){
-                //ResObject<ChannelVo> channelVoRes = remoteChannelFeignService.get(channelId);
-                //log.info("请求栏目数据{}",channelVoRes);
-                //if (channelVoRes.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && channelVoRes.getData() != null){
+                // 第一个版本
                 ChannelEditParam channelEditParam = new ChannelEditParam();
                 channelEditParam.setId(channelId);
-
-                //String[] arrChannel = channelVoRes.getData().getAuth().split(",");
-					/*List<String> arr = new ArrayList<String>();
-					Arrays.stream(arrChannel).forEach((item)->{
-						arr.add(item);
-					});
-					arr.add(channelManagerActivityEditParam.get(0).getUserId());
-					String auth = Joiner.on(",").join(arr);*/
                 channelEditParam.setAuth(channelManagerActivityEditParam.get(0).getUserId());
                 channelEditParam.setUpdateTime(LocalDateTime.now());
                 remoteChannelFeignService.updateChannel(channelEditParam);
-                //}
-
+                // 第二版本
+                // 设置活动权限
+                /*ActivityPromoteAuthEntity activityPromoteAuthEntity = new ActivityPromoteAuthEntity();
+                // 设置活动ID
+                activityPromoteAuthEntity.setActivityId(activityId);
+                // 设置栏目菜单ID
+                activityPromoteAuthEntity.setChannelId(channelId);
+                // 设置用户ID
+                activityPromoteAuthEntity.setUserId(userId);
+                // 租户ID
+                activityPromoteAuthEntity.setTenantId(tenantId);
+                // 删除
+                QueryWrapper<ActivityPromoteAuthEntity> authQueryWrapper = new QueryWrapper<ActivityPromoteAuthEntity>();
+                authQueryWrapper.eq("activity_id",activityId);
+                authQueryWrapper.eq("channel_id",channelId);
+                authQueryWrapper.eq("user_id",userId);
+                authQueryWrapper.eq("tenant_id",tenantId);
+                Boolean delAuth = activityPromoteAuthService.remove(authQueryWrapper);
+                log.info("删除权限关联数据{}",delAuth);
+                // 保存
+                Boolean saveAuth = activityPromoteAuthService.save(activityPromoteAuthEntity);
+                log.info("保存权限关联数据{}",saveAuth);*/
             }
             return R.success(channelManagerActivityService.saveBatch(channelManagerActivityList));
         }

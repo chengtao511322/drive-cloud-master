@@ -22,13 +22,17 @@ public class StudentInfoVo {
 	@Excel(name = "省", width = 20)
 	private String provinceId;
 
+	private String provinceName;
+
 	// 市
 	@Excel(name = "市", width = 20)
 	private String cityId;
+	private String cityName;
 
 	// 区
 	@Excel(name = "区", width = 20)
 	private String areaId;
+	private String areaName;
 
 	// 手机
 	@Excel(name = "手机", width = 20)
@@ -69,6 +73,10 @@ public class StudentInfoVo {
 	// 推荐人id
 	@Excel(name = "推荐人id", width = 20)
 	private String recommendUserId;
+
+
+	private String recommendUserName;
+	private String recommendUserPhone;
 
 	// 推荐类型（1-学员；2-教练；3-运维）
 	@Excel(name = "推荐类型（1-学员；2-教练；3-运维）", width = 20)

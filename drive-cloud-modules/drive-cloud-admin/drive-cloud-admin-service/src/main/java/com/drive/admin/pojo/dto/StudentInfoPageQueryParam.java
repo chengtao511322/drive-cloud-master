@@ -117,4 +117,9 @@ public class StudentInfoPageQueryParam extends BasePageQueryParam {
 	// 注册渠道（直接存入中文，为防止活动平凡切换，造成字典表无法适应）
 	private String logonChannel;
 
+	// 模糊查询对象
+	private String vaguePhoneSearch;
+	private String vagueUserNameSearch ;
+	private String vagueRealNameSearch;
+	private String vagueEmailSearch;
 }

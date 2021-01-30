@@ -6,7 +6,7 @@ import com.drive.common.core.base.BaseRepository;
 
 /**
  *
- * 推广商信息 服务类
+ * 推广人员信息表 服务类
  *
  * @author xiaoguo
  */

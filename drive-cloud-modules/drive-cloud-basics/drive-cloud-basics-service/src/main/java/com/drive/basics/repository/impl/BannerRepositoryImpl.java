@@ -18,6 +18,7 @@ import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.data.utils.ExcelUtils;
+import com.drive.common.security.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -106,12 +107,14 @@ public class  BannerRepositoryImpl extends BaseController<BannerPageQueryParam, 
      **/
     @Override
     public ResObject save(BannerEditParam installParam) {
-        log.info(this.getClass() + "save方法请求参数{}",installParam);
+        String userName = SecurityUtils.getUsername();
+        log.info(this.getClass() + "save方法请求参数{},用户信息{}",installParam,userName);
         if (installParam == null){
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
         BannerEntity banner = BeanConvertUtils.copy(installParam, BannerEntity.class);
+        banner.setCreateBy(userName);
         Boolean result = bannerService.save(banner);
         log.info(this.getClass() + "save-方法请求结果{}",result);
         // 判断结果

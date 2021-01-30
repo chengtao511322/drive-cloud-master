@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.ServiceReturnVisitHistoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.ServiceReturnVisitHistoryEntity">
+        <id column="id" property="id" />
+        <result column="return_visit_type" property="returnVisitType" />
+        <result column="order_detail_no" property="orderDetailNo" />
+        <result column="student_id" property="studentId" />
+        <result column="return_visit_time" property="returnVisitTime" />
+        <result column="return_visit_content" property="returnVisitContent" />
+        <result column="next_return_visit_time" property="nextReturnVisitTime" />
+        <result column="service_id" property="serviceId" />
+        <result column="is_end" property="isEnd" />
+        <result column="subject_type" property="subjectType" />
+        <result column="operator_id" property="operatorId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, return_visit_type, order_detail_no, student_id, return_visit_time, return_visit_content, next_return_visit_time, service_id, is_end, subject_type, operator_id
+    </sql>
+
+</mapper>

@@ -71,7 +71,7 @@ public class  ServiceItemPriceRepositoryImpl extends BaseController<ServiceItemP
         QueryWrapper queryWrapper= this.getQueryWrapper(serviceItemPriceMapStruct, param);
         // 如 queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"phone",param.getPhone());
         List<ServiceItemPriceEntity> pageList = serviceItemPriceService.list(queryWrapper);
-        List<ServiceItemPriceVo> serviceItemPriceVoList = serviceItemPriceMapStruct.toVoList(pageList);
+        List<ServiceItemPriceVo> serviceItemPriceVoList = BeanConvertUtils.copyList(pageList,ServiceItemPriceVo.class);
         log.info(this.getClass() + "findList-方法请求结果{}",serviceItemPriceVoList);
         if (serviceItemPriceVoList == null){
             log.error("数据空");
@@ -203,6 +203,8 @@ public class  ServiceItemPriceRepositoryImpl extends BaseController<ServiceItemP
             // 服务ID
             queryWrapper.eq(StrUtil.isNotEmpty(param.getServiceItemId()),"service_item_id",param.getServiceItemId());
             queryWrapper.eq("status",StatusEnum.ENABLE.getCode());
+            // 运营商查询
+            queryWrapper.eq(StrUtil.isNotEmpty(param.getOperatorId()),"operator_id",param.getOperatorId());
             int serviceItemPriceListCount = serviceItemPriceService.count(queryWrapper);
             if (serviceItemPriceListCount > 0){
                 return R.failure("不允许启用，服务项存在"+serviceItemPriceListCount +"项名称相同");
@@ -263,6 +265,7 @@ public class  ServiceItemPriceRepositoryImpl extends BaseController<ServiceItemP
         // 运营商查询
         queryWrapper.eq(StrUtil.isNotEmpty(param.getOperatorId()),"tsip.operator_Id",param.getOperatorId());
         queryWrapper.eq(StrUtil.isNotEmpty(param.getServiceType()),"tsip.service_type",param.getServiceType());
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getServiceItemId()),"tsip.service_item_id",param.getServiceItemId());
 
      /*   String sortColumn = param.getSortColumn();
         String underSortColumn = StringUtils.lowerCamelToLowerUnderscore(sortColumn);
