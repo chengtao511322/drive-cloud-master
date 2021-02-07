@@ -74,11 +74,18 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
         return R.success(recommendManagerVoList);
     }
 
+
+
+    @Override
+    public ResObject getInfo(RecommendManagerPageQueryParam param) {
+        return null;
+    }
+
     /**
      * *通过ID获取推广渠道经理 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");

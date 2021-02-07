@@ -75,7 +75,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return serviceReturnVisitHistoryRepository.getInfo(id);
+		return serviceReturnVisitHistoryRepository.getById(id);
 	}
 
 	/**

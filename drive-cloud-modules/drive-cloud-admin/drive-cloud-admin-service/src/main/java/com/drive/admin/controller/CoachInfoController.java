@@ -61,7 +61,7 @@ public class CoachInfoController extends BaseController<CoachInfoPageQueryParam,
 	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return coachInfoRepository.getInfo(id);
+		return coachInfoRepository.getById(id);
 	}
 
 	/**

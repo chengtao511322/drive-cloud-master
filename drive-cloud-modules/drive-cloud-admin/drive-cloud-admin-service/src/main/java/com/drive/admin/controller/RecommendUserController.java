@@ -75,7 +75,7 @@ public class RecommendUserController extends BaseController<RecommendUserPageQue
 	@PreAuthorize("hasPermission('/admin/recommendUser',  'admin:recommendUser:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return recommendUserRepository.getInfo(id);
+		return recommendUserRepository.getById(id);
 	}
 
 	/**

@@ -31,7 +31,7 @@ public class MinioConfiguration {
     private MinioConfigurationProperties minioConfigurationProperties;
 
     @Bean
-    public MinioClient minioClient() throws InvalidEndpointException, InvalidPortException, IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InternalException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException, InvalidResponseException, MinioException, XmlParserException {
+    public MinioClient minioClient() throws InvalidEndpointException, InvalidPortException, IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InternalException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException, MinioException {
 
         MinioClient minioClient;
         try {
@@ -73,15 +73,16 @@ public class MinioConfiguration {
                             minioClient.makeBucket(minioConfigurationProperties.getBucket());
                         } catch (RegionConflictException e) {
                             throw new MinioException("Cannot create bucket", e);
+                        } catch (NoResponseException e) {
+                            e.printStackTrace();
                         }
                     } else {
                         throw new InvalidBucketNameException(minioConfigurationProperties.getBucket(), "Bucket does not exists");
                     }
                 }
-            } catch (InvalidBucketNameException | NoSuchAlgorithmException | InsufficientDataException | IOException | InvalidKeyException | ErrorResponseException | InternalException | InvalidResponseException | MinioException | XmlParserException
+            } catch (InvalidBucketNameException | NoSuchAlgorithmException | InsufficientDataException | IOException | InvalidKeyException | ErrorResponseException | InternalException  | MinioException  | NoResponseException
                     e) {
                 log.error("Error while checking bucket", e);
-                throw e;
             }
         }
 

@@ -1,6 +1,7 @@
 package com.drive.admin.repository.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.pojo.dto.CoachInfoEditParam;
@@ -8,7 +9,9 @@ import com.drive.admin.pojo.dto.CoachInfoPageQueryParam;
 import com.drive.admin.pojo.entity.CoachInfoEntity;
 import com.drive.admin.pojo.vo.CoachInfoVo;
 import com.drive.admin.repository.CoachInfoRepository;
+import com.drive.admin.service.AreaService;
 import com.drive.admin.service.CoachInfoService;
+import com.drive.admin.service.DriveSchoolService;
 import com.drive.admin.service.mapstruct.CoachInfoMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
@@ -38,14 +41,44 @@ public class  CoachInfoRepositoryImpl extends BaseController<CoachInfoPageQueryP
     @Autowired
     private CoachInfoMapStruct coachInfoMapStruct;
 
+    @Autowired
+    private AreaService areaService;
+
+    @Autowired
+    private DriveSchoolService driveSchoolService;
+
     /**
     * *教练信息表 分页列表
     **/
     @Override
     public ResObject pageList(CoachInfoPageQueryParam param) {
         Page<CoachInfoEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<CoachInfoEntity> pageList = coachInfoService.page(page, this.getQueryWrapper(coachInfoMapStruct, param));
+        // 查询条件
+        QueryWrapper queryWrapper = this.getQueryWrapper(coachInfoMapStruct, param);
+        // 手机号模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"phone",param.getVaguePhoneSearch());
+        // 真实姓名模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"real_name",param.getVagueRealNameSearch());
+        // 推荐时间时间
+        queryWrapper.apply(StrUtil.isNotBlank(param.getRecommendDateSearch()),
+                "date_format (recommend_date,'%Y-%m-%d') = date_format('" + param.getRecommendDateSearch() + "','%Y-%m-%d')");
+        // 意向报名时间
+        //  开始时间 结束时间都有才进入
+        if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
+            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
+        }
+        IPage<CoachInfoEntity> pageList = coachInfoService.page(page, queryWrapper);
+        // CollectionsUtil.isNotEmpty(list)&& list.size()>1
+        if(pageList.getRecords().size() <= 0){
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
+        }
         Page<CoachInfoVo> coachInfoVoPage = coachInfoMapStruct.toVoList(pageList);
+        coachInfoVoPage.getRecords().stream().forEach((item) ->{
+            // 省市区
+            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
+            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
+            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
+        });
         return R.success(coachInfoVoPage);
     }
 
@@ -54,11 +87,14 @@ public class  CoachInfoRepositoryImpl extends BaseController<CoachInfoPageQueryP
         return null;
     }
 
+
+
+
     /**
-     * *通过ID获取教练信息表 列表
+     * 通过ID获取教练信息表 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");
         }
@@ -68,6 +104,22 @@ public class  CoachInfoRepositoryImpl extends BaseController<CoachInfoPageQueryP
             log.error("活动数据对象空");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
         }
+        if (StrUtil.isNotEmpty(coachInfoVo.getCarSchoolId()))coachInfoVo.setCarSchoolName(driveSchoolService.getById(coachInfoVo.getCarSchoolId()).getSchoolName());
+        return R.success(coachInfoVo);
+    }
+
+    @Override
+    public ResObject getInfo(CoachInfoPageQueryParam param) {
+        if (param == null){
+            return R.failure("数据空");
+        }
+        QueryWrapper queryWrapper = this.getQueryWrapper(coachInfoMapStruct, param);
+        CoachInfoEntity coachInfo = coachInfoService.getOne(queryWrapper);
+        if (coachInfo ==null){
+            log.error("活动数据对象空");
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),coachInfo);
+        }
+        CoachInfoVo coachInfoVo = BeanConvertUtils.copy(coachInfo, CoachInfoVo.class);
         return R.success(coachInfoVo);
     }
 

@@ -75,18 +75,27 @@
             </el-col>
         </el-row>
 
-        <el-table v-loading="loading" :data="${className}List" @selection-change="handleSelectionChange">
+        <el-table v-loading="loading" :data="${className}List" @selection-change="handleSelectionChange"
+                  @sort-change="sortChange"
+                  ref="serviceTable"
+                  stripe
+                  border
+                  header-row-class-name="table-header"
+                  :header-row-style="{
+                                        fontFamily: '微软雅黑 Bold, 微软雅黑 Regular, 微软雅黑'
+                                     }"
+        >
             <el-table-column type="selection" width="55" align="center" />
 
             #foreach($field in ${table.fields})
                 #if($field.propertyType  == "LocalDateTime")
-                    <el-table-column label="${field.comment}" align="center" prop="${field.propertyName}" width="180">
+                    <el-table-column label="${field.comment}" align="center" prop="${field.propertyName}" width="180" sortable="custom">
                         <template slot-scope="scope">
                             <span>{{ parseTime(scope.row.${field.propertyName}) }}</span>
                         </template>
                     </el-table-column>
                 #else
-                    <el-table-column label="${field.comment}" align="center" prop="${field.propertyName}" />
+                    <el-table-column label="${field.comment}" align="center" prop="${field.propertyName}" sortable="custom"/>
                 #end
             #end
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -114,7 +123,7 @@
             :total="total"
             :page.sync="queryParams.pageNum"
             :limit.sync="queryParams.pageSize"
-            @pagination="getList"
+            @pagination="getListPage"
         />
 
         <!-- 添加或修改${table.comment}对话框 -->
@@ -216,13 +225,31 @@
                 };
                 this.resetForm("form");
             },
+            // 后端排序排序
+            sortChange(event) {
+                console.log('sortChange', event )
+                if(!event.order) {
+                    this.queryParams.sortColumn ? delete this.queryParams.sortColumn : ''
+                    this.queryParams.isAsc ? delete this.queryParams.isAsc : ''
+                }
+                this.queryParams.sortColumn = event.prop
+                this.queryParams.isAsc = event.order === 'ascending' ? true : false
+                this.handleQuery()
+            },
             /** 搜索按钮操作 */
             handleQuery() {
                 this.queryParams.pageNum = 1;
-                this.getList();
+                this.getListPage();
             },
             /** 重置按钮操作 */
             resetQuery() {
+                //第一版本
+                //this.resetForm("queryForm");
+                //this.handleQuery();
+
+                this.queryParams.sortColumn ? delete this.queryParams.sortColumn : ''
+                this.queryParams.isAsc ? delete this.queryParams.isAsc : ''
+                this.$refs['serviceTable'].clearSort()
                 this.resetForm("queryForm");
                 this.handleQuery();
             },
@@ -257,7 +284,7 @@
                                 if (response.code === 200) {
                                     this.msgSuccess("修改成功");
                                     this.open = false;
-                                    this.getList();
+                                    this.getListPage();
                                 }
                             });
                         } else {
@@ -265,7 +292,7 @@
                                 if (response.code === 200) {
                                     this.msgSuccess("新增成功");
                                     this.open = false;
-                                    this.getList();
+                                    this.getListPage();
                                 }
                             });
                         }
@@ -282,7 +309,7 @@
                 }).then(function() {
                     return del${entity}(${pkColumn.propertyName}s);
                 }).then(() => {
-                    this.getList();
+                    this.getListPage();
                     this.msgSuccess("删除成功");
                 }).catch(function() {});
             },

@@ -10,6 +10,5 @@ import com.drive.admin.pojo.entity.ServiceInfoEntity;
  * @author xiaoguo
  */
 public interface ServiceInfoService extends IService<ServiceInfoEntity>{
-
 }
 

@@ -1,19 +1,42 @@
 package com.drive.admin.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import java.math.BigDecimal;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import com.baomidou.mybatisplus.annotation.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import com.drive.common.core.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 
 /**
  * 客服人员信息表
- *
+ *   主键ID 需要加入这个@TableId(type= IdType.ID_WORKER)
  * @author xiaoguo
  */
 @EqualsAndHashCode(callSuper = false)
@@ -23,6 +46,7 @@ public class ServiceInfoEntity extends BaseEntity {
 
 
 	// 主键
+	@TableId(type= IdType.ID_WORKER)
 	private String id;
 
 	// 省
@@ -83,5 +107,8 @@ public class ServiceInfoEntity extends BaseEntity {
 
 	// 运营商id(数据权限标记)
 	private String operatorId;
+
+	// 登录账号
+	private String loginAccount;
 
 }

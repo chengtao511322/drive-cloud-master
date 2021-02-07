@@ -1,11 +1,21 @@
 import request from '@/utils/request'
 
-
-// 查询客服人员信息表列表
-export function listServiceInfo(query) {
+                                            
+// 分页查询客服人员信息表列表
+export function listPageServiceInfo(query) {
   return request({
     url: '/admin/serviceInfo/pageList',
-    method: 'get',
+    method: 'post',
+    params: query
+  })
+}
+
+
+// 分页查询客服人员信息表列表
+export function listServiceInfo(query) {
+  return request({
+    url: '/admin/serviceInfo/findList',
+    method: 'post',
     params: query
   })
 }
@@ -41,6 +51,16 @@ export function delServiceInfo(id) {
   return request({
     url: '/admin/serviceInfo/' + id,
     method: 'delete'
+  })
+}
+
+
+// 状态启用/停用客服人员信息表
+export function changeStatus(data) {
+  return request({
+    url: '/admin/serviceInfo/changeStatus',
+    method: 'post',
+    data: data
   })
 }
 

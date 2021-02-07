@@ -71,7 +71,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
 	@GetMapping("/{id}")
 	public ResObject<StudentInfoVo> get(@PathVariable String id) {
-		return studentInfoRepository.getInfo(id);
+		return studentInfoRepository.getById(id);
 	}
 
 	/**

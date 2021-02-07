@@ -3,32 +3,32 @@ package com.drive.admin.controller;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.drive.admin.pojo.dto.ServiceInfoEditParam;
-import com.drive.admin.pojo.dto.ServiceInfoPageQueryParam;
-import com.drive.admin.pojo.entity.ServiceInfoEntity;
-import com.drive.admin.pojo.vo.ServiceInfoVo;
-import com.drive.admin.repository.ServiceInfoRepository;
-import com.drive.admin.service.ServiceInfoService;
-import com.drive.admin.service.mapstruct.ServiceInfoMapStruct;
-import com.drive.common.core.base.BaseController;
+import com.drive.common.security.utils.SecurityUtils;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Arrays;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.enums.EventLogEnum;
 import com.drive.common.data.utils.ExcelUtils;
 import com.drive.common.log.annotation.EventLog;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.util.Arrays;
-import java.util.List;
+import com.drive.common.core.base.BaseController;
+import com.drive.admin.pojo.entity.*;
+import com.drive.admin.pojo.vo.*;
+import com.drive.admin.pojo.dto.*;
+import com.drive.admin.service.mapstruct.*;
+import com.drive.admin.service.ServiceInfoService;
+import com.drive.admin.repository.ServiceInfoRepository;
 
 
 /**
@@ -45,35 +45,38 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	@Autowired
 	private ServiceInfoService serviceInfoService;
 	@Autowired
-	private ServiceInfoMapStruct serviceInfoMapStruct;
-
-	@Autowired
 	private ServiceInfoRepository serviceInfoRepository;
+	@Autowired
+	private ServiceInfoMapStruct serviceInfoMapStruct;
 
 	/**
 	* 客服人员信息表 分页列表
 	*/
 	@ApiOperation("客服人员信息表分页列表")
 	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:query')")
-	@GetMapping(value = "/pageList")
+	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid ServiceInfoPageQueryParam param) {
-
-		Page<ServiceInfoEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-		IPage<ServiceInfoEntity> pageList = serviceInfoService.page(page, this.getQueryWrapper(serviceInfoMapStruct, param));
-		Page<ServiceInfoVo> serviceInfoVoPage = serviceInfoMapStruct.toVoList(pageList);
-		return R.success(serviceInfoVoPage);
+		return serviceInfoRepository.pageList(param);
+	}
+	/**
+	* 客服人员信息表 列表
+	*/
+	@ApiOperation("客服人员信息表列表")
+	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:query')")
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid ServiceInfoPageQueryParam param) {
+		return serviceInfoRepository.findList(param);
 	}
 
 	/**
 	* 获取客服人员信息表
 	*/
 	@ApiOperation("获取客服人员信息表")
-	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
+	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:query')")
 	@GetMapping("/{id}")
-	public ResObject get(@PathVariable Long id) {
-		ServiceInfoEntity serviceInfo = serviceInfoService.getById(id);
-		return R.success(serviceInfoMapStruct.toVo(serviceInfo));
+	public ResObject get(@PathVariable String id) {
+		return serviceInfoRepository.getById(id);
 	}
 
 	/**
@@ -85,8 +88,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	@EventLog(message = "新增客服人员信息表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody ServiceInfoEditParam serviceInfoEditParam) {
-		ServiceInfoEntity serviceInfo = serviceInfoMapStruct.toEntity(serviceInfoEditParam);
-		return R.toRes(serviceInfoService.save(serviceInfo));
+		return serviceInfoRepository.save(serviceInfoEditParam);
 	}
 
 	/**
@@ -98,8 +100,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	@EventLog(message = "修改客服人员信息表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody ServiceInfoEditParam serviceInfoEditParam) {
-		ServiceInfoEntity serviceInfo = serviceInfoMapStruct.toEntity(serviceInfoEditParam);
-		return R.toRes(serviceInfoService.updateById(serviceInfo));
+		return serviceInfoRepository.update(serviceInfoEditParam);
 	}
 
 	/**
@@ -115,6 +116,18 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	}
 
 	/**
+	* 通过主键删除客服人员信息表
+	*/
+	@ApiOperation("通过主键删除客服人员信息表")
+	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
+	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	@EventLog(message = "通过主键删除客服人员信息表", businessType = EventLogEnum.DELETE)
+	@DeleteMapping("/delById/{id}")
+	public ResObject delete(@PathVariable String id) {
+		return serviceInfoRepository.deleteById(id);
+	}
+
+	/**
 	* 导出客服人员信息表
 	*/
 	@ApiOperation("导出客服人员信息表")
@@ -123,9 +136,30 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	@EventLog(message = "导出客服人员信息表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
 	public void exportXls(ServiceInfoPageQueryParam param, HttpServletResponse response) {
-		List<ServiceInfoEntity> list = serviceInfoService.list(this.getQueryWrapper(serviceInfoMapStruct, param));
-		List<ServiceInfoVo> serviceInfoVoList = serviceInfoMapStruct.toVoList(list);
-		ExcelUtils.exportExcel(serviceInfoVoList, ServiceInfoVo.class, "客服人员信息表", new ExportParams(), response);
+		serviceInfoRepository.exportXls(param,response);
+	}
+
+
+	/**
+	* 状态启用/停用
+	*/
+	@ApiOperation("状态启用/停用客服人员信息表")
+	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:changeStatus')")
+	@SneakyThrows
+	@EventLog(message = "状态启用/停用客服人员信息表", businessType = EventLogEnum.EXPORT)
+	@PostMapping("/changeStatus")
+	public ResObject changeStatus(@Valid @RequestBody ServiceInfoEditParam serviceInfoEditParam) {
+		return serviceInfoRepository.changeStatus(serviceInfoEditParam);
+	}
+
+	/**
+	 * 重置密码
+	 */
+	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:resetPwd')")
+	@EventLog(message = "重置密码", businessType = EventLogEnum.UPDATE)
+	@PutMapping("/resetPwd")
+	public ResObject resetPwd(@RequestBody ServiceInfoEditParam serviceInfoEditParam) {
+		return serviceInfoRepository.resetPwd(serviceInfoEditParam);
 	}
 
 }

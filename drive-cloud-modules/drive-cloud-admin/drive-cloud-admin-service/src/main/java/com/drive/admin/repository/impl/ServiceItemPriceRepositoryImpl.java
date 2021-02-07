@@ -80,11 +80,17 @@ public class  ServiceItemPriceRepositoryImpl extends BaseController<ServiceItemP
         return R.success(serviceItemPriceVoList);
     }
 
+
+    @Override
+    public ResObject getInfo(ServiceItemPricePageQueryParam param) {
+        return null;
+    }
+
     /**
      * *通过ID获取服务项目价格表 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");

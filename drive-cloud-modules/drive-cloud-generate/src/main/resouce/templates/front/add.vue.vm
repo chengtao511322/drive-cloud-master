@@ -1,0 +1,156 @@
+<template>
+    <div class="app-container">
+
+        <!-- 添加或修改${table.comment}对话框 -->
+            <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+                #foreach($field in ${table.fields})
+                    #if($field.propertyType  == "LocalDateTime")
+
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="${field.comment}" prop="${field.propertyName}">
+                                <el-date-picker clearable size="small" style="width: 200px"
+                                    v-model="form.${field.propertyName}"
+                                    type="datetime"
+                                    value-format="yyyy-MM-dd HH:mm:ss"
+                                    placeholder="选择${field.comment}">
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    #else
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="${field.comment}" prop="${field.propertyName}">
+                                <el-input v-model="form.${field.propertyName}" placeholder="请输入${field.comment}" />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    #end
+                #end
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="publishData">{{
+                    id ? "修改" : "发布"
+                    }}</el-button>
+                <el-button @click="cancel">取 消</el-button>
+            </div>
+    </div>
+</template>
+
+<script>
+    import { list${entity},listPage${entity}, get${entity}, del${entity}, add${entity}, update${entity}, export${entity} } from "@/api/${cfg.moduleName}/${className}";
+    import { Utils } from "@joyo-shared/utils";
+    export default {
+        name: "${entity}",
+        data() {
+            return {
+                // 遮罩层
+                loading: true,
+                // 数据ID
+                id: this.$route.query.id,
+                // 非单个禁用
+                single: true,
+                // 非多个禁用
+                multiple: true,
+                // 弹出层标题
+                title: "",
+                // 是否显示弹出层
+                open: false,
+                // 表单参数
+                form: {},
+                // 表单校验
+                rules: {
+                    #foreach($field in ${table.fields})
+                            ${field.propertyName}: [
+                            { required: true, message: "${field.comment}不能为空", trigger: "blur" }
+                        ],
+                    #end
+                }
+            };
+        },
+        created() {
+            // 初始化数据
+            if (!Utils.isEmptyStr(this.id)) {
+                this.get${entity}Data();
+            }
+        },
+        methods: {
+            // 通过ID 查询数据
+            get${entity}Data(){
+                console.log('getBanner请求参数{}',this.id);
+                get${entity}(this.id).then(response => {
+                    console.log("getBanner请求参数列表：", response);
+                    let subCode = response.subCode;
+                    if (subCode == 'SUCCESS'){
+                        this.form = response.data;
+                    }
+                });
+            },
+
+            // 取消按钮
+            cancel() {
+                this.open = false;
+                this.reset();
+            },
+            // 表单重置
+            reset() {
+                this.form = {
+                    #foreach ($field in ${table.fields})
+                            $field.propertyName: undefined,
+                    #end
+                };
+                this.resetForm("form");
+            },
+
+            /** 提交数据 */
+            publishData: function() {
+                this.#[[$]]#refs["form"].validate(valid => {
+                    if (valid) {
+                        if (Utils.isEmptyStr(this.id)) {
+                            // 添加接口
+                            this.add${entity}Data(this.form);
+                        }else{
+                            // 修改接口
+                            this.update${entity}Data(this.form)
+                        }
+                    }
+                });
+            },
+            // 添加数据方法
+            add${entity}Data(data){
+                add${entity}(data).then(response => {
+                    console.log("接口请求数据：", response);
+                    let subCode = response.subCode;
+                    if (subCode == 'SUCCESS'){
+                        this.$message({
+                            type: "success",
+                            message: "数据添加成功!"
+                        });
+                        // 数据重置
+                        this.reset();
+                        // 返回页面
+                        this.backPage();
+                    }
+                });
+            },
+            // 修改数据方法
+            update${entity}Data(data){
+                update${entity}(data).then(response => {
+                    console.log("接口请求数据：", response);
+                    let subCode = response.subCode;
+                    if (subCode == 'SUCCESS'){
+                        this.$message({
+                            type: "success",
+                            message: "数据修改成功!"
+                        });
+                        // 数据重置
+                        this.reset();
+                        // 返回页面
+                        this.backPage();
+                    }
+                });
+            },
+        }
+    };
+</script>

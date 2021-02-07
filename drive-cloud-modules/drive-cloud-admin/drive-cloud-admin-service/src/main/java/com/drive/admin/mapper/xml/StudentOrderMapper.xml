@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.StudentOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.StudentOrderEntity">
+        <id column="order_no" property="orderNo" />
+        <result column="order_type" property="orderType" />
+        <result column="student_id" property="studentId" />
+        <result column="user_id" property="userId" />
+        <result column="pay_type" property="payType" />
+        <result column="test_enroll_no" property="testEnrollNo" />
+        <result column="study_enroll_no" property="studyEnrollNo" />
+        <result column="train_apply_no" property="trainApplyNo" />
+        <result column="order_amount" property="orderAmount" />
+        <result column="payable_amount" property="payableAmount" />
+        <result column="columcoupon_id" property="columcouponId" />
+        <result column="coupon_amount" property="couponAmount" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+        <result column="pay_time" property="payTime" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_delete" property="isDelete" />
+        <result column="wx_signInfo" property="wxSigninfo" />
+        <result column="ali_signInfo" property="aliSigninfo" />
+        <result column="ali_out_refund_no" property="aliOutRefundNo" />
+        <result column="wx_out_refund_no" property="wxOutRefundNo" />
+        <result column="create_wx_signInfo_time" property="createWxSigninfoTime" />
+        <result column="create_ali_signInfo_time" property="createAliSigninfoTime" />
+        <result column="discount_amount" property="discountAmount" />
+        <result column="discount_product_id" property="discountProductId" />
+        <result column="coupon_use_id" property="couponUseId" />
+        <result column="operator_id" property="operatorId" />
+        <result column="product_id" property="productId" />
+        <result column="new_order_no" property="newOrderNo" />
+        <result column="class_type_id" property="classTypeId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            order_no, order_type, student_id, user_id, pay_type, test_enroll_no, study_enroll_no, train_apply_no, order_amount, payable_amount, columcoupon_id, coupon_amount, status, remark, pay_time, create_time, update_time, is_delete, wx_signInfo, ali_signInfo, ali_out_refund_no, wx_out_refund_no, create_wx_signInfo_time, create_ali_signInfo_time, discount_amount, discount_product_id, coupon_use_id, operator_id, product_id, new_order_no, class_type_id
+    </sql>
+
+</mapper>

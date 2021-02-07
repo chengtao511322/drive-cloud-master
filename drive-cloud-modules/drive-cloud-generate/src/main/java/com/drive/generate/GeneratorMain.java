@@ -28,6 +28,7 @@ public class GeneratorMain {
 
     //生成文件所在项目路径
     private static String baseProjectPath = "D:\\git\\drive-cloud-master\\drive-cloud-modules\\drive-cloud-admin\\drive-cloud-admin-service\\";
+    private static String baseProjectApiPath = "D:\\git\\drive-cloud-master\\drive-cloud-modules\\drive-cloud-admin\\drive-cloud-admin-api\\";
 
 
     //文件存放路径
@@ -57,7 +58,7 @@ public class GeneratorMain {
 
     //要生成的表名templatestemplates
     private static String[] tables = {
-            "t_student_coach_appraise",
+            "t_coach_hour_setting_detail",
     };
 
 
@@ -181,6 +182,7 @@ public class GeneratorMain {
         Map<String, String> frontFileMap = new HashMap<>();
         frontFileMap.put("api.js",       "/%s/front");
         frontFileMap.put("index.vue",    "/%s/front");
+        frontFileMap.put("add.vue",    "/%s/front");
 
         frontFileMap.forEach((filename, outPath) -> {
             FileOutConfig fileOutConfig = new FileOutConfig("/templates/front/" + filename + ".vm") {

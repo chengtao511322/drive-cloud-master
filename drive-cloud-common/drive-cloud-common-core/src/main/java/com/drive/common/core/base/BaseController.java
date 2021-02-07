@@ -14,6 +14,16 @@ import java.io.Serializable;
 public class BaseController<Q extends BasePageQueryParam, E extends Serializable> {
 
 
+    /**
+     * PostMapping("/xx/xxx")
+     * 传的参是@RequestBody，多参或对对象
+     *
+     *
+     * GetMapping("/xx/xxx")
+     * 无参时
+     * 传的参是@RequestParam
+     * 传的参是@PathVariable
+     */
 
     /**
      * 封装查询参数

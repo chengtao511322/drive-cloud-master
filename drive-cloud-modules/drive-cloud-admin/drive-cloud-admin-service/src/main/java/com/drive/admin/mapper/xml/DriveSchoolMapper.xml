@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.DriveSchoolMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.DriveSchoolEntity">
+        <id column="id" property="id" />
+        <result column="province_id" property="provinceId" />
+        <result column="city_id" property="cityId" />
+        <result column="area_id" property="areaId" />
+        <result column="longitude" property="longitude" />
+        <result column="latitude" property="latitude" />
+        <result column="address" property="address" />
+        <result column="contacts" property="contacts" />
+        <result column="contact_phone" property="contactPhone" />
+        <result column="enroll_price" property="enrollPrice" />
+        <result column="school_name" property="schoolName" />
+        <result column="establish_time" property="establishTime" />
+        <result column="seniority_path" property="seniorityPath" />
+        <result column="drive_school_scale" property="driveSchoolScale" />
+        <result column="school_description" property="schoolDescription" />
+        <result column="is_enroll" property="isEnroll" />
+        <result column="admin_user_id" property="adminUserId" />
+        <result column="status" property="status" />
+        <result column="is_alone_settlement" property="isAloneSettlement" />
+        <result column="operator_id" property="operatorId" />
+        <result column="vip_enroll_price" property="vipEnrollPrice" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, province_id, city_id, area_id, longitude, latitude, address, contacts, contact_phone, enroll_price, school_name, establish_time, seniority_path, drive_school_scale, school_description, is_enroll, admin_user_id, status, is_alone_settlement, operator_id, vip_enroll_price
+    </sql>
+
+</mapper>

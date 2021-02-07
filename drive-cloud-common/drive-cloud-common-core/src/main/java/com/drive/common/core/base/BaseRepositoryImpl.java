@@ -26,8 +26,14 @@ public class BaseRepositoryImpl<T,S extends BaseService,Q extends BasePageQueryP
         return null;
     }
 
+
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getInfo(Q param) {
+        return null;
+    }
+
+    @Override
+    public ResObject getById(String id) {
         log.info(this.getClass() + "getInfo方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             log.error("数据ID空");

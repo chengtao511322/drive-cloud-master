@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.OneFeeSystemCoachStudentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.OneFeeSystemCoachStudentEntity">
+        <id column="id" property="id" />
+        <result column="coach_id" property="coachId" />
+        <result column="student_id" property="studentId" />
+        <result column="order_no" property="orderNo" />
+        <result column="status" property="status" />
+        <result column="class_type" property="classType" />
+        <result column="is_delete" property="isDelete" />
+        <result column="remarks" property="remarks" />
+        <result column="original_class_id" property="originalClassId" />
+        <result column="class_id" property="classId" />
+        <result column="operator_id" property="operatorId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="drive_type" property="driveType" />
+        <result column="bind_time" property="bindTime" />
+        <result column="bind_status" property="bindStatus" />
+        <result column="relieve_bind_time" property="relieveBindTime" />
+        <result column="new_bind_id" property="newBindId" />
+        <result column="subject_1_cost_free_number" property="subject1CostFreeNumber" />
+        <result column="subject_2_cost_free_number" property="subject2CostFreeNumber" />
+        <result column="subject_3_cost_free_number" property="subject3CostFreeNumber" />
+        <result column="subject_4_cost_free_number" property="subject4CostFreeNumber" />
+        <result column="pay_status" property="payStatus" />
+        <result column="coach_subject_type_2" property="coachSubjectType2" />
+        <result column="coach_subject2_expect_income" property="coachSubject2ExpectIncome" />
+        <result column="coach_subject_type_3" property="coachSubjectType3" />
+        <result column="coach_subject3_expect_income" property="coachSubject3ExpectIncome" />
+        <result column="school_subject_type_2" property="schoolSubjectType2" />
+        <result column="school_subject_type_3" property="schoolSubjectType3" />
+        <result column="operator_change_money" property="operatorChangeMoney" />
+        <result column="bonus" property="bonus" />
+        <result column="test_not_pass_withhold_money" property="testNotPassWithholdMoney" />
+        <result column="service_change_money" property="serviceChangeMoney" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, coach_id, student_id, order_no, status, class_type, is_delete, remarks, original_class_id, class_id, operator_id, create_time, update_time, drive_type, bind_time, bind_status, relieve_bind_time, new_bind_id, subject_1_cost_free_number, subject_2_cost_free_number, subject_3_cost_free_number, subject_4_cost_free_number, pay_status, coach_subject_type_2, coach_subject2_expect_income, coach_subject_type_3, coach_subject3_expect_income, school_subject_type_2, school_subject_type_3, operator_change_money, bonus, test_not_pass_withhold_money, service_change_money
+    </sql>
+
+</mapper>

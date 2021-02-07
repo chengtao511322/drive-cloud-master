@@ -26,7 +26,14 @@ public interface BaseRepository<P,EDIT> {
      * @param id
      * @return
      */
-    ResObject getInfo(String  id);
+    ResObject getById(String  id);
+
+    /**
+     * 条件查询接口
+     * @param param
+     * @return
+     */
+    ResObject getInfo(P param);
 
     /**
      * 保存

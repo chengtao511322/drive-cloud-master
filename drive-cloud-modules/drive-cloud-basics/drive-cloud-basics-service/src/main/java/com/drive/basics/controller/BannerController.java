@@ -70,7 +70,7 @@ public class BannerController extends BaseController<BannerPageQueryParam, Banne
 	@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return bannerRepository.getInfo(id);
+		return bannerRepository.getById(id);
 	}
 
 	/**

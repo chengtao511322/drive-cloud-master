@@ -70,7 +70,7 @@ public class ActivityPromoteAuthController extends BaseController<ActivityPromot
 	@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return activityPromoteAuthRepository.getInfo(id);
+		return activityPromoteAuthRepository.getById(id);
 	}
 
 	/**

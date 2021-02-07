@@ -75,7 +75,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return studentCoachAppraiseRepository.getInfo(id);
+		return studentCoachAppraiseRepository.getById(id);
 	}
 
 	/**

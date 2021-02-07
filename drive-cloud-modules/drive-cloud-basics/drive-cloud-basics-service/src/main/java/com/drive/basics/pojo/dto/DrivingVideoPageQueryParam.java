@@ -81,4 +81,7 @@ public class DrivingVideoPageQueryParam extends BasePageQueryParam {
 	// 类型  1  科目一 2  科目二 3 科目三 4  科目四  0 所有
 	private Integer type;
 
+	private String vagueNameSearch;
+
+	private String vagueTitleSearch;
 }

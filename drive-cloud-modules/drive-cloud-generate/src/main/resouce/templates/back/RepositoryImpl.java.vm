@@ -44,8 +44,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryParam, ${entity}Entity>  implements ${entity}Repository{
 
+    //  ${table.comment} 服务
     @Autowired
     private ${entity}Service ${className}Service;
+    //  ${table.comment} DO-DTO转化
     @Autowired
     private ${entity}MapStruct ${className}MapStruct;
 
@@ -62,7 +64,20 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
     public ResObject pageList(${entity}PageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
         Page<${entity}Entity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<${entity}Entity> pageList = ${className}Service.page(page, this.getQueryWrapper(${className}MapStruct, param));
+        // 条件查询
+        QueryWrapper queryWrapper = this.getQueryWrapper(${className}MapStruct, param);
+
+        //  模糊查询
+        //queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        //  开始时间 结束时间都有才进入
+        if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
+            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
+        }
+        IPage<${entity}Entity> pageList = ${className}Service.page(page, queryWrapper);
+        if (pageList.getRecords().size() <= 0){
+            log.error("数据空");
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
+        }
         Page<${entity}Vo> ${className}VoPage = ${className}MapStruct.toVoList(pageList);
         log.info(this.getClass() + "pageList-方法请求结果{}",${className}VoPage);
         return R.success(${className}VoPage);
@@ -74,32 +89,55 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         // 这里判断条件进行查询
         QueryWrapper queryWrapper= this.getQueryWrapper(${className}MapStruct, param);
         // 如 queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"phone",param.getPhone());
-        List<${entity}Entity> pageList = ${className}Service.list(queryWrapper);
-        List<${entity}Vo> ${className}VoList = ${className}MapStruct.toVoList(pageList);
-        log.info(this.getClass() + "findList-方法请求结果{}",${className}VoList);
-        if (${className}VoList == null){
+        List<${entity}Entity> ${className}List = ${className}Service.list(queryWrapper);
+        if (${className}List == null){
             log.error("数据空");
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),${className}List);
         }
+        List<${entity}Vo> ${className}VoList = ${className}MapStruct.toVoList(${className}List);
+        log.info(this.getClass() + "findList-方法请求结果{}",${className}VoList);
         return R.success(${className}VoList);
+    }
+
+    /**
+    * 条件查询返回单条${table.comment}数据
+    * @param param
+    * @return
+    */
+    @Override
+    public ResObject getInfo(${entity}PageQueryParam param) {
+        log.info(this.getClass() + "getInfo-方法请求参数{}",param);
+        if (param == null){
+            return R.failure("数据空");
+        }
+        // 这里判断条件进行查询
+        QueryWrapper queryWrapper = this.getQueryWrapper(${className}MapStruct, param);
+        ${entity}Entity ${className} = ${className}Service.getOne(queryWrapper);
+        if (${className} == null){
+            log.error("数据空");
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),${className});
+        }
+        ${entity}Vo ${className}Vo = BeanConvertUtils.copy(${className}, ${entity}Vo.class);
+        log.info(this.getClass() + "getInfo-方法请求结果{}",${className}Vo);
+        return R.success(${className}Vo);
     }
 
     /**
      * *通过ID获取${table.comment} 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
-        log.info(this.getClass() + "getInfo-方法请求参数{}",id);
+    public ResObject getById(String id) {
+        log.info(this.getClass() + "getById-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");
         }
         ${entity}Entity ${className} = ${className}Service.getById(${pkColumn.propertyName});
-        ${entity}Vo ${className}Vo = BeanConvertUtils.copy(${className}, ${entity}Vo.class);
-        log.info(this.getClass() + "getInfo-方法请求结果{}",${className}Vo);
-        if (${className}Vo ==null){
-            log.error("活动数据对象空");
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        if (${className} == null){
+            log.error("数据空");
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),${className});
         }
+        ${entity}Vo ${className}Vo = BeanConvertUtils.copy(${className}, ${entity}Vo.class);
+        log.info(this.getClass() + "getById-方法请求结果{}",${className}Vo);
         return R.success(${className}Vo);
     }
 

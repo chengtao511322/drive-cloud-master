@@ -13,6 +13,7 @@ import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResCodeEnum;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
+import com.drive.common.core.enums.StatusEnum;
 import com.drive.marketing.pojo.dto.ActivityCouponRelationEditParam;
 import com.drive.marketing.pojo.dto.ActivityInfoPageQueryParam;
 import com.drive.marketing.pojo.dto.CouponGetPageQueryParam;
@@ -96,7 +97,7 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         // 分页对象
         Page<ActivityCouponGetVo> page = new Page<ActivityCouponGetVo>(activityEditParam.getPageNum(), activityEditParam.getPageSize());
         // 删除状态
-        wrapper.eq("t2.is_delete",0);
+        wrapper.eq("t2.is_delete", StatusEnum.ENABLE);
         // 优惠券状态
         wrapper.eq("t2.status",1);
         // 活动ID 查询

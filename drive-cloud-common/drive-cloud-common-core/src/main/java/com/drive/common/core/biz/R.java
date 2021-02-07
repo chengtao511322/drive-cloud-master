@@ -58,10 +58,20 @@ public class R implements java.io.Serializable{
 	public static ResObject success(String subCode, String subMsg) {
 		ResObject resObject = new ResObject();
 		resObject.setCode(ResCodeEnum.SUCCESS.getCode());
-		resObject.setIsSuccess(DEFAULT_FAILURE);
+		resObject.setIsSuccess(DEFAULT_SUCCESS);
 		resObject.setMsg(ResCodeEnum.SUCCESS.getMsg());
 		resObject.setSubCode(subCode);
 		resObject.setSubMsg(subMsg);
+		return resObject;
+	}
+	public static ResObject success(String subCode, String subMsg,Object object) {
+		ResObject resObject = new ResObject();
+		resObject.setCode(ResCodeEnum.SUCCESS.getCode());
+		resObject.setIsSuccess(DEFAULT_SUCCESS);
+		resObject.setMsg(ResCodeEnum.SUCCESS.getMsg());
+		resObject.setSubCode(subCode);
+		resObject.setSubMsg(subMsg);
+		resObject.setData(object);
 		return resObject;
 	}
 

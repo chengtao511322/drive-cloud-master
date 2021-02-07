@@ -70,7 +70,7 @@ public class DrivingVideoController extends BaseController<DrivingVideoPageQuery
 	@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return drivingVideoRepository.getInfo(id);
+		return drivingVideoRepository.getById(id);
 	}
 
 	/**

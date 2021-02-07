@@ -72,7 +72,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return oneFeeSystemPriceRepository.getInfo(id);
+		return oneFeeSystemPriceRepository.getById(id);
 	}
 
 

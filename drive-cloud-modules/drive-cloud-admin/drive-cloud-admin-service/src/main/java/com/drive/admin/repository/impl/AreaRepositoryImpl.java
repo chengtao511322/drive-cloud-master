@@ -77,11 +77,30 @@ public class  AreaRepositoryImpl extends BaseController<AreaPageQueryParam, Area
         return R.success(areaVoList);
     }
 
+
+
+    @Override
+    public ResObject getInfo(AreaPageQueryParam param) {
+        log.info(this.getClass() + "getInfo-方法请求参数{}",param);
+        if (param == null){
+            return R.failure("数据空");
+        }
+        QueryWrapper queryWrapper = this.getQueryWrapper(areaMapStruct, param);
+        AreaEntity area = areaService.getOne(queryWrapper);
+        if (area ==null){
+            log.error("活动数据对象空");
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        }
+        AreaVo areaVo = BeanConvertUtils.copy(area, AreaVo.class);
+        log.info(this.getClass() + "getInfo-方法请求结果{}",areaVo);
+        return R.success(areaVo);
+    }
+
     /**
      * *通过ID获取 列表
      **/
     @Override
-    public ResObject getInfo(String baCode) {
+    public ResObject getById(String baCode) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",baCode);
         if (StrUtil.isEmpty(baCode)){
             return R.failure("数据空");

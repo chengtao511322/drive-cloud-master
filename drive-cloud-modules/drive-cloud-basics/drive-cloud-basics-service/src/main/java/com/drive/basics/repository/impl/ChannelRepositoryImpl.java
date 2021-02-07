@@ -38,6 +38,15 @@ import java.util.List;
 @Service
 public class  ChannelRepositoryImpl extends BaseController<ChannelPageQueryParam, ChannelEntity>  implements ChannelRepository{
 
+     // 1210513762407149568
+    //1210514029525594112
+    //1273152505248866306
+    private final String GENERALID = "1210513762407149568";
+    private final String CELERITYID = "1210514029525594112";
+    private final String MAKEID = "1273152505248866306";
+    private final String[] ARRID = new String[]{"1210513762407149568","1210514029525594112","1273152505248866306"};
+
+
     @Autowired
     private ChannelService channelService;
     @Autowired
@@ -50,8 +59,21 @@ public class  ChannelRepositoryImpl extends BaseController<ChannelPageQueryParam
     public ResObject pageList(ChannelPageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
         Page<ChannelEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<ChannelEntity> pageList = channelService.page(page, this.getQueryWrapper(channelMapStruct, param));
+        QueryWrapper queryWrapper = this.getQueryWrapper(channelMapStruct, param);
+        queryWrapper.in("parent_id",ARRID);
+        // 报名单号 模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        IPage<ChannelEntity> pageList = channelService.page(page, queryWrapper);
+        if (pageList.getRecords().size() <= 0){
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
+        }
         Page<ChannelVo> channelVoPage = channelMapStruct.toVoList(pageList);
+        channelVoPage.getRecords().stream().forEach((item) ->{
+            QueryWrapper queryChannelWrapper = new QueryWrapper();
+            queryChannelWrapper.eq("parent_id",item.getId());
+            int count = channelService.count(queryChannelWrapper);
+            if (count >0 )item.setHasChildren(true);
+        });
         log.info(this.getClass() + "pageList-方法请求结果{}",channelVoPage);
         return R.success(channelVoPage);
     }
@@ -72,11 +94,18 @@ public class  ChannelRepositoryImpl extends BaseController<ChannelPageQueryParam
         return R.success(channelVoList);
     }
 
+
+
+    @Override
+    public ResObject getInfo(ChannelPageQueryParam param) {
+        return null;
+    }
+
     /**
      * *通过ID获取栏目 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");
@@ -217,6 +246,39 @@ public class  ChannelRepositoryImpl extends BaseController<ChannelPageQueryParam
             return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
         }
         return R.success();
+    }
+
+    @Override
+    public ResObject getChannelByParentId(String parentId) {
+        log.info(this.getClass() + "getChannelByParentId方法请求参数{}",parentId);
+        if (StrUtil.isEmpty(parentId)){
+            log.error("数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("parent_id",parentId);
+        List<ChannelEntity> channelEntitieList = channelService.list(queryWrapper);
+        if (channelEntitieList.size() <=0){
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),channelEntitieList);
+        }
+        List<ChannelVo> channelVoList = channelMapStruct.toVoList(channelEntitieList);
+        log.info(this.getClass() + "getChannelByParentId-方法请求结果{}",channelVoList);
+        return R.success(channelVoList);
+    }
+
+    @Override
+    public ResObject getParentList() {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("parent_id",0);
+        List<ChannelEntity> channelEntityList = channelService.list(queryWrapper);
+        if (channelEntityList.size() <= 0){
+            log.error("数据空");
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),channelEntityList);
+        }
+        List<ChannelVo> channelVoList = channelMapStruct.toVoList(channelEntityList);
+        log.info(this.getClass() + "findList-方法请求结果{}",channelVoList);
+        return R.success(channelVoList);
     }
 }
 

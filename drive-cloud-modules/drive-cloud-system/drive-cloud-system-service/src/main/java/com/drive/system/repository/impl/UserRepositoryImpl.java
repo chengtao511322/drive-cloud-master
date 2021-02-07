@@ -47,9 +47,15 @@ public class UserRepositoryImpl extends BaseController implements UserRepository
     }
 
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         return null;
     }
+
+    @Override
+    public ResObject getInfo(UserPageQueryParam param) {
+        return null;
+    }
+
 
     @Override
     public ResObject save(UserEditParam installParam) {

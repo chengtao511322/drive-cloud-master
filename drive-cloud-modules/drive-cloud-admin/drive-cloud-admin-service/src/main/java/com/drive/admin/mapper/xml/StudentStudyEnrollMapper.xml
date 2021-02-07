@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.StudentStudyEnrollMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.StudentStudyEnrollEntity">
+        <id column="study_enroll_no" property="studyEnrollNo" />
+        <result column="province_id" property="provinceId" />
+        <result column="city_id" property="cityId" />
+        <result column="area_id" property="areaId" />
+        <result column="longitude" property="longitude" />
+        <result column="latitude" property="latitude" />
+        <result column="student_id" property="studentId" />
+        <result column="real_name" property="realName" />
+        <result column="id_card" property="idCard" />
+        <result column="telephone" property="telephone" />
+        <result column="age" property="age" />
+        <result column="sex" property="sex" />
+        <result column="drive_type" property="driveType" />
+        <result column="service_charge" property="serviceCharge" />
+        <result column="enroll_status" property="enrollStatus" />
+        <result column="drive_school_id" property="driveSchoolId" />
+        <result column="drive_school_name" property="driveSchoolName" />
+        <result column="price" property="price" />
+        <result column="id_card_path_positive" property="idCardPathPositive" />
+        <result column="id_card_path_negative" property="idCardPathNegative" />
+        <result column="live_prove_positive" property="liveProvePositive" />
+        <result column="live_prove_negative" property="liveProveNegative" />
+        <result column="address" property="address" />
+        <result column="test_result_path" property="testResultPath" />
+        <result column="enroll_account_no" property="enrollAccountNo" />
+        <result column="enroll_password" property="enrollPassword" />
+        <result column="actual_enroll_time" property="actualEnrollTime" />
+        <result column="user_id" property="userId" />
+        <result column="line_under_user_id" property="lineUnderUserId" />
+        <result column="be_speak_meet_time" property="beSpeakMeetTime" />
+        <result column="be_speak_meet_address" property="beSpeakMeetAddress" />
+        <result column="cancel_time" property="cancelTime" />
+        <result column="cancel_reason" property="cancelReason" />
+        <result column="is_intent_enroll" property="isIntentEnroll" />
+        <result column="contact_time" property="contactTime" />
+        <result column="intent_enroll_time" property="intentEnrollTime" />
+        <result column="intent_enroll_school_id" property="intentEnrollSchoolId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_meet_give" property="isMeetGive" />
+        <result column="meet_gice_price" property="meetGicePrice" />
+        <result column="is_student" property="isStudent" />
+        <result column="student_school_id" property="studentSchoolId" />
+        <result column="id_is_return" property="idIsReturn" />
+        <result column="operator_id" property="operatorId" />
+        <result column="enroll_type" property="enrollType" />
+        <result column="is_in_study" property="isInStudy" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            study_enroll_no, province_id, city_id, area_id, longitude, latitude, student_id, real_name, id_card, telephone, age, sex, drive_type, service_charge, enroll_status, drive_school_id, drive_school_name, price, id_card_path_positive, id_card_path_negative, live_prove_positive, live_prove_negative, address, test_result_path, enroll_account_no, enroll_password, actual_enroll_time, user_id, line_under_user_id, be_speak_meet_time, be_speak_meet_address, cancel_time, cancel_reason, is_intent_enroll, contact_time, intent_enroll_time, intent_enroll_school_id, create_time, update_time, is_meet_give, meet_gice_price, is_student, student_school_id, id_is_return, operator_id, enroll_type, is_in_study
+    </sql>
+
+    <update id="updateByEnrollNo" parameterType="com.drive.admin.pojo.entity.StudentStudyEnrollEntity">
+
+    </update>
+</mapper>

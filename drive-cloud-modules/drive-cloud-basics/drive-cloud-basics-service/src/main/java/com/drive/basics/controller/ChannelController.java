@@ -70,9 +70,22 @@ public class ChannelController extends BaseController<ChannelPageQueryParam, Cha
 	@PreAuthorize("hasPermission('/basics/channel',  'basics:channel:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return channelRepository.getInfo(id);
+		return channelRepository.getById(id);
 	}
 
+
+	/**
+	 * 通过 parentId 查询项目
+	 * @param parentId
+	 * @return
+	 */
+	@ApiOperation("ParentId获取栏目")
+	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
+	@PreAuthorize("hasPermission('/basics/channel',  'basics:channel:query')")
+	@GetMapping("/getChannelByParentId/{parentId}")
+	ResObject getChannelByParentId(@PathVariable String parentId){
+		return channelRepository.getChannelByParentId(parentId);
+	}
 	/**
 	* 新增栏目
 	*/
@@ -166,6 +179,14 @@ public class ChannelController extends BaseController<ChannelPageQueryParam, Cha
 	@GetMapping(value = "/allList")
 	public ResObject allList(ChannelEditParam channelEditParam) {
 		return channelRepository.allList(channelEditParam);
+	}
+
+
+	@ApiOperation("活动父项目")
+	@PreAuthorize("hasPermission('/operator',  'basics:operator:allList')")
+	@GetMapping(value = "/getParentList")
+	public ResObject getParentList() {
+		return channelRepository.getParentList();
 	}
 
 }

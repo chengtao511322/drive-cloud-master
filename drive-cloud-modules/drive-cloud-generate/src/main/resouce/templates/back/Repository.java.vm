@@ -1,7 +1,6 @@
 package ${cfg.modulesPack}.repository;
 
-import ${cfg.modulesPack}.pojo.dto.${entity}EditParam;
-import ${cfg.modulesPack}.pojo.dto.${entity}PageQueryParam;
+import ${cfg.modulesPack}.pojo.dto.*;
 import com.drive.common.core.base.BaseRepository;
 
 /**

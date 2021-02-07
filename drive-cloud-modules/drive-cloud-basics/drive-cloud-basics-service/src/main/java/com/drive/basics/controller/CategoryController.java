@@ -70,7 +70,7 @@ public class CategoryController extends BaseController<CategoryPageQueryParam, C
 	@PreAuthorize("hasPermission('/basics/category',  'basics:category:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return categoryRepository.getInfo(id);
+		return categoryRepository.getById(id);
 	}
 
 	/**

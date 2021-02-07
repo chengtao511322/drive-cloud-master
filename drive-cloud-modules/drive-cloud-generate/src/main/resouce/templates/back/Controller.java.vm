@@ -48,10 +48,13 @@ import ${cfg.modulesPack}.repository.${entity}Repository;
 @RequestMapping("/${className}")
 public class ${entity}Controller extends BaseController<${entity}PageQueryParam, ${entity}Entity> {
 
+	// ${table.comment} 服务
 	@Autowired
 	private ${entity}Service ${className}Service;
+	// ${table.comment} 业务服务
 	@Autowired
 	private ${entity}Repository ${className}Repository;
+	// ${table.comment} DO-DTO转化
 	@Autowired
 	private ${entity}MapStruct ${className}MapStruct;
 
@@ -60,7 +63,7 @@ public class ${entity}Controller extends BaseController<${entity}PageQueryParam,
 	*/
 	@ApiOperation("${table.comment}分页列表")
 	@PreAuthorize("hasPermission('/${cfg.moduleName}/${className}',  '${cfg.moduleName}:${className}:query')")
-	@PostMapping(value = "/pageList")
+	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid ${entity}PageQueryParam param) {
 		return ${className}Repository.pageList(param);
 	}
@@ -69,7 +72,7 @@ public class ${entity}Controller extends BaseController<${entity}PageQueryParam,
 	*/
 	@ApiOperation("${table.comment}列表")
 	@PreAuthorize("hasPermission('/${cfg.moduleName}/${className}',  '${cfg.moduleName}:${className}:query')")
-	@PostMapping(value = "/findList")
+	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid ${entity}PageQueryParam param) {
 		return ${className}Repository.findList(param);
 	}
@@ -82,7 +85,18 @@ public class ${entity}Controller extends BaseController<${entity}PageQueryParam,
 	@PreAuthorize("hasPermission('/${cfg.moduleName}/${className}',  '${cfg.moduleName}:${className}:query')")
 	@GetMapping("/{${pkColumn.propertyName}}")
 	public ResObject get(@PathVariable String ${pkColumn.propertyName}) {
-		return ${className}Repository.getInfo(id);
+		return ${className}Repository.getById(id);
+	}
+
+	/**
+	 * 条件查询获取${table.comment}
+	 */
+	@ApiOperation("条件查询获取${table.comment}")
+	@ApiImplicitParam(name = "${pkColumn.propertyName}", required = true, dataType = "String", paramType = "path")
+	@PreAuthorize("hasPermission('/${cfg.moduleName}/${className}',  '${cfg.moduleName}:${className}:query')")
+	@GetMapping("/getInfo")
+	public ResObject getInfo(@PathVariable ${entity}PageQueryParam param) {
+		return ${className}Repository.getInfo(param);
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package ${cfg.modulesPack}.pojo.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
 import ${cfg.BasePageQueryParam};
 import lombok.Data;
@@ -23,8 +24,11 @@ public class ${entity}PageQueryParam extends BasePageQueryParam {
 #if("$!field.comment" != "")
 	// ${field.comment}
 #end
+	@ApiModelProperty(value = "${field.comment}")
 	private ${field.propertyType} ${field.propertyName};
+	// 模糊查询字段
 #end
+	//private String vagueNameSearch
 ## ----------  END 字段循环遍历  ----------
 
 }

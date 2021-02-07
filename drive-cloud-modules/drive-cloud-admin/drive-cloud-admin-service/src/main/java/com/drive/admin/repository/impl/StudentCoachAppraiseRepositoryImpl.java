@@ -77,11 +77,17 @@ public class  StudentCoachAppraiseRepositoryImpl extends BaseController<StudentC
         return R.success(studentCoachAppraiseVoList);
     }
 
+
+    @Override
+    public ResObject getInfo(StudentCoachAppraisePageQueryParam param) {
+        return null;
+    }
+
     /**
      * *通过ID获取学员教练互评表 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");

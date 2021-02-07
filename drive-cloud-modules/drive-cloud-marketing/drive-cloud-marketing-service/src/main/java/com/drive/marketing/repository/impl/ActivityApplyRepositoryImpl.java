@@ -59,21 +59,39 @@ public class  ActivityApplyRepositoryImpl extends BaseController<ActivityApplyPa
         // 这里判断条件进行查询
         QueryWrapper queryWrapper= this.getQueryWrapper(activityApplyMapStruct, param);
         // 如 queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"phone",param.getPhone());
-        List<ActivityApplyEntity> pageList = activityApplyService.list(queryWrapper);
-        List<ActivityApplyVo> activityApplyVoList = activityApplyMapStruct.toVoList(pageList);
-        log.info(this.getClass() + "findList-方法请求结果{}",activityApplyVoList);
-        if (activityApplyVoList == null){
+        List<ActivityApplyEntity> activityApplyList = activityApplyService.list(queryWrapper);
+        if (activityApplyList.size() <= 0){
             log.error("数据空");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
         }
+        List<ActivityApplyVo> activityApplyVoList = activityApplyMapStruct.toVoList(activityApplyList);
+        log.info(this.getClass() + "findList-方法请求结果{}",activityApplyVoList);
         return R.success(activityApplyVoList);
+    }
+
+
+    @Override
+    public ResObject getInfo(ActivityApplyPageQueryParam param) {
+        log.info(this.getClass() + "getInfo-方法请求参数{}",param);
+        if (param == null){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        QueryWrapper queryWrapper = this.getQueryWrapper(activityApplyMapStruct,param);
+        ActivityApplyEntity activityApplyEntity = activityApplyService.getOne(queryWrapper);
+        if (activityApplyEntity == null){
+            log.error("数据出错");
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),activityApplyEntity);
+        }
+        ActivityApplyVo activityApplyVo  = BeanConvertUtils.copy(activityApplyEntity,ActivityApplyVo.class);
+        log.info(this.getClass() +"getInfo-方法请求结果{}",activityApplyVo);
+        return R.success(activityApplyVo);
     }
 
     /**
      * *通过ID获取活动参加记录表 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");

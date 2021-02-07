@@ -69,7 +69,7 @@ public class StudentInfoEntity extends BaseEntity {
 	private String recommendIncomeType;
 
 	// 推荐时间
-	private LocalDateTime recommendDate;
+	private String recommendDate;
 
 	// 头像路径
 	private String headUrl;

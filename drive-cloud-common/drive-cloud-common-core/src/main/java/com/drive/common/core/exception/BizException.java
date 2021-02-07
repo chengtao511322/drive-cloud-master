@@ -19,10 +19,7 @@ public class BizException extends BaseUncheckedException {
         super(cause);
     }
 
-    public BizException(int code, Throwable cause) {
-        super(cause);
-        this.code = code;
-    }
+
 
     public BizException(String message) {
         super(-1, message);

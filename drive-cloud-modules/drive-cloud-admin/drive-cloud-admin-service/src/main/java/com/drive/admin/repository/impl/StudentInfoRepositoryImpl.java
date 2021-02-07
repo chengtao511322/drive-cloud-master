@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -62,7 +63,33 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueUserNameSearch()),"username",param.getVagueUserNameSearch());
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"real_name",param.getVagueRealNameSearch());
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueEmailSearch()),"email",param.getVagueEmailSearch());
+        // 登录时间
+        queryWrapper.apply(StrUtil.isNotBlank(param.getSearchLoginDate()),
+                "date_format (login_time,'%Y-%m-%d') = date_format('" + param.getSearchLoginDate() + "','%Y-%m-%d')");
+        // 推荐时间
+        queryWrapper.apply(StrUtil.isNotBlank(param.getSearchRecommendDate()),
+                "date_format (recommend_date,'%Y-%m-%d') <= date_format('" + LocalDate.now().toString() + "','%Y-%m-%d')");
+                /*.apply(StrUtil.isNotBlank(end_date),
+                        "date_format (optime,'%Y-%m-%d') <= date_format('" + end_date + "','%Y-%m-%d')")*/
+        // 没有开始时间 默认查询
+        if (StrUtil.isEmpty(param.getBeginTime())){
+            queryWrapper.apply(StrUtil.isNotBlank(param.getSearchRecommendDate()),
+                    "date_format (create_time,'%Y-%m-%d') <= date_format('" + LocalDate.now().toString() + "','%Y-%m-%d')");
+        }
+        // 没有结束时间
+        if (StrUtil.isEmpty(param.getEndTime())){
+            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),LocalDate.now().toString());
+        }
+        //  开始时间 结束时间都有才进入
+        if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
+            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
+        }
+
         IPage<StudentInfoEntity> pageList = studentInfoService.page(page,queryWrapper);
+        if (pageList.getRecords().size() <= 0){
+            log.error(this.getClass() +"数据空");
+            return R.failure(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        }
         Page<StudentInfoVo> studentInfoVoPage = studentInfoMapStruct.toVoList(pageList);
         // List<Problem> problemList = problemByExample.stream().filter(problem -> "空调制冷".equals(problem.getProTitle()) || "李一一的难题1".equals(problem.getProTitle())).collect(Collectors.toList());
         studentInfoVoPage.getRecords().stream().forEach(item ->{
@@ -72,8 +99,8 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
             // 查询推广人员
             if (StrUtil.isNotEmpty(item.getRecommendUserId())){
                 StudentInfoEntity studentInfo = studentInfoService.getById(item.getRecommendUserId());
-                item.setRecommendUserName(studentInfo.getRealName());
-                item.setRecommendUserPhone(studentInfo.getPhone());
+                if (studentInfo != null && StrUtil.isNotEmpty(studentInfo.getRealName()))item.setRecommendUserName(studentInfo.getRealName());
+                if (studentInfo != null && StrUtil.isNotEmpty(studentInfo.getPhone()))item.setRecommendUserPhone(studentInfo.getPhone());
             }
         });
         log.info(this.getClass() + "pageList-方法请求结果{}",studentInfoVoPage);
@@ -100,7 +127,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
      * *通过ID获取学员信息表 列表
      **/
     @Override
-    public ResObject<StudentInfoVo> getInfo(String id) {
+    public ResObject<StudentInfoVo> getById(String id) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");
@@ -113,6 +140,11 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
         }
         return R.success(studentInfoVo);
+    }
+
+    @Override
+    public ResObject getInfo(StudentInfoPageQueryParam param) {
+        return null;
     }
 
     /**

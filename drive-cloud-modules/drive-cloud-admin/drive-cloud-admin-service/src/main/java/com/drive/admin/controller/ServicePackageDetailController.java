@@ -71,7 +71,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return servicePackageDetailRepository.getInfo(id);
+		return servicePackageDetailRepository.getById(id);
 	}
 
 	/**

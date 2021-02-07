@@ -82,11 +82,18 @@ public class  ServiceItemRepositoryImpl extends BaseController<ServiceItemPageQu
         return R.success(serviceItemVoList);
     }
 
+
+
+    @Override
+    public ResObject getInfo(ServiceItemPageQueryParam param) {
+        return null;
+    }
+
     /**
      * *通过ID获取服务项目表 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");

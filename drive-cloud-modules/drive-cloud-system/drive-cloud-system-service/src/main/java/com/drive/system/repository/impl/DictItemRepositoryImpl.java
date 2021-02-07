@@ -47,9 +47,16 @@ public class DictItemRepositoryImpl extends BaseController implements DictItemRe
     }
 
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         return null;
     }
+
+    @Override
+    public ResObject getInfo(DictItemPageQueryParam param) {
+        return null;
+    }
+
+
 
     @Override
     public ResObject save(DictItemEditParam installParam) {
@@ -81,7 +88,7 @@ public class DictItemRepositoryImpl extends BaseController implements DictItemRe
         return null;
     }
 
-    @Cacheable(value = "redisCache", key = "'dictItem:'")
+    // @Cacheable(value = "redisCache", key = "dictItem")
     @Override
     public ResObject allList() {
         log.info(this.getClass() + "allList-请求参数{}");

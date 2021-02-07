@@ -83,22 +83,29 @@ public class  BannerRepositoryImpl extends BaseController<BannerPageQueryParam, 
         return R.success(bannerVoList);
     }
 
+
+
+    @Override
+    public ResObject getInfo(BannerPageQueryParam param) {
+        return null;
+    }
+
     /**
      * *通过ID获取banner 轮播图 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");
         }
         BannerEntity banner = bannerService.getById(id);
-        BannerVo bannerVo = BeanConvertUtils.copy(banner, BannerVo.class);
-        log.info(this.getClass() + "getInfo-方法请求结果{}",bannerVo);
-        if (bannerVo ==null){
+        if (banner ==null){
             log.error("活动数据对象空");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
         }
+        BannerVo bannerVo = BeanConvertUtils.copy(banner, BannerVo.class);
+        log.info(this.getClass() + "getInfo-方法请求结果{}",bannerVo);
         return R.success(bannerVo);
     }
 

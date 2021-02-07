@@ -98,6 +98,8 @@ public class ChannelVo implements TreeVoFeature<ChannelVo> {
 	@Excel(name = "权限", width = 20)
 	private String auth;
 
+	private Boolean  hasChildren;
+
 
 
 	/** 子部门 */

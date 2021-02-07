@@ -81,7 +81,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return serviceItemPriceRepository.getInfo(id);
+		return serviceItemPriceRepository.getById(id);
 	}
 	/**
 	* 获取服务项目价格表

@@ -75,5 +75,7 @@ public class ChannelPageQueryParam extends BasePageQueryParam {
 
 	// 权限
 	private String auth;
+	// 名称模糊查询
+	private String vagueNameSearch;
 
 }

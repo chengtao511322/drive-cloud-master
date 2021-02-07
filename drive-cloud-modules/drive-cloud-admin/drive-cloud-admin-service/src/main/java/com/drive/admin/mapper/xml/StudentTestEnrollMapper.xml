@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.StudentTestEnrollMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.StudentTestEnrollEntity">
+        <id column="test_enroll_no" property="testEnrollNo" />
+        <result column="student_id" property="studentId" />
+        <result column="province_id" property="provinceId" />
+        <result column="city_id" property="cityId" />
+        <result column="area_id" property="areaId" />
+        <result column="drive_type" property="driveType" />
+        <result column="subject_type" property="subjectType" />
+        <result column="price" property="price" />
+        <result column="service_charge" property="serviceCharge" />
+        <result column="enroll_status" property="enrollStatus" />
+        <result column="test_hope_time" property="testHopeTime" />
+        <result column="test_actual_time" property="testActualTime" />
+        <result column="test_hope_coaching_grid_id" property="testHopeCoachingGridId" />
+        <result column="test_actual_coaching_grid_id" property="testActualCoachingGridId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="user_id" property="userId" />
+        <result column="line_under_user_id" property="lineUnderUserId" />
+        <result column="is_meet_give" property="isMeetGive" />
+        <result column="meet_gice_price" property="meetGicePrice" />
+        <result column="operator_id" property="operatorId" />
+        <result column="exam_type" property="examType" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            test_enroll_no, student_id, province_id, city_id, area_id, drive_type, subject_type, price, service_charge, enroll_status, test_hope_time, test_actual_time, test_hope_coaching_grid_id, test_actual_coaching_grid_id, create_time, update_time, user_id, line_under_user_id, is_meet_give, meet_gice_price, operator_id, exam_type
+    </sql>
+
+</mapper>

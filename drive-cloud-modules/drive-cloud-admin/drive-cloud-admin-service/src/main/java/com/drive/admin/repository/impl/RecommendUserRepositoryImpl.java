@@ -76,11 +76,18 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
         return R.success(recommendUserVoList);
     }
 
+
+
+    @Override
+    public ResObject getInfo(RecommendUserPageQueryParam param) {
+        return null;
+    }
+
     /**
      * *通过ID获取推广人员信息表 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");

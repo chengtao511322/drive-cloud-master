@@ -69,11 +69,18 @@ public class  ActivityPromoteAuthRepositoryImpl extends BaseController<ActivityP
         return R.success(activityPromoteAuthVoList);
     }
 
+
+
+    @Override
+    public ResObject getInfo(ActivityPromoteAuthPageQueryParam param) {
+        return null;
+    }
+
     /**
      * *通过ID获取活动推广权限配置 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");

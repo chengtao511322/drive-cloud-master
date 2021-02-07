@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.OperatorSettinngMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.OperatorSettinngEntity">
+        <id column="id" property="id" />
+        <result column="number" property="number" />
+        <result column="number_value" property="numberValue" />
+        <result column="number_describe" property="numberDescribe" />
+        <result column="operator_id" property="operatorId" />
+        <result column="status" property="status" />
+        <result column="is_delete" property="isDelete" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, number, number_value, number_describe, operator_id, status, is_delete, create_time, update_time
+    </sql>
+
+</mapper>

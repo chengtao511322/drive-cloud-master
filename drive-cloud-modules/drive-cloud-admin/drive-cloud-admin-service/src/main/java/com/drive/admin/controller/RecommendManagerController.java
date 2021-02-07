@@ -70,7 +70,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return recommendManagerRepository.getInfo(id);
+		return recommendManagerRepository.getById(id);
 	}
 
 	/**

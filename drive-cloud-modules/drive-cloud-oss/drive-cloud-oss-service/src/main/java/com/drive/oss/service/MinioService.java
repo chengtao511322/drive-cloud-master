@@ -1,3 +1,4 @@
+/*
 package com.drive.oss.service;
 
 import cn.hutool.core.util.StrUtil;
@@ -29,10 +30,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+*/
 /**
  * minio 服务
  * @author xiaoguo
- */
+ *//*
+
 @Service
 @Slf4j
 public class MinioService {
@@ -173,6 +176,52 @@ public class MinioService {
             throw new MinioException("Error while fetching files in Minio", e);
         }
     }
+    */
+/**
+     * Minio文件上传
+     * @param file 文件实体
+     * @param fileName 修饰过的文件名 非源文件名
+     * @param bucketName 所存文件夹（桶名）
+     * @return
+     *//*
+
+    public void minioUpload(MultipartFile file, String fileName, String bucketName) {
+        try {
+            boolean bucketExists = minioClient.bucketExists(bucketName);
+            if (bucketExists) {
+                log.info("仓库" + bucketName + "已经存在，可直接上传文件。");
+            } else {
+                minioClient.makeBucket(bucketName);
+            }
+            if (file.getSize() <= 20971520) {
+                // fileName为空，说明要使用源文件名上传
+                if (fileName == null) {
+                    fileName = file.getOriginalFilename();
+                    fileName = fileName.replaceAll(" ", "_");
+                }
+
+                // minio仓库名
+                minioClient.putObject(bucketName, fileName, file.getInputStream(), file.getContentType());
+                log.info("成功上传文件 " + fileName + " 至 " + bucketName);
+                String fileUrl = bucketName + "/" + fileName;
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("fileUrl", fileUrl);
+                map.put("bucketName", bucketName);
+                map.put("originFileName", fileName);
+                return R.ok(map);
+            } else {
+                throw new Exception("请上传小于20mb的文件");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (e.getMessage().contains("ORA")) {
+                return R.error("上传失败:【查询参数错误】");
+            }
+            return R.error("上传失败：【" + e.getMessage() + "】");
+        }
+    }
+
 
     public void upload(Path source, File file,int partSize) throws
             MinioException {
@@ -183,11 +232,13 @@ public class MinioService {
         }
     }
 
-    /**
+    */
+/**
      * 上传文件
      * @param file
      * @return
-     */
+     *//*
+
     public String uploadHeadImg(MultipartFile file, String bizPath) {
         //log.info("minio相关配置：minio_url:{}, minio_name:{}, minio_pass:{}, bucketName:{}", minioUrl, minioName, minioPass, bucketName);
         String file_url = "";
@@ -244,4 +295,4 @@ public class MinioService {
         }
     }
 
-}
+}*/

@@ -56,7 +56,11 @@ public class  DrivingVideoRepositoryImpl extends BaseController<DrivingVideoPage
     public ResObject pageList(DrivingVideoPageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
         Page<DrivingVideoEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<DrivingVideoEntity> pageList = drivingVideoService.page(page, this.getQueryWrapper(drivingVideoMapStruct, param));
+        QueryWrapper queryWrapper = this.getQueryWrapper(drivingVideoMapStruct, param);
+        // 报名单号 模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueTitleSearch()),"title",param.getVagueTitleSearch());
+        IPage<DrivingVideoEntity> pageList = drivingVideoService.page(page,queryWrapper );
         Page<DrivingVideoVo> drivingVideoVoPage = drivingVideoMapStruct.toVoList(pageList);
         log.info(this.getClass() + "pageList-方法请求结果{}",drivingVideoVoPage);
         return R.success(drivingVideoVoPage);
@@ -78,11 +82,18 @@ public class  DrivingVideoRepositoryImpl extends BaseController<DrivingVideoPage
         return R.success(drivingVideoVoList);
     }
 
+
+
+    @Override
+    public ResObject getInfo(DrivingVideoPageQueryParam param) {
+        return null;
+    }
+
     /**
      * *通过ID获取学车视频表 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");

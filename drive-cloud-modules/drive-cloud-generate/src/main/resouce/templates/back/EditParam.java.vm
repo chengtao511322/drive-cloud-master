@@ -1,9 +1,12 @@
 package ${cfg.modulesPack}.pojo.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import javax.validation.constraints.NotBlank;
 
 
 /**
@@ -20,6 +23,8 @@ public class ${entity}EditParam {
 #if("$!field.comment" != "")
     // ${field.comment}
 #end
+    @NotBlank(message = "${field.comment}不能为空")
+    @ApiModelProperty(value = "${field.comment}")
     private ${field.propertyType} ${field.propertyName};
 #end
 ## ----------  END 字段循环遍历  ----------

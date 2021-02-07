@@ -70,7 +70,7 @@ public class ActivityApplyController extends BaseController<ActivityApplyPageQue
 	@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return activityApplyRepository.getInfo(id);
+		return activityApplyRepository.getById(id);
 	}
 
 	/**

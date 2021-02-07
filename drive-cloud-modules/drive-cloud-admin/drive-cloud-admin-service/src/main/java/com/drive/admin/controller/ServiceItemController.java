@@ -70,7 +70,7 @@ public class ServiceItemController extends BaseController<ServiceItemPageQueryPa
 	@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return serviceItemRepository.getInfo(id);
+		return serviceItemRepository.getById(id);
 	}
 
 	/**

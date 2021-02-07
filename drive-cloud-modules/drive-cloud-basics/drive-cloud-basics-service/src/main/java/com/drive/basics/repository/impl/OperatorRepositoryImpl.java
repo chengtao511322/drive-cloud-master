@@ -34,8 +34,15 @@ public class OperatorRepositoryImpl extends BaseController<OperatorPageQueryPara
         return null;
     }
 
+
+
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getInfo(OperatorPageQueryParam param) {
+        return null;
+    }
+
+    @Override
+    public ResObject getById(String id) {
         return null;
     }
 

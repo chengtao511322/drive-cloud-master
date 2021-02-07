@@ -24,5 +24,19 @@ public interface ChannelRepository extends BaseRepository<ChannelPageQueryParam,
      * @return
      */
     ResObject updateChannel(ChannelEditParam channelEditParam);
+
+
+    /**
+     * 通过 parentId 查询项目
+     * @param parentId
+     * @return
+     */
+    ResObject getChannelByParentId(String parentId);
+
+    /**
+     * 获取父项目
+     * @return
+     */
+    ResObject getParentList();
 }
 

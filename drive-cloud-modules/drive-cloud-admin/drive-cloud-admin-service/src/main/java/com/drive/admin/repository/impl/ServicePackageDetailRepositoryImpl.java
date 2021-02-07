@@ -72,11 +72,17 @@ public class  ServicePackageDetailRepositoryImpl extends BaseController<ServiceP
         return R.success(servicePackageDetailVoList);
     }
 
+
+    @Override
+    public ResObject getInfo(ServicePackageDetailPageQueryParam param) {
+        return null;
+    }
+
     /**
      * *通过ID获取服务项目打包明细表 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");

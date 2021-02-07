@@ -24,11 +24,12 @@
         <result column="update_time" property="updateTime" />
         <result column="service_type" property="serviceType" />
         <result column="operator_id" property="operatorId" />
+        <result column="login_account" property="loginAccount" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-            id, province_id, city_id, area_id, drive_school_id, phone, password, sex, real_name, id_card, status, head_url, recommend_user_id, recommend_code_self, appraise_grade, toke_key, create_time, update_time, service_type, operator_id
+            id, province_id, city_id, area_id, drive_school_id, phone, password, sex, real_name, id_card, status, head_url, recommend_user_id, recommend_code_self, appraise_grade, toke_key, create_time, update_time, service_type, operator_id, login_account
     </sql>
 
 </mapper>

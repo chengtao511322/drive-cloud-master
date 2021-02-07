@@ -92,11 +92,18 @@ public class  OneFeeSystemPriceRepositoryImpl extends BaseController<OneFeeSyste
         return R.success(oneFeeSystemPriceVoList);
     }
 
+
+
+    @Override
+    public ResObject getInfo(OneFeeSystemPricePageQueryParam param) {
+        return null;
+    }
+
     /**
      * *通过ID获取学车一费制定价表 列表
      **/
     @Override
-    public ResObject getInfo(String id) {
+    public ResObject getById(String id) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");

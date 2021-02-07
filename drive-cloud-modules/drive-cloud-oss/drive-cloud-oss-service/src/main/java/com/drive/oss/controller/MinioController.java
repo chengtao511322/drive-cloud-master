@@ -8,7 +8,8 @@ import com.drive.common.core.enums.EventLogEnum;
 import com.drive.common.log.annotation.EventLog;
 import com.drive.oss.config.MinioConfigurationProperties;
 import com.drive.oss.exception.MinioException;
-import com.drive.oss.service.MinioService;
+import io.minio.MinioClient;
+import io.minio.errors.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.xmlpull.v1.XmlPullParserException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +29,8 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -44,7 +48,10 @@ import java.util.Map;
 public class MinioController {
 
     @Autowired
-    private MinioService minioService;
+    private MinioClient minioClient;
+
+    @Autowired
+    private MinioConfigurationProperties configurationProperties;
 
     @Autowired
     private MinioConfigurationProperties minioConfig;
@@ -55,7 +62,7 @@ public class MinioController {
     @ApiOperation("文件上传")
     @EventLog(message = "文件上传", businessType = EventLogEnum.CREATE)
     @PostMapping("/upload")
-    public ResObject upload(@RequestParam("file") MultipartFile file) throws IOException, MinioException {
+    public ResObject upload(@RequestParam("file") MultipartFile file) throws IOException, MinioException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
         // 文件存储路径  /2020-01-01/43897583617343545473.jpg
         String filename = file.getOriginalFilename();
         int begin = filename.indexOf(".");
@@ -66,15 +73,16 @@ public class MinioController {
         //String path = Constants.UPLOAD_HEAD_IMAGES+"/"+LocalDate.now().toString()+"/"+Instant.now().toEpochMilli() +  ext;
         //Path path = Paths.get(LocalDate.now().toString(), Instant.now().toEpochMilli() +  ext);
         // Path newDir = Files.createDirectories(path);
-        minioService.upload(path, file.getInputStream(), file.getContentType());
+        // minio仓库名
+        minioClient.putObject(configurationProperties.getBucket(), pathSrc, file.getInputStream(), file.getContentType());
 
         Map result = new HashMap();
         result.put("fileName", file.getOriginalFilename());
-        result.put("filePath",  "/" + minioConfig.getBucket()+ "/" + path);
+        result.put("filePath", pathSrc);
         return R.success(result);
     }
 
-    @PostMapping(value = "/uploadHeadImg")
+    /*@PostMapping(value = "/uploadHeadImg")
     public ResObject uploadHeadImg(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         R result = new R();
@@ -92,10 +100,10 @@ public class MinioController {
         String pathSrc = Constants.UPLOAD_HEAD_IMAGES+"/"+filename;
         minioService.uploadHeadImg(file,pathSrc);
         return R.success(pathSrc);
-    }
+    }*/
 
 
-    @ApiOperation("获取文件")
+   /* @ApiOperation("获取文件")
     @GetMapping("/{object}")
     public void get(@PathVariable("object") String object, HttpServletResponse response) throws IOException, MinioException {
         InputStream inputStream = minioService.get(Paths.get(object));
@@ -115,5 +123,5 @@ public class MinioController {
         minioService.remove(path);
 
         return R.success("删除成功");
-    }
+    }*/
 }
