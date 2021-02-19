@@ -6,6 +6,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.drive.admin.enums.OperatorEnum;
 import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.pojo.entity.CoachHourSettingEntity;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
@@ -52,6 +53,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 public class  CoachHourSettingRepositoryImpl extends BaseController<CoachHourSettingPageQueryParam, CoachHourSettingEntity>  implements CoachHourSettingRepository{
+
+
+    // 昆明运营商
+    private final String KM_OPERATOR_ID = "bbdc1bd499b241daa6fe99063e63a193";
 
     //  教练发课设置 服务
     @Autowired
@@ -475,11 +480,25 @@ public class  CoachHourSettingRepositoryImpl extends BaseController<CoachHourSet
         QueryWrapper queryWrapper = new QueryWrapper();
         // 运营商查询
         queryWrapper.eq("operator_id",operatorId);
-        queryWrapper.eq("number",2);
+        // 这个值就是 固定查询 运营商天数的
+        queryWrapper.eq("number", OperatorEnum.DAY.getCode());
         OperatorSettinngEntity operatorSettinng = operatorSettinngService.getOne(queryWrapper);
         if (operatorSettinng == null){
             log.error("数据空");
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),operatorSettinng);
+            //return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),operatorSettinng);
+
+            QueryWrapper defaultQueryWrapper = new QueryWrapper();
+            // 昆明运营商查询
+            defaultQueryWrapper.eq("operator_id",KM_OPERATOR_ID);
+            // 这个值就是 固定查询 运营商天数的
+            defaultQueryWrapper.eq("number", OperatorEnum.DAY.getCode());
+            // 查询昆明运营商设置的数据
+            operatorSettinng = operatorSettinngService.getOne(defaultQueryWrapper);
+            // 如果昆明还没有的话
+            if (operatorSettinng == null){
+                log.error("昆明数据空");
+                return R.failure(SubResultCode.DATA_NULL.subCode(),"请联系管理员设置运营商开课数据");
+            }
         }
         // 当前时间+5天
         String dayNum = operatorSettinng.getNumberValue();

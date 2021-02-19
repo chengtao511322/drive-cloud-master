@@ -228,23 +228,27 @@ public class  ChannelRepositoryImpl extends BaseController<ChannelPageQueryParam
         if (StrUtil.isEmpty(channelEditParam.getId())){
             return R.failure();
         }
-        ChannelEntity channelEntity = channelService.getById(channelEditParam.getId());
-        if (channelEntity == null){
-            return R.failure();
-        }
-        String[] arrChannel = channelEntity.getAuth().split(",");
-        List<String> arr = new ArrayList<String>();
-        Arrays.stream(arrChannel).forEach((item)->{
-            arr.add(item);
-        });
-        arr.add(channelEditParam.getAuth());
-        String auth = Joiner.on(",").join(arr);
-        channelEntity.setAuth(auth);
-        channelEntity.setUpdateTime(LocalDateTime.now());
-        Boolean result = channelService.updateById(channelEntity);
-        if (!result){
-            return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
-        }
+       synchronized (channelEditParam.getId()){
+           ChannelEntity channelEntity = channelService.getById(channelEditParam.getId());
+           if (channelEntity == null){
+               log.error("数据空----");
+               return R.failure();
+           }
+           String[] arrChannel = channelEntity.getAuth().split(",");
+           List<String> arr = new ArrayList<String>();
+           Arrays.stream(arrChannel).forEach((item)->{
+               arr.add(item);
+           });
+           // 添加新的权限
+           arr.add(channelEditParam.getAuth());
+           String auth = Joiner.on(",").join(arr);
+           channelEntity.setAuth(auth);
+           channelEntity.setUpdateTime(LocalDateTime.now());
+           Boolean result = channelService.updateById(channelEntity);
+           if (!result){
+               return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+           }
+       }
         return R.success();
     }
 

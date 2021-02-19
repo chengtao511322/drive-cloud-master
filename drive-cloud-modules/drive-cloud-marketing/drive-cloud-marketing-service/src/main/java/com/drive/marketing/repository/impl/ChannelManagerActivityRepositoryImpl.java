@@ -417,7 +417,9 @@ public class ChannelManagerActivityRepositoryImpl implements ChannelManagerActiv
                 channelManagerActivityList.add(item);
             }
         };
+        //
         if (channelManagerActivityList !=null){
+            // 之所以get(0) 是因为 封装的这几个都是固定的，不会存在这几个值不一样的情况，不一样的是版型不一样
             // 设置权限
             String channelId = channelManagerActivityEditParamList.get(0).getChannelId();
 
@@ -426,22 +428,22 @@ public class ChannelManagerActivityRepositoryImpl implements ChannelManagerActiv
             String tenantId = channelManagerActivityEditParamList.get(0).getTenantId();
             if (StrUtil.isNotEmpty(channelId)){
                 // 第一版本
-             /*   ChannelEditParam channelEditParam = new ChannelEditParam();
+              ChannelEditParam channelEditParam = new ChannelEditParam();
                 channelEditParam.setId(channelId);
                 //  String[] arrChannel = channelVoRes.getData().getAuth().split(",");
-					*//*List<String> arr = new ArrayList<String>();
+					/*List<String> arr = new ArrayList<String>();
 					Arrays.stream(arrChannel).forEach((item)->{
 						arr.add(item);
 					});
 					arr.add(channelManagerActivityEditParam.get(0).getUserId());
-					String auth = Joiner.on(",").join(arr);*//*
+					String auth = Joiner.on(",").join(arr);*/
                 channelEditParam.setAuth(channelManagerActivityEditParamList.get(0).getUserId());
                 channelEditParam.setUpdateTime(LocalDateTime.now());
-                remoteChannelFeignService.updateChannel(channelEditParam);*/
+                remoteChannelFeignService.updateChannel(channelEditParam);
 
                 // 第二版本
                 // 设置活动权限
-                ActivityPromoteAuthEntity activityPromoteAuthEntity = new ActivityPromoteAuthEntity();
+               /* ActivityPromoteAuthEntity activityPromoteAuthEntity = new ActivityPromoteAuthEntity();
                 // 设置活动ID
                 activityPromoteAuthEntity.setActivityId(activityId);
                 // 设置栏目菜单ID
@@ -460,7 +462,7 @@ public class ChannelManagerActivityRepositoryImpl implements ChannelManagerActiv
                 log.info("删除权限关联数据{}",delAuth);
                 // 保存
                 Boolean saveAuth = activityPromoteAuthService.save(activityPromoteAuthEntity);
-                log.info("保存权限关联数据{}",saveAuth);
+                log.info("保存权限关联数据{}",saveAuth);*/
                 return R.success(channelManagerActivityService.saveBatch(channelManagerActivityList));
             }
         }
@@ -527,21 +529,23 @@ public class ChannelManagerActivityRepositoryImpl implements ChannelManagerActiv
 
         };
         if (channelManagerActivityList !=null){
+            // 之所以get(0) 是因为 封装的这几个都是固定的，不会存在这几个值不一样的情况，不一样的是版型不一样  这样避免循环数据的性能消耗
             // 设置权限
             String channelId = channelManagerActivityEditParam.get(0).getChannelId();
             String activityId = channelManagerActivityEditParam.get(0).getActivityId();
             String userId = channelManagerActivityEditParam.get(0).getUserId();
             String tenantId = channelManagerActivityEditParam.get(0).getTenantId();
+            // 选了按钮才进行
             if (StrUtil.isNotEmpty(channelId)){
                 // 第一个版本
-               /* ChannelEditParam channelEditParam = new ChannelEditParam();
+               ChannelEditParam channelEditParam = new ChannelEditParam();
                 channelEditParam.setId(channelId);
                 channelEditParam.setAuth(channelManagerActivityEditParam.get(0).getUserId());
                 channelEditParam.setUpdateTime(LocalDateTime.now());
-                remoteChannelFeignService.updateChannel(channelEditParam);*/
+                remoteChannelFeignService.updateChannel(channelEditParam);
                 // 第二版本
                 // 设置活动权限
-                ActivityPromoteAuthEntity activityPromoteAuthEntity = new ActivityPromoteAuthEntity();
+               /* ActivityPromoteAuthEntity activityPromoteAuthEntity = new ActivityPromoteAuthEntity();
                 // 设置活动ID
                 activityPromoteAuthEntity.setActivityId(activityId);
                 // 设置栏目菜单ID
@@ -560,7 +564,7 @@ public class ChannelManagerActivityRepositoryImpl implements ChannelManagerActiv
                 log.info("删除权限关联数据{}",delAuth);
                 // 保存
                 Boolean saveAuth = activityPromoteAuthService.save(activityPromoteAuthEntity);
-                log.info("保存权限关联数据{}",saveAuth);
+                log.info("保存权限关联数据{}",saveAuth);*/
             }
             return R.success(channelManagerActivityService.saveBatch(channelManagerActivityList));
         }

@@ -80,7 +80,7 @@ public interface ChannelManagerActivityRepository {
 
 
     /**
-     *
+     *保存渠道经理
      * @param channelManagerActivityEditParam
      * @return
      */

@@ -71,8 +71,8 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 	private RecommendManagertRepository recommendManagertRepository;
 
 
-	@Autowired
-	private RemoteChannelFeignService remoteChannelFeignService;
+	// @Autowired
+	//private RemoteChannelFeignService remoteChannelFeignService;
 
 	/**
 	* 渠道经理 可推广表配置 分页列表

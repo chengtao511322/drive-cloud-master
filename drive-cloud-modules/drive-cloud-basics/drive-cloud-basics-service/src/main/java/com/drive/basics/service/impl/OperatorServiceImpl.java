@@ -1,5 +1,8 @@
 package com.drive.basics.service.impl;
 
+import cn.hutool.db.nosql.redis.RedisDS;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.drive.basics.mapper.OperatorMapper;
 import com.drive.basics.pojo.entity.OperatorEntity;
 import com.drive.basics.pojo.vo.OperatorItemVo;
@@ -11,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
+import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -30,17 +35,18 @@ public class OperatorServiceImpl extends BaseService<OperatorMapper, OperatorEnt
     @Autowired
     private RedisService redisService;
 
-    /*@PostConstruct
+    @PostConstruct
     public void init()
     {
+        Jedis jedis = RedisDS.create().getJedis();
         QueryWrapper<OperatorEntity> wrapper = new QueryWrapper<OperatorEntity>();
         List<OperatorEntity> operatorEntityList = operatorMapper.selectList(wrapper);
         for (OperatorEntity operator : operatorEntityList)
         {
             //JSONObject jsonObject = BeanConvertUtils.convertBean(operator, JSONObject.class);
-            redisService.set(getCacheKey(operator.getId()), operator);
+            jedis.set(getCacheKey(operator.getId()), JSONObject.toJSONString(operator));
         }
-    }*/
+    }
     /**
      * 设置cache key
      *
