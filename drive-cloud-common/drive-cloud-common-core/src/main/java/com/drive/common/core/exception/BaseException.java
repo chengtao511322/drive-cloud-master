@@ -26,5 +26,7 @@ public interface BaseException {
      * @return
      */
     int getCode();
+    String getSubCode();
+    String getSubMsg();
 
 }

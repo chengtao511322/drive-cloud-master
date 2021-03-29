@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.AccountFlowMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.AccountFlowEntity">
+        <id column="id" property="id" />
+        <result column="order_no" property="orderNo" />
+        <result column="flow_type" property="flowType" />
+        <result column="pay_type" property="payType" />
+        <result column="order_amount" property="orderAmount" />
+        <result column="actual_pay_amount" property="actualPayAmount" />
+        <result column="drawback_amount" property="drawbackAmount" />
+        <result column="pay_time" property="payTime" />
+        <result column="create_time" property="createTime" />
+        <result column="is_settlement" property="isSettlement" />
+        <result column="refund_type" property="refundType" />
+        <result column="refund_time" property="refundTime" />
+        <result column="operator_id" property="operatorId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, order_no, flow_type, pay_type, order_amount, actual_pay_amount, drawback_amount, pay_time, create_time, is_settlement, refund_type, refund_time, operator_id
+    </sql>
+
+</mapper>

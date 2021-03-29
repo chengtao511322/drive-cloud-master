@@ -4,10 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.drive.admin.mapper.AreaMapper;
-import com.drive.admin.service.AreaService;
-import com.drive.common.core.base.BaseService;
 import com.drive.admin.pojo.entity.AreaEntity;
-
+import com.drive.admin.service.AreaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

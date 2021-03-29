@@ -4,7 +4,6 @@ import com.drive.admin.pojo.dto.ServiceInfoEditParam;
 import com.drive.admin.pojo.dto.ServiceInfoPageQueryParam;
 import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.biz.ResObject;
-import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  *

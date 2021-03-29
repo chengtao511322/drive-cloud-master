@@ -3,11 +3,9 @@ package com.drive.admin.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.drive.admin.mapper.RecommendUserMapper;
-import com.drive.admin.pojo.entity.AreaEntity;
+import com.drive.admin.pojo.entity.RecommendUserEntity;
 import com.drive.admin.service.RecommendUserService;
 import com.drive.common.core.base.BaseService;
-import com.drive.admin.pojo.entity.RecommendUserEntity;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

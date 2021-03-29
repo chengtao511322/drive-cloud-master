@@ -39,7 +39,7 @@ public class ChannelEntity extends BaseEntity {
 
 	// 删除状态:0:未删除  1：已经删除  默认0
 	@TableLogic
-	@TableField(value="is_delete")
+	@TableField(fill = FieldFill.INSERT,value="is_delete")
 	private String isDelete;
 
 	// 创建时间
@@ -85,5 +85,7 @@ public class ChannelEntity extends BaseEntity {
 
 	// 权限
 	private String auth;
+	// (20)明细用户是否显示（1-明细表的人显示，2-明细表的人不显示），控制明细表中的数据是否显示按钮
+	private String itemShow;
 
 }

@@ -1,6 +1,7 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.*;
+import com.drive.admin.pojo.dto.OperatorSettinngEditParam;
+import com.drive.admin.pojo.dto.OperatorSettinngPageQueryParam;
 import com.drive.common.core.base.BaseRepository;
 
 /**

@@ -11,7 +11,9 @@ import cn.hutool.json.JSONUtil;
 import redis.clients.jedis.Jedis;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class DateTest {
 
@@ -27,5 +29,17 @@ public class DateTest {
         String result =  jedis.get("operator_dept:01b13fad909245abb042d5efc37b82ee");
         JSON json = JSONUtil.parse(result);
         System.out.println(json.getByPath("name"));
+        System.out.println(DateUtil.now());
+        List arr = new ArrayList();
+        arr.add("1");
+        arr.add("2");
+        arr.add("3");
+        arr.stream().forEach((item) ->{
+            arr.add("4");
+        });
+        System.out.println(arr);
     }
+
+
+
 }

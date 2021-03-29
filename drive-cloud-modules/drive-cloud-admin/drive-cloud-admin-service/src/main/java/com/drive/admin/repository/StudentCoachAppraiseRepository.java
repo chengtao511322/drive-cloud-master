@@ -1,8 +1,8 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.StudentCoachAppraiseEditParam;
-import com.drive.admin.pojo.dto.StudentCoachAppraisePageQueryParam;
+import com.drive.admin.pojo.dto.*;
 import com.drive.common.core.base.BaseRepository;
+import com.drive.common.core.base.BasicsRepository;
 
 /**
  *
@@ -10,6 +10,6 @@ import com.drive.common.core.base.BaseRepository;
  *
  * @author xiaoguo
  */
-public interface StudentCoachAppraiseRepository extends BaseRepository<StudentCoachAppraisePageQueryParam, StudentCoachAppraiseEditParam>{
+public interface StudentCoachAppraiseRepository extends BasicsRepository<StudentCoachAppraisePageQueryParam, StudentCoachAppraiseEditParam,StudentCoachAppraiseInstallParam> {
 }
 

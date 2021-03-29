@@ -1,10 +1,9 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-
 import lombok.Data;
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -214,5 +213,15 @@ public class StudentStudyEnrollVo {
 	private String provinceName;
 	private String cityName;
 	private String areaName;
+
+
+	// 回访时间
+	private LocalDateTime returnVisitTime;
+	// 回访客服
+	private String returnVisitServiceName;
+	// 回访内容
+	private String returnVisitContent;
+
+
 
 }

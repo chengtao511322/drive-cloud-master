@@ -264,8 +264,8 @@ public class  OneFeeSystemPriceRepositoryImpl extends BaseController<OneFeeSyste
                 queryWrapper.eq("service_item_price_id",item.getServiceItemPriceId());
                 Boolean delResult = servicePackageDetailService.remove(queryWrapper);
                 log.info("删除的状态{}",delResult);
-                // 设置状态
-                servicePackageDetailEntity.setStatus(oneFeeSystemPriceEditParam.getStatus());
+                // 设置状态 (默认启用)
+                servicePackageDetailEntity.setStatus(StatusEnum.ENABLE.getCode());
                 Boolean servicePackageResult = servicePackageDetailService.save(servicePackageDetailEntity);
                 log.info(this.getClass() + "publishServicePackage-方法请求结果{}",result);
                 if (!servicePackageResult){

@@ -31,7 +31,10 @@ import lombok.EqualsAndHashCode;
 
 /**
  * 学员教练互评表
- *   主键ID 需要加入这个@TableId(type= IdType.ID_WORKER)
+ *   主键ID 需要加入这个
+ *   @TableId(type= IdType.ID_WORKER)
+ *   @TableLogic
+ *  @TableField(value="is_delete")
  * @author xiaoguo
  */
 @EqualsAndHashCode(callSuper = false)
@@ -67,6 +70,7 @@ public class StudentCoachAppraiseEntity extends BaseEntity {
 
 	// 回复内容
 	private String replyContent;
+
 
 	// 回复时间
 	private LocalDateTime replyTime;

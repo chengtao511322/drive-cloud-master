@@ -38,7 +38,7 @@ public class ServiceItemPriceEntity extends BaseEntity {
 
 	// 是否删除（1、是，0、否）
 	@TableLogic
-	@TableField(value="is_delete")
+	@TableField(fill = FieldFill.INSERT,value="is_delete")
 	private String isDelete;
 
 	// 运营商id(数据权限标记)

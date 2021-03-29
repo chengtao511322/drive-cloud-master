@@ -1,10 +1,9 @@
 package com.drive.admin.service.impl;
 
 import com.drive.admin.mapper.AppVersionMapper;
+import com.drive.admin.pojo.entity.AppVersionEntity;
 import com.drive.admin.service.AppVersionService;
 import com.drive.common.core.base.BaseService;
-import com.drive.admin.pojo.entity.AppVersionEntity;
-
 import org.springframework.stereotype.Service;
 
 /**

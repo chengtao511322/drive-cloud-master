@@ -134,6 +134,16 @@ public class R implements java.io.Serializable{
 		return resObject;
 	}
 
+	public static ResObject failure(Integer code,String msg,String subCode, String subMsg) {
+		ResObject resObject = new ResObject();
+		resObject.setCode(code);
+		resObject.setIsSuccess(DEFAULT_FAILURE);
+		resObject.setMsg(msg);
+		resObject.setSubCode(subCode);
+		resObject.setSubMsg(subMsg);
+		return resObject;
+	}
+
 	public static ResObject toRes(int rows){
 		return rows > 0 ? success() : failure();
 	}

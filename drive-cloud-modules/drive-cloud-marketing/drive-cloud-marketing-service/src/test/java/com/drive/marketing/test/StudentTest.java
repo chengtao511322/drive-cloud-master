@@ -1,35 +1,23 @@
-/*
+
 package com.drive.marketing.test;
 
 
-import cn.afterturn.easypoi.excel.ExcelExportUtil;
-import cn.afterturn.easypoi.excel.entity.ExportParams;
-import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.drive.admin.pojo.vo.StudentInfoVo;
-import com.drive.common.core.biz.ResObject;
-import com.drive.common.core.utils.BeanConvertUtils;
-import com.drive.common.core.utils.SpringContextUtil;
+import com.drive.basics.feign.RemoteChannelAuthFeignService;
+import com.drive.basics.pojo.dto.ChannelAuthEditParam;
 import com.drive.marketing.DriveCloudMarketingApplication;
-import com.drive.marketing.pojo.entity.ActivityInfoEntity;
-import com.drive.marketing.pojo.entity.CouponGetEntity;
-import com.drive.marketing.pojo.vo.CouponGetVo;
+import com.drive.marketing.pojo.entity.ChannelManagerActivityEntity;
 import com.drive.marketing.repository.RecommendManagertRepository;
+import com.drive.marketing.service.ChannelManagerActivityService;
 import com.drive.marketing.service.CouponGetService;
 import com.drive.marketing.service.IActivityInfoService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -51,6 +39,33 @@ public class StudentTest {
     @Autowired
     private IActivityInfoService activityInfoService;
 
+    @Autowired
+    private ChannelManagerActivityService channelManagerActivityService;
+
+    @Autowired
+    private RemoteChannelAuthFeignService channelAuthFeignService;
+
+    @Test
+    public void getChannel(){
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("activity_id","1362286770695180290");
+        queryWrapper.groupBy("user_id");
+        List<ChannelManagerActivityEntity> channelManagerActivityList = channelManagerActivityService.list(queryWrapper);
+
+        if (channelManagerActivityList.size() > 0){
+            channelManagerActivityList.stream().forEach((item) ->{
+                ChannelAuthEditParam channelAuthEditParam = new ChannelAuthEditParam();
+                // 运营商
+                channelAuthEditParam.setTenantId("bbdc1bd499b241daa6fe99063e63a193");
+                channelAuthEditParam.setUserId(item.getUserId());
+                channelAuthEditParam.setChannelId("1278626418668916478");
+                channelAuthEditParam.setCreateUser("系统数据同步");
+                channelAuthFeignService.updateChannelAuth(channelAuthEditParam);
+            });
+
+        }
+    }
+
     @Test
     public void  getBanner(){
         //ResObject resObject = studentService.get("000f431303a543eb95a9");
@@ -60,7 +75,7 @@ public class StudentTest {
     }
 
 
-    @Test
+  /*  @Test
     public void bigDataExport() throws Exception {
         QueryWrapper<CouponGetEntity> wrapper = new QueryWrapper<CouponGetEntity>();
         wrapper.eq("source","1323709835872100353");
@@ -109,11 +124,11 @@ public class StudentTest {
         FileOutputStream fos = new FileOutputStream("D:/excel/VIP包过优惠券领取记录.xlsx");
         workbook.write(fos);
         fos.close();
-    }
+    }*/
 
 
 
-    @Test
+   /* @Test
     public void excelData(){
         QueryWrapper<CouponGetEntity> wrapper = new QueryWrapper<CouponGetEntity>();
         wrapper.eq("source","1323709835872100353");
@@ -152,9 +167,9 @@ public class StudentTest {
 
 
         //ExcelUtils.exportExcel(nweCouponGetVo, CouponGetVo.class, "参加活动人员", new ExportParams());
-    }
+    }*/
 
 
 }
 
-*/
+

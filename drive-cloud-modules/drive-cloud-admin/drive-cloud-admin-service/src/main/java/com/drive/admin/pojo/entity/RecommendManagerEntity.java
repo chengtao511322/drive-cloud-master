@@ -38,6 +38,8 @@ public class RecommendManagerEntity extends BaseEntity {
 	private LocalDateTime updateTime;
 
 	// 是否删除(0-否，1-是)
+	@TableLogic
+	@TableField(fill = FieldFill.INSERT)
 	private String isDelete;
 
 	// 状态(1-正常，2-停用)

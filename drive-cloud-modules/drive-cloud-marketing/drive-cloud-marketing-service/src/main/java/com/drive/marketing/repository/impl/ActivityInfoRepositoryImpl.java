@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.drive.admin.api.RemoteRecommendUserFeignService;
 import com.drive.admin.api.RemoteStudentFeignService;
+import com.drive.admin.pojo.vo.RecommendUserVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.basics.feign.RemoteOperatorFeignService;
 import com.drive.basics.pojo.vo.OperatorVo;
@@ -50,6 +52,9 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
 
     @Autowired
     private RemoteOperatorFeignService remoteOperatorFeignService;
+
+    @Autowired
+    private RemoteRecommendUserFeignService remoteRecommendUserFeignService;
 
     @Autowired
     private RecommendManagertRepository recommendManagertRepository;
@@ -113,6 +118,10 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         // 查询数据
         wrapper.orderByDesc("t1.create_time");
         IPage<ActivityCouponGetVo> pageList = couponGetService.findCouponPageListByActivityId(page, wrapper);
+        if (pageList.getRecords().size() <= 0){
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        }
+        // 循环瞬间
         pageList.getRecords().forEach((item) ->{
             StudentInfoVo studentInfoVo = null;
             OperatorVo operatorVo = null;
@@ -134,9 +143,10 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
             log.info("转化后的运营商数据{}",operatorVo);
             if (operatorVo!= null && StrUtil.isNotEmpty(operatorVo.getName()))item.setTenantName(operatorVo.getName());
             // 查询推广商
-            JSONObject promoteUser = recommendManagertRepository.getRecommendUser(item.getPromoteUserId());
-            if (promoteUser != null)item.setPromoteUser(promoteUser);
-
+            ResObject<RecommendUserVo>  promoteUser = remoteRecommendUserFeignService.get(item.getPromoteUserId());
+            if (promoteUser.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && promoteUser.getData() != null){
+                item.setPromoteUser(promoteUser.getData());
+            }
         });
         return R.success(pageList);
     }
@@ -152,7 +162,7 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         queryWrapper.orderByDesc("create_time");
         IPage<ActivityInfoEntity> pageList = activityInfoService.page(page, queryWrapper);
         Page<ActivityInfoVo> deptVoPage = activityMapStruct.toVoList(pageList);
-        deptVoPage.getRecords().stream().forEach((item) ->{
+       /* deptVoPage.getRecords().stream().forEach((item) ->{
             OperatorVo operatorVo = null;
             // 查询运营商
             ResObject<OperatorVo> operatorVoResObject =remoteOperatorFeignService.get(item.getTenantId());
@@ -162,7 +172,8 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
             }
             log.info("转化后的运营商数据{}",operatorVo);
             if (operatorVo!= null && StrUtil.isNotEmpty(operatorVo.getName()))item.setTenantName(operatorVo.getName());
-        });
+        });*/
+        log.info(this.getClass() + "方法请求结果{}",deptVoPage.getRecords());
         return R.success(deptVoPage);
     }
 }

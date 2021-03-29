@@ -26,7 +26,10 @@ import lombok.EqualsAndHashCode;
 
 /**
  * 客服回访记录
- *   主键ID 需要加入这个@TableId(type= IdType.ID_WORKER)
+ *   主键ID 需要加入这个
+ *   @TableId(type= IdType.ID_WORKER)
+ *   @TableLogic
+ *  @TableField(value="is_delete")
  * @author xiaoguo
  */
 @EqualsAndHashCode(callSuper = false)

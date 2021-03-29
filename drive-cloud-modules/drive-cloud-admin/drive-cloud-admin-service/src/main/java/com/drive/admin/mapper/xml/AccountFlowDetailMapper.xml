@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.AccountFlowDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.AccountFlowDetailEntity">
+        <id column="id" property="id" />
+        <result column="account_id" property="accountId" />
+        <result column="order_no" property="orderNo" />
+        <result column="item_type" property="itemType" />
+        <result column="item_name" property="itemName" />
+        <result column="item_amount" property="itemAmount" />
+        <result column="is_reconciled" property="isReconciled" />
+        <result column="put_forward" property="putForward" />
+        <result column="pay_type" property="payType" />
+        <result column="income_user_type" property="incomeUserType" />
+        <result column="income_user_id" property="incomeUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="operator_id" property="operatorId" />
+        <result column="trade_subject" property="tradeSubject" />
+        <result column="trade_subject_items" property="tradeSubjectItems" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, account_id, order_no, item_type, item_name, item_amount, is_reconciled, put_forward, pay_type, income_user_type, income_user_id, create_time, operator_id, trade_subject, trade_subject_items
+    </sql>
+
+</mapper>

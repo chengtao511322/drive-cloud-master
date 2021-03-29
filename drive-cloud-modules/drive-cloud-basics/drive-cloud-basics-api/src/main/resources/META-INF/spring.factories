@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    com.drive.basics.factory.OperatorFallbackFactory,com.drive.basics.factory.ChannelFallbackFactory
+    com.drive.basics.factory.OperatorFallbackFactory,com.drive.basics.factory.ChannelFallbackFactory,com.drive.basics.factory.ChannelAuthFallbackFactory

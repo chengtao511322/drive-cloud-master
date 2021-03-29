@@ -1,10 +1,9 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-
 import lombok.Data;
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -25,9 +24,14 @@ public class OneFeeSystemCoachStudentVo {
 	@Excel(name = "教练id", width = 20)
 	private String coachId;
 
+	@Excel(name = "教练名称", width = 20)
+	private String coachName;
+
 	// 学员id
-	@Excel(name = "学员id", width = 20)
+
 	private String studentId;
+	@Excel(name = "学员名称", width = 20)
+	private String studentName;
 
 	// 订单号
 	@Excel(name = "订单号", width = 20)

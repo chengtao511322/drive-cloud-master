@@ -1,10 +1,9 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-
 import lombok.Data;
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -29,13 +28,17 @@ public class StudentCoachAppraiseVo {
 	@Excel(name = "教练课程ID", width = 20)
 	private String classId;
 
+
 	// 报名单号（考试，学车）
 	@Excel(name = "报名单号（考试，学车）", width = 20)
 	private String enrollNo;
 
 	// 评价用户id（学员id）
-	@Excel(name = "评价用户id（学员id）", width = 20)
+
 	private String studentId;
+
+	@Excel(name = "学员名称", width = 20)
+	private String studentName;
 
 	// 学员评价内容
 	@Excel(name = "学员评价内容", width = 20)
@@ -58,8 +61,10 @@ public class StudentCoachAppraiseVo {
 	private LocalDateTime replyTime;
 
 	// 被评价用户id
-	@Excel(name = "被评价用户id", width = 20)
+
 	private String replyId;
+	@Excel(name = "被评价用户名称", width = 20)
+	private String replyName;
 
 	// 被评价用户类型（2-教练；3-运维）
 	@Excel(name = "被评价用户类型（2-教练；3-运维）", width = 20)

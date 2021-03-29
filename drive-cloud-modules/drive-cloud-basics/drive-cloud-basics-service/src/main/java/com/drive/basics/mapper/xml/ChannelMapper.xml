@@ -31,4 +31,21 @@
             id, name, icon_path, sort, status, is_delete, create_time, update_time, add_user, parent_id, click_url, tenant_id, android_show, ios_show, description, activity_explain, rule_explain, column_group, command, auth
     </sql>
 
+
+    <!--数据下移 下一条数据-->
+    <select id="moveDown" resultType="com.drive.basics.pojo.entity.ChannelEntity" parameterType="java.lang.Integer">
+        select
+            *
+        from  base_channel tgt
+        WHERE tgt.sort > #{0} and tgt.is_delete = 0  order by tgt.sort asc limit 0,1
+    </select>
+
+    <!--数据上移 下上一条数据-->
+    <select id="moveUp" resultType="com.drive.basics.pojo.entity.ChannelEntity" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from base_channel tgt
+        WHERE tgt.sort <![CDATA[<]]> #{sortNum} and tgt.is_delete = 0 order by tgt.sort desc limit 0,1
+    </select>
+
 </mapper>

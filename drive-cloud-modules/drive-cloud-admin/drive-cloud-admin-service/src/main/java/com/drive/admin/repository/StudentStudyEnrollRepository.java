@@ -1,9 +1,13 @@
 package com.drive.admin.repository;
 
+import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollEditParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
 import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.biz.ResObject;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.validation.Valid;
 
 /**
  *
@@ -19,5 +23,12 @@ public interface StudentStudyEnrollRepository extends BaseRepository<StudentStud
      * @return
      */
     ResObject getStudentStudyEnrollInfo(StudentStudyEnrollPageQueryParam studentStudyEnrollPageQueryParam);
+
+    /**
+     * 完善信息
+     * @param studentStudyEnrollEditParam
+     * @return
+     */
+    ResObject completeStudyEnroll(CompleteStudyEnrollParam completeStudyEnrollParam);
 }
 

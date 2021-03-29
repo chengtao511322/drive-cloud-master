@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.PlatformWalletDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.PlatformWalletDetailEntity">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="account_detail_id" property="accountDetailId" />
+        <result column="trade_amount" property="tradeAmount" />
+        <result column="trade_type" property="tradeType" />
+        <result column="wallet_detail_name" property="walletDetailName" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="balance" property="balance" />
+        <result column="operator_id" property="operatorId" />
+        <result column="trade_subject" property="tradeSubject" />
+        <result column="trade_subject_items" property="tradeSubjectItems" />
+        <result column="set_up_date" property="setUpDate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, user_id, account_detail_id, trade_amount, trade_type, wallet_detail_name, status, create_time, balance, operator_id, trade_subject, trade_subject_items, set_up_date
+    </sql>
+
+</mapper>

@@ -36,7 +36,7 @@ public class OperatorEntity extends BaseEntity implements Serializable {
 
 	// 是否删除
 	@TableLogic
-	@TableField(value="is_delete")
+	@TableField(fill = FieldFill.INSERT,value="is_delete")
 	private String isDelete;
 
 	// 创建时间

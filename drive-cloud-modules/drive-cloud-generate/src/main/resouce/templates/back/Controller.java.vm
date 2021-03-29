@@ -107,8 +107,8 @@ public class ${entity}Controller extends BaseController<${entity}PageQueryParam,
 	@PreAuthorize("hasPermission('/${cfg.moduleName}/${className}',  '${cfg.moduleName}:${className}:add')")
 	@EventLog(message = "新增${table.comment}", businessType = EventLogEnum.CREATE)
 	@PostMapping
-	public ResObject save(@Valid @RequestBody ${entity}EditParam ${className}EditParam) {
-		return ${className}Repository.save(${className}EditParam);
+	public ResObject save(@Valid @RequestBody ${entity}InstallParam ${className}InstallParam) {
+		return ${className}Repository.save(${className}InstallParam);
 	}
 
 	/**

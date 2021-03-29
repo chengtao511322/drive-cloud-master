@@ -2,12 +2,15 @@
 package com.drive.admin.factory;
 
 import com.drive.admin.api.RemoteRecommendUserFeignService;
+import com.drive.admin.pojo.dto.RecommendUserPageQueryParam;
 import com.drive.admin.pojo.vo.RecommendUserVo;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 
 /**
@@ -27,6 +30,11 @@ public class RecommendUserFallbackFactory implements FallbackFactory<RemoteRecom
             @Override
             public ResObject<RecommendUserVo> get(String id) {
                 return R.failure();
+            }
+
+            @Override
+            public ResObject<List<RecommendUserVo>> getRecommendUserByChannelManagerId(String channelManagerId) {
+                return R.failure("服务降级，服务熔断");
             }
         };
     }

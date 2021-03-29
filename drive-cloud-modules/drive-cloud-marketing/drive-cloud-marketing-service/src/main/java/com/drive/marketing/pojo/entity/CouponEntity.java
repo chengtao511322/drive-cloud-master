@@ -97,7 +97,7 @@ public class CouponEntity extends BaseEntity {
 
 	// 删除状态 1  未删除  2 已经删除
 	@TableLogic
-	@TableField(value="is_delete")
+	@TableField(fill = FieldFill.INSERT,value="is_delete")
 	private String isDelete;
 
 	// 点击地址

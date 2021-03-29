@@ -1,10 +1,9 @@
 package com.drive.admin.service.impl;
 
 import com.drive.admin.mapper.CoachHourSettingDetailMapper;
+import com.drive.admin.pojo.entity.CoachHourSettingDetailEntity;
 import com.drive.admin.service.CoachHourSettingDetailService;
 import com.drive.common.core.base.BaseService;
-import com.drive.admin.pojo.entity.CoachHourSettingDetailEntity;
-
 import org.springframework.stereotype.Service;
 
 /**

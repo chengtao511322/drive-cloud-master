@@ -1,33 +1,29 @@
 package com.drive.admin.controller;
 
-import cn.afterturn.easypoi.excel.entity.ExportParams;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Arrays;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
+import com.drive.admin.pojo.dto.StudentStudyEnrollEditParam;
+import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
+import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
+import com.drive.admin.repository.StudentStudyEnrollRepository;
+import com.drive.admin.service.StudentStudyEnrollService;
+import com.drive.admin.service.mapstruct.StudentStudyEnrollMapStruct;
+import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.enums.EventLogEnum;
-import com.drive.common.data.utils.ExcelUtils;
 import com.drive.common.log.annotation.EventLog;
 import io.swagger.annotations.Api;
-import com.drive.common.core.base.BaseController;
-import com.drive.admin.pojo.entity.*;
-import com.drive.admin.pojo.vo.*;
-import com.drive.admin.pojo.dto.*;
-import com.drive.admin.service.mapstruct.*;
-import com.drive.admin.service.StudentStudyEnrollService;
-import com.drive.admin.repository.StudentStudyEnrollRepository;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.util.Arrays;
 
 
 /**
@@ -88,6 +84,14 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	/**
 	* 新增学员学车报名单
 	*/
+	@ApiOperation("完善学员学车报名单")
+	@ApiImplicitParam(name = "StudentStudyEnrollEditParam ", value = "新增学员学车报名单", dataType = "StudentStudyEnrollEditParam")
+	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:add')")
+	@EventLog(message = "新增学员学车报名单", businessType = EventLogEnum.CREATE)
+	@PutMapping("/completeStudyEnroll")
+	public ResObject completeStudyEnroll(@Valid @RequestBody CompleteStudyEnrollParam completeStudyEnrollParam) {
+		return studentStudyEnrollRepository.completeStudyEnroll(completeStudyEnrollParam);
+	}
 	@ApiOperation("新增学员学车报名单")
 	@ApiImplicitParam(name = "StudentStudyEnrollEditParam ", value = "新增学员学车报名单", dataType = "StudentStudyEnrollEditParam")
 	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:add')")

@@ -1,11 +1,10 @@
 package com.drive.admin.pojo.dto;
 
-import java.time.LocalDateTime;
 import com.drive.common.core.base.BasePageQueryParam;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -79,5 +78,8 @@ public class DriveSchoolPageQueryParam extends BasePageQueryParam {
 
 	// 报名单价(vip报名费)
 	private BigDecimal vipEnrollPrice;
+
+	// 模糊查询
+	private String vagueSchoolName;
 
 }

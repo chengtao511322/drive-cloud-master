@@ -41,10 +41,13 @@ import com.drive.admin.repository.ServiceReturnVisitHistoryRepository;
 @RequestMapping("/serviceReturnVisitHistory")
 public class ServiceReturnVisitHistoryController extends BaseController<ServiceReturnVisitHistoryPageQueryParam, ServiceReturnVisitHistoryEntity> {
 
+	// 客服回访记录 服务
 	@Autowired
 	private ServiceReturnVisitHistoryService serviceReturnVisitHistoryService;
+	// 客服回访记录 业务服务
 	@Autowired
 	private ServiceReturnVisitHistoryRepository serviceReturnVisitHistoryRepository;
+	// 客服回访记录 DO-DTO转化
 	@Autowired
 	private ServiceReturnVisitHistoryMapStruct serviceReturnVisitHistoryMapStruct;
 
@@ -53,7 +56,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	*/
 	@ApiOperation("客服回访记录分页列表")
 	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
-	@PostMapping(value = "/pageList")
+	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid ServiceReturnVisitHistoryPageQueryParam param) {
 		return serviceReturnVisitHistoryRepository.pageList(param);
 	}
@@ -62,9 +65,15 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	*/
 	@ApiOperation("客服回访记录列表")
 	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
-	@PostMapping(value = "/findList")
+	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid ServiceReturnVisitHistoryPageQueryParam param) {
 		return serviceReturnVisitHistoryRepository.findList(param);
+	}
+	@ApiOperation("记录列表")
+	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
+	@GetMapping(value = "/pageListReturnVisitHistory")
+	public ResObject pageListReturnVisitHistory(@Valid StudentStudyEnrollPageQueryParam param) {
+		return serviceReturnVisitHistoryRepository.pageListReturnVisitHistory(param);
 	}
 
 	/**
@@ -79,6 +88,17 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	}
 
 	/**
+	 * 条件查询获取客服回访记录
+	 */
+	@ApiOperation("条件查询获取客服回访记录")
+	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
+	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
+	@GetMapping("/getInfo")
+	public ResObject getInfo(@PathVariable ServiceReturnVisitHistoryPageQueryParam param) {
+		return serviceReturnVisitHistoryRepository.getInfo(param);
+	}
+
+	/**
 	* 新增客服回访记录
 	*/
 	@ApiOperation("新增客服回访记录")
@@ -86,8 +106,8 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:add')")
 	@EventLog(message = "新增客服回访记录", businessType = EventLogEnum.CREATE)
 	@PostMapping
-	public ResObject save(@Valid @RequestBody ServiceReturnVisitHistoryEditParam serviceReturnVisitHistoryEditParam) {
-		return serviceReturnVisitHistoryRepository.save(serviceReturnVisitHistoryEditParam);
+	public ResObject save(@Valid @RequestBody ServiceReturnVisitHistoryInstallParam serviceReturnVisitHistoryInstallParam) {
+		return serviceReturnVisitHistoryRepository.save(serviceReturnVisitHistoryInstallParam);
 	}
 
 	/**
@@ -101,6 +121,20 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	public ResObject edit(@Valid @RequestBody ServiceReturnVisitHistoryEditParam serviceReturnVisitHistoryEditParam) {
 		return serviceReturnVisitHistoryRepository.update(serviceReturnVisitHistoryEditParam);
 	}
+
+	/**
+	 * 发布回访
+	 * @return
+	 */
+	@ApiOperation("发布客服回访记录")
+	@ApiImplicitParam(name = "ServiceReturnVisitHistoryEditParam ", value = "修改客服回访记录", dataType = "ServiceReturnVisitHistoryEditParam")
+	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:edit')")
+	@EventLog(message = "修改客服回访记录", businessType = EventLogEnum.UPDATE)
+	@PostMapping("/publishReturnVisit")
+	ResObject publishReturnVisit(@RequestBody ServiceReturnVisitHistoryEditParam returnVisitHistoryEditParam){
+		return serviceReturnVisitHistoryRepository.publishReturnVisit(returnVisitHistoryEditParam);
+	}
+
 
 	/**
 	* 删除客服回访记录

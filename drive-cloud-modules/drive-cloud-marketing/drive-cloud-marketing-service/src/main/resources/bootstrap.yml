@@ -21,7 +21,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        # 服务注册地址
+        # 服务注册地址 172.24.86.62
         server-addr: ${nacos_host:125.0.8.191}:${nacos_port:6648}
       config:
         # 配置中心地址
@@ -31,4 +31,9 @@ spring:
         # 共享配置
         shared-configs:
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
-
+hystrix:
+  threadpool:
+    default:
+      coreSize: 8
+      maxQueueSize: 1000
+      queueSizeRejectionThreshold: 800

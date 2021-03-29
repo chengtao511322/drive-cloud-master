@@ -134,4 +134,13 @@ public class ActivityEditParam {
     // 推广地址
     private String promotionUrl;
 
+    private String channelId;
+
+
+    // 参与方式 1 全员参与，2指定用户参与
+    private Integer participationWay;
+
+    // 是否向下继承 渠道经理独享  1 独享 2 非独享
+    private Integer isExclusive;
+
 }

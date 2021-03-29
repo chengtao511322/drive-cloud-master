@@ -1,9 +1,6 @@
 package com.drive.marketing.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -50,6 +47,8 @@ public class ChannelManagerActivityEntity implements Serializable {
 	// 状态  0 正常 1 禁言
 	private String status;
 	// 删除状态 0正常 1已经删除
+	@TableLogic
+	@TableField(fill = FieldFill.INSERT,value="is_delete")
 	private String isDelete;
 
 	@TableId(type= IdType.ID_WORKER)

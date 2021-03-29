@@ -1,6 +1,7 @@
 package com.drive.marketing.pojo.vo;
 
 import com.alibaba.fastjson.JSONObject;
+import com.drive.admin.pojo.vo.RecommendUserVo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -65,7 +66,7 @@ public class ActivityCouponGetVo implements java.io.Serializable{
     @ApiModelProperty(value = "推广商手机号")
     private String promoteUserPhone;
     @ApiModelProperty(value = "推广商数据")
-    private JSONObject promoteUser;
+    private RecommendUserVo promoteUser;
 
     // 获取类型
     private String getType;

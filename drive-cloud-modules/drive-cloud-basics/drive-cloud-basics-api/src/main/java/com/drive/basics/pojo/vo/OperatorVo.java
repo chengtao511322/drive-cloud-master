@@ -1,5 +1,6 @@
 package com.drive.basics.pojo.vo;
 
+import com.drive.common.core.enums.StatusEnum;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -39,7 +40,7 @@ public class OperatorVo implements java.io.Serializable {
 	private LocalDateTime updateTime;
 
 	// 使用状态（1：正常；2：停用）
-	private String status;
+	private StatusEnum status;
 
 	// 父级代理商id
 	private String parentId;

@@ -21,4 +21,12 @@ public interface ActivityRepository {
      * @return
      */
     ResObject updateActivity(ActivityEditParam activityEditParam);
+
+
+    /**
+     * 分布式事务
+     * @param account
+     * @return
+     */
+    ResObject transfer(String account);
 }

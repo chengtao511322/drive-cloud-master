@@ -4,12 +4,17 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.drive.admin.pojo.dto.CoachGiveAreaEditParam;
+import com.drive.admin.pojo.dto.CoachInfoDataEditParam;
 import com.drive.admin.pojo.dto.CoachInfoEditParam;
 import com.drive.admin.pojo.dto.CoachInfoPageQueryParam;
+import com.drive.admin.pojo.entity.AreaEntity;
+import com.drive.admin.pojo.entity.CoachGiveAreaEntity;
 import com.drive.admin.pojo.entity.CoachInfoEntity;
 import com.drive.admin.pojo.vo.CoachInfoVo;
 import com.drive.admin.repository.CoachInfoRepository;
 import com.drive.admin.service.AreaService;
+import com.drive.admin.service.CoachGiveAreaService;
 import com.drive.admin.service.CoachInfoService;
 import com.drive.admin.service.DriveSchoolService;
 import com.drive.admin.service.mapstruct.CoachInfoMapStruct;
@@ -21,11 +26,13 @@ import com.drive.common.core.utils.BeanConvertUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import java.util.List;
 
-                                                                                                                                                                                                                            
+
 /**
  *
  * 教练信息表 服务类
@@ -46,6 +53,9 @@ public class  CoachInfoRepositoryImpl extends BaseController<CoachInfoPageQueryP
 
     @Autowired
     private DriveSchoolService driveSchoolService;
+
+    @Autowired
+    private CoachGiveAreaService coachGiveAreaService;
 
     /**
     * *教练信息表 分页列表
@@ -75,9 +85,18 @@ public class  CoachInfoRepositoryImpl extends BaseController<CoachInfoPageQueryP
         Page<CoachInfoVo> coachInfoVoPage = coachInfoMapStruct.toVoList(pageList);
         coachInfoVoPage.getRecords().stream().forEach((item) ->{
             // 省市区
-            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
+            if (StrUtil.isNotEmpty(item.getProvinceId())){
+                AreaEntity areaEntity = areaService.getByBaCode(item.getProvinceId());
+                item.setProvinceName(areaEntity.getBaName());
+            }
+            if (StrUtil.isNotEmpty(item.getCityId())){
+                AreaEntity areaEntity  = areaService.getByBaCode(item.getCityId());
+                item.setCityName(areaEntity.getBaName());
+            }
+            if (StrUtil.isNotEmpty(item.getAreaId())) {
+                AreaEntity areaEntity  = areaService.getByBaCode(item.getAreaId());
+                if(areaEntity != null)item.setAreaName(areaEntity.getBaName());
+            }
         });
         return R.success(coachInfoVoPage);
     }
@@ -199,5 +218,38 @@ public class  CoachInfoRepositoryImpl extends BaseController<CoachInfoPageQueryP
         return null;
     }
 
+    @Override
+    @Transactional
+    public ResObject updateCoachInfo(CoachInfoDataEditParam updateParam) {
+        log.info(this.getClass() + "方法请求参数{}",updateParam);
+        // 先修改教练信息
+        if (updateParam == null){
+            log.error("数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        CoachInfoEntity coachInfo = BeanConvertUtils.copy(updateParam, CoachInfoEntity.class);
+        Boolean result = coachInfoService.saveOrUpdate(coachInfo);
+        log.info(this.getClass() + "update-方法请求结果{}",result);
+        // 判断结果
+        if (!result){
+            return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+        }
+        // 变量接受城市数据
+        List<CoachGiveAreaEditParam> teachAreaList = updateParam.getTeachArea();
+        if (teachAreaList.size() > 0){
+            // 循环处理数据
+            teachAreaList.stream().forEach((item) ->{
+                // 设置教练ID
+                item.setCoachId(updateParam.getId());
+            });
+            // 保存数据
+            Boolean coachGiveAreaResult = coachGiveAreaService.saveOrUpdateBatch(BeanConvertUtils.copyList(teachAreaList, CoachGiveAreaEntity.class));
+            // 判断结果
+            if (!coachGiveAreaResult){
+                return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+            }
+        }
+        return R.success();
+    }
 }
 

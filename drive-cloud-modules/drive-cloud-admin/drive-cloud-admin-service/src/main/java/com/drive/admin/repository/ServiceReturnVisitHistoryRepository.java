@@ -1,8 +1,10 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.ServiceReturnVisitHistoryEditParam;
-import com.drive.admin.pojo.dto.ServiceReturnVisitHistoryPageQueryParam;
+import com.drive.admin.pojo.dto.*;
 import com.drive.common.core.base.BaseRepository;
+import com.drive.common.core.base.BasicsRepository;
+import com.drive.common.core.biz.ResObject;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  *
@@ -10,6 +12,20 @@ import com.drive.common.core.base.BaseRepository;
  *
  * @author xiaoguo
  */
-public interface ServiceReturnVisitHistoryRepository extends BaseRepository<ServiceReturnVisitHistoryPageQueryParam, ServiceReturnVisitHistoryEditParam>{
+public interface ServiceReturnVisitHistoryRepository extends BasicsRepository<ServiceReturnVisitHistoryPageQueryParam, ServiceReturnVisitHistoryEditParam,ServiceReturnVisitHistoryInstallParam> {
+
+    /**
+     * 发布回访
+     * @param returnVisitHistoryEditParam
+     * @return
+     */
+    ResObject publishReturnVisit(ServiceReturnVisitHistoryEditParam returnVisitHistoryEditParam);
+
+    /**
+     * 分页查询
+     * @param param
+     * @return
+     */
+    ResObject pageListReturnVisitHistory(StudentStudyEnrollPageQueryParam param);
 }
 

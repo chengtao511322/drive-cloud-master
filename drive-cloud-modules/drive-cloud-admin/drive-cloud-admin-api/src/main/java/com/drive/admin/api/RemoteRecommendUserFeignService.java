@@ -8,6 +8,9 @@ import com.drive.common.core.constant.ServiceNameConstants;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 /**
  * 推广商用户服务
@@ -21,8 +24,16 @@ public interface RemoteRecommendUserFeignService {
      * @param id
      * @return
      */
-
     @GetMapping(value = "/recommendUser/{id}")
     ResObject<RecommendUserVo> get(@PathVariable(value = "id") String id);
+
+    /**
+     *  推广人员信息表列表
+     * @param channelManagerId
+     * @return
+     */
+    // @ApiOperation("推广人员信息表列表")
+    @PostMapping(value = "/recommendUser/getRecommendUserByChannelManagerId/{channelManagerId}")
+    ResObject<List<RecommendUserVo>> getRecommendUserByChannelManagerId(@PathVariable(value = "channelManagerId") String channelManagerId);
 
 }

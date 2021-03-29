@@ -7,7 +7,11 @@ package com.drive.common.core.enums;
  */
 public enum StatusEnum {
     ENABLE("0", "正常"),
-    DISABLE("1", "停用");
+    DISABLE("1", "停用"),
+    NO("0", "否"),
+    YES("1", "是"),
+
+    ;
 
     private final String code;
     private final String info;

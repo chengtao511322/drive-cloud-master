@@ -51,14 +51,14 @@ public class GeneratorMain {
     private static Boolean fileOverride = true;
 
     //table前缀
-    private static String prefix = "t_";
+    private static String prefix = "t";
 
     //模块名称
     private static String modulesName = "admin";
 
     //要生成的表名templatestemplates
     private static String[] tables = {
-            "t_coach_give_area",
+            "t_operator",
     };
 
 
@@ -133,6 +133,7 @@ public class GeneratorMain {
         backendFileMap.put("Mapper.xml",            "/%s/mapper/xml");
         backendFileMap.put("Entity.java",           "/%s/pojo/entity");
         backendFileMap.put("EditParam.java",        "/%s/pojo/dto");
+        backendFileMap.put("InstallParam.java",        "/%s/pojo/dto");
         backendFileMap.put("PageQueryParam.java",   "/%s/pojo/dto");
         backendFileMap.put("Vo.java",               "/%s/pojo/vo");
         backendFileMap.put("MapStruct.java",        "/%s/service/mapstruct");

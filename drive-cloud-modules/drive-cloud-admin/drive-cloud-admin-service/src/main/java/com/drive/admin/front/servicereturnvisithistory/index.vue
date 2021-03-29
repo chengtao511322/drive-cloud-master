@@ -145,28 +145,37 @@
             </el-col>
         </el-row>
 
-        <el-table v-loading="loading" :data="serviceReturnVisitHistoryList" @selection-change="handleSelectionChange">
+        <el-table v-loading="loading" :data="serviceReturnVisitHistoryList" @selection-change="handleSelectionChange"
+                  @sort-change="sortChange"
+                  ref="serviceTable"
+                  stripe
+                  border
+                  header-row-class-name="table-header"
+                  :header-row-style="{
+                                        fontFamily: '微软雅黑 Bold, 微软雅黑 Regular, 微软雅黑'
+                                     }"
+        >
             <el-table-column type="selection" width="55" align="center" />
 
-                                                <el-table-column label="主键" align="center" prop="id" />
-                                                                <el-table-column label="回访类型（1-学车报名；2-考试报名；3-常规训练；4-考试训练）" align="center" prop="returnVisitType" />
-                                                                <el-table-column label="订单明细单号" align="center" prop="orderDetailNo" />
-                                                                <el-table-column label="学员id" align="center" prop="studentId" />
-                                                                <el-table-column label="回访时间" align="center" prop="returnVisitTime" width="180">
+                                                <el-table-column label="主键" align="center" prop="id" sortable="custom"/>
+                                                                <el-table-column label="回访类型（1-学车报名；2-考试报名；3-常规训练；4-考试训练）" align="center" prop="returnVisitType" sortable="custom"/>
+                                                                <el-table-column label="订单明细单号" align="center" prop="orderDetailNo" sortable="custom"/>
+                                                                <el-table-column label="学员id" align="center" prop="studentId" sortable="custom"/>
+                                                                <el-table-column label="回访时间" align="center" prop="returnVisitTime" width="180" sortable="custom">
                         <template slot-scope="scope">
                             <span>{{ parseTime(scope.row.returnVisitTime) }}</span>
                         </template>
                     </el-table-column>
-                                                                <el-table-column label="回访内容" align="center" prop="returnVisitContent" />
-                                                                <el-table-column label="预计下次回访时间" align="center" prop="nextReturnVisitTime" width="180">
+                                                                <el-table-column label="回访内容" align="center" prop="returnVisitContent" sortable="custom"/>
+                                                                <el-table-column label="预计下次回访时间" align="center" prop="nextReturnVisitTime" width="180" sortable="custom">
                         <template slot-scope="scope">
                             <span>{{ parseTime(scope.row.nextReturnVisitTime) }}</span>
                         </template>
                     </el-table-column>
-                                                                <el-table-column label="客服id" align="center" prop="serviceId" />
-                                                                <el-table-column label="是否完结（是，否）" align="center" prop="isEnd" />
-                                                                <el-table-column label="科目类型(1-科目一，2-科目三，3-科目三，4-科目四)" align="center" prop="subjectType" />
-                                                                <el-table-column label="运营商id(数据权限标记)" align="center" prop="operatorId" />
+                                                                <el-table-column label="客服id" align="center" prop="serviceId" sortable="custom"/>
+                                                                <el-table-column label="是否完结（是，否）" align="center" prop="isEnd" sortable="custom"/>
+                                                                <el-table-column label="科目类型(1-科目一，2-科目三，3-科目三，4-科目四)" align="center" prop="subjectType" sortable="custom"/>
+                                                                <el-table-column label="运营商id(数据权限标记)" align="center" prop="operatorId" sortable="custom"/>
                                         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
                     <el-button
@@ -192,7 +201,7 @@
             :total="total"
             :page.sync="queryParams.pageNum"
             :limit.sync="queryParams.pageSize"
-            @pagination="getList"
+            @pagination="getListPage"
         />
 
         <!-- 添加或修改客服回访记录对话框 -->
@@ -365,13 +374,31 @@
                                     };
                 this.resetForm("form");
             },
+            // 后端排序排序
+            sortChange(event) {
+                console.log('sortChange', event )
+                if(!event.order) {
+                    this.queryParams.sortColumn ? delete this.queryParams.sortColumn : ''
+                    this.queryParams.isAsc ? delete this.queryParams.isAsc : ''
+                }
+                this.queryParams.sortColumn = event.prop
+                this.queryParams.isAsc = event.order === 'ascending' ? true : false
+                this.handleQuery()
+            },
             /** 搜索按钮操作 */
             handleQuery() {
                 this.queryParams.pageNum = 1;
-                this.getList();
+                this.getListPage();
             },
             /** 重置按钮操作 */
             resetQuery() {
+                //第一版本
+                //this.resetForm("queryForm");
+                //this.handleQuery();
+
+                this.queryParams.sortColumn ? delete this.queryParams.sortColumn : ''
+                this.queryParams.isAsc ? delete this.queryParams.isAsc : ''
+                this.$refs['serviceTable'].clearSort()
                 this.resetForm("queryForm");
                 this.handleQuery();
             },
@@ -406,7 +433,7 @@
                                 if (response.code === 200) {
                                     this.msgSuccess("修改成功");
                                     this.open = false;
-                                    this.getList();
+                                    this.getListPage();
                                 }
                             });
                         } else {
@@ -414,7 +441,7 @@
                                 if (response.code === 200) {
                                     this.msgSuccess("新增成功");
                                     this.open = false;
-                                    this.getList();
+                                    this.getListPage();
                                 }
                             });
                         }
@@ -431,7 +458,7 @@
                 }).then(function() {
                     return delServiceReturnVisitHistory(ids);
                 }).then(() => {
-                    this.getList();
+                    this.getListPage();
                     this.msgSuccess("删除成功");
                 }).catch(function() {});
             },

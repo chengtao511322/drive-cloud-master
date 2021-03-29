@@ -2,6 +2,7 @@ package com.drive.basics.repository;
 
 import com.drive.basics.pojo.dto.ChannelEditParam;
 import com.drive.basics.pojo.dto.ChannelPageQueryParam;
+import com.drive.basics.pojo.entity.ChannelEntity;
 import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.biz.ResObject;
 
@@ -38,5 +39,13 @@ public interface ChannelRepository extends BaseRepository<ChannelPageQueryParam,
      * @return
      */
     ResObject getParentList();
+
+
+    /**
+     * 数据移东
+     * @param sortNum
+     * @return
+     */
+    ResObject move(ChannelEditParam channelEditParam);
 }
 

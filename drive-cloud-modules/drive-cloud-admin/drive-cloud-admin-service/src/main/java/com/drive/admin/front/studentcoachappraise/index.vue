@@ -181,33 +181,42 @@
             </el-col>
         </el-row>
 
-        <el-table v-loading="loading" :data="studentCoachAppraiseList" @selection-change="handleSelectionChange">
+        <el-table v-loading="loading" :data="studentCoachAppraiseList" @selection-change="handleSelectionChange"
+                  @sort-change="sortChange"
+                  ref="serviceTable"
+                  stripe
+                  border
+                  header-row-class-name="table-header"
+                  :header-row-style="{
+                                        fontFamily: '微软雅黑 Bold, 微软雅黑 Regular, 微软雅黑'
+                                     }"
+        >
             <el-table-column type="selection" width="55" align="center" />
 
-                                                <el-table-column label="编号" align="center" prop="id" />
-                                                                <el-table-column label="订单号" align="center" prop="orderNo" />
-                                                                <el-table-column label="教练课程ID" align="center" prop="classId" />
-                                                                <el-table-column label="报名单号（考试，学车）" align="center" prop="enrollNo" />
-                                                                <el-table-column label="评价用户id（学员id）" align="center" prop="studentId" />
-                                                                <el-table-column label="学员评价内容" align="center" prop="appraiseReplyContent" />
-                                                                <el-table-column label="学员评价分数" align="center" prop="appraiseReplyGrade" />
-                                                                <el-table-column label="学员评价时间" align="center" prop="appraiseReplyTime" width="180">
+                                                <el-table-column label="编号" align="center" prop="id" sortable="custom"/>
+                                                                <el-table-column label="订单号" align="center" prop="orderNo" sortable="custom"/>
+                                                                <el-table-column label="教练课程ID" align="center" prop="classId" sortable="custom"/>
+                                                                <el-table-column label="报名单号（考试，学车）" align="center" prop="enrollNo" sortable="custom"/>
+                                                                <el-table-column label="评价用户id（学员id）" align="center" prop="studentId" sortable="custom"/>
+                                                                <el-table-column label="学员评价内容" align="center" prop="appraiseReplyContent" sortable="custom"/>
+                                                                <el-table-column label="学员评价分数" align="center" prop="appraiseReplyGrade" sortable="custom"/>
+                                                                <el-table-column label="学员评价时间" align="center" prop="appraiseReplyTime" width="180" sortable="custom">
                         <template slot-scope="scope">
                             <span>{{ parseTime(scope.row.appraiseReplyTime) }}</span>
                         </template>
                     </el-table-column>
-                                                                <el-table-column label="回复内容" align="center" prop="replyContent" />
-                                                                <el-table-column label="回复时间" align="center" prop="replyTime" width="180">
+                                                                <el-table-column label="回复内容" align="center" prop="replyContent" sortable="custom"/>
+                                                                <el-table-column label="回复时间" align="center" prop="replyTime" width="180" sortable="custom">
                         <template slot-scope="scope">
                             <span>{{ parseTime(scope.row.replyTime) }}</span>
                         </template>
                     </el-table-column>
-                                                                <el-table-column label="被评价用户id" align="center" prop="replyId" />
-                                                                <el-table-column label="被评价用户类型（2-教练；3-运维）" align="center" prop="replyType" />
-                                                                <el-table-column label="被评价用户头像" align="center" prop="replyHeadUrl" />
-                                                                <el-table-column label="学员头像" align="center" prop="studentHeadUrl" />
-                                                                <el-table-column label="学员评价类型（1-评价 2-投诉）" align="center" prop="appraiseType" />
-                                                                <el-table-column label="运营商id(数据权限标记)" align="center" prop="operatorId" />
+                                                                <el-table-column label="被评价用户id" align="center" prop="replyId" sortable="custom"/>
+                                                                <el-table-column label="被评价用户类型（2-教练；3-运维）" align="center" prop="replyType" sortable="custom"/>
+                                                                <el-table-column label="被评价用户头像" align="center" prop="replyHeadUrl" sortable="custom"/>
+                                                                <el-table-column label="学员头像" align="center" prop="studentHeadUrl" sortable="custom"/>
+                                                                <el-table-column label="学员评价类型（1-评价 2-投诉）" align="center" prop="appraiseType" sortable="custom"/>
+                                                                <el-table-column label="运营商id(数据权限标记)" align="center" prop="operatorId" sortable="custom"/>
                                         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
                     <el-button
@@ -233,7 +242,7 @@
             :total="total"
             :page.sync="queryParams.pageNum"
             :limit.sync="queryParams.pageSize"
-            @pagination="getList"
+            @pagination="getListPage"
         />
 
         <!-- 添加或修改学员教练互评表对话框 -->
@@ -446,13 +455,31 @@
                                     };
                 this.resetForm("form");
             },
+            // 后端排序排序
+            sortChange(event) {
+                console.log('sortChange', event )
+                if(!event.order) {
+                    this.queryParams.sortColumn ? delete this.queryParams.sortColumn : ''
+                    this.queryParams.isAsc ? delete this.queryParams.isAsc : ''
+                }
+                this.queryParams.sortColumn = event.prop
+                this.queryParams.isAsc = event.order === 'ascending' ? true : false
+                this.handleQuery()
+            },
             /** 搜索按钮操作 */
             handleQuery() {
                 this.queryParams.pageNum = 1;
-                this.getList();
+                this.getListPage();
             },
             /** 重置按钮操作 */
             resetQuery() {
+                //第一版本
+                //this.resetForm("queryForm");
+                //this.handleQuery();
+
+                this.queryParams.sortColumn ? delete this.queryParams.sortColumn : ''
+                this.queryParams.isAsc ? delete this.queryParams.isAsc : ''
+                this.$refs['serviceTable'].clearSort()
                 this.resetForm("queryForm");
                 this.handleQuery();
             },
@@ -487,7 +514,7 @@
                                 if (response.code === 200) {
                                     this.msgSuccess("修改成功");
                                     this.open = false;
-                                    this.getList();
+                                    this.getListPage();
                                 }
                             });
                         } else {
@@ -495,7 +522,7 @@
                                 if (response.code === 200) {
                                     this.msgSuccess("新增成功");
                                     this.open = false;
-                                    this.getList();
+                                    this.getListPage();
                                 }
                             });
                         }
@@ -512,7 +539,7 @@
                 }).then(function() {
                     return delStudentCoachAppraise(ids);
                 }).then(() => {
-                    this.getList();
+                    this.getListPage();
                     this.msgSuccess("删除成功");
                 }).catch(function() {});
             },

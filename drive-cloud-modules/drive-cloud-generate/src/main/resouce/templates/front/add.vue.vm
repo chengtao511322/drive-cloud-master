@@ -40,7 +40,8 @@
 
 <script>
     import { list${entity},listPage${entity}, get${entity}, del${entity}, add${entity}, update${entity}, export${entity} } from "@/api/${cfg.moduleName}/${className}";
-    import { Utils } from "@joyo-shared/utils";
+    import {Utils} from "@joyo-shared/utils";
+
     export default {
         name: "${entity}",
         data() {

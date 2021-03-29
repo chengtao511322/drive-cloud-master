@@ -45,6 +45,10 @@ public enum  SubResultCode {
     DATA_DELETE_FAILL("DATA_DELETE_FAILL","数据删除失败"),
     DATA_SEARCH_SUCCESS("DATA_SEARCH_SUCCESS","数据查询成功"),
     DATA_SEARCH_FAILL("DATA_SEARCH_FAILL","数据查询失败"),
+    DATA_STATUS_SUCCESS("DATA_STATUS_SUCCESS","数据状态执行成功"),
+    DATA_STATUS_FAILL("DATA_STATUS_FAILL","数据状态执行失败"),
+    EXPORT_DATA_SUCCESS("EXPORT_DATA_SUCCESS","导出数据成功"),
+    export_DATA_FAILL("export_DATA_FAILL","导出数据失败"),
 
     /*优惠券业务错误码*/
     COUPON_PRESENT_SUCCESS("COUPON_PRESENT_SUCCESS","优惠券领取成功"),
@@ -77,6 +81,7 @@ public enum  SubResultCode {
     ORDER_UPDATE_STATUS_FAILL("ORDER_UPDATE_STATUS_FAILL","订单状态修改失败"),
     ORDER_PAY_DURING("ORDER_PAY_DURING","订单支付中......"),
     ORDER_CREATE_SUCCESS("ORDER_CREATE_SUCCESS","订单创建成功"),
+    ORDER_PAY_SUCCESS_NOT_CANCEL("ORDER_PAY_SUCCESS_NOT_CANCEL","该订单已经支付,不可取消"),
 
     /*评论回复*/
     ADD_COMMENT_BACK_ERROR("ADD_COMMENT_BACK_ERROR","添加评论失败"),
@@ -91,6 +96,13 @@ public enum  SubResultCode {
     /*币*/
     COIN_COUNT_INSUFFICIENT("COIN_COUNT_INSUFFICIENT","币数量不足"),
 
+
+    WALLET_SETTLE_SUCCESS("WALLET_SETTLE_SUCCESS","钱包结算成功"),
+    WALLET_SETTLE_FAIL("WALLET_SETTLE_FAIL","钱包结算失败"),
+
+    STUDENT_NO_ENROLL("STUDENT_NO_ENROLL","该学员未报名"),
+    NO_BINDING_COACH("NO_BINDING_COACH","没有绑定教练，请先绑定教练"),
+    STATUS_NO_OPERATION("STATUS_NO_OPERATION","该状态下不允许该操作")
     ;
     /*状态码*/
     private String subCode;

@@ -2,6 +2,7 @@ package com.drive.marketing.pojo.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.drive.common.core.base.BaseEntity;
 import lombok.Data;
@@ -53,6 +54,8 @@ public class ActivityApplyEntity extends BaseEntity {
 	private Integer status;
 
 	// 删除状态 0 未删除1删除
+	@TableLogic
+	@TableField(fill = FieldFill.INSERT,value="is_delete")
 	private Integer isDelete;
 
 	// 运营位置 ，存放省市区编码，多个用逗号隔开

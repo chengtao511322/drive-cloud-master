@@ -37,4 +37,16 @@ public class CustomException extends RuntimeException {
     public String getCode() {
         return this.code;
     }
+
+    public String getSubCode() {
+        return subCode;
+    }
+
+
+
+    public String getSubMsg() {
+        return subMsg;
+    }
+
+
 }

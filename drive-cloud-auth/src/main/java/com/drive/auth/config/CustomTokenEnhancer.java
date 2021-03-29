@@ -32,8 +32,6 @@ public class CustomTokenEnhancer implements TokenEnhancer {
             additionalInfo.put(SecurityConstants.DETAILS_USERNAME, loginUser.getUsername());
             ((DefaultOAuth2AccessToken)oAuth2AccessToken).setAdditionalInformation(additionalInfo);
         }
-
-
         return oAuth2AccessToken;
     }
 }

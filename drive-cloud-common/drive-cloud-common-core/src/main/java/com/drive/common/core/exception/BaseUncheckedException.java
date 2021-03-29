@@ -21,6 +21,10 @@ public class BaseUncheckedException extends RuntimeException implements BaseExce
      */
     protected int code;
 
+    private String subCode;
+
+    private String subMsg;
+
     public BaseUncheckedException(Throwable cause) {
         super(cause);
     }
@@ -36,6 +40,15 @@ public class BaseUncheckedException extends RuntimeException implements BaseExce
         this.code = code;
         this.message = message;
     }
+
+    public BaseUncheckedException(int code, String message,String subCode,String subMsg) {
+        super(message);
+        this.code = code;
+        this.message = message;
+        this.subCode = subCode;
+        this.subMsg = subMsg;
+    }
+
 
     public BaseUncheckedException(int code, String format, Object... args) {
         super(String.format(format, args));
@@ -53,4 +66,16 @@ public class BaseUncheckedException extends RuntimeException implements BaseExce
     public int getCode() {
         return code;
     }
+
+    public String getSubCode() {
+        return subCode;
+    }
+
+
+
+    public String getSubMsg() {
+        return subMsg;
+    }
+
+
 }

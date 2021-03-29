@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
         log.info("发生异常[{}],返回错误[{}]", e, exception.getMessage());
         log.error("程序运行发生异常[{}]",exception);
         log.info("异常返回日志[{}]",e.toString());
-        return R.failure(exception.getCode(),exception.getMessage());
+        return R.failure(Integer.parseInt(exception.getCode()),exception.getMessage(),exception.getSubCode(),exception.getSubMsg());
     }
 
     /**

@@ -1,11 +1,10 @@
 # drive-cloud 微服务系统
-
+mvn  clean package -D maven.test.skip=true
 ## 项目介绍
 **drive-cloud**是一款微服务系统，采用前后端分离模式， 后台采用Spring cloud Alibaba作为微服务框架，基于OAuth2 的RBAC权限管理，集成Sentinel从流量控制、熔断降级、系统负载等多个维度保护服务的稳定性，采用Nacos作为注册中心和配置中心。
 
 ## 演示地址
 暂无，需要自己clone到本地运行。
-
 ## 技术选型
 - Spring cloud Alibaba
 - Spring Security oauth2

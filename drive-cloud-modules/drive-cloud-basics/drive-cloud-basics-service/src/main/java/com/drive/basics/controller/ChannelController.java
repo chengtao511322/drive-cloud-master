@@ -120,6 +120,14 @@ public class ChannelController extends BaseController<ChannelPageQueryParam, Cha
 	public ResObject updateChannel(@RequestBody ChannelEditParam channelEditParam) {
 		return channelRepository.updateChannel(channelEditParam);
 	}
+	@ApiOperation("栏目移动制定")
+	@ApiImplicitParam(name = "updateChannel ", value = "修改栏目", dataType = "updateChannel")
+	//@PreAuthorize("hasPermission('/basics/channel',  'basics:channel:edit')")
+	@EventLog(message = "栏目移动制定", businessType = EventLogEnum.UPDATE)
+	@PostMapping("/move")
+	ResObject move(@RequestBody  ChannelEditParam channelEditParam)  {
+		return channelRepository.move(channelEditParam);
+	}
 
 	/**
 	* 删除栏目

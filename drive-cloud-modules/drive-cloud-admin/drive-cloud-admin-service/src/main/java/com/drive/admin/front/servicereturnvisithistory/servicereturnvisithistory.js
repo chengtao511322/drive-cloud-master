@@ -5,7 +5,7 @@ import request from '@/utils/request'
 export function listPageServiceReturnVisitHistory(query) {
   return request({
     url: '/admin/serviceReturnVisitHistory/pageList',
-    method: 'post',
+    method: 'get',
     params: query
   })
 }
@@ -15,7 +15,7 @@ export function listPageServiceReturnVisitHistory(query) {
 export function listServiceReturnVisitHistory(query) {
   return request({
     url: '/admin/serviceReturnVisitHistory/findList',
-    method: 'post',
+    method: 'get',
     params: query
   })
 }

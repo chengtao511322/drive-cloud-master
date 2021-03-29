@@ -20,6 +20,9 @@
         <module>drive-cloud-basics</module>
         <module>drive-cloud-member</module>
         <module>drive-cloud-admin</module>
+        <module>drive-cloud-wechat</module>
+        <module>drive-cloud-wechat/drive-cloud-wechat-service</module>
+        <module>drive-cloud-wechat/drive-cloud-wechat-api</module>
     </modules>
 
     <build>

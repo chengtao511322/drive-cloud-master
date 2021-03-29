@@ -5,7 +5,6 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.drive.basics.feign.RemoteChannelFeignService;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
@@ -17,6 +16,7 @@ import com.drive.marketing.pojo.dto.ChannelManagerActivityEditParam;
 import com.drive.marketing.pojo.dto.ChannelManagerActivityPageQueryParam;
 import com.drive.marketing.pojo.entity.ChannelManagerActivityEntity;
 import com.drive.marketing.pojo.vo.ChannelManagerActivityVo;
+import com.drive.marketing.pojo.vo.CouponGetVo;
 import com.drive.marketing.repository.ActivityInfoRepository;
 import com.drive.marketing.repository.ChannelManagerActivityRepository;
 import com.drive.marketing.repository.RecommendManagertRepository;
@@ -38,6 +38,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -98,10 +99,21 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 		return channelManagerActivityRepository.findList(param);
 	}
 
+	@ApiOperation("数据同步")
+	@GetMapping(value = "/synData/{activityId}")
+	public ResObject synData(@PathVariable String activityId) throws ExecutionException, InterruptedException {
+		return channelManagerActivityRepository.synData(activityId);
+	}
+
 	@ApiOperation("渠道经理分页列表")
 	@GetMapping(value = "/findPromotionPageList")
 	public ResObject findPromotionPageList(@Valid ChannelManagerActivityPageQueryParam param) {
 		return channelManagerActivityRepository.findPromotionPageList(param);
+	}
+	@ApiOperation("渠道经理分页列表")
+	@GetMapping(value = "/findPromotionPageListByManagerId")
+	public ResObject findPromotionList(@Valid ChannelManagerActivityPageQueryParam param) {
+		return channelManagerActivityRepository.findPromotionPageListByManagerId(param);
 	}
 	@ApiOperation(value = "通过活动ID获取渠道经理 和推广商信息分页列表", notes = "远程调用通过活动ID获取渠道经理 和推广商信息分页列表参数{activityId:活动ID}")
 	@PostMapping(value = "/findChannelManagerOrPromotionPageList")
@@ -259,10 +271,9 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 	@SneakyThrows
 	@EventLog(message = "导出渠道经理 可推广表配置", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(ChannelManagerActivityPageQueryParam param, HttpServletResponse response) {
-		List<ChannelManagerActivityEntity> list = channelManagerActivityService.list(this.getQueryWrapper(channelManagerActivityMapStruct, param));
-		List<ChannelManagerActivityVo> channelManagerActivityVoList = channelManagerActivityMapStruct.toVoList(list);
-		ExcelUtils.exportExcel(channelManagerActivityVoList, ChannelManagerActivityVo.class, "渠道经理 可推广表配置", new ExportParams(), response);
+	public void exportXls(@RequestBody ChannelManagerActivityPageQueryParam param, HttpServletResponse response) {
+		List<ChannelManagerActivityVo> listVo = channelManagerActivityRepository.exportXls(param);
+		ExcelUtils.exportExcel(listVo, ChannelManagerActivityVo.class, "渠道经理可推广表配置", new ExportParams(), response);
 	}
 
 
@@ -279,6 +290,14 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 		return channelManagerActivityRepository.saveBatch(channelManagerActivityEditParam);
 	}
 
+	@ApiOperation("发布渠道经理数据")
+	@ApiImplicitParam(name = "ChannelManagerActivityEditParam ", value = "发布渠道经理数据", dataType = "ChannelManagerActivityEditParam")
+	@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:publishChannelManagerData')")
+	@EventLog(message = "发布渠道经理数据", businessType = EventLogEnum.CREATE)
+	@PostMapping("publishChannelManagerData")
+	ResObject publishChannelManagerData(@RequestBody  ChannelManagerActivityEditParam channelManagerActivityEditParam){
+		return channelManagerActivityRepository.publishChannelManager(channelManagerActivityEditParam);
+	}
 
 	/**
 	 * 渠道经理 可推广表配置 分页列表
@@ -338,8 +357,12 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 	 */
 	@EventLog(message = "渠道经理状态修改", businessType = EventLogEnum.UPDATE)
 	@PostMapping("/changeChannelManagerStatus")
-	@Transactional
 	public ResObject changeChannelManagerStatus(@RequestBody ChannelManagerActivityEditParam channelManagerActivityEditParam) {
 		return channelManagerActivityRepository.changeChannelManagerStatus(channelManagerActivityEditParam);
+	}
+	@EventLog(message = "推广商状态修改", businessType = EventLogEnum.UPDATE)
+	@PostMapping("/changePromotionUserStatus")
+	public ResObject changePromotionUserStatus(@RequestBody ChannelManagerActivityEditParam channelManagerActivityEditParam) {
+		return channelManagerActivityRepository.changePromotionUserStatus(channelManagerActivityEditParam);
 	}
 }

@@ -32,9 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
 		builder.indentOutput(true).dateFormat(new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT));
 		builder.serializerByType(Long.class, new CustomLongConverter());
 		builder.serializerByType(Long.TYPE, new CustomLongConverter());
-
 	 	builder.modules(new RestJavaTimeModule());
-
 		converters.add(0, new MappingJackson2HttpMessageConverter(builder.build()));
 	}
 

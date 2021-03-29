@@ -1,10 +1,9 @@
 package com.drive.admin.service.impl;
 
 import com.drive.admin.mapper.DriveSchoolMapper;
+import com.drive.admin.pojo.entity.DriveSchoolEntity;
 import com.drive.admin.service.DriveSchoolService;
 import com.drive.common.core.base.BaseService;
-import com.drive.admin.pojo.entity.DriveSchoolEntity;
-
 import org.springframework.stereotype.Service;
 
 /**

@@ -82,9 +82,10 @@ public class CouponController extends BaseController<CouponPageQueryParam, Coupo
 	@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid CouponPageQueryParam param) {
-		QueryWrapper<CouponEntity> queryWrapper = new QueryWrapper<CouponEntity>();
-		queryWrapper.eq(param.getType() !=null,"type",param.getType());
-		queryWrapper.like(StrUtil.isNotEmpty(param.getName()),"name",param.getName());
+		String searchName = param.getName();
+		param.setName(null);
+		QueryWrapper<CouponEntity> queryWrapper = this.getQueryWrapper(couponMapStruct,param);
+		queryWrapper.like(StrUtil.isNotEmpty(searchName),"name",searchName);
 		queryWrapper.orderByDesc("create_time");
 		Page<CouponEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
 		IPage<CouponEntity> pageList = couponService.page(page, queryWrapper);

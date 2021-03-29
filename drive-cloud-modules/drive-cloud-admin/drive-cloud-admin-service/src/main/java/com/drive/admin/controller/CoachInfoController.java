@@ -1,5 +1,6 @@
 package com.drive.admin.controller;
 
+import com.drive.admin.pojo.dto.CoachInfoDataEditParam;
 import com.drive.admin.pojo.dto.CoachInfoEditParam;
 import com.drive.admin.pojo.dto.CoachInfoPageQueryParam;
 import com.drive.admin.pojo.entity.CoachInfoEntity;
@@ -86,6 +87,17 @@ public class CoachInfoController extends BaseController<CoachInfoPageQueryParam,
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody CoachInfoEditParam coachInfoEditParam) {
 		return coachInfoRepository.update(coachInfoEditParam);
+	}
+	/**
+	* 修改教练信息表 并且修改教练授课区域
+	*/
+	@ApiOperation("修改教练信息表")
+	@ApiImplicitParam(name = "CoachInfoDataEditParam ", value = "修改教练信息表 并且修改教练授课区域", dataType = "CoachInfoDataEditParam")
+	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:updateCoachInfo')")
+	@EventLog(message = "修改教练信息表 并且修改教练授课区域", businessType = EventLogEnum.UPDATE)
+	@PutMapping("/updateCoachInfo")
+	public ResObject updateCoachInfo(@Valid @RequestBody CoachInfoDataEditParam coachInfoEditParam) {
+		return coachInfoRepository.updateCoachInfo(coachInfoEditParam);
 	}
 
 	/**

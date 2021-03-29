@@ -34,13 +34,10 @@ public class ChannelManagerActivityEditParam {
     private BigDecimal promotionAmount;
     // 渠道经理所得
     private BigDecimal channelManagerAmount;
-
     // 班型名称
     private String projectName;
-
     // 产品价格
     private BigDecimal projectAmount;
-
     // 状态  0 正常 1 禁言
     private String status;
     // 删除状态 0正常 1已经删除

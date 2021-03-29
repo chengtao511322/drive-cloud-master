@@ -37,7 +37,7 @@ public class BannerEntity extends BaseEntity {
 
 	// 删除状态 0 未删除1删除
 	@TableLogic
-	@TableField(value="is_delete")
+	@TableField(fill = FieldFill.INSERT,value="is_delete")
 	private String isDelete;
 
 	// 添加者

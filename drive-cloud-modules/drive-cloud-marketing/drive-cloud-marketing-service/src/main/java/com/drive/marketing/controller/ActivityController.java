@@ -2,23 +2,29 @@ package com.drive.marketing.controller;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.drive.basics.feign.RemoteChannelAuthFeignService;
+import com.drive.basics.pojo.dto.ChannelAuthEditParam;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.enums.EventLogEnum;
+import com.drive.common.core.enums.StatusEnum;
 import com.drive.common.data.utils.ExcelUtils;
 import com.drive.common.log.annotation.EventLog;
 import com.drive.marketing.pojo.dto.ActivityEditParam;
 import com.drive.marketing.pojo.dto.ActivityInfoPageQueryParam;
 import com.drive.marketing.pojo.dto.CouponGetPageQueryParam;
 import com.drive.marketing.pojo.entity.ActivityInfoEntity;
+import com.drive.marketing.pojo.entity.ChannelManagerActivityEntity;
 import com.drive.marketing.pojo.vo.ActivityCouponRelationVo;
 import com.drive.marketing.pojo.vo.ActivityInfoVo;
 import com.drive.marketing.repository.ActivityInfoRepository;
 import com.drive.marketing.repository.ActivityRepository;
 import com.drive.marketing.service.ActivityCouponRelationService;
 import com.drive.marketing.service.ActivityProjectSettingService;
+import com.drive.marketing.service.ChannelManagerActivityService;
 import com.drive.marketing.service.IActivityInfoService;
 import com.drive.marketing.service.mapstruct.ActivityMapStruct;
 import io.swagger.annotations.Api;
@@ -28,6 +34,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.integration.redis.util.RedisLockRegistry;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +44,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 @Api(tags = "活动管理")
 @Slf4j
@@ -63,6 +71,15 @@ public class ActivityController extends BaseController<ActivityInfoPageQueryPara
     @Autowired
     private ActivityInfoRepository activityInfoRepository;
 
+    @Autowired
+    private ChannelManagerActivityService channelManagerActivityService;
+
+    @Autowired
+    private RemoteChannelAuthFeignService channelAuthFeignService;
+
+    @Autowired
+    private RedisLockRegistry redisLockRegistry;
+
     /**
      * 部门 分页列表
      */
@@ -72,6 +89,12 @@ public class ActivityController extends BaseController<ActivityInfoPageQueryPara
         return activityInfoRepository.pageList(param);
     }
 
+   /* @ApiOperation("活动分页列表")
+    @GetMapping("/{account}")
+    public ResObject transfer(@Valid String account) {
+        return activityRepository.transfer(account);
+    }*/
+
 
     /**
      * 获取用户信息
@@ -80,8 +103,8 @@ public class ActivityController extends BaseController<ActivityInfoPageQueryPara
     @ApiImplicitParam(name = "activityId", required = true, dataType = "String", paramType = "path")
     @GetMapping(value = {"/", "/{activityId}"})
     public ResObject getInfo(@PathVariable(value = "activityId", required = false) String activityId) {
-        if (StrUtil.isEmpty(activityId)){
-            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        if (StrUtil.isEmpty(activityId)) {
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(), SubResultCode.PARAMISBLANK.subMsg());
         }
         ActivityInfoEntity activityInfoEntity = activityInfoService.getById(activityId);
         ActivityInfoVo activityInfoVo = activityMapStruct.toVo(activityInfoEntity);
@@ -141,15 +164,14 @@ public class ActivityController extends BaseController<ActivityInfoPageQueryPara
     }
 
 
-
     @PostMapping("/publishActivity")
     @Transactional
     @ApiOperation(value = "发布活动", notes = "远程调用发布活动")
-    ResObject publishActivity(@RequestBody ActivityEditParam activityEditParam)  {
-        log.info(this.getClass() + "------publishActivity方法请求参数{}",activityEditParam);
-        if (StrUtil.isEmpty(activityEditParam.getZoneName())){
+    ResObject publishActivity(@RequestBody ActivityEditParam activityEditParam) {
+        log.info(this.getClass() + "------publishActivity方法请求参数{}", activityEditParam);
+        if (StrUtil.isEmpty(activityEditParam.getZoneName())) {
             log.error("发布活动出错，参数空");
-            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(), SubResultCode.PARAMISBLANK.subMsg());
         }
         /*// 先保存优惠券
         // 转化DTO
@@ -210,16 +232,15 @@ public class ActivityController extends BaseController<ActivityInfoPageQueryPara
         }
         Boolean activityProjectSettingResult = activityProjectSettingService.saveBatch(activityProjectSettings);
         return R.success(batchResult);*/
-       return activityRepository.publishActivity(activityEditParam);
+        return activityRepository.publishActivity(activityEditParam);
     }
-
 
 
     @PostMapping("/updateActivity")
     @ApiOperation(value = "修改活动", notes = "远程调用修改活动")
     @Transactional
-    ResObject updateActivity(@RequestBody ActivityEditParam activityEditParam)  {
-        log.info(this.getClass() + "------updateActivity方法请求参数{}",activityEditParam);
+    ResObject updateActivity(@RequestBody ActivityEditParam activityEditParam) {
+        log.info(this.getClass() + "------updateActivity方法请求参数{}", activityEditParam);
         /*if (StrUtil.isEmpty(activityEditParam.getId())){
             log.error("发布活动出错，参数空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
@@ -309,43 +330,83 @@ public class ActivityController extends BaseController<ActivityInfoPageQueryPara
 
     /**
      * 通过活动ID获取活动关联的优惠券
+     *
      * @return
      */
     @PostMapping("/getActivityCouponRelation/{activityId}")
     @ApiOperation(value = "通过ID获取查询单个信息", notes = "远程调用通过ID获取查询单个信息参数{id:数据ID}")
-    ResObject getActivityCouponRelation(@PathVariable("activityId")String activityId){
-        log.info(this.getClass() + "------getActivityCouponRelation方法请求参数{}",activityId);
-        if (StrUtil.isEmpty(activityId)){
-            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+    ResObject getActivityCouponRelation(@PathVariable("activityId") String activityId) {
+        log.info(this.getClass() + "------getActivityCouponRelation方法请求参数{}", activityId);
+        if (StrUtil.isEmpty(activityId)) {
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(), SubResultCode.PARAMISBLANK.subMsg());
         }
-        List<ActivityCouponRelationVo> activityCouponRelationList= activityInfoService.getActivityCouponRelation(activityId);
-        if (activityCouponRelationList.isEmpty()){
+        List<ActivityCouponRelationVo> activityCouponRelationList = activityInfoService.getActivityCouponRelation(activityId);
+        if (activityCouponRelationList.isEmpty()) {
             log.error("数据空");
-            return R.failure(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+            return R.failure(SubResultCode.DATA_NULL.subCode(), SubResultCode.DATA_NULL.subMsg());
         }
         // do 转化
         return R.success(activityCouponRelationList);
-    };
+    }
+
+    ;
 
     @GetMapping("/getCouponByActivityId/{activityId}")
     @ApiOperation(value = "通过活动ID获取活动关联优惠券信息", notes = "远程调用通过活动ID获取活动关联优惠券信息参数{activityId:活动ID}")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="query", name = "activityId", value = "key", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "activityId", value = "key", required = true, dataType = "String"),
     })
-    ResObject getCouponByActivityId(@PathVariable("activityId")String activityId){
+    ResObject getCouponByActivityId(@PathVariable("activityId") String activityId) {
         return activityInfoRepository.getCouponByActivityId(activityId);
-    };
+    }
+
+    ;
 
     @PostMapping("/findCouponPageListByActivityId")
     @ApiOperation(value = "通过活动ID分页获取活动关联优惠券信息", notes = "远程调用通过活动ID分页获取活动关联优惠券信息；参数{activityId:活动ID;pageNum}")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="query", name = "activityId", value = "key", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType="query", name = "status", value = "key", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType="query", name = "pageNum", value = "0", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType="query", name = "pageSize", value = "10", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "activityId", value = "key", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "status", value = "key", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "pageNum", value = "0", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "pageSize", value = "10", required = true, dataType = "String"),
     })
-    ResObject findCouponPageListByActivityId(@RequestBody CouponGetPageQueryParam couponGetPageQueryParam){
+    ResObject findCouponPageListByActivityId(@RequestBody CouponGetPageQueryParam couponGetPageQueryParam) {
         return activityInfoRepository.findCouponPageListByActivityId(couponGetPageQueryParam);
-    };
+    }
+
+    ;
+
+    @PostMapping("/synData")
+    @ApiOperation(value = "数据同步测试", notes = "数据同步测试")
+    ResObject synData(@RequestBody ActivityEditParam activityEditParam) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("activity_id", activityEditParam.getId());
+        queryWrapper.groupBy("user_id");
+        List<ChannelManagerActivityEntity> channelManagerActivityList = channelManagerActivityService.list(queryWrapper);
+
+        if (channelManagerActivityList.size() > 0) {
+            channelManagerActivityList.stream().forEach((item) -> {
+                String lockKey = "activity:" + item.getUserId();
+
+                Lock lock = redisLockRegistry.obtain(lockKey);
+                try {
+                    lock.lock();
+                    ChannelAuthEditParam channelAuthEditParam = new ChannelAuthEditParam();
+                    // 运营商
+                    channelAuthEditParam.setTenantId(activityEditParam.getTenantId());
+                    channelAuthEditParam.setUserId(item.getUserId());
+                    channelAuthEditParam.setChannelId(activityEditParam.getChannelId());
+                    channelAuthEditParam.setCreateUser("系统数据同步");
+                    channelAuthFeignService.updateChannelAuth(channelAuthEditParam);
+                    //todo
+
+                } finally {
+                    lock.unlock();
+                }
+            });
+
+        }
+    return R.success();
+    }
 
 }

@@ -61,4 +61,6 @@
     <update id="updateByEnrollNo" parameterType="com.drive.admin.pojo.entity.StudentStudyEnrollEntity">
 
     </update>
+
+
 </mapper>

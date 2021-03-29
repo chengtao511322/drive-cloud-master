@@ -32,4 +32,6 @@ public class CommonException extends BaseCheckedException {
     public String toString() {
         return "BizException [message=" + message + ", code=" + code + "]";
     }
+
+
 }

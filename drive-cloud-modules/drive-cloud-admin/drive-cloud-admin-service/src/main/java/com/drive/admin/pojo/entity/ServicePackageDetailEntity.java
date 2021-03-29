@@ -35,6 +35,7 @@ public class ServicePackageDetailEntity extends BaseEntity {
 
 	// 是否删除（1、是，0、否）
 	@TableLogic
+	@TableField(fill = FieldFill.INSERT,value="is_delete")
 	private String isDelete;
 
 	// 创建时间

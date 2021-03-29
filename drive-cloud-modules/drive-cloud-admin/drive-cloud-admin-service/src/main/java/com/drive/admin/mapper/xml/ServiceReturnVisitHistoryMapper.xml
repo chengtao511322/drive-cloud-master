@@ -22,4 +22,65 @@
             id, return_visit_type, order_detail_no, student_id, return_visit_time, return_visit_content, next_return_visit_time, service_id, is_end, subject_type, operator_id
     </sql>
 
+    <select id="pageListReturnVisitHistory" resultType="com.drive.admin.pojo.vo.ReturnVisitHistoryEnrollVo">
+
+        SELECT
+            t1.id,
+            t1.return_visit_type as returnVisitType,
+            t1.order_detail_no AS orderDetailNo,
+            t1.student_id AS studentId,
+            t1.return_visit_time AS returnVisitTime,
+            t1.return_visit_content AS returnVisitContent,
+            t1.next_return_visit_time AS nextReturnVisitTime,
+            t2.study_enroll_no AS studyEnrollNo,
+            t2.province_id AS provinceId,
+            t2.city_id AS cityId,
+            t2.area_id AS areaId,
+            t2.longitude,
+            t2.latitude,
+            t2.student_id AS studentId,
+            t2.real_name AS realName,
+            t2.id_card AS idCard,
+            t2.telephone,
+            t2.age,
+            t2.sex,
+            t2.drive_type AS driveType,
+            t2.service_charge AS serviceCharge,
+            t2.enroll_status AS enrollStatus,
+            t2.drive_school_id AS driveSchoolId,
+            t2.drive_school_name AS driveSchoolName,
+            t2.price,
+            t2.id_card_path_positive AS idCardPathPositive,
+            t2.id_card_path_negative AS idCardPathNegative,
+            t2.live_prove_positive AS liveProvePositive,
+            t2.live_prove_negative AS liveProveNegative,
+            t2.address,
+            t2.test_result_path AS testResultPath,
+            t2.enroll_account_no AS enrollAccountNo,
+            t2.enroll_password AS enrollPassword,
+            t2.actual_enroll_time AS actualEnrollTime,
+            t2.user_id AS userId,
+            t2.line_under_user_id AS lineUnderUserId,
+            t2.be_speak_meet_time AS beSpeakMeetTime,
+            t2.be_speak_meet_address AS beSpeakMeetAddress,
+            t2.cancel_time AS cancelTime,
+            t2.cancel_reason AS cancelReason,
+            t2.is_intent_enroll AS isIntentEnroll,
+            t2.contact_time AS contactTime,
+            t2.intent_enroll_time AS intentEnrollTime,
+            t2.intent_enroll_school_id AS intentEnrollSchoolId,
+            t2.create_time AS createTime,
+            t2.update_time AS updateTime,
+            t2.is_meet_give AS isMeetGive,
+            t2.meet_gice_price AS meetGicePrice,
+            t2.student_school_id AS studentSchoolId,
+            t2.id_is_return AS idIsReturn,
+            t2.operator_id AS operatorId,
+            t2.enroll_type AS enrollType,
+            t2.is_in_study AS isInStudy
+            FROM  t_service_return_visit_history t1
+    LEFT JOIN t_student_study_enroll t2  on t1.order_detail_no=t2.study_enroll_no
+    ${ew.customSqlSegment}
+
+    </select>
 </mapper>

@@ -31,7 +31,8 @@ public class CouponVo {
 
 	// 使用平台：0->全部；1->移动；2->PC  ；3->微信 
 	@Excel(name = "使用平台：0->全部；1->移动；2->PC  ；3->微信 ", width = 20)
-	private Integer platform;
+	// 使用平台：0->全部；1->移动；2->PC  ；3->微信
+	private String platform;
 
 	// 总发行数量
 	@Excel(name = "总发行数量", width = 20)

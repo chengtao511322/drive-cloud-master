@@ -8,5 +8,4 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @ComponentScan(value = {"com.drive.common.data"})
 public class AutoConfiguration {
-
 }

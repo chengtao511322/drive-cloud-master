@@ -1,6 +1,7 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.*;
+import com.drive.admin.pojo.dto.CoachGiveAreaEditParam;
+import com.drive.admin.pojo.dto.CoachGiveAreaPageQueryParam;
 import com.drive.common.core.base.BaseRepository;
 
 /**

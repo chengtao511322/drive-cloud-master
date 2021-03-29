@@ -6,23 +6,19 @@ import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.system.pojo.dto.DictItemEditParam;
 import com.drive.system.pojo.dto.DictItemPageQueryParam;
-import com.drive.system.pojo.entity.DictItemEntity;
 import com.drive.system.pojo.entity.DictTypeEntity;
 import com.drive.system.pojo.vo.DictItemVo;
 import com.drive.system.pojo.vo.DictTypeVo;
 import com.drive.system.repository.DictItemRepository;
-import com.drive.system.repository.UserRepository;
 import com.drive.system.service.DictItemService;
 import com.drive.system.service.DictTypeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

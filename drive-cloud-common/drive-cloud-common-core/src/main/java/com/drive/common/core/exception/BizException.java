@@ -29,7 +29,6 @@ public class BizException extends BaseUncheckedException {
         super(code, message);
     }
 
-
     public BizException(int code, String message,String subCode,String subMsg) {
         super(code, message,subCode,subMsg);
     }

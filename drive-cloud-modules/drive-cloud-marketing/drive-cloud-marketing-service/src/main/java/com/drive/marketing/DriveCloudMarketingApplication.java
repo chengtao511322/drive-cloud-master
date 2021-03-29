@@ -4,14 +4,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.lang.management.ManagementFactory;
 
 /**
  * 营销服务
  */
+/*@Import(SpringCloudConfiguration.class)*/
 @EnableFeignClients(basePackages = "com.drive")
 @SpringCloudApplication
+@EnableAsync//开启异步调用
 @Slf4j
 public class DriveCloudMarketingApplication {
 

@@ -90,4 +90,6 @@ public interface Constants {
 
     // 头像路径
     String UPLOAD_HEAD_IMAGES = "/headImg";
+    // /images/78ff6649c0e4477b8045
+    String IMAGES = "/images";
 }

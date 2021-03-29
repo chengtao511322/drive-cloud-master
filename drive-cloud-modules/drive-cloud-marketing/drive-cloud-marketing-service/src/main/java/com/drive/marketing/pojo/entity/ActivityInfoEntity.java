@@ -1,10 +1,10 @@
 package com.drive.marketing.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.baomidou.mybatisplus.annotation.*;
 import com.drive.common.core.base.BaseEntity;
+import com.drive.common.core.enums.StatusEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -46,12 +46,14 @@ public class ActivityInfoEntity extends BaseEntity implements java.io.Serializab
     /**
      * 状态启用，0：否，1是
      */
+    // @JSONField(serialzeFeatures= SerializerFeature.WriteEnumUsingToString)
     private String status;
 
     /**
      * 删除状态：0 没有删除，1：已经删除
      */
     @TableLogic
+    @TableField(fill = FieldFill.INSERT,value="is_delete")
     private String isDelete;
 
     /**
@@ -120,6 +122,9 @@ public class ActivityInfoEntity extends BaseEntity implements java.io.Serializab
     // 推广地址
     private String promotionUrl;
 
+    // 参与方式 1 全员参与，2指定用户参与
+    private Integer participationWay;
 
-
+    // 是否向下继承 渠道经理独享  1 独享 2 非独享
+    private Integer isExclusive;
 }

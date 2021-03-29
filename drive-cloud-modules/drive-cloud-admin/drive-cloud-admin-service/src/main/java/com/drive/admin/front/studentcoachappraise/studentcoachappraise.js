@@ -5,7 +5,7 @@ import request from '@/utils/request'
 export function listPageStudentCoachAppraise(query) {
   return request({
     url: '/admin/studentCoachAppraise/pageList',
-    method: 'post',
+    method: 'get',
     params: query
   })
 }
@@ -15,7 +15,7 @@ export function listPageStudentCoachAppraise(query) {
 export function listStudentCoachAppraise(query) {
   return request({
     url: '/admin/studentCoachAppraise/findList',
-    method: 'post',
+    method: 'get',
     params: query
   })
 }

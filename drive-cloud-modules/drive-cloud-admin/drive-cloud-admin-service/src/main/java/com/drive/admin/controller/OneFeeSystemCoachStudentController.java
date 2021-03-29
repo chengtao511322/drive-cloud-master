@@ -1,33 +1,28 @@
 package com.drive.admin.controller;
 
-import cn.afterturn.easypoi.excel.entity.ExportParams;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Arrays;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import com.drive.admin.pojo.dto.OneFeeSystemCoachStudentEditParam;
+import com.drive.admin.pojo.dto.OneFeeSystemCoachStudentPageQueryParam;
+import com.drive.admin.pojo.entity.OneFeeSystemCoachStudentEntity;
+import com.drive.admin.repository.OneFeeSystemCoachStudentRepository;
+import com.drive.admin.service.OneFeeSystemCoachStudentService;
+import com.drive.admin.service.mapstruct.OneFeeSystemCoachStudentMapStruct;
+import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.enums.EventLogEnum;
-import com.drive.common.data.utils.ExcelUtils;
 import com.drive.common.log.annotation.EventLog;
 import io.swagger.annotations.Api;
-import com.drive.common.core.base.BaseController;
-import com.drive.admin.pojo.entity.*;
-import com.drive.admin.pojo.vo.*;
-import com.drive.admin.pojo.dto.*;
-import com.drive.admin.service.mapstruct.*;
-import com.drive.admin.service.OneFeeSystemCoachStudentService;
-import com.drive.admin.repository.OneFeeSystemCoachStudentRepository;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.util.Arrays;
 
 
 /**
@@ -78,6 +73,19 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 		return oneFeeSystemCoachStudentRepository.getById(id);
 	}
 
+
+	/**
+	 * 通过订单号查询学员教练关联表数据
+	 * @param orderNo
+	 * @return
+	 */
+	@ApiOperation("获取一费制学员教练关联表")
+	@ApiImplicitParam(name = "orderNo", required = true, dataType = "String", paramType = "path")
+	@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:query')")
+	@GetMapping("/getCoachStudentByOrderNo/{orderNo}")
+	ResObject getCoachStudentByOrderNo(@PathVariable String orderNo){
+		return oneFeeSystemCoachStudentRepository.getCoachStudentByOrderNo(orderNo);
+	}
 	/**
 	* 新增一费制学员教练关联表
 	*/
@@ -88,6 +96,15 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	@PostMapping
 	public ResObject save(@Valid @RequestBody OneFeeSystemCoachStudentEditParam oneFeeSystemCoachStudentEditParam) {
 		return oneFeeSystemCoachStudentRepository.save(oneFeeSystemCoachStudentEditParam);
+	}
+
+	@ApiOperation("绑定一费制学员教练关联表")
+	@ApiImplicitParam(name = "OneFeeSystemCoachStudentEditParam ", value = "新增一费制学员教练关联表", dataType = "OneFeeSystemCoachStudentEditParam")
+	@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:add')")
+	@EventLog(message = "绑定一费制学员教练关联表", businessType = EventLogEnum.CREATE)
+	@PostMapping("/bindingCoach")
+	public ResObject bindingCoach(@Valid @RequestBody OneFeeSystemCoachStudentEditParam oneFeeSystemCoachStudentEditParam) {
+		return oneFeeSystemCoachStudentRepository.bindingCoach(oneFeeSystemCoachStudentEditParam);
 	}
 
 	/**

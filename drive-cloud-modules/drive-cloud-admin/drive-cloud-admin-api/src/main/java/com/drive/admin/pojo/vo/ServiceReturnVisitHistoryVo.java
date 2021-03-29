@@ -1,10 +1,8 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-
 import lombok.Data;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 
 
@@ -46,8 +44,10 @@ public class ServiceReturnVisitHistoryVo {
 	private LocalDateTime nextReturnVisitTime;
 
 	// 客服id
-	@Excel(name = "客服id", width = 20)
 	private String serviceId;
+
+	@Excel(name = "客服名称", width = 20)
+	private String serviceName;
 
 	// 是否完结（是，否）
 	@Excel(name = "是否完结（是，否）", width = 20)

@@ -15,6 +15,8 @@ public abstract class BaseCheckedException extends Exception implements BaseExce
      * 异常信息
      */
     protected String message;
+    protected String subCode;
+    protected String subMsg;
 
     /**
      * 具体异常码
@@ -51,5 +53,21 @@ public abstract class BaseCheckedException extends Exception implements BaseExce
         this.code = code;
     }
 
+    @Override
+    public String getSubCode() {
+        return subCode;
+    }
 
+    public void setSubCode(String subCode) {
+        this.subCode = subCode;
+    }
+
+    @Override
+    public String getSubMsg() {
+        return subMsg;
+    }
+
+    public void setSubMsg(String subMsg) {
+        this.subMsg = subMsg;
+    }
 }

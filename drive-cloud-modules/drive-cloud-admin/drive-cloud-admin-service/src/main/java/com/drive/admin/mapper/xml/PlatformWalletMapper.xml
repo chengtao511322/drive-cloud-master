@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.PlatformWalletMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.PlatformWalletEntity">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="wallet_type" property="walletType" />
+        <result column="wallet_amount" property="walletAmount" />
+        <result column="password" property="password" />
+        <result column="wechat_account" property="wechatAccount" />
+        <result column="ali_account" property="aliAccount" />
+        <result column="wechat_real_name" property="wechatRealName" />
+        <result column="ali_real_name" property="aliRealName" />
+        <result column="bank_account" property="bankAccount" />
+        <result column="bank_account_name" property="bankAccountName" />
+        <result column="open_account_bank" property="openAccountBank" />
+        <result column="operator_id" property="operatorId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, user_id, wallet_type, wallet_amount, password, wechat_account, ali_account, wechat_real_name, ali_real_name, bank_account, bank_account_name, open_account_bank, operator_id
+    </sql>
+
+</mapper>

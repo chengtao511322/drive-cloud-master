@@ -4,8 +4,12 @@ import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.exception.BizException;
 import com.drive.marketing.pojo.dto.ChannelManagerActivityEditParam;
 import com.drive.marketing.pojo.dto.ChannelManagerActivityPageQueryParam;
+import com.drive.marketing.pojo.vo.ChannelManagerActivityVo;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 渠道经理
@@ -18,6 +22,13 @@ public interface ChannelManagerActivityRepository {
      * @return
      */
     ResObject changeChannelManagerStatus(ChannelManagerActivityEditParam channelManagerActivityEditParam);
+
+    /**
+     * 推广商状态修改
+     * @param channelManagerActivityEditParam
+     * @return
+     */
+    ResObject changePromotionUserStatus(ChannelManagerActivityEditParam channelManagerActivityEditParam);
 
     /**
      * 查询渠道经理
@@ -39,6 +50,9 @@ public interface ChannelManagerActivityRepository {
      * @return
      */
     ResObject findPromotionPageList(ChannelManagerActivityPageQueryParam param);
+
+
+    ResObject findPromotionPageListByManagerId(ChannelManagerActivityPageQueryParam param);
 
     /**
      * 获取渠道经理 和推广商信息
@@ -85,4 +99,25 @@ public interface ChannelManagerActivityRepository {
      * @return
      */
     ResObject saveBatch(List<ChannelManagerActivityEditParam> channelManagerActivityEditParam);
+
+    /**
+     * 发布渠道经理
+     * @param channelManagerActivityEditParam
+     * @return
+     */
+    ResObject publishChannelManager(ChannelManagerActivityEditParam channelManagerActivityEditParam);
+
+    /**
+     * 数据同步
+     * @param activityId
+     * @return
+     */
+    ResObject synData(String activityId) throws ExecutionException, InterruptedException;
+
+    /**
+     * 导出
+     * @param channelManagerActivityPageQueryParam
+     * @return
+     */
+    List<ChannelManagerActivityVo> exportXls(ChannelManagerActivityPageQueryParam channelManagerActivityPageQueryParam) throws IOException;
 }

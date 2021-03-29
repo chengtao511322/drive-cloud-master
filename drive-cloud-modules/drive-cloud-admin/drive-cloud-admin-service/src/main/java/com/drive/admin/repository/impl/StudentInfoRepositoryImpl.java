@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.pojo.dto.StudentInfoEditParam;
 import com.drive.admin.pojo.dto.StudentInfoPageQueryParam;
-import com.drive.admin.pojo.entity.RecommendUserEntity;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.admin.repository.StudentInfoRepository;
@@ -27,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 
 /**
@@ -88,7 +86,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         IPage<StudentInfoEntity> pageList = studentInfoService.page(page,queryWrapper);
         if (pageList.getRecords().size() <= 0){
             log.error(this.getClass() +"数据空");
-            return R.failure(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
         }
         Page<StudentInfoVo> studentInfoVoPage = studentInfoMapStruct.toVoList(pageList);
         // List<Problem> problemList = problemByExample.stream().filter(problem -> "空调制冷".equals(problem.getProTitle()) || "李一一的难题1".equals(problem.getProTitle())).collect(Collectors.toList());
@@ -144,7 +142,15 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
 
     @Override
     public ResObject getInfo(StudentInfoPageQueryParam param) {
-        return null;
+        log.info(this.getClass() + "getInfo-方法请求参数{}",param);
+        QueryWrapper queryWrapper = this.getQueryWrapper(studentInfoMapStruct, param);
+        StudentInfoEntity studentInfo = studentInfoService.getOne(queryWrapper);
+        StudentInfoVo studentInfoVo = BeanConvertUtils.convertBean(studentInfo,StudentInfoVo.class);
+        // 空
+        if(studentInfoVo == null){
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentInfoVo);
+        }
+        return R.success(studentInfoVo);
     }
 
     /**
@@ -213,6 +219,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
      **/
     @Override
     public ResObject exportXls(StudentInfoPageQueryParam param, HttpServletResponse response) {
+        log.info(this.getClass() +"exportXls-方法请求参数");
         return null;
     }
 

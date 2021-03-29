@@ -1,47 +1,50 @@
 package com.drive.admin.repository.impl;
 
+import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.drive.admin.enums.OperatorEnum;
-import com.drive.admin.enums.StatusEnum;
-import com.drive.admin.pojo.entity.CoachHourSettingEntity;
-import cn.afterturn.easypoi.excel.entity.ExportParams;
-import com.drive.admin.service.CoachHourSettingDetailService;
-import com.drive.admin.service.OperatorSettinngService;
-import com.drive.common.core.base.BaseController;
-import com.drive.admin.repository.CoachHourSettingRepository;
-import com.drive.admin.pojo.entity.*;
-import com.drive.admin.pojo.vo.*;
-import com.drive.admin.pojo.dto.*;
-import com.drive.admin.service.mapstruct.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import cn.hutool.core.util.StrUtil;
+import com.drive.admin.enums.OperatorEnum;
+import com.drive.admin.enums.StatusEnum;
+import com.drive.admin.pojo.dto.CoachHourSettingDetailEditParam;
+import com.drive.admin.pojo.dto.CoachHourSettingEditParam;
+import com.drive.admin.pojo.dto.CoachHourSettingPageQueryParam;
+import com.drive.admin.pojo.entity.CoachHourSettingDetailEntity;
+import com.drive.admin.pojo.entity.CoachHourSettingEntity;
+import com.drive.admin.pojo.entity.OperatorSettinngEntity;
+import com.drive.admin.pojo.vo.CoachHourSettingVo;
+import com.drive.admin.repository.CoachHourSettingRepository;
+import com.drive.admin.service.CoachHourSettingDetailService;
+import com.drive.admin.service.CoachHourSettingService;
+import com.drive.admin.service.OperatorSettinngService;
+import com.drive.admin.service.mapstruct.CoachHourSettingMapStruct;
+import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
+import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
-import lombok.extern.slf4j.Slf4j;
-import com.drive.common.core.biz.ResObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.drive.admin.service.CoachHourSettingService;
 import com.drive.common.data.utils.ExcelUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Arrays;
-import java.io.IOException;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -93,7 +96,7 @@ public class  CoachHourSettingRepositoryImpl extends BaseController<CoachHourSet
         //queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
-            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
+            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"effective_time",param.getBeginTime(),param.getEndTime());
         }
         IPage<CoachHourSettingEntity> pageList = coachHourSettingService.page(page, queryWrapper);
         if (pageList.getRecords().size() <= 0){
@@ -265,7 +268,7 @@ public class  CoachHourSettingRepositoryImpl extends BaseController<CoachHourSet
         OperatorSettinngEntity operatorSettinng = operatorSettinngService.getOne(queryWrapper);
         if (operatorSettinng == null){
             log.error("数据空");
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),operatorSettinng);
+            return R.success(SubResultCode.DATA_NULL.subCode(),"你还未设置该运营商的发课天数",operatorSettinng);
         }
         // 当前时间+5天
         String dayNum = operatorSettinng.getNumberValue();

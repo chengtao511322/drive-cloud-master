@@ -13,11 +13,13 @@
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-generator -->
+        <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-generator -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
             <version>3.4.0</version>
         </dependency>
+
 
         <dependency>
             <groupId>com.drive</groupId>

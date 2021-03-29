@@ -1,37 +1,40 @@
 package com.drive.admin.repository.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.drive.admin.enums.EnrollStatusEnum;
-import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
-import com.drive.admin.repository.ServiceInfoRepository;
-import com.drive.admin.service.AreaService;
-import com.drive.admin.service.DriveSchoolService;
-import com.drive.admin.service.ServiceInfoService;
-import com.drive.common.core.base.BaseController;
-import com.drive.admin.repository.StudentStudyEnrollRepository;
-import com.drive.admin.pojo.entity.*;
-import com.drive.admin.pojo.vo.*;
-import com.drive.admin.pojo.dto.*;
-import com.drive.admin.service.mapstruct.*;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import cn.hutool.core.util.StrUtil;
+import com.drive.admin.enums.EnrollStatusEnum;
+import com.drive.admin.enums.StudyEnrollEnum;
+import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
+import com.drive.admin.pojo.dto.StudentStudyEnrollEditParam;
+import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
+import com.drive.admin.pojo.entity.DriveSchoolEntity;
+import com.drive.admin.pojo.entity.ServiceInfoEntity;
+import com.drive.admin.pojo.entity.ServiceReturnVisitHistoryEntity;
+import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
+import com.drive.admin.pojo.vo.StudentStudyEnrollVo;
+import com.drive.admin.repository.ServiceReturnVisitHistoryRepository;
+import com.drive.admin.repository.StudentStudyEnrollRepository;
+import com.drive.admin.service.*;
+import com.drive.admin.service.mapstruct.StudentStudyEnrollMapStruct;
+import com.drive.admin.strategy.StudyEnrollStrategy;
+import com.drive.admin.strategy.context.SpringContextUtil;
+import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
+import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.utils.BeanConvertUtils;
-import lombok.extern.slf4j.Slf4j;
-import com.drive.common.core.biz.ResObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.drive.admin.service.StudentStudyEnrollService;
 import com.drive.common.data.utils.ExcelUtils;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Arrays;
-import java.io.IOException;
-import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
                                                                                                                                                                                                 
 /**
@@ -60,6 +63,13 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
     @Autowired
     private AreaService areaService;
 
+    @Autowired
+    private ServiceReturnVisitHistoryService serviceReturnVisitHistoryService;
+    @Autowired
+    private ServiceReturnVisitHistoryRepository serviceReturnVisitHistoryRepository;
+
+
+
     /*
      *
      *功能描述
@@ -73,6 +83,10 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
     public ResObject pageList(StudentStudyEnrollPageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
         Page<StudentStudyEnrollEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
+
+        if (StrUtil.isNotEmpty(param.getNextReturnVisitTimeSearch())){
+            return serviceReturnVisitHistoryRepository.pageListReturnVisitHistory(param);
+        }
 
         QueryWrapper queryWrapper = this.getQueryWrapper(studentStudyEnrollMapStruct, param);
         // 报名单号 模糊查询
@@ -99,11 +113,26 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         studentStudyEnrollVoPage.getRecords().forEach((item) ->{
             if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(item.getUserId()).getRealName());
             if (StrUtil.isNotEmpty(item.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(item.getLineUnderUserId()).getRealName());
-            if (StrUtil.isNotEmpty(item.getDriveSchoolId()))item.setLineServiceName(serviceInfoService.getById(item.getLineUnderUserId()).getRealName());
+            if (StrUtil.isNotEmpty(item.getDriveSchoolId())){
+                DriveSchoolEntity driveSchoolEntity =driveSchoolService.getById(item.getLineUnderUserId());
+                if (driveSchoolEntity != null)item.setLineServiceName(driveSchoolEntity.getSchoolName());
+            }
             // 省市区
             if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
             if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
             if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
+            QueryWrapper serviceQueryWrapper = new QueryWrapper();
+            serviceQueryWrapper.eq("order_detail_no",item.getStudyEnrollNo());
+            serviceQueryWrapper.eq("student_id",item.getStudentId());
+            serviceQueryWrapper.orderByDesc("create_time");
+            serviceQueryWrapper.last("limit 1");
+            ServiceReturnVisitHistoryEntity serviceReturnVisitHistoryEntity  = serviceReturnVisitHistoryService.getOne(serviceQueryWrapper);
+            if (serviceReturnVisitHistoryEntity != null){
+                item.setReturnVisitTime(serviceReturnVisitHistoryEntity.getReturnVisitTime());
+                ServiceInfoEntity serviceInfo = serviceInfoService.getById(serviceReturnVisitHistoryEntity.getServiceId());
+                if (serviceInfo != null)item.setReturnVisitServiceName(serviceInfo.getRealName());
+                item.setReturnVisitContent(serviceReturnVisitHistoryEntity.getReturnVisitContent());
+            }
         });
         log.info(this.getClass() + "pageList-方法请求结果{}",studentStudyEnrollVoPage);
         return R.success(studentStudyEnrollVoPage);
@@ -151,7 +180,10 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         // 数据回显
         if (StrUtil.isNotEmpty(studentStudyEnrollVo.getUserId()))studentStudyEnrollVo.setOnlineServiceName(serviceInfoService.getById(studentStudyEnrollVo.getUserId()).getRealName());
         if (StrUtil.isNotEmpty(studentStudyEnrollVo.getLineUnderUserId()))studentStudyEnrollVo.setLineServiceName(serviceInfoService.getById(studentStudyEnrollVo.getLineUnderUserId()).getRealName());
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getDriveSchoolId()))studentStudyEnrollVo.setLineServiceName(serviceInfoService.getById(studentStudyEnrollVo.getLineUnderUserId()).getRealName());
+        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getDriveSchoolId())){
+            DriveSchoolEntity driveSchoolEntity =driveSchoolService.getById(studentStudyEnrollVo.getLineUnderUserId());
+            if (driveSchoolEntity != null)studentStudyEnrollVo.setLineServiceName(driveSchoolEntity.getSchoolName());
+        }
         // 省市区
         if (StrUtil.isNotEmpty(studentStudyEnrollVo.getProvinceId()))studentStudyEnrollVo.setProvinceName(areaService.getByBaCode(studentStudyEnrollVo.getProvinceId()).getBaName());
         if (StrUtil.isNotEmpty(studentStudyEnrollVo.getCityId()))studentStudyEnrollVo.setCityName(areaService.getByBaCode(studentStudyEnrollVo.getCityId()).getBaName());
@@ -292,6 +324,17 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         if (StrUtil.isNotEmpty(studentStudyEnrollVo.getAreaId()))studentStudyEnrollVo.setAreaName(areaService.getByBaCode(studentStudyEnrollVo.getAreaId()).getBaName());
         log.info(this.getClass() + "getStudentStudyEnrollInfo-请求结果{}",studentStudy);
         return R.success(studentStudyEnrollVo);
+    }
+
+    @Override
+    public ResObject completeStudyEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam) {
+        log.info(this.getClass() + "completeStudyEnroll-方法请求参数{}",studentStudyEnrollEditParam);
+        if (studentStudyEnrollEditParam == null){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        String strategyValue = StudyEnrollEnum.getStrategyValueByCode(studentStudyEnrollEditParam.getEnrollStatus());
+        StudyEnrollStrategy studyEnrollStrategy = SpringContextUtil.getBean(strategyValue,StudyEnrollStrategy.class);
+        return studyEnrollStrategy.completeStudyEnroll(studentStudyEnrollEditParam);
     }
 }
 

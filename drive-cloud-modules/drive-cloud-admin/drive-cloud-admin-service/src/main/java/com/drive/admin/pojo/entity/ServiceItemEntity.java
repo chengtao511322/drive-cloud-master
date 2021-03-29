@@ -30,7 +30,7 @@ public class ServiceItemEntity extends BaseEntity {
 
 	// 是否删除（1、是，0、否）
 	@TableLogic
-	@TableField(value="is_delete")
+	@TableField(fill = FieldFill.INSERT,value="is_delete")
 	private String isDelete;
 
 	// 状态（1、启用，0、停用）

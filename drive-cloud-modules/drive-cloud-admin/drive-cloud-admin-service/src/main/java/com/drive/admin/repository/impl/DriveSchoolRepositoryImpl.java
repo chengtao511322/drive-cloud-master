@@ -1,31 +1,33 @@
 package com.drive.admin.repository.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.drive.admin.pojo.entity.DriveSchoolEntity;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
-import com.drive.admin.service.AreaService;
-import com.drive.common.core.base.BaseController;
-import com.drive.admin.repository.DriveSchoolRepository;
-import com.drive.admin.pojo.entity.*;
-import com.drive.admin.pojo.vo.*;
-import com.drive.admin.pojo.dto.*;
-import com.drive.admin.service.mapstruct.*;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import cn.hutool.core.util.StrUtil;
+import com.drive.admin.pojo.dto.DriveSchoolEditParam;
+import com.drive.admin.pojo.dto.DriveSchoolPageQueryParam;
+import com.drive.admin.pojo.entity.DriveSchoolEntity;
+import com.drive.admin.pojo.vo.DriveSchoolVo;
+import com.drive.admin.repository.DriveSchoolRepository;
+import com.drive.admin.service.AreaService;
+import com.drive.admin.service.DriveSchoolService;
+import com.drive.admin.service.mapstruct.DriveSchoolMapStruct;
+import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
+import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.utils.BeanConvertUtils;
-import lombok.extern.slf4j.Slf4j;
-import com.drive.common.core.biz.ResObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.drive.admin.service.DriveSchoolService;
 import com.drive.common.data.utils.ExcelUtils;
-import java.util.List;
-import java.util.Arrays;
-import java.io.IOException;
-import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
                                                                                         
 /**
@@ -60,6 +62,30 @@ public class  DriveSchoolRepositoryImpl extends BaseController<DriveSchoolPageQu
     @Override
     public ResObject pageList(DriveSchoolPageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
+        QueryWrapper queryWrapper = this.getQueryWrapper(driveSchoolMapStruct, param);
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueSchoolName()),"school_name",param.getVagueSchoolName());
+        // 登录时间
+        //queryWrapper.apply(StrUtil.isNotBlank(param.getSearchLoginDate()),
+                //"date_format (login_time,'%Y-%m-%d') = date_format('" + param.getSearchLoginDate() + "','%Y-%m-%d')");
+        // 推荐时间
+        //queryWrapper.apply(StrUtil.isNotBlank(param.getSearchRecommendDate()),
+                //"date_format (recommend_date,'%Y-%m-%d') <= date_format('" + LocalDate.now().toString() + "','%Y-%m-%d')");
+                /*.apply(StrUtil.isNotBlank(end_date),
+                        "date_format (optime,'%Y-%m-%d') <= date_format('" + end_date + "','%Y-%m-%d')")*/
+        // 没有开始时间 默认查询
+/*        if (StrUtil.isEmpty(param.getBeginTime())){
+            queryWrapper.apply(StrUtil.isNotBlank(param.getSearchRecommendDate()),
+                    "date_format (create_time,'%Y-%m-%d') <= date_format('" + LocalDate.now().toString() + "','%Y-%m-%d')");
+        }
+        // 没有结束时间
+        if (StrUtil.isEmpty(param.getEndTime())){
+            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),LocalDate.now().toString());
+        }*/
+        //  开始时间 结束时间都有才进入
+        if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
+            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
+        }
+
         Page<DriveSchoolEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         IPage<DriveSchoolEntity> pageList = driveSchoolService.page(page, this.getQueryWrapper(driveSchoolMapStruct, param));
         if (pageList.getRecords().size() <= 0){
@@ -89,6 +115,12 @@ public class  DriveSchoolRepositoryImpl extends BaseController<DriveSchoolPageQu
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
         }
         List<DriveSchoolVo> driveSchoolVoList = driveSchoolMapStruct.toVoList(driveSchoolList);
+        driveSchoolVoList.stream().forEach((item) ->{
+            // 省市区
+            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
+            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
+            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
+        });
         log.info(this.getClass() + "findList-方法请求结果{}",driveSchoolVoList);
         return R.success(driveSchoolVoList);
     }

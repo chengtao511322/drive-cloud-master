@@ -24,3 +24,29 @@ spring:
         shared-configs:
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
 
+jt808:
+  enabled: true
+  use: mina
+  protocol: tcp
+  port: 10001
+  processCount: 2
+  corePoolSize: 1
+  maximumPoolSize: 10
+  # 单位毫秒
+  keepAliveTime: 1000
+  # 单位秒
+  idleTime: 10
+  idleCount: 6
+  readBufferSize: 2048
+  packageLength: 1024
+  threadCorePoolSize: 1
+  threadMaximumPoolSize: 10
+  # 单位毫秒
+  threadKeepAliveTime: 1000
+  masterSize: 1
+  slaveSize: 10
+  tcpNoDelay: true
+  keepAlive: true
+  auth: true
+  authMsgId: "0100,0102"
+

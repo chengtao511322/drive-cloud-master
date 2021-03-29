@@ -42,6 +42,9 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     @Autowired
     private ActivityCouponRelationService activityCouponRelationService;
 
+  /*  @Autowired
+    private RemoteAccountFeignService accountFeignService;*/
+
 
 
     @Override
@@ -257,5 +260,16 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         }*/
         // -修改数据成功-
         return R.success("修改数据成功");
+    }
+
+    @Transactional
+    public ResObject transfer(String account){
+        ActivityInfoEntity activityInfoEntity = new ActivityInfoEntity();
+        activityInfoEntity.setId("12151861092245791930");
+        activityInfoEntity.setDescription("测试事务");
+        Boolean result = activityInfoService.updateById(activityInfoEntity);
+
+        //accountFeignService.increaseAmount("fe42c41dc6b74b918919");
+        return R.success();
     }
 }

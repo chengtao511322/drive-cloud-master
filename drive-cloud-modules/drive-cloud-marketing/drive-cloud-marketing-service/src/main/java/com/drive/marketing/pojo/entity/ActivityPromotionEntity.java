@@ -1,5 +1,8 @@
 package com.drive.marketing.pojo.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -58,6 +61,8 @@ public class ActivityPromotionEntity implements Serializable {
 	// 状态  0 正常 1 禁言
 	private String status;
 	// 删除状态 0正常 1已经删除
+	@TableLogic
+	@TableField(fill = FieldFill.INSERT,value="is_delete")
 	private String isDelete;
 
 	private String id;

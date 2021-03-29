@@ -80,9 +80,18 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         }
         Page<${entity}Vo> ${className}VoPage = ${className}MapStruct.toVoList(pageList);
         log.info(this.getClass() + "pageList-方法请求结果{}",${className}VoPage);
-        return R.success(${className}VoPage);
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),${className}VoPage);
     }
 
+    /*
+     *
+     *功能描述
+     * @author ${author}
+     * @description ${table.comment} 查询列表
+     * @date 2020/2/12 17:09
+     * @param  * @param ${entity}PageQueryParam
+     * @return
+     */
     @Override
     public ResObject findList(${entity}PageQueryParam param) {
         log.info(this.getClass() + "findList-方法请求参数{}",param);
@@ -96,11 +105,11 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         }
         List<${entity}Vo> ${className}VoList = ${className}MapStruct.toVoList(${className}List);
         log.info(this.getClass() + "findList-方法请求结果{}",${className}VoList);
-        return R.success(${className}VoList);
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),${className}VoList);
     }
 
     /**
-    * 条件查询返回单条${table.comment}数据
+    * 对象条件查询返回单条${table.comment}数据
     * @param param
     * @return
     */
@@ -119,18 +128,25 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         }
         ${entity}Vo ${className}Vo = BeanConvertUtils.copy(${className}, ${entity}Vo.class);
         log.info(this.getClass() + "getInfo-方法请求结果{}",${className}Vo);
-        return R.success(${className}Vo);
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),${className}Vo);
     }
 
-    /**
-     * *通过ID获取${table.comment} 列表
-     **/
+    /*
+     *
+     *功能描述
+     * @author ${author}
+     * @description 通过ID获取 ${table.comment} 单条数据
+     * @date 2020/2/12 17:09
+     * @param  * @param ${entity}PageQueryParam
+     * @return
+     */
     @Override
     public ResObject getById(String id) {
         log.info(this.getClass() + "getById-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");
         }
+        // 通过ID 获取 单条数据
         ${entity}Entity ${className} = ${className}Service.getById(${pkColumn.propertyName});
         if (${className} == null){
             log.error("数据空");
@@ -138,14 +154,20 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         }
         ${entity}Vo ${className}Vo = BeanConvertUtils.copy(${className}, ${entity}Vo.class);
         log.info(this.getClass() + "getById-方法请求结果{}",${className}Vo);
-        return R.success(${className}Vo);
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),${className}Vo);
     }
 
-    /**
-     * *保存${table.comment} 信息
-     **/
+    /*
+     *
+     *功能描述
+     * @author ${author}
+     * @description 保存${table.comment} 数据
+     * @date 2020/2/12 17:09
+     * @param  * @param ${entity}PageQueryParam
+     * @return
+     */
     @Override
-    public ResObject save(${entity}EditParam installParam) {
+    public ResObject save(${entity}InstallParam installParam) {
         log.info(this.getClass() + "save方法请求参数{}",installParam);
         if (installParam == null){
             log.error("数据空");
@@ -155,12 +177,18 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         Boolean result = ${className}Service.save(${className});
         log.info(this.getClass() + "save-方法请求结果{}",result);
         // 判断结果
-        return result ?R.success(result):R.failure(result);
+        return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_INSTALL_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
     }
 
-    /**
-     * *修改${table.comment} 信息
-     **/
+    /*
+     *
+     *功能描述
+     * @author ${author}
+     * @description  修改${table.comment} 数据
+     * @date 2020/2/12 17:09
+     * @param  * @param ${entity}PageQueryParam
+     * @return
+     */
     @Override
     public ResObject update(${entity}EditParam updateParam) {
         log.info(this.getClass() + "update方法请求参数{}",updateParam);
@@ -172,12 +200,18 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         Boolean result = ${className}Service.updateById(${className});
         log.info(this.getClass() + "update-方法请求结果{}",result);
         // 判断结果
-        return result ?R.success(result):R.failure(result);
+        return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_UPDATE_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
     }
 
-    /**
-     * *删除${table.comment} 信息
-     **/
+    /*
+     *
+     *功能描述
+     * @author ${author}
+     * @description 数组删除${table.comment} 数据
+     * @date 2020/2/12 17:09
+     * @param  * @param ${entity}PageQueryParam
+     * @return
+     */
     @Override
     public ResObject deleteByIds(String[] ids) {
         if (ids.length <= 0){
@@ -202,7 +236,7 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         Boolean result = ${className}Service.removeById(id);
         log.info(this.getClass() + "deleteById-方法请求结果{}",result);
         // 判断结果
-        return result ?R.success(result):R.failure(result);
+        return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_DELETE_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_DELETE_FAILL.subCode(),SubResultCode.DATA_DELETE_FAILL.subMsg());
     }
 
     /**
@@ -215,7 +249,7 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         List<${entity}Entity> list = ${className}Service.list(queryWrapper);
         List<${entity}Vo>${className}List = ${className}MapStruct.toVoList(list);
         ExcelUtils.exportExcel(${className}List, ${entity}Vo.class, "", new ExportParams(), response);
-        return R.success("导出成功");
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.EXPORT_DATA_SUCCESS.subMsg());
     }
 
     /**
@@ -235,7 +269,7 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         Boolean result = ${className}Service.updateById(${entity}Entity);
         log.info(this.getClass() +"changeStatus方法请求对象参数{}，请求结果{}",${entity}Entity,result);
         // 判断结果
-        return result ?R.success(result):R.failure(result);
+        return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_STATUS_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_STATUS_FAILL.subCode(),SubResultCode.DATA_STATUS_FAILL.subMsg());
     }
 
 }

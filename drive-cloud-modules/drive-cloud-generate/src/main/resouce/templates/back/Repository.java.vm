@@ -9,6 +9,6 @@ import com.drive.common.core.base.BaseRepository;
  *
  * @author ${author}
  */
-public interface ${entity}Repository extends BaseRepository<${entity}PageQueryParam, ${entity}EditParam>{
+public interface ${entity}Repository extends BasicsRepository<${entity}PageQueryParam, ${entity}EditParam,${entity}InstallParam>{
 }
 

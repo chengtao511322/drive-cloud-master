@@ -1,6 +1,8 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.*;
+import com.drive.admin.pojo.dto.CoachHourSettingDetailEditParam;
+import com.drive.admin.pojo.dto.CoachHourSettingEditParam;
+import com.drive.admin.pojo.dto.CoachHourSettingPageQueryParam;
 import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.biz.ResObject;
 

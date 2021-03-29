@@ -1,32 +1,29 @@
 package com.drive.oss.controller;
 
-import cn.hutool.core.util.StrUtil;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
+import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.constant.Constants;
 import com.drive.common.core.enums.EventLogEnum;
 import com.drive.common.log.annotation.EventLog;
 import com.drive.oss.config.MinioConfigurationProperties;
 import com.drive.oss.exception.MinioException;
+import com.drive.oss.pojo.dto.UpdateImagesDto;
+import com.drive.oss.service.OssMinioService;
 import io.minio.MinioClient;
 import io.minio.errors.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.xmlpull.v1.XmlPullParserException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLConnection;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
@@ -56,6 +53,9 @@ public class MinioController {
     @Autowired
     private MinioConfigurationProperties minioConfig;
 
+    @Autowired
+    private OssMinioService ossMinioService;
+
     /**
      * 文件上传
      */
@@ -74,10 +74,36 @@ public class MinioController {
         //Path path = Paths.get(LocalDate.now().toString(), Instant.now().toEpochMilli() +  ext);
         // Path newDir = Files.createDirectories(path);
         // minio仓库名
-        minioClient.putObject(configurationProperties.getBucket(), pathSrc, file.getInputStream(), file.getContentType());
-
+        ossMinioService.updateFile(pathSrc,file);
         Map result = new HashMap();
         result.put("fileName", file.getOriginalFilename());
+        result.put("filePath", pathSrc);
+        return R.success(result);
+    }
+    /**
+     * 文件上传
+     */
+    @ApiOperation("图片上传")
+    @EventLog(message = "文件上传", businessType = EventLogEnum.CREATE)
+    @PostMapping("/uploadImages")
+    public ResObject uploadImages(UpdateImagesDto updateImagesDto) throws IOException, MinioException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
+        // 文件存储路径  /2020-01-01/43897583617343545473.jpg
+        if (updateImagesDto == null){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        String filename = updateImagesDto.getFile().getOriginalFilename();
+        int begin = filename.indexOf(".");
+        int last = filename.length();
+        String ext = filename.substring(begin, last);
+        String pathSrc = Constants.IMAGES+"/"+updateImagesDto.getUserId()+"/"+updateImagesDto.getImagesName() +  ext;
+        Path path = Paths.get(pathSrc);
+        //String path = Constants.UPLOAD_HEAD_IMAGES+"/"+LocalDate.now().toString()+"/"+Instant.now().toEpochMilli() +  ext;
+        //Path path = Paths.get(LocalDate.now().toString(), Instant.now().toEpochMilli() +  ext);
+        // Path newDir = Files.createDirectories(path);
+        // minio仓库名
+        ossMinioService.updateFile(pathSrc,updateImagesDto.getFile());
+        Map result = new HashMap();
+        result.put("fileName", updateImagesDto.getFile().getOriginalFilename());
         result.put("filePath", pathSrc);
         return R.success(result);
     }

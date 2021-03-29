@@ -99,6 +99,9 @@ public class ChannelVo implements TreeVoFeature<ChannelVo> {
 	private String auth;
 
 	private Boolean  hasChildren;
+	// (20)明细用户是否显示（1-明细表的人显示，2-明细表的人不显示），控制明细表中的数据是否显示按钮
+	private String itemShow;
+
 
 
 

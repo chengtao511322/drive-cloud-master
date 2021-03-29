@@ -41,10 +41,13 @@ import com.drive.admin.repository.StudentCoachAppraiseRepository;
 @RequestMapping("/studentCoachAppraise")
 public class StudentCoachAppraiseController extends BaseController<StudentCoachAppraisePageQueryParam, StudentCoachAppraiseEntity> {
 
+	// 学员教练互评表 服务
 	@Autowired
 	private StudentCoachAppraiseService studentCoachAppraiseService;
+	// 学员教练互评表 业务服务
 	@Autowired
 	private StudentCoachAppraiseRepository studentCoachAppraiseRepository;
+	// 学员教练互评表 DO-DTO转化
 	@Autowired
 	private StudentCoachAppraiseMapStruct studentCoachAppraiseMapStruct;
 
@@ -53,7 +56,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	*/
 	@ApiOperation("学员教练互评表分页列表")
 	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
-	@PostMapping(value = "/pageList")
+	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid StudentCoachAppraisePageQueryParam param) {
 		return studentCoachAppraiseRepository.pageList(param);
 	}
@@ -62,7 +65,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	*/
 	@ApiOperation("学员教练互评表列表")
 	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
-	@PostMapping(value = "/findList")
+	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid StudentCoachAppraisePageQueryParam param) {
 		return studentCoachAppraiseRepository.findList(param);
 	}
@@ -79,6 +82,17 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	}
 
 	/**
+	 * 条件查询获取学员教练互评表
+	 */
+	@ApiOperation("条件查询获取学员教练互评表")
+	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
+	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
+	@GetMapping("/getInfo")
+	public ResObject getInfo(@PathVariable StudentCoachAppraisePageQueryParam param) {
+		return studentCoachAppraiseRepository.getInfo(param);
+	}
+
+	/**
 	* 新增学员教练互评表
 	*/
 	@ApiOperation("新增学员教练互评表")
@@ -86,8 +100,8 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:add')")
 	@EventLog(message = "新增学员教练互评表", businessType = EventLogEnum.CREATE)
 	@PostMapping
-	public ResObject save(@Valid @RequestBody StudentCoachAppraiseEditParam studentCoachAppraiseEditParam) {
-		return studentCoachAppraiseRepository.save(studentCoachAppraiseEditParam);
+	public ResObject save(@Valid @RequestBody StudentCoachAppraiseInstallParam studentCoachAppraiseInstallParam) {
+		return studentCoachAppraiseRepository.save(studentCoachAppraiseInstallParam);
 	}
 
 	/**
@@ -110,7 +124,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:delete')")
 	@EventLog(message = "删除学员教练互评表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(studentCoachAppraiseService.removeByIds(Arrays.asList(ids)));
 	}
 

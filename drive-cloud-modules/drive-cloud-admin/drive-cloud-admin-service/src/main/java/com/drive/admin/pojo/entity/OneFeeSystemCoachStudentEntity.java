@@ -1,37 +1,12 @@
 package com.drive.admin.pojo.entity;
 
-import java.math.BigDecimal;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import com.baomidou.mybatisplus.annotation.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalDateTime;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import com.drive.common.core.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 
 /**
@@ -66,7 +41,7 @@ public class OneFeeSystemCoachStudentEntity extends BaseEntity {
 
 	// 是否删除
 	@TableLogic
-	@TableField(value="is_delete")
+	@TableField(fill = FieldFill.INSERT,value="is_delete")
 	private String isDelete;
 
 	// 备注(主要存储，停用原因)
@@ -105,36 +80,46 @@ public class OneFeeSystemCoachStudentEntity extends BaseEntity {
 	private String newBindId;
 
 	// 科目一免费考试次数
+	@TableField(value="subject_1_cost_free_number")
 	private Integer subject1CostFreeNumber;
 
 	// 科目二免费考试次数
+	@TableField(value="subject_2_cost_free_number")
 	private Integer subject2CostFreeNumber;
 
 	// 科目三免费考试次数
+	@TableField(value="subject_3_cost_free_number")
 	private Integer subject3CostFreeNumber;
 
-	// 科目四免费考试次数
+	// 科目四免费考试次数 subject_1_cost_free_number
+	@TableField(value="subject_4_cost_free_number")
 	private Integer subject4CostFreeNumber;
 
 	// 支付状态 (1-待支付, 2-已经支付)
 	private Integer payStatus;
 
-	// 科目二教练提成金额
+	// 科目二教练提成金额 coach_subject_type_2
+	@TableField(value="coach_subject_type_2")
 	private BigDecimal coachSubjectType2;
 
 	// 科目二教练预收入金额
+	@TableField(value="coach_subject2_expect_income")
 	private BigDecimal coachSubject2ExpectIncome;
 
 	// 科目三教练提成金额
+	@TableField(value="coach_subject_type_3")
 	private BigDecimal coachSubjectType3;
 
 	// 科目三教练预收入金额
+	@TableField(value="coach_subject3_expect_income")
 	private BigDecimal coachSubject3ExpectIncome;
 
-	// 科目二驾校提成金额
+	// 科目二驾校提成金额 school_subject_type_2
+	@TableField(value="school_subject_type_2")
 	private BigDecimal schoolSubjectType2;
 
 	// 科目三驾校提成金额
+	@TableField(value="school_subject_type_3")
 	private BigDecimal schoolSubjectType3;
 
 	// 运营商提成金额

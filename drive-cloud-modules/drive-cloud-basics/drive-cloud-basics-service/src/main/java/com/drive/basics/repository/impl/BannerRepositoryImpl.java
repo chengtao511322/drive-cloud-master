@@ -190,9 +190,10 @@ public class  BannerRepositoryImpl extends BaseController<BannerPageQueryParam, 
     @Override
     public ResObject changeStatus(BannerEditParam param) {
 
-            BannerEntity BannerEntity = new BannerEntity();
-            BannerEntity.setId(param.getId());
-            BannerEntity.setStatus(param.getStatus());
+        BannerEntity BannerEntity = new BannerEntity();
+        BannerEntity.setId(param.getId());
+        BannerEntity.setTenantId(param.getTenantId());
+        BannerEntity.setStatus(param.getStatus());
         Boolean result = bannerService.updateById(BannerEntity);
         log.info(this.getClass() +"changeStatus方法请求对象参数{}，请求结果{}",BannerEntity,result);
         // 判断结果
