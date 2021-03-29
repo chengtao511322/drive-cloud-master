@@ -18,6 +18,7 @@ import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.utils.BeanConvertUtils;
+import com.drive.common.core.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,11 +50,49 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
     public ResObject newStudentPageList(StudentInfoPageQueryParam param) {
         log.info(this.getClass() + "newStudentPageList-方法请求参数{}",param);
         Page<StudentInfoEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        QueryWrapper queryWrapper = this.getQueryWrapper(studentInfoMapStruct, param);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.isNull("tsrvh.id");
+        queryWrapper.isNull("tsse.study_enroll_no");
+        // 运营商查询
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getOperatorId()),"tsi.operator_id",param.getOperatorId());
+        // 渠道查询
+        queryWrapper.eq(param.getChannel() != null,"tsi.channel",param.getChannel());
+        // 手机号码查询
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"tsi.phone",param.getPhone());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"tsi.phone",param.getVaguePhoneSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueUserNameSearch()),"tsi.username",param.getVagueUserNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"tsi.real_name",param.getVagueRealNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueEmailSearch()),"tsi.email",param.getVagueEmailSearch());
+        // 登录时间
+        queryWrapper.apply(StrUtil.isNotBlank(param.getSearchLoginDate()),
+                "date_format (login_time,'%Y-%m-%d') = date_format('" + param.getSearchLoginDate() + "','%Y-%m-%d')");
+        // 推荐时间
+        queryWrapper.apply(StrUtil.isNotBlank(param.getSearchRecommendDate()),
+                "date_format (recommend_date,'%Y-%m-%d') <= date_format('" + LocalDate.now().toString() + "','%Y-%m-%d')");
+
+        // 省市区
+        if (StrUtil.isNotEmpty(param.getCityArr())){
+            String[] splitParam = param.getCityArr().split(",");
+            if (splitParam.length >=1 && StrUtil.isNotEmpty(splitParam[0]))queryWrapper.eq(StrUtil.isNotEmpty(splitParam[0]),"tsi.province_id",splitParam[0]);
+            if (splitParam.length >=2 && StrUtil.isNotEmpty(splitParam[1]))queryWrapper.eq(StrUtil.isNotEmpty(splitParam[1]),"tsi.city_id",splitParam[1]);
+            if (splitParam.length >=3 && StrUtil.isNotEmpty(splitParam[2]))queryWrapper.eq(StrUtil.isNotEmpty(splitParam[2]),"tsi.area_id",splitParam[2]);
+        }
+        if (StrUtil.isNotEmpty(param.getCreateTimeSearch())){
+            String[] arr = param.getCreateTimeSearch().split(",");
+            // queryWrapper.between("date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[0] + "','%Y-%m-%d')","date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[1] + "','%Y-%m-%d')");
+            queryWrapper.between("date_format(tsi.create_time, '%Y-%m-%d')",arr[0],arr[1]);
+        }
+        String sortColumn = param.getSortColumn();
+        String underSortColumn = StringUtils.lowerCamelToLowerUnderscore(sortColumn);
+        if (param.getIsAsc()) {
+            queryWrapper.orderByAsc("tsi."+underSortColumn);
+        } else {
+            queryWrapper.orderByDesc("tsi."+underSortColumn);
+        }
         IPage pageList = studentInfoService.newStudentPageList(page,queryWrapper);
         if (pageList.getRecords().size() <= 0){
             log.error(this.getClass() +"数据空");
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
 
         Page<StudentInfoVo> studentInfoVoPage = studentInfoMapStruct.toVoList(pageList);

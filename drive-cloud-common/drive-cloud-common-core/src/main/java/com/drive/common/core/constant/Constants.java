@@ -84,8 +84,8 @@ public interface Constants {
 
 
     // 部门
-    public static final String OPERATOR_DEPT_KEY = "operator_dept:";
-    public static final String AREA_KEY = "AREA_KEY:";
+    String OPERATOR_DEPT_KEY = "operator_dept:";
+    String AREA_KEY = "AREA_KEY:";
 
 
 

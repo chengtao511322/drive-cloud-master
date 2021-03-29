@@ -10,8 +10,8 @@ import request from '@/utils/request'
 export function listPage${entity}(query) {
   return request({
     url: '/${cfg.moduleName}/${className}/pageList',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: query
   })
 }
 
@@ -20,8 +20,8 @@ export function listPage${entity}(query) {
 export function list${entity}(query) {
   return request({
     url: '/${cfg.moduleName}/${className}/findList',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: query
   })
 }
 

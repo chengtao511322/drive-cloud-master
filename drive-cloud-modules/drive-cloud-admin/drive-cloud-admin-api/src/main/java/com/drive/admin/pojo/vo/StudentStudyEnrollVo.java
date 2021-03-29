@@ -223,5 +223,9 @@ public class StudentStudyEnrollVo {
 	private String returnVisitContent;
 
 
+	private StudentOrderVo studentOrderVo;
+	private StudentInfoVo studentVo;
+
+
 
 }

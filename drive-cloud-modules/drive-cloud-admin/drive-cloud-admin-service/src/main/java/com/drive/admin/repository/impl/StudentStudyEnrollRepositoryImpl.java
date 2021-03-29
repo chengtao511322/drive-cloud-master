@@ -10,10 +10,9 @@ import com.drive.admin.enums.StudyEnrollEnum;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollEditParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
-import com.drive.admin.pojo.entity.DriveSchoolEntity;
-import com.drive.admin.pojo.entity.ServiceInfoEntity;
-import com.drive.admin.pojo.entity.ServiceReturnVisitHistoryEntity;
-import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
+import com.drive.admin.pojo.entity.*;
+import com.drive.admin.pojo.vo.StudentInfoVo;
+import com.drive.admin.pojo.vo.StudentOrderVo;
 import com.drive.admin.pojo.vo.StudentStudyEnrollVo;
 import com.drive.admin.repository.ServiceReturnVisitHistoryRepository;
 import com.drive.admin.repository.StudentStudyEnrollRepository;
@@ -34,9 +33,11 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
-                                                                                                                                                                                                
+
 /**
  *
  * 学员学车报名单 服务类
@@ -68,6 +69,12 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
     @Autowired
     private ServiceReturnVisitHistoryRepository serviceReturnVisitHistoryRepository;
 
+    @Autowired
+    private StudentOrderService studentOrderService;
+
+    @Autowired
+    private StudentInfoService studentInfoService;
+
 
 
     /*
@@ -88,9 +95,15 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             return serviceReturnVisitHistoryRepository.pageListReturnVisitHistory(param);
         }
 
+        // 订单
+        QueryWrapper orderQueryWrapper = new QueryWrapper();
+        orderQueryWrapper.like(StrUtil.isNotEmpty(param.getStudentOrderNo()),"order_no",param.getStudentOrderNo());
+        List<StudentOrderEntity> studentOrderList  = studentOrderService.list(orderQueryWrapper);
         QueryWrapper queryWrapper = this.getQueryWrapper(studentStudyEnrollMapStruct, param);
         // 报名单号 模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueStudyEnrollNoSearch()),"study_enroll_no",param.getVagueStudyEnrollNoSearch());
+        // 真实姓名模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"real_name",param.getVagueRealNameSearch());
         // 预约见面时间
         queryWrapper.apply(StrUtil.isNotBlank(param.getBeSpeakMeetTimeSearch()),
         "date_format (be_speak_meet_time,'%Y-%m-%d') = date_format('" + param.getBeSpeakMeetTimeSearch() + "','%Y-%m-%d')");
@@ -98,10 +111,17 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         queryWrapper.apply(StrUtil.isNotBlank(param.getIntentEnrollTimeSearch()),
         "date_format (intent_enroll_time,'%Y-%m-%d') = date_format('" + param.getIntentEnrollTimeSearch() + "','%Y-%m-%d')");
 
+        if (studentOrderList.size() > 0){
+            queryWrapper.in("study_enroll_no",studentOrderList.stream().map(StudentOrderEntity::getStudyEnrollNo).collect(Collectors.toList()));
+        }
 
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
+        }
+        if (StrUtil.isNotEmpty(param.getCreateTimeSearch())){
+            String[] arr = param.getCreateTimeSearch().split(",");
+            queryWrapper.between("create_time",arr[0],arr[1]);
         }
 
         IPage<StudentStudyEnrollEntity> pageList = studentStudyEnrollService.page(page, queryWrapper);
@@ -109,6 +129,8 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             log.error("数据空-------------");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
+        // 是否全部匹配,还是 局部包含匹配
+        Boolean globalMatch = Boolean.FALSE;
         Page<StudentStudyEnrollVo> studentStudyEnrollVoPage = studentStudyEnrollMapStruct.toVoList(pageList);
         studentStudyEnrollVoPage.getRecords().forEach((item) ->{
             if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(item.getUserId()).getRealName());
@@ -133,7 +155,32 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
                 if (serviceInfo != null)item.setReturnVisitServiceName(serviceInfo.getRealName());
                 item.setReturnVisitContent(serviceReturnVisitHistoryEntity.getReturnVisitContent());
             }
+            // 订单
+            QueryWrapper studentOrderQueryWrapper = new QueryWrapper();
+            studentOrderQueryWrapper.eq("study_enroll_no",item.getStudyEnrollNo());
+            StudentOrderEntity studentOrder  = studentOrderService.getOne(studentOrderQueryWrapper);
+            if (studentOrder != null){
+                item.setStudentOrderVo(BeanConvertUtils.copy(studentOrder, StudentOrderVo.class));
+            }
+
+            // 学员
+            StudentInfoEntity student  = studentInfoService.getById(item.getStudentId());
+            if (student != null){
+                item.setStudentVo(BeanConvertUtils.copy(student, StudentInfoVo.class));
+            }
         });
+        // 订单号 模糊查询
+        if (StrUtil.isNotEmpty(param.getStudentOrderNo())){
+            studentStudyEnrollVoPage.getRecords().stream().filter(userz -> globalMatch?userz.getStudentOrderVo().getOrderNo().equals(param.getStudentOrderNo()):
+                    userz.getStudentOrderVo().getOrderNo().contains(param.getStudentOrderNo())).
+                    collect(Collectors.toList());
+        }
+        // 真实姓名 模糊查询
+       /* if (StrUtil.isNotEmpty(param.getVagueRealNameSearch())){
+            studentStudyEnrollVoPage.getRecords().stream().filter(userz -> globalMatch?userz.getStudentVo().getRealName().equals(param.getVagueRealNameSearch()):
+                    userz.getStudentVo().getRealName().contains(param.getVagueRealNameSearch())).
+                    collect(Collectors.toList());
+        }*/
         log.info(this.getClass() + "pageList-方法请求结果{}",studentStudyEnrollVoPage);
         return R.success(studentStudyEnrollVoPage);
     }

@@ -135,4 +135,8 @@ public class StudentInfoPageQueryParam extends BasePageQueryParam {
 	private String searchLoginDate;
 	// 推荐时间
 	private String searchRecommendDate;
+	// 城市数组
+	private String cityArr;
+
+	private String createTimeSearch;
 }

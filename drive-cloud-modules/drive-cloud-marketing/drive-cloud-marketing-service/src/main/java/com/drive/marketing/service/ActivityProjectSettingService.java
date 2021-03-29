@@ -16,7 +16,7 @@ public interface ActivityProjectSettingService extends IService<ActivityProjectS
      * @param activityProjectSettingEntity
      * @return
      */
-    Boolean deleteByCondition(ActivityProjectSettingEntity activityProjectSettingEntity);
+    //Boolean deleteByCondition(ActivityProjectSettingEntity activityProjectSettingEntity);
 
     /**
      * 通过活动ID删除数据

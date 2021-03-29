@@ -1,5 +1,8 @@
 package com.drive.marketing.pojo.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.drive.common.core.base.BaseEntity;
 import lombok.Data;
@@ -43,5 +46,12 @@ public class ActivityProjectSettingEntity extends BaseEntity {
 
 	// 活动ID
 	private String activityId;
+
+	// 删除状态
+	@TableLogic
+	@TableField(fill = FieldFill.INSERT,value="is_delete")
+	private String isDelete;
+
+	private String status;
 
 }

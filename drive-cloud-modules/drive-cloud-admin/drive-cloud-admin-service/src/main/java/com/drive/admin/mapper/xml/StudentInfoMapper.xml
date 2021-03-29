@@ -54,10 +54,6 @@
         from   t_student_info  tsi
         left  join   t_service_return_visit_history  tsrvh  on  tsi.id = tsrvh.student_id
         left  join   t_student_study_enroll tsse  on tsse.student_id = tsi.id
-        where
-        tsrvh.id  is null
-        and
-        tsse.study_enroll_no is  null
         ${ew.customSqlSegment}
     </select>
 

@@ -3,7 +3,6 @@ package com.drive.admin.pojo.vo;
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import cn.hutool.core.util.StrUtil;
 import com.drive.common.core.utils.BeanConvertUtils;
-import com.drive.common.core.utils.CoachUtil;
 import lombok.Data;
 
 import java.time.LocalDateTime;

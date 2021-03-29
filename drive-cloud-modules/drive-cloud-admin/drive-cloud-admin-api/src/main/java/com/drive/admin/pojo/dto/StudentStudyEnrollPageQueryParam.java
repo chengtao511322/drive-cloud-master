@@ -19,6 +19,8 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 
 	// 学员报名单号
 	private String studyEnrollNo;
+	// 学员订单号
+	private String studentOrderNo;
 
 	// 省-学员的省
 	private String provinceId;
@@ -166,5 +168,7 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 	private String vagueStudyEnrollNoSearch;
 	// 下次回访时间查询
 	private String nextReturnVisitTimeSearch;
+	// 创建订单时间
+	private String createTimeSearch;
 
 }
