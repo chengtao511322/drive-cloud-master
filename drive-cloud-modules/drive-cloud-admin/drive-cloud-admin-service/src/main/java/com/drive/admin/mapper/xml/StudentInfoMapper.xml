@@ -45,4 +45,21 @@
             id, province_id, city_id, area_id, phone, username, password, id_card, real_name, age, sex, email, recommend_code_self, recommend_user_id, recommend_user_type, recommend_income_type, recommend_date, head_url, wechat_openid, qq_openid, token_key, status, login_time, create_time, update_time, subject1_test_result_type, subject2_test_result_type, subject3_test_result_type, subject4_test_result_type, channel, phone_id, operator_id, platform, logon_channel
     </sql>
 
+
+
+    <!-- 查询新用户列表 -->
+    <select id="newStudentPageList" resultMap="BaseResultMap">
+        select
+            tsi.*
+        from   t_student_info  tsi
+        left  join   t_service_return_visit_history  tsrvh  on  tsi.id = tsrvh.student_id
+        left  join   t_student_study_enroll tsse  on tsse.student_id = tsi.id
+        where
+        tsrvh.id  is null
+        and
+        tsse.study_enroll_no is  null
+        ${ew.customSqlSegment}
+    </select>
+
+
 </mapper>

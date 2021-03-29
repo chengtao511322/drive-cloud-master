@@ -40,14 +40,25 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
 
     @Autowired
     private StudentInfoService studentInfoService;
-
     @Autowired
     private AreaService areaService;
     @Autowired
     private StudentInfoMapStruct studentInfoMapStruct;
 
-    @Autowired
-    private RecommendUserService recommendUserService;
+    @Override
+    public ResObject newStudentPageList(StudentInfoPageQueryParam param) {
+        log.info(this.getClass() + "newStudentPageList-方法请求参数{}",param);
+        Page<StudentInfoEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
+        QueryWrapper queryWrapper = this.getQueryWrapper(studentInfoMapStruct, param);
+        IPage pageList = studentInfoService.newStudentPageList(page,queryWrapper);
+        if (pageList.getRecords().size() <= 0){
+            log.error(this.getClass() +"数据空");
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        }
+
+        Page<StudentInfoVo> studentInfoVoPage = studentInfoMapStruct.toVoList(pageList);
+        return R.success(studentInfoVoPage);
+    }
 
     /**
     * *学员信息表 分页列表
@@ -237,6 +248,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         // 判断结果
         return result ?R.success(result):R.failure(result);
     }
+
 
 }
 

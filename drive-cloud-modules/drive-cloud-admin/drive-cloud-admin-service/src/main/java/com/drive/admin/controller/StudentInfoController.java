@@ -45,6 +45,17 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	private StudentInfoMapStruct studentInfoMapStruct;
 
 	/**
+	 * 新用户列表 分页列表
+	 */
+	@ApiOperation("新用户列表分页")
+	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
+	@GetMapping(value = "/newStudentPageList")
+	public ResObject newStudentPageList(@Valid StudentInfoPageQueryParam param) {
+		return studentInfoRepository.newStudentPageList(param);
+	}
+
+
+	/**
 	* 学员信息表 分页列表
 	*/
 	@ApiOperation("学员信息表分页列表")
@@ -53,6 +64,8 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	public ResObject pageList(@Valid StudentInfoPageQueryParam param) {
 		return studentInfoRepository.pageList(param);
 	}
+
+
 	/**
 	* 学员信息表 分页列表
 	*/
