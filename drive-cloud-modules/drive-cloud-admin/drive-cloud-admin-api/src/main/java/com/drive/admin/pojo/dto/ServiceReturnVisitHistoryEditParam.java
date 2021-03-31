@@ -42,6 +42,9 @@ public class ServiceReturnVisitHistoryEditParam {
     @ApiModelProperty(value = "回访时间")
     private LocalDateTime returnVisitTime;
 
+    // 回访状态  1：售前回访 2 售后回访
+    private String returnVisitStatus;
+
     // 回访内容
     @NotBlank(message = "回访内容不能为空")
     @ApiModelProperty(value = "回访内容")

@@ -114,6 +114,10 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         if (studentOrderList.size() > 0){
             queryWrapper.in("study_enroll_no",studentOrderList.stream().map(StudentOrderEntity::getStudyEnrollNo).collect(Collectors.toList()));
         }
+        // 报名状态
+        if (StrUtil.isNotEmpty(param.getEnrollStatusArr())){
+            queryWrapper.in("enroll_status",param.getEnrollStatusArr());
+        }
 
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
@@ -168,6 +172,15 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             if (student != null){
                 item.setStudentVo(BeanConvertUtils.copy(student, StudentInfoVo.class));
             }
+
+            if (StrUtil.isNotEmpty(item.getStudentId())){
+                QueryWrapper returnVisitHistoryQueryWrapper = new QueryWrapper();
+                returnVisitHistoryQueryWrapper.eq("student_id",item.getStudentId());
+                int countReturnVisitHistory =serviceReturnVisitHistoryService.count(returnVisitHistoryQueryWrapper);
+                if (countReturnVisitHistory > 0){
+                    item.setReturnVisitHistory(true);
+                }
+            }
         });
         // 订单号 模糊查询
         if (StrUtil.isNotEmpty(param.getStudentOrderNo())){
@@ -181,6 +194,10 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
                     userz.getStudentVo().getRealName().contains(param.getVagueRealNameSearch())).
                     collect(Collectors.toList());
         }*/
+
+        // 根据条件查询回访
+        studentStudyEnrollVoPage.setRecords(studentStudyEnrollVoPage.getRecords().stream().filter((StudentStudyEnrollVo student)->student.isReturnVisitHistory() == param.isReturnVisitHistory()) //筛选出大于150的
+                .collect(Collectors.toList()));
         log.info(this.getClass() + "pageList-方法请求结果{}",studentStudyEnrollVoPage);
         return R.success(studentStudyEnrollVoPage);
     }

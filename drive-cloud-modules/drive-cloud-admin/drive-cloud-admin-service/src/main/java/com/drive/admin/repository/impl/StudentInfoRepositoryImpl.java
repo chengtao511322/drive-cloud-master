@@ -11,6 +11,7 @@ import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.admin.repository.StudentInfoRepository;
 import com.drive.admin.service.AreaService;
 import com.drive.admin.service.RecommendUserService;
+import com.drive.admin.service.ServiceReturnVisitHistoryService;
 import com.drive.admin.service.StudentInfoService;
 import com.drive.admin.service.mapstruct.StudentInfoMapStruct;
 import com.drive.common.core.base.BaseController;
@@ -27,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -45,6 +47,9 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
     private AreaService areaService;
     @Autowired
     private StudentInfoMapStruct studentInfoMapStruct;
+
+    @Autowired
+    private ServiceReturnVisitHistoryService serviceReturnVisitHistoryService;
 
     @Override
     public ResObject newStudentPageList(StudentInfoPageQueryParam param) {
@@ -96,6 +101,19 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         }
 
         Page<StudentInfoVo> studentInfoVoPage = studentInfoMapStruct.toVoList(pageList);
+        studentInfoVoPage.getRecords().stream().forEach((item) ->{
+            if (StrUtil.isNotEmpty(item.getId())){
+                QueryWrapper returnVisitHistoryQueryWrapper = new QueryWrapper();
+                returnVisitHistoryQueryWrapper.eq("student_id",item.getId());
+                int countReturnVisitHistory =serviceReturnVisitHistoryService.count(returnVisitHistoryQueryWrapper);
+                if (countReturnVisitHistory > 0){
+                    item.setReturnVisitHistory(true);
+                }
+            }
+        });
+        // 根据条件查询回访
+        studentInfoVoPage.setRecords(studentInfoVoPage.getRecords().stream().filter((StudentInfoVo student)->student.isReturnVisitHistory() == param.isReturnVisitHistory()) //筛选出大于150的
+                .collect(Collectors.toList()));
         return R.success(studentInfoVoPage);
     }
 

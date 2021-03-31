@@ -1,6 +1,9 @@
 package com.drive.admin.repository.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.drive.admin.enums.ReturnVisitStatusEnum;
 import com.drive.admin.pojo.entity.ServiceReturnVisitHistoryEntity;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.drive.admin.service.*;
@@ -28,6 +31,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Arrays;
 import java.io.IOException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -209,6 +214,7 @@ public class  ServiceReturnVisitHistoryRepositoryImpl extends BaseController<Ser
         }
         // 回访时间
         installParam.setReturnVisitTime(LocalDateTime.now());
+        // 客服ID
         installParam.setServiceId(String.valueOf(SecurityUtils.getLoginUser().getUserId()));
         ServiceReturnVisitHistoryEntity serviceReturnVisitHistory = BeanConvertUtils.copy(installParam, ServiceReturnVisitHistoryEntity.class);
         Boolean result = serviceReturnVisitHistoryService.save(serviceReturnVisitHistory);
@@ -374,6 +380,35 @@ public class  ServiceReturnVisitHistoryRepositoryImpl extends BaseController<Ser
         });
         log.info(this.getClass() + "pageList-方法请求结果{}",pageList);
         return R.success(pageList);
+    }
+
+    @Override
+    public ResObject aggregationListReturnVisitHistory(String studentId) {
+        log.info(this.getClass() + "aggregationListReturnVisitHistory-方法请求参数{}",studentId);
+        if (StrUtil.isEmpty(studentId)){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 先查询售前
+        QueryWrapper queryWrapper= new QueryWrapper();
+        queryWrapper.eq("student_id",studentId);
+        queryWrapper.eq("return_visit_status", ReturnVisitStatusEnum.PRE.getCode());
+        // 如 queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"phone",param.getPhone());
+        List<ServiceReturnVisitHistoryEntity> preReturnVisitHistoryList = serviceReturnVisitHistoryService.list(queryWrapper);
+        // 售后
+        queryWrapper.eq("return_visit_status", ReturnVisitStatusEnum.AFTER.getCode());
+        List<ServiceReturnVisitHistoryEntity> afterReturnVisitHistoryList = serviceReturnVisitHistoryService.list(queryWrapper);
+        // 聚合List
+        /*List<ServiceReturnVisitHistoryEntity> aggregationList = Stream.concat(preReturnVisitHistoryList.stream(), afterReturnVisitHistoryList.stream())
+                .distinct()
+                .collect(Collectors.toList());
+        if (aggregationList.size() <=0){
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),aggregationList);
+        }*/
+        // do转化
+        JSONObject json = new JSONObject();
+        json.put("pre",BeanConvertUtils.copyList(preReturnVisitHistoryList,ServiceReturnVisitHistoryVo.class));
+        json.put("after",BeanConvertUtils.copyList(afterReturnVisitHistoryList,ServiceReturnVisitHistoryVo.class));
+        return R.success(json);
     }
 }
 

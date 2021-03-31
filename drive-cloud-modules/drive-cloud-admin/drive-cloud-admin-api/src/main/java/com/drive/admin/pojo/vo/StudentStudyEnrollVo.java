@@ -227,5 +227,9 @@ public class StudentStudyEnrollVo {
 	private StudentInfoVo studentVo;
 
 
+	// 是否
+	private boolean returnVisitHistory;
+
+
 
 }

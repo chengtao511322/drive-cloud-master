@@ -139,4 +139,8 @@ public class StudentInfoPageQueryParam extends BasePageQueryParam {
 	private String cityArr;
 
 	private String createTimeSearch;
+
+
+	// 是否
+	private boolean returnVisitHistory;
 }

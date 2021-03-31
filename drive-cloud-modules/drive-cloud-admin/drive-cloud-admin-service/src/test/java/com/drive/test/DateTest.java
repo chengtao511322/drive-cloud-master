@@ -8,12 +8,15 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.db.nosql.redis.RedisDS;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
+import com.drive.admin.pojo.vo.StudentInfoVo;
 import redis.clients.jedis.Jedis;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DateTest {
 
@@ -30,14 +33,23 @@ public class DateTest {
         JSON json = JSONUtil.parse(result);
         System.out.println(json.getByPath("name"));
         System.out.println(DateUtil.now());
-        List arr = new ArrayList();
+        List<String> arr = new ArrayList();
+        List<String> arrJson = new ArrayList();
         arr.add("1");
         arr.add("2");
         arr.add("3");
-        arr.stream().forEach((item) ->{
+        arrJson.add("3");
+        arrJson.add("4");
+        arrJson.add("5");
+    /*    arr.stream().forEach((item) ->{
             arr.add("4");
-        });
-        System.out.println(arr);
+        });*/
+       ;
+        System.out.println(Stream.concat(arr.stream(), arrJson.stream())
+                .distinct()
+                .collect(Collectors.toList()));
+        /*System.out.println( arr.stream().filter((String student)->student.equals("1")) //筛选出大于150的
+                .collect(Collectors.toList()));*/
     }
 
 

@@ -63,6 +63,7 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 
 	// 报名状态（1-提交报名；2-已联系待支付；3-已支付待备案；5-支付失败 ;6-报名完成 ;7-报名取消;8-报名失败 ;9-已退款，10-自动报名完成，11-自动报名待审核，12-已备案待审核,13-密码已提交待审核）
 	private String enrollStatus;
+	private String enrollStatusArr;
 
 	// 报名驾校id
 	private String driveSchoolId;
@@ -170,5 +171,9 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 	private String nextReturnVisitTimeSearch;
 	// 创建订单时间
 	private String createTimeSearch;
+
+
+	// 是否
+	private boolean returnVisitHistory;
 
 }

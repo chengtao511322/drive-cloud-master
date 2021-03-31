@@ -45,6 +45,9 @@ public class ServiceReturnVisitHistoryPageQueryParam extends BasePageQueryParam 
 	// 回访内容
 	@ApiModelProperty(value = "回访内容")
 	private String returnVisitContent;
+
+	// 回访状态  1：售前回访 2 售后回访
+	private String returnVisitStatus;
 	// 模糊查询字段
 
 	// 预计下次回访时间

@@ -88,13 +88,24 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	}
 
 	/**
+	* 获取客服回访记录
+	*/
+	@ApiOperation("通过学员ID 获取聚合客服回访记录")
+	@ApiImplicitParam(name = "studnetId", required = true, dataType = "String", paramType = "path")
+	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
+	@GetMapping("/aggregationListReturnVisitHistory/{studnetId}")
+	public ResObject aggregationListReturnVisitHistory(@PathVariable String studnetId) {
+		return serviceReturnVisitHistoryRepository.aggregationListReturnVisitHistory(studnetId);
+	}
+
+	/**
 	 * 条件查询获取客服回访记录
 	 */
 	@ApiOperation("条件查询获取客服回访记录")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable ServiceReturnVisitHistoryPageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@PathVariable @RequestBody ServiceReturnVisitHistoryPageQueryParam param) {
 		return serviceReturnVisitHistoryRepository.getInfo(param);
 	}
 

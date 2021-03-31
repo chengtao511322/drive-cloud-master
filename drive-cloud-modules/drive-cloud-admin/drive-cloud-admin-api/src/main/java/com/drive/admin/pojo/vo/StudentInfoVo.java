@@ -151,6 +151,8 @@ public class StudentInfoVo {
 	// 运营商id(数据权限标记)
 	@Excel(name = "运营商id(数据权限标记)", width = 20)
 	private String operatorId;
+	// 是否
+	private boolean returnVisitHistory;
 
 	// 登录设备类型
 	@Excel(name = "登录设备类型", width = 20)
@@ -160,18 +162,5 @@ public class StudentInfoVo {
 	@Excel(name = "注册渠道（直接存入中文，为防止活动平凡切换，造成字典表无法适应）", width = 20)
 	private String logonChannel;
 
-	public void setProvinceId(String provinceId) {
-		this.provinceId = provinceId;
-		//if (StrUtil.isNotEmpty(provinceId))this.provinceName = BeanConvertUtils.copy(CoachUtil.getAreaCoach(provinceId),StudentInfoVo.class).provinceName;
-	}
 
-	public void setCityId(String cityId) {
-		this.cityId = cityId;
-		//if (StrUtil.isNotEmpty(cityId))this.cityName = BeanConvertUtils.copy(CoachUtil.getAreaCoach(provinceId),StudentInfoVo.class).cityName;
-	}
-
-	public void setAreaId(String areaId) {
-		this.areaId = areaId;
-		//if (StrUtil.isNotEmpty(areaId))this.areaName = BeanConvertUtils.copy(CoachUtil.getAreaCoach(provinceId),StudentInfoVo.class).areaName;
-	}
 }

@@ -44,6 +44,8 @@ public class ServiceReturnVisitHistoryEntity extends BaseEntity {
 
 	// 回访类型（1-学车报名；2-考试报名；3-常规训练；4-考试训练）
 	private String returnVisitType;
+	// 回访状态  1：售前回访 2 售后回访
+	private String returnVisitStatus;
 
 	// 订单明细单号
 	private String orderDetailNo;

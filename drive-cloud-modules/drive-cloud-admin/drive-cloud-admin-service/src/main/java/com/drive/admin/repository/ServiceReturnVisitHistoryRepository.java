@@ -27,5 +27,12 @@ public interface ServiceReturnVisitHistoryRepository extends BasicsRepository<Se
      * @return
      */
     ResObject pageListReturnVisitHistory(StudentStudyEnrollPageQueryParam param);
+
+    /**
+     * 通过学员ID 聚合查询 售前 售后数据
+     * @param param
+     * @return
+     */
+    ResObject aggregationListReturnVisitHistory(String studentId);
 }
 
