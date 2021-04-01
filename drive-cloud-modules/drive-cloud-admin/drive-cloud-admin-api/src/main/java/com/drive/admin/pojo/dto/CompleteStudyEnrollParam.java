@@ -167,4 +167,7 @@ public class CompleteStudyEnrollParam {
     private Integer opType;
     // 策略值
     private String strategyValue;
+
+    // 转换类型(1-平台转化，2-新用户转化，3-待支付转化)
+    private String conversionType;
 }

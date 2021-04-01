@@ -158,5 +158,8 @@ public class StudentStudyEnrollEditParam {
     // 是否还在平台学习（0-否，1-是）
     private String isInStudy;
 
+    // 转换类型(1-平台转化，2-新用户转化，3-待支付转化)
+    private String conversionType;
+
 
 }

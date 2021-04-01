@@ -76,6 +76,14 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 		return studentOrderRepository.getById(orderNo);
 	}
 
+	@ApiOperation("获取学员订单表")
+	@ApiImplicitParam(name = "orderNo", required = true, dataType = "String", paramType = "path")
+	@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:getOrderByStudentId')")
+	@GetMapping("/getOrderByStudentId/{studentId}")
+	public ResObject getOrderByStudentId(@PathVariable String studentId) {
+		return studentOrderRepository.getOrderByStudentId(studentId);
+	}
+
 	/**
 	* 新增学员订单表
 	*/

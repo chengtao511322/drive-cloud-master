@@ -120,6 +120,14 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	public ResObject save(@Valid @RequestBody ServiceReturnVisitHistoryInstallParam serviceReturnVisitHistoryInstallParam) {
 		return serviceReturnVisitHistoryRepository.save(serviceReturnVisitHistoryInstallParam);
 	}
+	@ApiOperation("添加回访记录")
+	@ApiImplicitParam(name = "ServiceReturnVisitHistoryEditParam ", value = "新增客服回访记录", dataType = "ServiceReturnVisitHistoryEditParam")
+	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:add')")
+	@EventLog(message = "新增客服回访记录", businessType = EventLogEnum.CREATE)
+	@PostMapping("/addReturnVisitHistory")
+	public ResObject addReturnVisitHistory(@Valid @RequestBody ServiceReturnVisitHistoryInstallParam serviceReturnVisitHistoryInstallParam) {
+		return serviceReturnVisitHistoryRepository.addReturnVisitHistory(serviceReturnVisitHistoryInstallParam);
+	}
 
 	/**
 	* 修改客服回访记录

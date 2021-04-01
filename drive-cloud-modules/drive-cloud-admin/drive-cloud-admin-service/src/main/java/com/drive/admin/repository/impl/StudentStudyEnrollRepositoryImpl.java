@@ -24,6 +24,7 @@ import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
+import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.data.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -96,9 +98,14 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         }
 
         // 订单
+
+        List<StudentOrderEntity> studentOrderList = null;
         QueryWrapper orderQueryWrapper = new QueryWrapper();
-        orderQueryWrapper.like(StrUtil.isNotEmpty(param.getStudentOrderNo()),"order_no",param.getStudentOrderNo());
-        List<StudentOrderEntity> studentOrderList  = studentOrderService.list(orderQueryWrapper);
+        if (StrUtil.isNotEmpty(param.getStudentOrderNo())){
+            orderQueryWrapper.like("order_no",param.getStudentOrderNo());
+            studentOrderList  = studentOrderService.list(orderQueryWrapper);
+        }
+
         QueryWrapper queryWrapper = this.getQueryWrapper(studentStudyEnrollMapStruct, param);
         // 报名单号 模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueStudyEnrollNoSearch()),"study_enroll_no",param.getVagueStudyEnrollNoSearch());
@@ -111,12 +118,12 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         queryWrapper.apply(StrUtil.isNotBlank(param.getIntentEnrollTimeSearch()),
         "date_format (intent_enroll_time,'%Y-%m-%d') = date_format('" + param.getIntentEnrollTimeSearch() + "','%Y-%m-%d')");
 
-        if (studentOrderList.size() > 0){
+        if (studentOrderList != null && studentOrderList.size() > 0){
             queryWrapper.in("study_enroll_no",studentOrderList.stream().map(StudentOrderEntity::getStudyEnrollNo).collect(Collectors.toList()));
         }
         // 报名状态
         if (StrUtil.isNotEmpty(param.getEnrollStatusArr())){
-            queryWrapper.in("enroll_status",param.getEnrollStatusArr());
+            queryWrapper.in("enroll_status",param.getEnrollStatusArr().split(","));
         }
 
         //  开始时间 结束时间都有才进入
@@ -194,11 +201,12 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
                     userz.getStudentVo().getRealName().contains(param.getVagueRealNameSearch())).
                     collect(Collectors.toList());
         }*/
-
+       List<StudentStudyEnrollVo> studentStudyEnrollVoList = studentStudyEnrollVoPage.getRecords().stream().filter((StudentStudyEnrollVo student)->student.isReturnVisitHistory() == param.isReturnVisitHistory()) //筛选出大于150的
+                .collect(Collectors.toList());
         // 根据条件查询回访
-        studentStudyEnrollVoPage.setRecords(studentStudyEnrollVoPage.getRecords().stream().filter((StudentStudyEnrollVo student)->student.isReturnVisitHistory() == param.isReturnVisitHistory()) //筛选出大于150的
-                .collect(Collectors.toList()));
+        studentStudyEnrollVoPage.setRecords(studentStudyEnrollVoList);
         log.info(this.getClass() + "pageList-方法请求结果{}",studentStudyEnrollVoPage);
+        studentStudyEnrollVoPage.setTotal(studentStudyEnrollVoList.size());
         return R.success(studentStudyEnrollVoPage);
     }
 
@@ -399,6 +407,88 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         String strategyValue = StudyEnrollEnum.getStrategyValueByCode(studentStudyEnrollEditParam.getEnrollStatus());
         StudyEnrollStrategy studyEnrollStrategy = SpringContextUtil.getBean(strategyValue,StudyEnrollStrategy.class);
         return studyEnrollStrategy.completeStudyEnroll(studentStudyEnrollEditParam);
+    }
+
+    @Override
+    public ResObject stayPayChangePageList(@Valid StudentStudyEnrollPageQueryParam param) throws BizException {
+        log.info(this.getClass() + "stayPayChangePageList-方法请求参数{}",param);
+        if (param == null){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        Page<StudentStudyEnrollEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getOrderStatusSearch()),"t1.status",param.getOrderStatusSearch());
+        // 转化类型
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getConversionType()),"conversion_type",param.getConversionType());
+        //
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getLineUnderUserId()),"line_under_user_id",param.getLineUnderUserId());
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getUserId()),"user_id",param.getUserId());
+        // 报名单号 模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueStudyEnrollNoSearch()),"t2.study_enroll_no",param.getVagueStudyEnrollNoSearch());
+        // 订单号查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getStudentOrderNo()),"t1.order_no",param.getStudentOrderNo());
+        // 真实姓名模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"t2.real_name",param.getVagueRealNameSearch());
+        // 预约见面时间
+        queryWrapper.apply(StrUtil.isNotBlank(param.getBeSpeakMeetTimeSearch()),
+                "date_format (t2.be_speak_meet_time,'%Y-%m-%d') = date_format('" + param.getBeSpeakMeetTimeSearch() + "','%Y-%m-%d')");
+        // 意向报名时间
+        queryWrapper.apply(StrUtil.isNotBlank(param.getIntentEnrollTimeSearch()),
+                "date_format (t2.intent_enroll_time,'%Y-%m-%d') = date_format('" + param.getIntentEnrollTimeSearch() + "','%Y-%m-%d')");
+
+        // 报名状态
+        if (StrUtil.isNotEmpty(param.getEnrollStatusArr())){
+            queryWrapper.in("t2.enroll_status",param.getEnrollStatusArr());
+        }
+
+        //  开始时间 结束时间都有才进入
+        if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
+            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
+        }
+        if (StrUtil.isNotEmpty(param.getPayTimeSearch())){
+            String[] arr = param.getPayTimeSearch().split(",");
+            queryWrapper.between("t1.pay_time",arr[0],arr[1]);
+        }
+
+        IPage<StudentStudyEnrollVo> pageList = studentStudyEnrollService.studyEnrollPageList(page,queryWrapper);
+        if (pageList.getRecords().size() <= 0){
+            log.error(this.getClass() +"数据空");
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
+        }
+        // 循环
+        pageList.getRecords().stream().forEach((item) ->{
+            if (StrUtil.isNotEmpty(item.getUserId())){
+                ServiceInfoEntity serviceInfo = serviceInfoService.getById(item.getUserId());
+                log.info("线上客服{}",serviceInfo);
+                if (serviceInfo != null)item.setOnlineServiceName(serviceInfo.getRealName());
+            }
+            if (StrUtil.isNotEmpty(item.getLineUnderUserId())){
+                ServiceInfoEntity serviceInfo = serviceInfoService.getById(item.getLineUnderUserId());
+                log.info("线下客服{}",serviceInfo);
+                if (serviceInfo != null)item.setLineServiceName(serviceInfo.getRealName());
+            }
+            if (StrUtil.isNotEmpty(item.getDriveSchoolId())){
+                DriveSchoolEntity driveSchoolEntity =driveSchoolService.getById(item.getLineUnderUserId());
+                if (driveSchoolEntity != null)item.setLineServiceName(driveSchoolEntity.getSchoolName());
+            }
+            // 省市区
+            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
+            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
+            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
+            QueryWrapper serviceQueryWrapper = new QueryWrapper();
+            serviceQueryWrapper.eq("order_detail_no",item.getStudyEnrollNo());
+            serviceQueryWrapper.eq("student_id",item.getStudentId());
+            serviceQueryWrapper.orderByDesc("create_time");
+            serviceQueryWrapper.last("limit 1");
+            ServiceReturnVisitHistoryEntity serviceReturnVisitHistoryEntity  = serviceReturnVisitHistoryService.getOne(serviceQueryWrapper);
+            if (serviceReturnVisitHistoryEntity != null){
+                item.setReturnVisitTime(serviceReturnVisitHistoryEntity.getReturnVisitTime());
+                ServiceInfoEntity serviceInfo = serviceInfoService.getById(serviceReturnVisitHistoryEntity.getServiceId());
+                if (serviceInfo != null)item.setReturnVisitServiceName(serviceInfo.getRealName());
+                item.setReturnVisitContent(serviceReturnVisitHistoryEntity.getReturnVisitContent());
+            }
+        });
+        return R.success(pageList);
     }
 }
 

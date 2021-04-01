@@ -34,5 +34,12 @@ public interface ServiceReturnVisitHistoryRepository extends BasicsRepository<Se
      * @return
      */
     ResObject aggregationListReturnVisitHistory(String studentId);
+
+    /**
+     * 添加回访记录
+     * @param serviceReturnVisitHistoryEditParam
+     * @return
+     */
+    ResObject addReturnVisitHistory(ServiceReturnVisitHistoryInstallParam serviceReturnVisitHistoryEditParam);
 }
 

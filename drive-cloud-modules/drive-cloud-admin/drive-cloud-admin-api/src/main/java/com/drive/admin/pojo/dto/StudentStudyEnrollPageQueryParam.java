@@ -176,4 +176,13 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 	// 是否
 	private boolean returnVisitHistory;
 
+	// 转换类型(1-平台转化，2-新用户转化，3-待支付转化)
+	private String conversionType;
+	// 订单状态
+	private String orderStatusSearch;
+	// 状态ARR
+	private String[] orderStatusArr;
+	//支付时间
+	private String payTimeSearch;
+
 }

@@ -45,6 +45,17 @@ public enum StudyEnrollEnum {
 
     AFD_SYSTEM_COUPON_PAY("20","优惠券支出",""),
 
+    // 待支付
+    STAT_PAY("1","待支付",""),
+    PAY_SUCCESS("2","支付成功",""),
+    PAY_LOADING("3","支付处理中",""),
+    PAY_ERROR("4","支付失败",""),
+    CANCEL_ORDER("5","已取消",""),
+    STAT_EVALUATE("6","待评价",""),
+    EVALUATE_SUCCESS("7","已评价",""),
+    REFUND_SUCCESS("8","退款成功",""),
+    REFUND_LOADING("9","退款处理中",""),
+
     ;
 
     private final String code;

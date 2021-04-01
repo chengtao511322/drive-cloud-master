@@ -111,9 +111,14 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
                 }
             }
         });
-        // 根据条件查询回访
-        studentInfoVoPage.setRecords(studentInfoVoPage.getRecords().stream().filter((StudentInfoVo student)->student.isReturnVisitHistory() == param.isReturnVisitHistory()) //筛选出大于150的
-                .collect(Collectors.toList()));
+
+        if (param.isReturnVisitHistory()){
+            // 根据条件查询回访
+            List<StudentInfoVo> studentInfoVoList = studentInfoVoPage.getRecords().stream().filter((StudentInfoVo student)->student.isReturnVisitHistory() == param.isReturnVisitHistory())
+                    .collect(Collectors.toList());
+            studentInfoVoPage.setRecords(studentInfoVoList);
+            studentInfoVoPage.setTotal(studentInfoVoList.size());
+        }
         return R.success(studentInfoVoPage);
     }
 

@@ -1,5 +1,6 @@
 package com.drive.admin.controller;
 
+import com.drive.admin.enums.EnrollStatusEnum;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollEditParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
@@ -52,6 +53,22 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid StudentStudyEnrollPageQueryParam param) {
 		return studentStudyEnrollRepository.pageList(param);
+	}
+
+	@ApiOperation("待支付转化分页列表")
+	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	@PostMapping(value = "/stayPayChangePageList")
+	public ResObject stayPayChangePageList(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
+		// 状态值
+		String[] arr = new String[]
+				{
+						EnrollStatusEnum.PAY_WAIT_PUT.getCode(),
+						EnrollStatusEnum.ENROLL_SUCCESS.getCode(),
+						EnrollStatusEnum.PUT_WAIT_AUDIT.getCode(),
+						EnrollStatusEnum.PASSWORD_SUBMIT_WAIT_AUDIT.getCode()
+				};
+		param.setOrderStatusArr(arr);
+		return studentStudyEnrollRepository.stayPayChangePageList(param);
 	}
 	/**
 	* 学员学车报名单 列表

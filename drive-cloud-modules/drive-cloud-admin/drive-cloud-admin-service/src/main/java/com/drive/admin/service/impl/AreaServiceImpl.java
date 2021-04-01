@@ -38,7 +38,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
     }
 
 
-    @PostConstruct
+   /* @PostConstruct
     public void init()
     {
         Jedis jedis = RedisDS.create().getJedis();
@@ -49,7 +49,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
             //JSONObject jsonObject = BeanConvertUtils.convertBean(operator, JSONObject.class);
             jedis.set(getCacheKey(operator.getBaCode()), JSONObject.toJSONString(operator));
         }
-    }
+    }*/
 
     private String getCacheKey(String configKey)
     {

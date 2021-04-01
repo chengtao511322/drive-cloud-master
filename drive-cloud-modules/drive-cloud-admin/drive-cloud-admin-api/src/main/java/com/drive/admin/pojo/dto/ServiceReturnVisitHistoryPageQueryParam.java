@@ -48,6 +48,9 @@ public class ServiceReturnVisitHistoryPageQueryParam extends BasePageQueryParam 
 
 	// 回访状态  1：售前回访 2 售后回访
 	private String returnVisitStatus;
+
+	// 回访类型明细
+	private String returnVisitItem;
 	// 模糊查询字段
 
 	// 预计下次回访时间

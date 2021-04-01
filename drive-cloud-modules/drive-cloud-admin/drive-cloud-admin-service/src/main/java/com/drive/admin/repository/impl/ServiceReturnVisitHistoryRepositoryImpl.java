@@ -56,6 +56,9 @@ public class  ServiceReturnVisitHistoryRepositoryImpl extends BaseController<Ser
     private ServiceReturnVisitHistoryMapStruct serviceReturnVisitHistoryMapStruct;
 
     @Autowired
+    private StudentInfoService studentInfoService;
+
+    @Autowired
     private ServiceInfoService serviceInfoService;
 
     @Autowired
@@ -409,6 +412,33 @@ public class  ServiceReturnVisitHistoryRepositoryImpl extends BaseController<Ser
         json.put("pre",BeanConvertUtils.copyList(preReturnVisitHistoryList,ServiceReturnVisitHistoryVo.class));
         json.put("after",BeanConvertUtils.copyList(afterReturnVisitHistoryList,ServiceReturnVisitHistoryVo.class));
         return R.success(json);
+    }
+
+    @Override
+    @Transactional
+    public ResObject addReturnVisitHistory(ServiceReturnVisitHistoryInstallParam serviceReturnVisitHistoryEditParam) {
+        log.info(this.getClass() + "addReturnVisitHistory-方法请求参数{}",serviceReturnVisitHistoryEditParam);
+        if (serviceReturnVisitHistoryEditParam == null){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 回访时间
+        serviceReturnVisitHistoryEditParam.setReturnVisitTime(LocalDateTime.now());
+        // 客服ID
+        serviceReturnVisitHistoryEditParam.setServiceId(String.valueOf(SecurityUtils.getLoginUser().getUserId()));
+        // 添加回访记录
+        ServiceReturnVisitHistoryEntity returnVisitHistoryEntity = BeanConvertUtils.copy(serviceReturnVisitHistoryEditParam,ServiceReturnVisitHistoryEntity.class);
+        Boolean result = serviceReturnVisitHistoryService.save(returnVisitHistoryEntity);
+        if (!result){
+            throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+        }
+        // 修改学员信息
+        StudentInfoEntity studentInfo = BeanConvertUtils.copy(serviceReturnVisitHistoryEditParam.getStudentInfoEditParam(),StudentInfoEntity.class);
+        log.info("修改的信息是{}",studentInfo);
+        Boolean studentResult = studentInfoService.updateById(studentInfo);
+        if (!studentResult){
+            throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+        }
+        return R.success("执行成功");
     }
 }
 

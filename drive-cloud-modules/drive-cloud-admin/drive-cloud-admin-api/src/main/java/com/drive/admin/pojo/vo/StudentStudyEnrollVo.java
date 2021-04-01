@@ -20,6 +20,9 @@ public class StudentStudyEnrollVo {
 	@Excel(name = "学员报名单号", width = 20)
 	private String studyEnrollNo;
 
+	// 订单号
+	private String studentOrderNo;
+
 	// 省-学员的省
 	@Excel(name = "省-学员的省", width = 20)
 	private String provinceId;
@@ -229,6 +232,17 @@ public class StudentStudyEnrollVo {
 
 	// 是否
 	private boolean returnVisitHistory;
+
+	// 转换类型(1-平台转化，2-新用户转化，3-待支付转化)
+	private String conversionType;
+	// 支付时间
+	private String payTime;
+	// 订单状态
+	private String orderStatus;
+
+	private int cancelNum;
+
+	private LocalDateTime orderTime;
 
 
 
