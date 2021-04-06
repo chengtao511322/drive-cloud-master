@@ -71,6 +71,10 @@ public class ServiceReturnVisitHistoryPageQueryParam extends BasePageQueryParam 
 	// 科目类型(1-科目一，2-科目三，3-科目三，4-科目四)
 	@ApiModelProperty(value = "科目类型(1-科目一，2-科目三，3-科目三，4-科目四)")
 	private String subjectType;
+
+
+	// 是否有意向 0 否 1 是
+	private String isIntention;
 	// 模糊查询字段
 
 	// 运营商id(数据权限标记)

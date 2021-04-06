@@ -102,7 +102,12 @@ public enum  SubResultCode {
 
     STUDENT_NO_ENROLL("STUDENT_NO_ENROLL","该学员未报名"),
     NO_BINDING_COACH("NO_BINDING_COACH","没有绑定教练，请先绑定教练"),
-    STATUS_NO_OPERATION("STATUS_NO_OPERATION","该状态下不允许该操作")
+    STATUS_NO_OPERATION("STATUS_NO_OPERATION","该状态下不允许该操作"),
+
+    // 订单类
+    NOT_ORDER_OPERATION("NOT_ORDER_OPERATION","没有订单可操作"),
+    ORDER_STATUS_NOT_OPERATION("ORDER_STATUS_NOT__OPERATION","该订单状态下啊不可操作"),
+    OPERATION_ERROR("OPERATION_ERROR","操作错误"),
     ;
     /*状态码*/
     private String subCode;

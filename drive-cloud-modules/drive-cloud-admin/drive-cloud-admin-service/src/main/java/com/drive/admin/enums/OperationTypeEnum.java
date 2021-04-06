@@ -7,21 +7,17 @@ package com.drive.admin.enums;
  * @Author JoyoDuan
  * @Date 2021/1/6
  */
-public enum ReturnVisitStatusEnum {
-
-    PRE("1", "售前"),
-
-    AFTER("2", "售后"),
-    NEW_USER("0", "新用户待回访")
-
-    ;
+public enum OperationTypeEnum {
+    BACK_SERVICE("1", "后台）客服取消"),
+    STUDENT("2", "学员取消 "),
 
 
+    SOLD("2","已下架");
 
     private final String code;
     private final String info;
 
-    ReturnVisitStatusEnum(String code, String info) {
+    OperationTypeEnum(String code, String info) {
         this.code = code;
         this.info = info;
     }

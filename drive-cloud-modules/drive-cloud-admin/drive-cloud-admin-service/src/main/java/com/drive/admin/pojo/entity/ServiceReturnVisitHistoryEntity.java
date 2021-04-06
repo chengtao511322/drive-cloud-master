@@ -49,6 +49,9 @@ public class ServiceReturnVisitHistoryEntity extends BaseEntity {
 	// 回访类型明细
 	private String returnVisitItem;
 
+	// 是否有意向 0 否 1 是
+	private String isIntention;
+
 	// 订单明细单号
 	private String orderDetailNo;
 

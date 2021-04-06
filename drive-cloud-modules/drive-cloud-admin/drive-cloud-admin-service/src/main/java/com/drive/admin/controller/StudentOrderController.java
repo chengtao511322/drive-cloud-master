@@ -156,5 +156,16 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	public ResObject changeStatus(@Valid @RequestBody StudentOrderEditParam studentOrderEditParam) {
 		return studentOrderRepository.changeStatus(studentOrderEditParam);
 	}
+	/**
+	* 状态启用/停用
+	*/
+	@ApiOperation("订单取消")
+	@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:cancelOrder')")
+	@SneakyThrows
+	@EventLog(message = "状态启用/停用学员订单表", businessType = EventLogEnum.EXPORT)
+	@PostMapping("/cancelOrder")
+	public ResObject cancelOrder(@RequestBody StudentOrderEditParam studentOrderEditParam) {
+		return studentOrderRepository.cancelOrder(studentOrderEditParam);
+	}
 
 }

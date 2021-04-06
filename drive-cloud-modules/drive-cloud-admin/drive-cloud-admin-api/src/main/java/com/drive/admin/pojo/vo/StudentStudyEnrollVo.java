@@ -244,6 +244,8 @@ public class StudentStudyEnrollVo {
 
 	private LocalDateTime orderTime;
 
+	private ServiceReturnVisitHistoryVo serviceReturnVisitHistory;
+
 
 
 }

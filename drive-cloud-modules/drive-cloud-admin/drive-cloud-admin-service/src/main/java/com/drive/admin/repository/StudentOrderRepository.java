@@ -20,5 +20,12 @@ public interface StudentOrderRepository extends BaseRepository<StudentOrderPageQ
      * @return
      */
     ResObject getOrderByStudentId(String studentId);
+
+    /**
+     * 取消订单
+     * @param studentOrderEditParam
+     * @return
+     */
+    ResObject cancelOrder(StudentOrderEditParam studentOrderEditParam);
 }
 

@@ -35,6 +35,15 @@ public class ServiceReturnVisitHistoryVo {
 	@Excel(name = "回访时间", width = 20)
 	private LocalDateTime returnVisitTime;
 
+	// 回访类型（1-学车报名；2-考试报名；3-常规训练；4-考试训练）
+	// 回访状态  1：售前回访 2 售后回访
+	private String returnVisitStatus;
+
+	// 回访类型明细
+	private String returnVisitItem;
+	// 是否有意向 0 否 1 是
+	private String isIntention;
+
 	// 回访内容
 	@Excel(name = "回访内容", width = 20)
 	private String returnVisitContent;

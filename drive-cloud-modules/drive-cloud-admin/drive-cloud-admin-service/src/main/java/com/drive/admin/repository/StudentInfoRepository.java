@@ -20,5 +20,12 @@ public interface StudentInfoRepository extends BaseRepository<StudentInfoPageQue
      * @return
      */
     ResObject newStudentPageList(StudentInfoPageQueryParam param);
+
+    /**
+     * +新用户已回访
+     * @param param
+     * @return
+     */
+    ResObject newStudentReturnVisitPageList(StudentInfoPageQueryParam param);
 }
 

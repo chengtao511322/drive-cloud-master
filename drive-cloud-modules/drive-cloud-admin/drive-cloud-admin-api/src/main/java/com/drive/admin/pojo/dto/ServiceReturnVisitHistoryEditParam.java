@@ -27,6 +27,9 @@ public class ServiceReturnVisitHistoryEditParam {
     @ApiModelProperty(value = "回访类型（1-学车报名；2-考试报名；3-常规训练；4-考试训练）")
     private String returnVisitType;
 
+    // 是否有意向 0 否 1 是
+    private String isIntention;
+
     // 订单明细单号
     @NotBlank(message = "订单明细单号不能为空")
     @ApiModelProperty(value = "订单明细单号")

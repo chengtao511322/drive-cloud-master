@@ -42,6 +42,9 @@ public class ServiceReturnVisitHistoryInstallParam {
 
     // 回访状态  1：售前回访 2 售后回访
     private String returnVisitStatus;
+
+    // 是否有意向 0 否 1 是
+    private String isIntention;
     // 回访类型明细
     private String returnVisitItem;
 

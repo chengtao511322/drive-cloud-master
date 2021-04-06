@@ -11,6 +11,7 @@ import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollEditParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
 import com.drive.admin.pojo.entity.*;
+import com.drive.admin.pojo.vo.ServiceReturnVisitHistoryVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.admin.pojo.vo.StudentOrderVo;
 import com.drive.admin.pojo.vo.StudentStudyEnrollVo;
@@ -179,6 +180,32 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             if (student != null){
                 item.setStudentVo(BeanConvertUtils.copy(student, StudentInfoVo.class));
             }
+
+            QueryWrapper returnQueryWrapper = new QueryWrapper();
+            //returnQueryWrapper.eq("order_detail_no",item.getStudyEnrollNo());
+            returnQueryWrapper.eq("student_id",item.getStudentId());
+            returnQueryWrapper.orderByDesc("create_time");
+            returnQueryWrapper.last("limit 1");
+            ServiceReturnVisitHistoryEntity serviceReturnVisitHistory  = serviceReturnVisitHistoryService.getOne(returnQueryWrapper);
+            if (serviceReturnVisitHistory != null){
+                item.setReturnVisitTime(serviceReturnVisitHistory.getReturnVisitTime());
+                ServiceInfoEntity serviceInfo = serviceInfoService.getById(serviceReturnVisitHistory.getServiceId());
+                if (serviceInfo != null)item.setReturnVisitServiceName(serviceInfo.getRealName());
+                item.setReturnVisitContent(serviceReturnVisitHistory.getReturnVisitContent());
+                item.setServiceReturnVisitHistory(BeanConvertUtils.copy(serviceReturnVisitHistory, ServiceReturnVisitHistoryVo.class));
+            }
+
+
+
+            QueryWrapper queryWrapperCount = new QueryWrapper();
+            queryWrapperCount.eq("student_id",item.getStudentId());
+            queryWrapperCount.eq("status", StudyEnrollEnum.CANCEL_ORDER.getCode());
+            int cancelNum= studentOrderService.count(queryWrapperCount);
+            //studentOrderVos.stream().mapToDouble(StudentStudyEnrollVo::getOrderStatus).sum()
+            // 取消次数
+            //IntSummaryStatistics sumcc = studentOrderVos.stream().collect(Collectors.summarizingInt(e->Integer.valueOf(String.valueOf(e.getOrderStatus()=="5"))));
+            // 取消订单次数
+            item.setCancelNum(cancelNum);
 
             if (StrUtil.isNotEmpty(item.getStudentId())){
                 QueryWrapper returnVisitHistoryQueryWrapper = new QueryWrapper();
@@ -419,10 +446,10 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq(StrUtil.isNotEmpty(param.getOrderStatusSearch()),"t1.status",param.getOrderStatusSearch());
         // 转化类型
-        queryWrapper.eq(StrUtil.isNotEmpty(param.getConversionType()),"conversion_type",param.getConversionType());
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getConversionType()),"t2.conversion_type",param.getConversionType());
         //
-        queryWrapper.eq(StrUtil.isNotEmpty(param.getLineUnderUserId()),"line_under_user_id",param.getLineUnderUserId());
-        queryWrapper.eq(StrUtil.isNotEmpty(param.getUserId()),"user_id",param.getUserId());
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getLineUnderUserId()),"t2.line_under_user_id",param.getLineUnderUserId());
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getUserId()),"t2.user_id",param.getUserId());
         // 报名单号 模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueStudyEnrollNoSearch()),"t2.study_enroll_no",param.getVagueStudyEnrollNoSearch());
         // 订单号查询
@@ -486,7 +513,18 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
                 ServiceInfoEntity serviceInfo = serviceInfoService.getById(serviceReturnVisitHistoryEntity.getServiceId());
                 if (serviceInfo != null)item.setReturnVisitServiceName(serviceInfo.getRealName());
                 item.setReturnVisitContent(serviceReturnVisitHistoryEntity.getReturnVisitContent());
+                item.setServiceReturnVisitHistory(BeanConvertUtils.copy(serviceReturnVisitHistoryEntity, ServiceReturnVisitHistoryVo.class));
             }
+
+            QueryWrapper queryWrapperCount = new QueryWrapper();
+            queryWrapperCount.eq("student_id",item.getStudentId());
+            queryWrapperCount.eq("status", StudyEnrollEnum.CANCEL_ORDER.getCode());
+            int cancelNum= studentOrderService.count(queryWrapperCount);
+            //studentOrderVos.stream().mapToDouble(StudentStudyEnrollVo::getOrderStatus).sum()
+            // 取消次数
+            //IntSummaryStatistics sumcc = studentOrderVos.stream().collect(Collectors.summarizingInt(e->Integer.valueOf(String.valueOf(e.getOrderStatus()=="5"))));
+            // 取消订单次数
+            item.setCancelNum(cancelNum);
         });
         return R.success(pageList);
     }

@@ -54,6 +54,16 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 		return studentInfoRepository.newStudentPageList(param);
 	}
 
+	/**
+	 * 新用户列表 分页列表
+	 */
+	@ApiOperation("新用户已回访列表分页")
+	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
+	@GetMapping(value = "/newStudentReturnVisitPageList")
+	public ResObject newStudentReturnVisitPageList(@Valid StudentInfoPageQueryParam param) {
+		return studentInfoRepository.newStudentReturnVisitPageList(param);
+	}
+
 
 	/**
 	* 学员信息表 分页列表

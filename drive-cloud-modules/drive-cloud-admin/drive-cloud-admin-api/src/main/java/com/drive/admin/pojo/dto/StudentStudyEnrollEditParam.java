@@ -161,5 +161,8 @@ public class StudentStudyEnrollEditParam {
     // 转换类型(1-平台转化，2-新用户转化，3-待支付转化)
     private String conversionType;
 
+    // 操作类型 1：（后台）客服取消 2：学员取消
+    private String operationType;
+
 
 }

@@ -185,4 +185,7 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 	//支付时间
 	private String payTimeSearch;
 
+	// 操作类型 1：（后台）客服取消 2：学员取消
+	private String operationType;
+
 }

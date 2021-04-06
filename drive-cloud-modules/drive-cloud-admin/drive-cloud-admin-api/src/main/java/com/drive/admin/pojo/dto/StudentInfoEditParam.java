@@ -115,5 +115,11 @@ public class StudentInfoEditParam {
     // 注册渠道（直接存入中文，为防止活动平凡切换，造成字典表无法适应）
     private String logonChannel;
 
+    // 售前客服
+    private String serviceId;
 
+    // 回访状态  1：售前回访 2 售后回访
+    private String returnVisitStatus;
+    // 回访类型明细
+    private String returnVisitItem;
 }

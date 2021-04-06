@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.drive.admin.pojo.dto.ServiceItemPricePageQueryParam;
 import com.drive.admin.pojo.dto.StudentInfoPageQueryParam;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
+import com.drive.admin.pojo.vo.StudentInfoVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -22,7 +23,15 @@ public interface StudentInfoService extends IService<StudentInfoEntity>{
 
 //    newStudentPageList
 
-    IPage newStudentPageList(Page page, Wrapper<StudentInfoPageQueryParam> ew);
+    IPage<StudentInfoVo> newStudentPageList(Page page, Wrapper<StudentInfoPageQueryParam> ew);
+
+    /**
+     *
+     * @param page
+     * @param ew
+     * @return
+     */
+    IPage<StudentInfoVo> newStudentReturnVisitPageList(Page page, Wrapper<StudentInfoPageQueryParam> ew);
 
 }
 

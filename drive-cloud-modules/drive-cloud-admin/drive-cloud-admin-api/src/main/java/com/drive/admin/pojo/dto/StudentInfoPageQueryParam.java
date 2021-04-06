@@ -143,4 +143,9 @@ public class StudentInfoPageQueryParam extends BasePageQueryParam {
 
 	// 是否
 	private boolean returnVisitHistory;
+
+
+
+	// 售前客服
+	private String serviceId;
 }

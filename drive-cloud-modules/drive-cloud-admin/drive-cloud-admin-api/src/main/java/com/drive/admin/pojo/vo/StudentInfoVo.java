@@ -31,6 +31,9 @@ public class StudentInfoVo {
 	private String cityId;
 	private String cityName;
 
+	// 售前客服
+	private String serviceId;
+
 	// 区
 	@Excel(name = "区", width = 20)
 	private String areaId;
@@ -161,6 +164,21 @@ public class StudentInfoVo {
 	// 注册渠道（直接存入中文，为防止活动平凡切换，造成字典表无法适应）
 	@Excel(name = "注册渠道（直接存入中文，为防止活动平凡切换，造成字典表无法适应）", width = 20)
 	private String logonChannel;
+	// 客服名称
+	private String serviceName;
+	// 报名单号
+	private String studyEnrollNo;
+
+	// 回访状态  1：售前回访 2 售后回访
+	private String returnVisitStatus;
+	// 回访类型明细
+	private String returnVisitItem;
+
+	// 回访时间
+	private LocalDateTime returnVisitTime;
+
+	// 是否有意向 0 否 1 是
+	private String isIntention;
 
 
 }
