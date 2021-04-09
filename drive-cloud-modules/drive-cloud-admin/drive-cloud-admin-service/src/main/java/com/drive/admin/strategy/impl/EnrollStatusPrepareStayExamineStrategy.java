@@ -141,4 +141,9 @@ public class EnrollStatusPrepareStayExamineStrategy implements StudyEnrollStrate
         }*/
         return R.success("执行成功");
     }
+
+    @Override
+    public ResObject completeExamEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam) {
+        return null;
+    }
 }

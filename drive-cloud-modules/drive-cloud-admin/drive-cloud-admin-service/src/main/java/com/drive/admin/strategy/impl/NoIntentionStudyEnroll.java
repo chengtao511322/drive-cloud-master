@@ -78,4 +78,9 @@ public class NoIntentionStudyEnroll implements StudyEnrollStrategy {
       }
     return R.failure("该状态下不允许该操作");
     }
+
+    @Override
+    public ResObject completeExamEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam) {
+        return null;
+    }
 }

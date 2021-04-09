@@ -1,6 +1,5 @@
 package com.drive.member;
 
-import com.zhoyq.server.jt808.starter.EnableJt808Server;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +15,7 @@ import java.lang.management.ManagementFactory;
 @EnableFeignClients(basePackages = "com.drive")
 @SpringCloudApplication
 @Slf4j
-@EnableJt808Server
+//@EnableJt808Server
 public class DriveCloudMemberApplication {
 
     public static void main(String[] args) {

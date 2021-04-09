@@ -109,6 +109,11 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
         return R.success("执行成功");
     }
 
+    @Override
+    public ResObject completeExamEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam) {
+        return null;
+    }
+
 
     void createVIPStudyEnrollCompleteAccountFlow(StudentStudyEnrollEntity studyEnroll, StudentOrderEntity studentOrder, AccountFlowEntity accountFlow,boolean isSettlementSchool,boolean isSubtract){
         //判断是否为VIP报名单,若为自主预约，则直接退出

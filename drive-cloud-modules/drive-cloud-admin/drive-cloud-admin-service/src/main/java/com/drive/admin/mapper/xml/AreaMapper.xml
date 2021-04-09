@@ -14,4 +14,9 @@
             ba_code, ba_name, ba_parent_id
     </sql>
 
+
+    <select id="findView" resultType="com.drive.admin.pojo.vo.ViewDataVo">
+            select vbd.code as CODE, vbd.value as VALUE from v_base_data vbd
+
+    </select>
 </mapper>

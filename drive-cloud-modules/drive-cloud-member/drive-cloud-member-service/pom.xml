@@ -100,10 +100,10 @@
             <artifactId>drive-cloud-oss-api</artifactId>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>com.zhoyq</groupId>
             <artifactId>spring-boot-starter-jt808</artifactId>
             <version>1.3.1</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 </project>

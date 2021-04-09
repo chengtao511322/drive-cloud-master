@@ -4,6 +4,7 @@ import com.drive.admin.enums.EnrollStatusEnum;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollEditParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
+import com.drive.admin.pojo.dto.StudentTestEnrollPageQueryParam;
 import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
 import com.drive.admin.repository.StudentStudyEnrollRepository;
 import com.drive.admin.service.StudentStudyEnrollService;
@@ -54,6 +55,15 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	public ResObject pageList(@Valid StudentStudyEnrollPageQueryParam param) {
 		return studentStudyEnrollRepository.pageList(param);
 	}
+
+
+	@ApiOperation("学员学车报名单分页列表")
+	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	@PostMapping(value = "/studyEnrollPageList")
+	public ResObject studyEnrollPageList(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
+		return studentStudyEnrollRepository.studyEnrollPageList(param);
+	}
+
 
 	@ApiOperation("待支付转化分页列表")
 	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")

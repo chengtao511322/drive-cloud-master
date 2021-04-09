@@ -81,4 +81,9 @@ public class EnrollStatusPasswordExamineStrategy implements StudyEnrollStrategy 
         if (!studyEnrollResult)return R.failure(SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
         return R.success("执行成功");
     }
+
+    @Override
+    public ResObject completeExamEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam) {
+        return null;
+    }
 }

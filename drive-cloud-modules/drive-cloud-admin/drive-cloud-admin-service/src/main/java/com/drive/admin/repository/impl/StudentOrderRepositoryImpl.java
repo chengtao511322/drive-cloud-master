@@ -269,7 +269,7 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
         queryWrapper.eq("t1.status",StudyEnrollEnum.STAT_PAY.getCode());
         List<StudentStudyEnrollVo> studentOrderVos= studentStudyEnrollService.studyEnrollList(queryWrapper);
         if (studentOrderVos.size() <=0){
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentOrderVos);
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
         }
 
         // .collect(Collectors.toList())
@@ -307,9 +307,9 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
             return R.success(SubResultCode.NOT_ORDER_OPERATION.subCode(),SubResultCode.NOT_ORDER_OPERATION.subMsg(),false);
         }
         //订单状态判断
-        if (!(studentOrderEditParam.getStatus().equals(StudyEnrollEnum.STAT_PAY.getCode()))){
+    /*    if (!(studentOrder.getStatus().equals(StudyEnrollEnum.STAT_PAY.getCode()))){
             return R.success(SubResultCode.ORDER_STATUS_NOT_OPERATION.subCode(),SubResultCode.ORDER_STATUS_NOT_OPERATION.subMsg(),false);
-        }
+        }*/
         // 取消时间
         studentOrder.setUpdateTime(LocalDateTime.now());
         studentOrder.setStatus(StudyEnrollEnum.CANCEL_ORDER.getCode());

@@ -18,6 +18,14 @@ import javax.validation.Valid;
  */
 public interface StudentStudyEnrollRepository extends BaseRepository<StudentStudyEnrollPageQueryParam, StudentStudyEnrollEditParam>{
 
+
+    /**
+     * 分页查询数据
+     * @param param
+     * @return
+     */
+    ResObject studyEnrollPageList(StudentStudyEnrollPageQueryParam param);
+
     /**
      *通过条件查询出一条数据
      * @param studentStudyEnrollPageQueryParam
@@ -27,7 +35,7 @@ public interface StudentStudyEnrollRepository extends BaseRepository<StudentStud
 
     /**
      * 完善信息
-     * @param studentStudyEnrollEditParam
+     * @param
      * @return
      */
     ResObject completeStudyEnroll(CompleteStudyEnrollParam completeStudyEnrollParam);

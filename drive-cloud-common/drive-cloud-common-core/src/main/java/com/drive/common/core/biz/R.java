@@ -4,7 +4,7 @@ package com.drive.common.core.biz;
 /**
  * 通用返回结果
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public class R implements java.io.Serializable{
 
@@ -41,6 +41,7 @@ public class R implements java.io.Serializable{
 		// resObject
 		resObject.setSubCode(SubResultCode.SYSTEM_SUCCESS.subCode());
 		resObject.setSubMsg(SubResultCode.SYSTEM_SUCCESS.subMsg());
+		resObject.setData(null);
 		return resObject;
 	}
 
@@ -62,6 +63,7 @@ public class R implements java.io.Serializable{
 		resObject.setMsg(ResCodeEnum.SUCCESS.getMsg());
 		resObject.setSubCode(subCode);
 		resObject.setSubMsg(subMsg);
+		resObject.setData(null);
 		return resObject;
 	}
 	public static ResObject success(String subCode, String subMsg,Object object) {

@@ -56,6 +56,16 @@ public enum StudyEnrollEnum {
     REFUND_SUCCESS("8","退款成功",""),
     REFUND_LOADING("9","退款处理中",""),
 
+
+    //
+    BOOK_SUCCESS("5","预约成功",""),
+    EXAM_ACCOMPLISH("7","考试完成",""),
+    EXAM_PASS("8","考试通过",""),
+    EXAM_NO_PASS("9","考试不通过",""),
+    APPLY_LOADING("10","申请中",""),
+    REFUND_DISPOSE_LOADING("11","退款处理中",""),
+    EXAM_REFUND_SUCCESS("12","退款成功",""),
+
     ;
 
     private final String code;

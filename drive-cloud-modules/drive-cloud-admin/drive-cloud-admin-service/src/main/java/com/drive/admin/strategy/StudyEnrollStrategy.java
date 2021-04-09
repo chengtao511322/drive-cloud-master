@@ -18,4 +18,11 @@ public interface StudyEnrollStrategy {
      * @return
      */
     ResObject completeStudyEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam);
+
+    /**
+     * 完善考试报名
+     * @param studentStudyEnrollEditParam
+     * @return
+     */
+    ResObject completeExamEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam);
 }

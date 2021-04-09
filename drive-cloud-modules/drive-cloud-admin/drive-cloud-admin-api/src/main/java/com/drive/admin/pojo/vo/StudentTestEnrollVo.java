@@ -117,5 +117,7 @@ public class StudentTestEnrollVo {
 	private String provinceName;
 	private String cityName;
 	private String areaName;
+	// 考试次数
+	private int examNumber;
 
 }
