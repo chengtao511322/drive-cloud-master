@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
 import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
+import com.drive.admin.pojo.vo.StatisticsStudentDataVo;
 import com.drive.admin.pojo.vo.StudentStudyEnrollVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -35,5 +36,14 @@ public interface StudentStudyEnrollService extends IService<StudentStudyEnrollEn
     IPage<StudentStudyEnrollVo> studyEnrollPageList(Page page, Wrapper<StudentStudyEnrollPageQueryParam> ew);
     // 不分页查询报名信息
     List<StudentStudyEnrollVo> studyEnrollList(Wrapper<StudentStudyEnrollPageQueryParam> ew);
+
+
+    /**
+     * 数据统计
+     * @param page
+     * @param ew
+     * @return
+     */
+    IPage<StatisticsStudentDataVo> statisticsStudentDataPageList(Page page, @Param("ew") Wrapper<StudentStudyEnrollPageQueryParam> ew);
 }
 

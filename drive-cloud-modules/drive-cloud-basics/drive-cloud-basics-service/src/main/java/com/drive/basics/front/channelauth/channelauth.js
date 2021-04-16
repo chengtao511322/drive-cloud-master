@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-              
+
 // 分页查询菜单 按钮 用户拥有权限管理列表
 export function listPageChannelAuth(query) {
   return request({

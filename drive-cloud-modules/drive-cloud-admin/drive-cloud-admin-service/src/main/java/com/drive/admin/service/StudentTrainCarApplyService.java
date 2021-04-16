@@ -10,5 +10,14 @@ import com.drive.admin.pojo.entity.StudentTrainCarApplyEntity;
  * @author xiaoguo
  */
 public interface StudentTrainCarApplyService extends IService<StudentTrainCarApplyEntity>{
+
+
+    /**
+     * 课时求和
+     * @param studentId
+     * @param subjectType
+     * @return
+     */
+    Integer classHoursSum(String studentId,String subjectType);
 }
 

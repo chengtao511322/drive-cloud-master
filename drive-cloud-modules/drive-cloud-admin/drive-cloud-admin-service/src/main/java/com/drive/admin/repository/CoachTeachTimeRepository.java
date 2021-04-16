@@ -1,7 +1,8 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.*;
-import com.drive.common.core.base.BaseRepository;
+import com.drive.admin.pojo.dto.CoachTeachTimeEditParam;
+import com.drive.admin.pojo.dto.CoachTeachTimeInstallParam;
+import com.drive.admin.pojo.dto.CoachTeachTimePageQueryParam;
 import com.drive.common.core.base.BasicsRepository;
 
 /**

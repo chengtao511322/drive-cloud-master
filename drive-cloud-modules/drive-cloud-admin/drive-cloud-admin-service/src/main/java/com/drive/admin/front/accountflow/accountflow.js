@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-                            
+
 // 分页查询平台账务流水列表
 export function listPageAccountFlow(query) {
   return request({

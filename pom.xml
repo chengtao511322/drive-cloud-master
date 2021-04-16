@@ -232,7 +232,6 @@
                 <artifactId>drive-cloud-oss-api</artifactId>
                 <version>${fast-cloud.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 

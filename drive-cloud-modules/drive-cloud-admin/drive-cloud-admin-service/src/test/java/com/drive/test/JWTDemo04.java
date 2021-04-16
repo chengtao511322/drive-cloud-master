@@ -2,7 +2,6 @@ package com.drive.test;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.codec.digest.Md5Crypt;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;

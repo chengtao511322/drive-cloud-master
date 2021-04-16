@@ -1,33 +1,29 @@
 package com.drive.basics.controller;
 
-import cn.afterturn.easypoi.excel.entity.ExportParams;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Arrays;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import com.drive.basics.pojo.dto.ChannelAuthEditParam;
+import com.drive.basics.pojo.dto.ChannelAuthInstallParam;
+import com.drive.basics.pojo.dto.ChannelAuthPageQueryParam;
+import com.drive.basics.pojo.entity.ChannelAuthEntity;
+import com.drive.basics.repository.ChannelAuthRepository;
+import com.drive.basics.service.ChannelAuthService;
+import com.drive.basics.service.mapstruct.ChannelAuthMapStruct;
+import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.enums.EventLogEnum;
-import com.drive.common.data.utils.ExcelUtils;
 import com.drive.common.log.annotation.EventLog;
 import io.swagger.annotations.Api;
-import com.drive.common.core.base.BaseController;
-import com.drive.basics.pojo.entity.*;
-import com.drive.basics.pojo.vo.*;
-import com.drive.basics.pojo.dto.*;
-import com.drive.basics.service.mapstruct.*;
-import com.drive.basics.service.ChannelAuthService;
-import com.drive.basics.repository.ChannelAuthRepository;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.util.Arrays;
 
 
 /**

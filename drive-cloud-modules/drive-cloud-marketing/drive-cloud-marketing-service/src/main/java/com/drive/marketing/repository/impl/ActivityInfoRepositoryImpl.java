@@ -1,7 +1,6 @@
 package com.drive.marketing.repository.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -58,6 +57,18 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
 
     @Autowired
     private RecommendManagertRepository recommendManagertRepository;
+
+    @Override
+    public ResObject reduceInventoryRollback() {
+        log.info(this.getClass() + "reduceInventoryRollback-方法请求参数{}");
+        ActivityInfoEntity activityInfoEntity = new ActivityInfoEntity();
+        activityInfoEntity.setId("1215185452315754496");
+        activityInfoEntity.setDescription("测试回滚");
+        activityInfoService.updateById(activityInfoEntity);
+        //模拟异常
+        int i = 1 / 0;
+        return R.success();
+    }
 
     @Override
     public ResObject getActivityCouponRelationByCondition(ActivityCouponRelationEditParam activityCouponRelationEditParam) {

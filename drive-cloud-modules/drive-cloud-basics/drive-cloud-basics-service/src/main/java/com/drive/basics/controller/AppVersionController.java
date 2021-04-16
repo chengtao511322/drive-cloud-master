@@ -77,6 +77,17 @@ public class AppVersionController extends BaseController<AppVersionPageQueryPara
 	*/
 	@ApiOperation("新增app版本控制信息表")
 	@ApiImplicitParam(name = "AppVersionEditParam ", value = "新增app版本控制信息表", dataType = "AppVersionEditParam")
+	@PostMapping("/createOrderRollback")
+	public ResObject createOrderRollback(@RequestBody AppVersionEditParam appVersionEditParam) {
+		return appVersionService.createOrderRollback(appVersionEditParam);
+	}
+
+
+	/**
+	* 新增app版本控制信息表
+	*/
+	@ApiOperation("新增app版本控制信息表")
+	@ApiImplicitParam(name = "AppVersionEditParam ", value = "新增app版本控制信息表", dataType = "AppVersionEditParam")
 	@PreAuthorize("hasPermission('/basics/appVersion',  'basics:appVersion:add')")
 	@EventLog(message = "新增app版本控制信息表", businessType = EventLogEnum.CREATE)
 	@PostMapping

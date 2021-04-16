@@ -4,20 +4,16 @@ import cn.hutool.core.util.StrUtil;
 import com.drive.admin.enums.ExamEnrollEnum;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.entity.StudentTestEnrollEntity;
-import com.drive.admin.pojo.vo.StudentTestEnrollVo;
-import com.drive.admin.repository.StudentTestEnrollRepository;
 import com.drive.admin.service.StudentTestEnrollService;
 import com.drive.admin.strategy.StudyEnrollStrategy;
+import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.exception.BizException;
 import lombok.extern.slf4j.Slf4j;
-import com.drive.common.core.biz.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 /**
  * @Author 小郭

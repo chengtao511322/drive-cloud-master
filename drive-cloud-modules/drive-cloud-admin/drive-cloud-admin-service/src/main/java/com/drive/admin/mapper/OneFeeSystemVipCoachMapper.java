@@ -1,7 +1,7 @@
 package com.drive.admin.mapper;
 
-import com.drive.admin.pojo.entity.OneFeeSystemVipCoachEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.drive.admin.pojo.entity.OneFeeSystemVipCoachEntity;
 
 /**
  * 一费制vip教练 Mapper 接口

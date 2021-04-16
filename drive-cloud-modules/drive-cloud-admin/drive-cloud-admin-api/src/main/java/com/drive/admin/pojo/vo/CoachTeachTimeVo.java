@@ -28,6 +28,9 @@ public class CoachTeachTimeVo {
 	@Excel(name = "教练ID", width = 20)
 	private String coachId;
 
+	// 教练名称
+	private String coachName;
+
 	// 场地ID
 	@Excel(name = "场地ID", width = 20)
 	private String coachingGridId;
@@ -165,5 +168,19 @@ public class CoachTeachTimeVo {
 	private String expectClassId;
 	 // 课时总和
 	private int classHoursTotal;
+	// 学员信息
+	private StudentInfoVo studentVo;
 
+	private String onlineServiceName;
+	private String lineServiceName;
+
+
+	private String provinceName;
+	private String cityName;
+	private String areaName;
+	// 总课时
+	private int TotalHour;
+
+
+	private StudentTestEnrollVo studentTestEnrollVo;
 }

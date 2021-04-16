@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-                            
+
 // 分页查询教练钱包表列表
 export function listPagePlatformWallet(query) {
   return request({

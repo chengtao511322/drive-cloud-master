@@ -20,6 +20,8 @@ public class StudentStudyEnrollVo {
 	@Excel(name = "学员报名单号", width = 20)
 	private String studyEnrollNo;
 
+	private StudentStudyEnrollVo StudentStudyEnrollVo;
+
 	// 订单号
 	private String studentOrderNo;
 
@@ -136,6 +138,7 @@ public class StudentStudyEnrollVo {
 	// 线下
 	private String lineServiceName;
 
+
 	// 线下客服id(驾校客服，报名接送)
 	@Excel(name = "线下客服id(驾校客服，报名接送)", width = 20)
 	private String lineUnderUserId;
@@ -249,4 +252,11 @@ public class StudentStudyEnrollVo {
 
 	// 操作类型 1：（后台）客服取消 2：学员取消
 	private String operationType;
+	// 教练名称
+	private String coachName;
+	private String className;
+
+	private Boolean examine;
+
+	private int examNumber = 1;
 }

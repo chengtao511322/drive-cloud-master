@@ -1,10 +1,9 @@
 package com.drive.admin.service.impl;
 
 import com.drive.admin.mapper.StudentTrainCarApplyMapper;
+import com.drive.admin.pojo.entity.StudentTrainCarApplyEntity;
 import com.drive.admin.service.StudentTrainCarApplyService;
 import com.drive.common.core.base.BaseService;
-import com.drive.admin.pojo.entity.StudentTrainCarApplyEntity;
-
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,5 +14,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class StudentTrainCarApplyServiceImpl extends BaseService<StudentTrainCarApplyMapper, StudentTrainCarApplyEntity> implements StudentTrainCarApplyService {
 
+    @Override
+    public Integer classHoursSum(String studentId, String subjectType) {
+        return this.getBaseMapper().classHoursSum(studentId,subjectType);
+    }
 }
 

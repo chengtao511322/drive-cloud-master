@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-              
+
 // 分页查询学员教练评价明细表列表
 export function listPageEvaluateTagAppraise(query) {
   return request({

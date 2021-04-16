@@ -1,41 +1,13 @@
 package com.drive.admin.pojo.entity;
 
-import java.math.BigDecimal;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import com.baomidou.mybatisplus.annotation.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalDate;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalDateTime;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import com.drive.common.core.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 /**
@@ -63,7 +35,6 @@ public class CoachTeachTimeEntity extends BaseEntity {
 
 	// 场地ID
 	private String coachingGridId;
-
 	// 学员ID
 	private String studentId;
 
@@ -139,9 +110,11 @@ public class CoachTeachTimeEntity extends BaseEntity {
 	private Integer surplusClassHours;
 
 	// 发布科目二场地ID
+	@TableField(value="coaching_grid_id_2")
 	private String coachingGridId2;
 
 	// 发布科目三场地ID
+	@TableField(value="coaching_grid_id_3")
 	private String coachingGridId3;
 
 	// 发布课程-科目类型(1-科目一,2-科目二,3-科目三,4-科目四,5-科二/三)
@@ -159,10 +132,7 @@ public class CoachTeachTimeEntity extends BaseEntity {
 	// 运营商id(数据权限标记)
 	private String operatorId;
 
+	private String expectClassId;
 	// 是否为预收入(0-否，1-是)
 	private String isExpect;
-
-	// 预收入班型id
-	private String expectClassId;
-
 }

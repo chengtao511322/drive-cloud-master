@@ -12,7 +12,10 @@ import com.drive.admin.pojo.entity.ServiceReturnVisitHistoryEntity;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.admin.repository.StudentInfoRepository;
-import com.drive.admin.service.*;
+import com.drive.admin.service.AreaService;
+import com.drive.admin.service.ServiceInfoService;
+import com.drive.admin.service.ServiceReturnVisitHistoryService;
+import com.drive.admin.service.StudentInfoService;
 import com.drive.admin.service.mapstruct.StudentInfoMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
@@ -23,12 +26,12 @@ import com.drive.common.core.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -51,6 +54,19 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
     private ServiceInfoService serviceInfoService;
     @Autowired
     private ServiceReturnVisitHistoryService serviceReturnVisitHistoryService;
+
+    @Transactional
+    @Override
+    public ResObject reduceInventoryRollback() {
+        log.info(this.getClass() + "reduceInventoryRollback-方法请求参数{}");
+        StudentInfoEntity activityInfoEntity = new StudentInfoEntity();
+        activityInfoEntity.setId("000f431303a543eb95a9");
+        activityInfoEntity.setUsername("测试回滚");
+        studentInfoService.updateById(activityInfoEntity);
+        //模拟异常
+        int i = 1 / 0;
+        return R.success();
+    }
 
     @Override
     public ResObject newStudentPageList(StudentInfoPageQueryParam param) {
@@ -149,7 +165,14 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         // 渠道查询
         queryWrapper.eq(param.getChannel() != null,"tsi.channel",param.getChannel());
         // AND tsrvh.return_visit_status=1 AND return_visit_item=0
+        // 真实姓名
+        queryWrapper.like(StrUtil.isNotEmpty(param.getRealName()),"tsse.real_name", param.getRealName());
         queryWrapper.eq("tsrvh.return_visit_status", ReturnVisitStatusEnum.PRE.getCode());
+        // 是否有意向
+        queryWrapper.eq(param.getIsIntentionSearch() !=null,"tsrvh.is_intention", param.getIsIntentionSearch());
+        // 线上
+        //queryWrapper.eq(StrUtil.isNotEmpty(param.getOfflineServiceId()),"tsse.user_id", param.getOfflineServiceId());
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getOnLineServiceId()),"tsi.service_id", param.getOnLineServiceId());
         queryWrapper.eq("tsrvh.return_visit_item", ReturnVisitStatusEnum.NEW_USER.getCode());
         // 手机号码查询
         queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"tsi.phone",param.getPhone());
@@ -161,6 +184,10 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         /*if (param.isReturnVisitHistory()){
             queryWrapper.apply(" (SELECT COUNT(1) FROM t_service_return_visit_history t3 WHERE t3.student_id =tsi.id) >0");
         }*/
+
+        // tsrvh
+        queryWrapper.apply(StrUtil.isNotEmpty(param.getNextReturnVisitTimeSearch()),
+                "date_format (tsrvh.next_return_visit_time,'%Y-%m-%d') = date_format('" +param.getNextReturnVisitTimeSearch()  + "','%Y-%m-%d')");
 
         // 登录时间
         queryWrapper.apply(StrUtil.isNotBlank(param.getSearchLoginDate()),
@@ -212,15 +239,16 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
                 }
             }
             // 回访阶段
-            returnVisitHistoryQueryWrapper.eq("student_id",item.getId());
+            /*returnVisitHistoryQueryWrapper.eq("student_id",item.getId());
             returnVisitHistoryQueryWrapper.orderByDesc("create_time");
             returnVisitHistoryQueryWrapper.last("limit 1");
             ServiceReturnVisitHistoryEntity returnVisitHistory =serviceReturnVisitHistoryService.getOne(returnVisitHistoryQueryWrapper);
             if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitStatus()))item.setReturnVisitStatus(returnVisitHistory.getReturnVisitStatus());
             if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitItem()))item.setReturnVisitItem(returnVisitHistory.getReturnVisitItem());
             if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitItem()))item.setReturnVisitTime(returnVisitHistory.getReturnVisitTime());
+            if (returnVisitHistory != null && returnVisitHistory.getNextReturnVisitTime() != null)item.setNextReturnVisitTime(returnVisitHistory.getNextReturnVisitTime());
             if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitItem()))item.setIsIntention(returnVisitHistory.getIsIntention());
-
+*/
         });
 /*
         if (param.isReturnVisitHistory()){
@@ -271,7 +299,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         IPage<StudentInfoEntity> pageList = studentInfoService.page(page,queryWrapper);
         if (pageList.getRecords().size() <= 0){
             log.error(this.getClass() +"数据空");
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<StudentInfoVo> studentInfoVoPage = studentInfoMapStruct.toVoList(pageList);
         // List<Problem> problemList = problemByExample.stream().filter(problem -> "空调制冷".equals(problem.getProTitle()) || "李一一的难题1".equals(problem.getProTitle())).collect(Collectors.toList());
@@ -295,13 +323,14 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         log.info(this.getClass() + "findList-方法请求参数{}",param);
         // 这里判断条件进行查询
         QueryWrapper queryWrapper= this.getQueryWrapper(studentInfoMapStruct, param);
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueSearch()),"phone",param.getVagueSearch());
         // 如 queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"phone",param.getPhone());
         List<StudentInfoEntity> pageList = studentInfoService.list(queryWrapper);
         List<StudentInfoVo> studentInfoVoList = studentInfoMapStruct.toVoList(pageList);
         log.info(this.getClass() + "findList-方法请求结果{}",studentInfoVoList);
         if (studentInfoVoList == null){
             log.error("数据空");
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentInfoVoList);
         }
         return R.success(studentInfoVoList);
     }
@@ -320,7 +349,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         log.info(this.getClass() + "getInfo-方法请求结果{}",studentInfoVo);
         if (studentInfoVo ==null){
             log.error("活动数据对象空");
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentInfoVo);
         }
         if (StrUtil.isNotEmpty(studentInfoVo.getServiceId())){
             ServiceInfoEntity serviceInfo =serviceInfoService.getById(studentInfoVo.getServiceId());

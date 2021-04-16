@@ -5,9 +5,6 @@ import com.drive.admin.pojo.dto.StudentTestEnrollEditParam;
 import com.drive.admin.pojo.dto.StudentTestEnrollPageQueryParam;
 import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.biz.ResObject;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import javax.validation.Valid;
 
 /**
  *
@@ -52,6 +49,13 @@ public interface StudentTestEnrollRepository extends BaseRepository<StudentTestE
      * @return
      */
     ResObject noSubscribeSubjectThreeExamPageList(StudentTestEnrollPageQueryParam studentTestEnrollPageQueryParam);
+
+    /**
+     * 考试通过数据统计
+     * @param studentTestEnrollPageQueryParam
+     * @return
+     */
+    ResObject examPassStatisticsPageList(StudentTestEnrollPageQueryParam studentTestEnrollPageQueryParam);
 
     /**
      * 未预约科目四考试

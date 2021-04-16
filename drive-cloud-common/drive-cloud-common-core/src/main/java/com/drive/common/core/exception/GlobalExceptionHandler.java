@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
         RuntimeException exception = (RuntimeException) e;
         log.error("运行期异常[{}],返回错误[{}]", e, exception.getMessage());
         log.error("程序运行发生异常[{},{}]",exception,e.toString());
-        return R.success(SubResultCode.SYSTEM_ERROR.subCode(),SubResultCode.SYSTEM_ERROR.subMsg());
+        return R.failure(SubResultCode.SYSTEM_ERROR.subCode(),SubResultCode.SYSTEM_ERROR.subMsg());
     }
 
     /**
@@ -223,7 +223,7 @@ public class GlobalExceptionHandler {
         String field = error.getField();
         String code = error.getDefaultMessage();
         String message = String.format("%s:%s", field, code);
-        return R.failure("参数绑定失败="+message);
+        return R.failure(SubResultCode.SYSTEM_FAILL.subCode(),"参数绑定失败="+message);
     }
 
 
@@ -237,7 +237,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResObject<Object> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
         log.error("不支持当前媒体类型", e);
-        return R.failure("系统检测到你的请求非法哦~" + e.getMessage());
+        return R.failure(SubResultCode.SYSTEM_FAILL.subCode(),"系统检测到你的请求非法哦~" + e.getMessage());
     }
 
 }

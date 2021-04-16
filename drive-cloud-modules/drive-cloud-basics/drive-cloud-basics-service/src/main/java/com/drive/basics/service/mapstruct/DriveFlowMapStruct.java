@@ -1,10 +1,11 @@
 package com.drive.basics.service.mapstruct;
 
-import com.drive.basics.pojo.entity.*;
-import com.drive.basics.pojo.vo.*;
-import com.drive.basics.pojo.dto.*;
-import org.mapstruct.Mapper;
+import com.drive.basics.pojo.dto.DriveFlowEditParam;
+import com.drive.basics.pojo.dto.DriveFlowPageQueryParam;
+import com.drive.basics.pojo.entity.DriveFlowEntity;
+import com.drive.basics.pojo.vo.DriveFlowVo;
 import com.drive.common.core.base.BaseMapStruct;
+import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 

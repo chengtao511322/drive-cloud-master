@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.drive.admin.pojo.dto.StudentInfoPageQueryParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
 import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
+import com.drive.admin.pojo.vo.StatisticsStudentDataVo;
 import com.drive.admin.pojo.vo.StudentStudyEnrollVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,7 +34,14 @@ public interface StudentStudyEnrollMapper extends BaseMapper<StudentStudyEnrollE
      */
     IPage<StudentStudyEnrollVo> studyEnrollPageList(Page page, @Param("ew") Wrapper<StudentStudyEnrollPageQueryParam> ew);
 
-
     List<StudentStudyEnrollVo> studyEnrollList(@Param("ew") Wrapper<StudentStudyEnrollPageQueryParam> ew);
+
+    /**
+     * 数据统计
+     * @param page
+     * @param ew
+     * @return
+     */
+    IPage<StatisticsStudentDataVo> statisticsStudentDataPageList(Page page, @Param("ew") Wrapper<StudentStudyEnrollPageQueryParam> ew);
 }
 

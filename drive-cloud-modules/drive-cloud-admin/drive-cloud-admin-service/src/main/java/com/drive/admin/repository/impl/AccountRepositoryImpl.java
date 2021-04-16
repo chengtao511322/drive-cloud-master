@@ -2,7 +2,6 @@ package com.drive.admin.repository.impl;
 
 import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.repository.AccountRepository;
-import com.drive.admin.repository.AppVersionRepository;
 import com.drive.admin.service.StudentInfoService;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;

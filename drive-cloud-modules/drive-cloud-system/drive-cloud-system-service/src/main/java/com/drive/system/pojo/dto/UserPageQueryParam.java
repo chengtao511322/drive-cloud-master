@@ -73,4 +73,7 @@ public class UserPageQueryParam extends BasePageQueryParam {
 	// 更新时间
 	private LocalDateTime updateTime;
 
+	// 操作者ID，可以是客服ID
+	private String operationId;
+
 }

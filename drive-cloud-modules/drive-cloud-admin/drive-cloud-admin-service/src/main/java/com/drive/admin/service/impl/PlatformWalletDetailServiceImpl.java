@@ -1,10 +1,9 @@
 package com.drive.admin.service.impl;
 
 import com.drive.admin.mapper.PlatformWalletDetailMapper;
+import com.drive.admin.pojo.entity.PlatformWalletDetailEntity;
 import com.drive.admin.service.PlatformWalletDetailService;
 import com.drive.common.core.base.BaseService;
-import com.drive.admin.pojo.entity.PlatformWalletDetailEntity;
-
 import org.springframework.stereotype.Service;
 
 /**

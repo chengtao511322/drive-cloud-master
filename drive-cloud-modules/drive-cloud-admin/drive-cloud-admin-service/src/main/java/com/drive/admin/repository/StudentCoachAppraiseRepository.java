@@ -1,7 +1,8 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.*;
-import com.drive.common.core.base.BaseRepository;
+import com.drive.admin.pojo.dto.StudentCoachAppraiseEditParam;
+import com.drive.admin.pojo.dto.StudentCoachAppraiseInstallParam;
+import com.drive.admin.pojo.dto.StudentCoachAppraisePageQueryParam;
 import com.drive.common.core.base.BasicsRepository;
 
 /**

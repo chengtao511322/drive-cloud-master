@@ -3,7 +3,6 @@ package com.drive.basics.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.drive.basics.mapper.ChannelMapper;
 import com.drive.basics.pojo.entity.ChannelEntity;
-import com.drive.basics.pojo.entity.OperatorEntity;
 import com.drive.basics.service.ChannelService;
 import com.drive.common.core.base.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;

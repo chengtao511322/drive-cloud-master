@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-                                                                            
+
 // 分页查询教练课程时间表列表
 export function listPageCoachTeachTime(query) {
   return request({

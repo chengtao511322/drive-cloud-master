@@ -1,6 +1,6 @@
 package com.drive.admin.enums;
 
-public enum  EnrollStatusEnum {
+public enum EnrollStatusEnum {
 
     SUBMIT_ENROLL("1", "提交报名"),
     RELATION_WAIT_PAY("2", "已联系待支付"),
@@ -37,4 +37,5 @@ public enum  EnrollStatusEnum {
     public String getInfo() {
         return info;
     }
+
 }

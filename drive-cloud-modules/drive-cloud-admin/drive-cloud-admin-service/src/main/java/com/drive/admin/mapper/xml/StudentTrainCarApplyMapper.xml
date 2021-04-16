@@ -55,4 +55,15 @@
             train_apply_no, train_type, class_id, student_id, drive_type, subject_type, price, sum_price, service_charge_percent, coach_charge_percent, service_charge, coach_charge, coach_id, coaching_grid_id, take_time, aboard_time, class_date, start_time, end_time, class_hours, apply_status, create_time, update_time, student_recommend_user_type, student_recommend_user_id, student_recommend_user_charge_percent, student_recommend_user_charge, common_address_id, coach_recommend_user_type, coach_recommend_user_id, coach_recommend_user_charge_percent, coach_recommend_user_charge, cancel_tiem, cancel_reason, cancel_withhold_percent, cancel_withhold_money, cancel_refund_money, car_type, is_delete, actual_start_time, actual_end_time, class_appraise, public_car_price, operator_id
     </sql>
 
+
+    <select id="classHoursSum" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT
+            SUM(class_hours)
+        FROM
+            t_student_train_car_apply
+        WHERE
+            student_id = #{arg0}
+        AND subject_type = #{arg1}
+        AND apply_status in(1,4,5,6,7)
+    </select>
 </mapper>

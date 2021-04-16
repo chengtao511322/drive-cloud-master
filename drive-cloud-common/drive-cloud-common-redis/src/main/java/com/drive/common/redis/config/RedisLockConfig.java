@@ -1,12 +1,9 @@
 package com.drive.common.redis.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.integration.redis.util.RedisLockRegistry;
-
-import java.util.concurrent.locks.Lock;
 
 /**
    * @author xiaoguo

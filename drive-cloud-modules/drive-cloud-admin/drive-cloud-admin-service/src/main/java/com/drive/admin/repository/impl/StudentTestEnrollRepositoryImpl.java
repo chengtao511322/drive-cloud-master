@@ -2,23 +2,22 @@ package com.drive.admin.repository.impl;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.db.nosql.redis.RedisDS;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.drive.admin.enums.DriveStatusEnum;
-import com.drive.admin.enums.ExamEnrollEnum;
-import com.drive.admin.enums.StudyEnrollEnum;
+import com.drive.admin.enums.*;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.dto.StudentTestEnrollEditParam;
 import com.drive.admin.pojo.dto.StudentTestEnrollPageQueryParam;
 import com.drive.admin.pojo.entity.*;
-import com.drive.admin.pojo.vo.CoachTeachTimeVo;
+import com.drive.admin.pojo.vo.OneFeeSystemCoachStudentVo;
 import com.drive.admin.pojo.vo.StudentStudyEnrollVo;
 import com.drive.admin.pojo.vo.StudentTestEnrollVo;
 import com.drive.admin.pojo.vo.StudentTrainCarApplyVo;
 import com.drive.admin.repository.StudentTestEnrollRepository;
 import com.drive.admin.service.*;
-import com.drive.admin.service.impl.CoachTeachTimeServiceImpl;
 import com.drive.admin.service.mapstruct.StudentStudyEnrollMapStruct;
 import com.drive.admin.service.mapstruct.StudentTestEnrollMapStruct;
 import com.drive.admin.strategy.StudyEnrollStrategy;
@@ -27,18 +26,20 @@ import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
+import com.drive.common.core.constant.CacheConstants;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.data.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -87,6 +88,17 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
     @Autowired
     private StudentTrainCarApplyService studentTrainCarApplyService;
 
+    @Autowired
+    private StudentOrderService studentOrderService;
+
+    @Autowired
+    private OneFeeSystemCoachStudentService oneFeeSystemCoachStudentService;
+
+    private  final Jedis jedis = RedisDS.create().getJedis();
+
+    @Autowired
+    private OneFeeSystemPriceService oneFeeSystemPriceService;
+
     /*
      *
      *功能描述
@@ -105,9 +117,15 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         // 报名单号 模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueTestEnrollNoSearch()),"test_enroll_no",param.getVagueTestEnrollNoSearch());
         // 预约见面时间
-        queryWrapper.apply(StrUtil.isNotEmpty(param.getTestActualTimeSearch()),
-                "date_format (test_actual_time,'%Y-%m-%d') = date_format('" + param.getTestActualTimeSearch() + "','%Y-%m-%d')");
-        // 意向报名时间
+        if (StrUtil.isNotEmpty(param.getEnrollStatus()) && param.getEnrollStatus().equals(ExamEnrollEnum.BOOK_SUCCESS.getCode())){
+            queryWrapper.apply(StrUtil.isNotEmpty(param.getTestActualTimeSearch()),
+                    "date_format (test_actual_time,'%Y-%m-%d') > date_format(now(),'%Y-%m-%d')");
+        }else{
+            queryWrapper.apply(StrUtil.isNotEmpty(param.getTestActualTimeSearch()),
+                    "date_format (test_actual_time,'%Y-%m-%d') = date_format('" + param.getTestActualTimeSearch() + "','%Y-%m-%d')");
+        }
+
+        // 意向报名时间 testActualTime
         queryWrapper.apply(StrUtil.isNotBlank(param.getTestHopeTimeSearch()),
                 "date_format (test_hope_time,'%Y-%m-%d') = date_format('" + param.getTestHopeTimeSearch() + "','%Y-%m-%d')");
         // 报名单号 模糊查询
@@ -124,13 +142,21 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         Page<StudentTestEnrollVo> studentTestEnrollVoPage = studentTestEnrollMapStruct.toVoList(pageList);
         // 循环数据
         studentTestEnrollVoPage.getRecords().stream().forEach((item) ->{
-            if (StrUtil.isNotEmpty(item.getStudentId()))item.setStudentName(studentInfoService.getById(item.getStudentId()).getRealName());
+            if (StrUtil.isNotEmpty(item.getStudentId())){
+                StudentInfoEntity studentInfo = studentInfoService.getById(item.getStudentId());
+                if (studentInfo != null)item.setStudentName(studentInfo.getRealName());
+                if (studentInfo != null)item.setPhone(studentInfo.getPhone());
+            }
             if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(item.getUserId()).getRealName());
             if (StrUtil.isNotEmpty(item.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(item.getLineUnderUserId()).getRealName());
             // 省市区
             if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
             if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
+            if (StrUtil.isNotEmpty(item.getAreaId())){
+                // 换redis
+                AreaEntity area = areaService.getByBaCode(item.getAreaId());
+                if (area != null)item.setAreaName(area.getBaName());
+            }
             // 平台训练场地
             if (StrUtil.isNotEmpty(item.getTestActualCoachingGridId())){
                 CoachingGridEntity coachingGridEntity =coachingGridService.getById(item.getTestActualCoachingGridId());
@@ -159,6 +185,15 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             // 考试次数
             int examNumber = studentTestEnrollService.count(testQueryWrapper);
             item.setExamNumber(examNumber);
+
+            // 查询报名单号
+            QueryWrapper studyQueryWrapper = new QueryWrapper();
+            studyQueryWrapper.eq("student_id",item.getStudentId());
+            studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
+            if (studentStudyEnroll != null){
+                item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
+            }
         });
         log.info(this.getClass() + "pageList-方法请求结果{}",studentTestEnrollVoPage);
         return R.success(studentTestEnrollVoPage);
@@ -360,6 +395,36 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
             if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
             if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
+
+
+            // 查询次数
+            QueryWrapper testQueryWrapper = new QueryWrapper();
+            testQueryWrapper.eq("student_id",item.getStudentId());
+            testQueryWrapper.eq("subject_type","1");
+            String[] arr = {
+                    StudyEnrollEnum.PAY_SUCCESS.getCode(),
+                    StudyEnrollEnum.EXAM_ACCOMPLISH.getCode(),
+                    StudyEnrollEnum.EXAM_PASS.getCode(),
+                    StudyEnrollEnum.EXAM_NO_PASS.getCode(),
+                    StudyEnrollEnum.APPLY_LOADING.getCode(),
+                    StudyEnrollEnum.REFUND_DISPOSE_LOADING.getCode(),
+                    StudyEnrollEnum.EXAM_REFUND_SUCCESS.getCode()
+            };
+            // 支付成功
+            testQueryWrapper.in("enroll_status", arr);
+            testQueryWrapper.eq("operator_id", item.getOperatorId());
+            // 考试次数
+            int examNumber = studentTestEnrollService.count(testQueryWrapper);
+            item.setExamNumber(examNumber);
+
+            // 查询报名单号
+            QueryWrapper studyQueryWrapper = new QueryWrapper();
+            studyQueryWrapper.eq("student_id",item.getStudentId());
+            studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
+            if (studentStudyEnroll != null){
+                item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
+            }
         });
         return R.success(studentStudyEnrollVos);
     }
@@ -412,7 +477,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         queryWrapper.groupBy("subject_type");
         List<StudentTrainCarApplyEntity> studentTrainCarApplyList = studentTrainCarApplyService.list(queryWrapper);
         if (studentTrainCarApplyList.size() <=0 ){
-            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg());
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),studentTrainCarApplyList);
         }
         List<StudentTrainCarApplyVo> studentTrainCarApplyVos = BeanConvertUtils.copyList(studentTrainCarApplyList, StudentTrainCarApplyVo.class);
         // double sum = studentTrainCarApplyVos.stream().filter((CoachTeachTimeVo coachTeachTime) -> ((StudentTrainCarApplyVo) coachTeachTime).getApplyStatus().equals(DriveStatusEnum.)).mapToDouble(CoachTeachTimeVo::getClassHours).sum();
@@ -461,6 +526,34 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
             if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
             if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
+            // 查询报名单号
+            QueryWrapper studyQueryWrapper = new QueryWrapper();
+            studyQueryWrapper.eq("student_id",item.getStudentId());
+            studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
+            if (studentStudyEnroll != null){
+                item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
+            }
+
+            // 查询次数
+            QueryWrapper testQueryWrapper = new QueryWrapper();
+            testQueryWrapper.eq("student_id",item.getStudentId());
+            testQueryWrapper.eq("subject_type","1");
+            String[] arr = {
+                    StudyEnrollEnum.PAY_SUCCESS.getCode(),
+                    StudyEnrollEnum.EXAM_ACCOMPLISH.getCode(),
+                    StudyEnrollEnum.EXAM_PASS.getCode(),
+                    StudyEnrollEnum.EXAM_NO_PASS.getCode(),
+                    StudyEnrollEnum.APPLY_LOADING.getCode(),
+                    StudyEnrollEnum.REFUND_DISPOSE_LOADING.getCode(),
+                    StudyEnrollEnum.EXAM_REFUND_SUCCESS.getCode()
+            };
+            // 支付成功
+            testQueryWrapper.in("enroll_status", arr);
+            testQueryWrapper.eq("operator_id", item.getOperatorId());
+            // 考试次数
+            int examNumber = studentTestEnrollService.count(testQueryWrapper);
+            item.setExamNumber(examNumber);
         });
         return R.success(studentStudyEnrollVos);
     }
@@ -499,8 +592,136 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
             if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
             if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
+
+            // 查询报名单号
+            QueryWrapper studyQueryWrapper = new QueryWrapper();
+            studyQueryWrapper.eq("student_id",item.getStudentId());
+            studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
+            if (studentStudyEnroll != null){
+                item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
+            }
+
+            // 查询次数
+            QueryWrapper testQueryWrapper = new QueryWrapper();
+            testQueryWrapper.eq("student_id",item.getStudentId());
+            testQueryWrapper.eq("subject_type","1");
+            String[] arr = {
+                    StudyEnrollEnum.PAY_SUCCESS.getCode(),
+                    StudyEnrollEnum.EXAM_ACCOMPLISH.getCode(),
+                    StudyEnrollEnum.EXAM_PASS.getCode(),
+                    StudyEnrollEnum.EXAM_NO_PASS.getCode(),
+                    StudyEnrollEnum.APPLY_LOADING.getCode(),
+                    StudyEnrollEnum.REFUND_DISPOSE_LOADING.getCode(),
+                    StudyEnrollEnum.EXAM_REFUND_SUCCESS.getCode()
+            };
+            // 支付成功
+            testQueryWrapper.in("enroll_status", arr);
+            testQueryWrapper.eq("operator_id", item.getOperatorId());
+            // 考试次数
+            int examNumber = studentTestEnrollService.count(testQueryWrapper);
+            item.setExamNumber(examNumber);
         });
         return R.success(studentStudyEnrollVos);
+    }
+
+    @Override
+    public ResObject examPassStatisticsPageList(StudentTestEnrollPageQueryParam param) {
+        log.info("examPassStatistics-方法请求参数{}",param);
+        Page<StudentTestEnrollEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
+        // 条件查询
+        QueryWrapper queryWrapper = this.getQueryWrapper(studentTestEnrollMapStruct, param);
+        // 报名单号 模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueTestEnrollNoSearch()),"test_enroll_no",param.getVagueTestEnrollNoSearch());
+        // 科目类型 科目四
+        queryWrapper.eq("subject_type", SubjectTypeEnum.SUBJECT_FOUR.getCode());
+        // 状态
+        queryWrapper.eq("enroll_status",StudyEnrollEnum.EXAM_PASS.getCode());
+
+        // 意向报名时间 testActualTime
+        queryWrapper.apply(StrUtil.isNotBlank(param.getTestHopeTimeSearch()),
+                "date_format (test_hope_time,'%Y-%m-%d') = date_format('" + param.getTestHopeTimeSearch() + "','%Y-%m-%d')");
+        // 报名单号 模糊查询
+        //queryWrapper.like(StrUtil.isNotEmpty(param.getVagueStudyEnrollNoSearch()),"study_enroll_no",param.getVagueStudyEnrollNoSearch());
+        //  开始时间 结束时间都有才进入
+        if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
+            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
+        }
+        if (param.getExamPassTimeArr() != null && param.getExamPassTimeArr().length > 0){
+            queryWrapper.between("date_format (test_actual_time,'%Y-%m-%d')",param.getExamPassTimeArr()[0],param.getExamPassTimeArr()[1]);
+        }
+        IPage<StudentTestEnrollEntity> pageList = studentTestEnrollService.page(page, queryWrapper);
+        if (pageList.getRecords().size() <= 0){
+            log.error("数据空");
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
+        }
+        Page<StudentTestEnrollVo> studentTestEnrollVoPage = studentTestEnrollMapStruct.toVoList(pageList);
+        // 循环数据
+        studentTestEnrollVoPage.getRecords().stream().forEach((item) ->{
+            if (StrUtil.isNotEmpty(item.getStudentId())){
+                StudentInfoEntity studentInfo = studentInfoService.getById(item.getStudentId());
+                if (studentInfo != null)item.setStudentName(studentInfo.getRealName());
+                if (studentInfo != null)item.setPhone(studentInfo.getPhone());
+            }
+            if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(item.getUserId()).getRealName());
+            if (StrUtil.isNotEmpty(item.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(item.getLineUnderUserId()).getRealName());
+            // 省市区
+            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
+            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
+            if (StrUtil.isNotEmpty(item.getAreaId())){
+                // 换redis
+                AreaEntity area = areaService.getByBaCode(item.getAreaId());
+                if (area != null)item.setAreaName(area.getBaName());
+            }
+            // 平台训练场地
+            if (StrUtil.isNotEmpty(item.getTestActualCoachingGridId())){
+                CoachingGridEntity coachingGridEntity =coachingGridService.getById(item.getTestActualCoachingGridId());
+                if(coachingGridEntity != null)item.setTestActualCoachingGridName(coachingGridEntity.getName());
+            };
+            if (StrUtil.isNotEmpty(item.getTestHopeCoachingGridId())){
+                CoachingGridEntity coachingGrid = coachingGridService.getById(item.getTestHopeCoachingGridId());
+                if(coachingGrid != null)item.setTestHopeCoachingGridName(coachingGrid.getName());
+            }
+
+            // 查询报名单号
+            QueryWrapper studyQueryWrapper = new QueryWrapper();
+            studyQueryWrapper.eq("student_id",item.getStudentId());
+            studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
+            if (studentStudyEnroll != null){
+                item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
+            }
+            QueryWrapper feeSystemCoachStudentQueryWrapper = new QueryWrapper();
+            // 学员ID
+            feeSystemCoachStudentQueryWrapper.eq("student_id",item.getStudentId());
+            feeSystemCoachStudentQueryWrapper.eq("bind_status", StatusEnum.NORMAL.getCode());
+            OneFeeSystemCoachStudentEntity oneFeeSystemCoachStudent = oneFeeSystemCoachStudentService.getOne(feeSystemCoachStudentQueryWrapper);
+            if (oneFeeSystemCoachStudent != null) {
+                OneFeeSystemCoachStudentVo feeSystemCoachStudent = BeanConvertUtils.copy(oneFeeSystemCoachStudent,OneFeeSystemCoachStudentVo.class);
+                log.info("教练绑定数据{}",feeSystemCoachStudent);
+                String cacheRes = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY+feeSystemCoachStudent.getCoachId());
+                JSONObject jsonObject = (JSONObject) JSONObject.parse(cacheRes);
+                if (jsonObject != null)item.setCoachName(jsonObject.getString("realName"));
+                OneFeeSystemPriceEntity oneFeeSystemPrice = oneFeeSystemPriceService.getById(feeSystemCoachStudent.getClassId());
+                if (oneFeeSystemPrice != null)item.setClassName(oneFeeSystemPrice.getName());
+            }
+            // 订单
+            QueryWrapper orderQueryWrapper = new QueryWrapper();
+            String[] arr = {
+                    StudyEnrollEnum.PAY_SUCCESS.getCode(),
+                    StudyEnrollEnum.STAT_EVALUATE.getCode(),
+                    StudyEnrollEnum.EVALUATE_SUCCESS.getCode(),
+            };
+            orderQueryWrapper.eq("student_id",item.getStudentId());
+            orderQueryWrapper.in("status",arr);
+            List<StudentOrderEntity> studentOrderList = studentOrderService.list(orderQueryWrapper);
+
+            //支付金额求和
+            BigDecimal totalAmount = studentOrderList.stream().map(StudentOrderEntity::getPayableAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+            item.setTotalAmount(totalAmount);
+        });
+        log.info(this.getClass() + "pageList-方法请求结果{}",studentTestEnrollVoPage);
+        return R.success(studentTestEnrollVoPage);
     }
 
     @Override
@@ -539,6 +760,35 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
             if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
             if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
+
+            // 查询报名单号
+            QueryWrapper studyQueryWrapper = new QueryWrapper();
+            studyQueryWrapper.eq("student_id",item.getStudentId());
+            studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
+            if (studentStudyEnroll != null){
+                item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
+            }
+
+            // 查询次数
+            QueryWrapper testQueryWrapper = new QueryWrapper();
+            testQueryWrapper.eq("student_id",item.getStudentId());
+            testQueryWrapper.eq("subject_type","1");
+            String[] arr = {
+                    StudyEnrollEnum.PAY_SUCCESS.getCode(),
+                    StudyEnrollEnum.EXAM_ACCOMPLISH.getCode(),
+                    StudyEnrollEnum.EXAM_PASS.getCode(),
+                    StudyEnrollEnum.EXAM_NO_PASS.getCode(),
+                    StudyEnrollEnum.APPLY_LOADING.getCode(),
+                    StudyEnrollEnum.REFUND_DISPOSE_LOADING.getCode(),
+                    StudyEnrollEnum.EXAM_REFUND_SUCCESS.getCode()
+            };
+            // 支付成功
+            testQueryWrapper.in("enroll_status", arr);
+            testQueryWrapper.eq("operator_id", item.getOperatorId());
+            // 考试次数
+            int examNumber = studentTestEnrollService.count(testQueryWrapper);
+            item.setExamNumber(examNumber);
         });
         return R.success(studentStudyEnrollVos);
     }
@@ -578,6 +828,15 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (StrUtil.isNotEmpty(item.getTestHopeCoachingGridId())){
                 CoachingGridEntity coachingGrid = coachingGridService.getById(item.getTestHopeCoachingGridId());
                 if(coachingGrid != null)item.setTestHopeCoachingGridName(coachingGrid.getName());
+            }
+
+            // 查询报名单号
+            QueryWrapper studyQueryWrapper = new QueryWrapper();
+            studyQueryWrapper.eq("student_id",item.getStudentId());
+            studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
+            if (studentStudyEnroll != null){
+                item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
             }
         });
         return R.success(studentTestEnrollVoPageList);

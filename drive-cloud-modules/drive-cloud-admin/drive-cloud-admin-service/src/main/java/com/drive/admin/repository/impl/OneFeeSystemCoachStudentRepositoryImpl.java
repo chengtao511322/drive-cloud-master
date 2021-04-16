@@ -9,8 +9,6 @@ import com.drive.admin.enums.StudyEnrollEnum;
 import com.drive.admin.pojo.dto.OneFeeSystemCoachStudentEditParam;
 import com.drive.admin.pojo.dto.OneFeeSystemCoachStudentPageQueryParam;
 import com.drive.admin.pojo.entity.OneFeeSystemCoachStudentEntity;
-import com.drive.admin.pojo.entity.StudentInfoEntity;
-import com.drive.admin.pojo.entity.StudentOrderEntity;
 import com.drive.admin.pojo.vo.OneFeeSystemCoachStudentVo;
 import com.drive.admin.repository.OneFeeSystemCoachStudentRepository;
 import com.drive.admin.service.CoachInfoService;
@@ -246,26 +244,8 @@ public class  OneFeeSystemCoachStudentRepositoryImpl extends BaseController<OneF
 
     @Override
     public ResObject getCoachStudentByOrderNo(String orderNo) {
-        log.info(this.getClass() + "getCoachStudentByOrderNo-方法 请求参数{}",orderNo);
-        if (StrUtil.isEmpty(orderNo)){
-            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
-        }
-        QueryWrapper orderQueryWrapper = new QueryWrapper();
-        orderQueryWrapper.eq("study_enroll_no",orderNo);
-        StudentOrderEntity studentOrder = studentOrderService.getOne(orderQueryWrapper);
-        if (studentOrder == null){
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
-        }
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("order_no",studentOrder.getOrderNo());
-        OneFeeSystemCoachStudentEntity coachStudent = oneFeeSystemCoachStudentService.getOne(queryWrapper);
-        if (coachStudent == null){
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
-        }
-        OneFeeSystemCoachStudentVo coachStudentVo = BeanConvertUtils.copy(coachStudent,OneFeeSystemCoachStudentVo.class);
-        if (StrUtil.isNotEmpty(coachStudentVo.getStudentId()))coachStudentVo.setStudentName(studentInfoService.getById(coachStudentVo.getStudentId()).getRealName());
-        if (StrUtil.isNotEmpty(coachStudentVo.getCoachId()))coachStudentVo.setCoachName(coachInfoService.getById(coachStudentVo.getCoachId()).getRealName());
-        return R.success(coachStudentVo);
+        return null;
     }
-}
 
+
+}

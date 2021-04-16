@@ -2,10 +2,9 @@ package com.drive.basics.service.impl;
 
 import com.drive.basics.mapper.ChannelAuthMapper;
 import com.drive.basics.pojo.dto.ChannelAuthEditParam;
+import com.drive.basics.pojo.entity.ChannelAuthEntity;
 import com.drive.basics.service.ChannelAuthService;
 import com.drive.common.core.base.BaseService;
-import com.drive.basics.pojo.entity.ChannelAuthEntity;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

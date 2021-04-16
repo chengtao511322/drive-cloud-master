@@ -181,5 +181,27 @@
     </select>
 
 
+    <select id="statisticsStudentDataPageList" parameterType="com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam" resultType="com.drive.admin.pojo.vo.StatisticsStudentDataVo">
+        SELECT
+           	t3.id as studentId,
+            t3.username as nickName,
+            t3.real_name as realName,
+            t3.phone as phone,
+            t1.user_id as onLineServiceId,
+            t1.study_enroll_no as studyEnrollNo,
+            t1.price as applyAmount,
+            t1.drive_school_id as applySchoolId,
+            t1.address as address,
+            t1.enroll_status as enrollStatus,
+            t3.recommend_date as referrerTime,
+            t3.recommend_user_id as referrerId,
+            t3.operator_id as operatorId
+        FROM
+            t_student_study_enroll t1
+            LEFT JOIN t_student_info t3 on t3.id=t1.student_id
+            ${ew.customSqlSegment}
+    </select>
+
+
 
 </mapper>

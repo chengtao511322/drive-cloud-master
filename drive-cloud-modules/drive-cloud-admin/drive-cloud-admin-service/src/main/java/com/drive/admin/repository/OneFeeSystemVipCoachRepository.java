@@ -1,7 +1,8 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.*;
-import com.drive.common.core.base.BaseRepository;
+import com.drive.admin.pojo.dto.OneFeeSystemVipCoachEditParam;
+import com.drive.admin.pojo.dto.OneFeeSystemVipCoachInstallParam;
+import com.drive.admin.pojo.dto.OneFeeSystemVipCoachPageQueryParam;
 import com.drive.common.core.base.BasicsRepository;
 
 /**
@@ -10,6 +11,6 @@ import com.drive.common.core.base.BasicsRepository;
  *
  * @author xiaoguo
  */
-public interface OneFeeSystemVipCoachRepository extends BasicsRepository<OneFeeSystemVipCoachPageQueryParam, OneFeeSystemVipCoachEditParam,OneFeeSystemVipCoachInstallParam> {
+public interface OneFeeSystemVipCoachRepository extends BasicsRepository<OneFeeSystemVipCoachPageQueryParam, OneFeeSystemVipCoachEditParam, OneFeeSystemVipCoachInstallParam> {
 }
 

@@ -1,7 +1,8 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.*;
-import com.drive.common.core.base.BaseRepository;
+import com.drive.admin.pojo.dto.EvaluateTagEditParam;
+import com.drive.admin.pojo.dto.EvaluateTagInstallParam;
+import com.drive.admin.pojo.dto.EvaluateTagPageQueryParam;
 import com.drive.common.core.base.BasicsRepository;
 
 /**

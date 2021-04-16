@@ -67,5 +67,7 @@ public class UserEntity extends BaseEntity {
 
 	// 备注
 	private String remark;
+	// 操作者ID，可以是客服ID
+	private String operationId;
 
 }

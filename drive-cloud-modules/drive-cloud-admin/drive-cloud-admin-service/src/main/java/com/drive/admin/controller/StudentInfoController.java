@@ -55,6 +55,15 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	}
 
 	/**
+	 * 事务回滚
+	 * @return
+	 */
+	@PostMapping("/activity/reduceInventoryRollback")
+	ResObject reduceInventoryRollback(){
+		return studentInfoRepository.reduceInventoryRollback();
+	}
+
+	/**
 	 * 新用户列表 分页列表
 	 */
 	@ApiOperation("新用户已回访列表分页")

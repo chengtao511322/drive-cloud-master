@@ -1,10 +1,7 @@
 package com.drive.basics.factory;
 
 import com.drive.basics.feign.RemoteChannelAuthFeignService;
-import com.drive.basics.feign.RemoteChannelFeignService;
 import com.drive.basics.pojo.dto.ChannelAuthEditParam;
-import com.drive.basics.pojo.dto.ChannelEditParam;
-import com.drive.basics.pojo.vo.ChannelVo;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import feign.hystrix.FallbackFactory;

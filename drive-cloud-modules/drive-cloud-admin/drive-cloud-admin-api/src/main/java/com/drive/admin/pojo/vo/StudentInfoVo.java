@@ -1,8 +1,6 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import cn.hutool.core.util.StrUtil;
-import com.drive.common.core.utils.BeanConvertUtils;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -176,6 +174,9 @@ public class StudentInfoVo {
 
 	// 回访时间
 	private LocalDateTime returnVisitTime;
+
+	// 预计下次回访时间
+	private LocalDateTime nextReturnVisitTime;
 
 	// 是否有意向 0 否 1 是
 	private String isIntention;

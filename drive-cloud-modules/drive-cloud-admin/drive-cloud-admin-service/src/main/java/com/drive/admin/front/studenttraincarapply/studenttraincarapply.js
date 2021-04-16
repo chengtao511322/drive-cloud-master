@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-                                                                                          
+
 // 分页查询学员学车预约表列表
 export function listPageStudentTrainCarApply(query) {
   return request({

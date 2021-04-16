@@ -2,11 +2,9 @@ package com.drive.admin.repository.impl;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.drive.admin.enums.EnrollStatusEnum;
 import com.drive.admin.enums.OperationTypeEnum;
 import com.drive.admin.enums.StudyEnrollEnum;
 import com.drive.admin.pojo.dto.StudentOrderEditParam;
@@ -35,11 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.IntSummaryStatistics;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -337,4 +332,3 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
         return R.success("操作成功");
     }
 }
-

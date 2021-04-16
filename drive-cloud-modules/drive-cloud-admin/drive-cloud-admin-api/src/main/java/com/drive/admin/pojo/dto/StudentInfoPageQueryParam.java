@@ -148,4 +148,15 @@ public class StudentInfoPageQueryParam extends BasePageQueryParam {
 
 	// 售前客服
 	private String serviceId;
+
+
+	// 预计下次回访时间
+	private String nextReturnVisitTimeSearch;
+	private String vagueSearch;
+
+	private Integer isIntentionSearch;
+	// 线上
+	private String onLineServiceId;
+	// 线下
+	private String offlineServiceId;
 }

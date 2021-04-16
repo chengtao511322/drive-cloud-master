@@ -15,4 +15,8 @@ public interface CacheConstants {
      * oauth 客户端信息
      */
     String CLIENT_DETAILS_KEY = "oauth:client:details";
+    // 班型
+    String REDIS_CACHE_CLASS_KEY = "redisCache:classItem:class_";
+    // 教练
+    String REDIS_CACHE_COACH_KEY = "redisCache:coachItem:coach_";
 }

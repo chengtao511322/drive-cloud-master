@@ -1,12 +1,10 @@
 package com.drive.basics.pojo.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import java.time.LocalDateTime;
 import lombok.Data;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 
 /**

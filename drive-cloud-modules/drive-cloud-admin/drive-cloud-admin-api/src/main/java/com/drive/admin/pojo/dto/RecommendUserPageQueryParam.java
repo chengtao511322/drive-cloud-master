@@ -71,4 +71,5 @@ public class RecommendUserPageQueryParam extends BasePageQueryParam {
 	// VIP课时提成百分比
 	private BigDecimal vipClassTiemPercent;
 
+
 }

@@ -1,7 +1,8 @@
 package com.drive.basics.repository;
 
-import com.drive.basics.pojo.dto.*;
-import com.drive.common.core.base.BaseRepository;
+import com.drive.basics.pojo.dto.DriveFlowEditParam;
+import com.drive.basics.pojo.dto.DriveFlowInstallParam;
+import com.drive.basics.pojo.dto.DriveFlowPageQueryParam;
 import com.drive.common.core.base.BasicsRepository;
 
 /**

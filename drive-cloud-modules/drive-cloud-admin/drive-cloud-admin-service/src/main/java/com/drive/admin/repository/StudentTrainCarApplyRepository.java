@@ -1,7 +1,8 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.*;
-import com.drive.common.core.base.BaseRepository;
+import com.drive.admin.pojo.dto.StudentTrainCarApplyEditParam;
+import com.drive.admin.pojo.dto.StudentTrainCarApplyInstallParam;
+import com.drive.admin.pojo.dto.StudentTrainCarApplyPageQueryParam;
 import com.drive.common.core.base.BasicsRepository;
 
 /**

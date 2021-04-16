@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-                                  
+
 // 分页查询学员教练互评表列表
 export function listPageStudentCoachAppraise(query) {
   return request({

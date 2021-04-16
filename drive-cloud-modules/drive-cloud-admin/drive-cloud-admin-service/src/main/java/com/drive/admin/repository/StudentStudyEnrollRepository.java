@@ -6,7 +6,6 @@ import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
 import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.exception.BizException;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 
@@ -47,5 +46,19 @@ public interface StudentStudyEnrollRepository extends BaseRepository<StudentStud
      * @throws BizException
      */
     ResObject stayPayChangePageList(@Valid StudentStudyEnrollPageQueryParam param) throws BizException;
+
+
+    /**
+     * 统计数据
+     * @return
+     */
+    ResObject statisticsStudentDataPageList(@Valid StudentStudyEnrollPageQueryParam param);
+
+    /**
+     * 练车数据
+     * @param param
+     * @return
+     */
+    ResObject drivingStudentDataPageList(@Valid StudentStudyEnrollPageQueryParam param);
 }
 

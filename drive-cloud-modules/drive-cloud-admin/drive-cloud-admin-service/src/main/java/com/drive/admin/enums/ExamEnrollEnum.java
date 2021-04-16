@@ -19,7 +19,7 @@ public enum ExamEnrollEnum {
     BOOK_SUCCESS("5","预约成功","applySuccessStrategy"),
     EXAM_ACCOMPLISH("7","考试完成",""),
     EXAM_PASS("8","考试通过","examPassStrategy"),
-    EXAM_NO_PASS("9","考试不通过",""),
+    EXAM_NO_PASS("9","考试不通过","examNoPassStrategy"),
     APPLY_LOADING("10","申请中","payStayApplyStrategy"),
     REFUND_DISPOSE_LOADING("11","退款处理中",""),
     EXAM_REFUND_SUCCESS("12","退款成功",""),
@@ -56,6 +56,21 @@ public enum ExamEnrollEnum {
         for (ExamEnrollEnum enumItem : ExamEnrollEnum.values()) {
             if (enumItem.getCode().equals(code)) {
                 return enumItem.getStrategyValue();
+            }
+        }
+        return "";
+
+    }
+
+
+    public static String getNameByCode(String code) {
+        if (StrUtil.isEmpty(code)) {
+            return "";
+        }
+
+        for (ExamEnrollEnum enumItem : ExamEnrollEnum.values()) {
+            if (enumItem.getCode().equals(code)) {
+                return enumItem.getInfo();
             }
         }
         return "";

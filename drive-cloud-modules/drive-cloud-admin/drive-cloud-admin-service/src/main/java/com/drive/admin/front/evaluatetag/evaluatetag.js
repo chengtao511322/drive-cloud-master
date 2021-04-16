@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-                  
+
 // 分页查询评价标签表列表
 export function listPageEvaluateTag(query) {
   return request({

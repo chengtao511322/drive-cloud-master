@@ -55,6 +55,7 @@ public class StudentTestEnrollVo {
 	// 报名状态（1-提交报名待支付；2-支付成功；3-支付失败；4-报名失败；5-预约成功  ; 6-报名取消 ,7-考试完成,8-考试通过,9-考试不通过，10-申请中,11-退款处理中,12-退款成功）
 	@Excel(name = "报名状态（1-提交报名待支付；2-支付成功；3-支付失败；4-报名失败；5-预约成功  ; 6-报名取消 ,7-考试完成,8-考试通过,9-考试不通过，10-申请中,11-退款处理中,12-退款成功）", width = 20)
 	private String enrollStatus;
+	private String studyEnrollNo;
 
 	// 希望预约考试时间
 	@Excel(name = "希望预约考试时间", width = 20)
@@ -118,6 +119,17 @@ public class StudentTestEnrollVo {
 	private String cityName;
 	private String areaName;
 	// 考试次数
-	private int examNumber;
+	private int examNumber =1;
+
+	private String phone;
+
+	private StudentStudyEnrollVo studentStudyEnrollVo;
+
+	// 总费用
+	private BigDecimal totalAmount;
+
+	// 教练名称
+	private String coachName;
+	private String className;
 
 }

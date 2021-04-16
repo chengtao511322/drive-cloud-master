@@ -1,5 +1,7 @@
 package com.drive.admin.controller;
 
+import cn.hutool.core.util.StrUtil;
+import com.drive.admin.enums.ExamEnrollEnum;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.dto.StudentTestEnrollEditParam;
 import com.drive.admin.pojo.dto.StudentTestEnrollPageQueryParam;
@@ -10,6 +12,7 @@ import com.drive.admin.service.mapstruct.StudentTestEnrollMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
+import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.enums.EventLogEnum;
 import com.drive.common.log.annotation.EventLog;
 import io.swagger.annotations.Api;
@@ -84,6 +87,14 @@ public class StudentTestEnrollController extends BaseController<StudentTestEnrol
 		return studentTestEnrollRepository.findList(param);
 	}
 
+
+	@ApiOperation("查询学员考试通过列表")
+	@PreAuthorize("hasPermission('/admin/studentTestEnroll',  'admin:studentTestEnroll:query')")
+	@PostMapping(value = "/examPassStatisticsPageList")
+	public ResObject examPassStatisticsPageList(@RequestBody  StudentTestEnrollPageQueryParam param) {
+		return studentTestEnrollRepository.examPassStatisticsPageList(param);
+	}
+
 	/**
 	* 获取学员考试报名表
 	*/
@@ -93,6 +104,19 @@ public class StudentTestEnrollController extends BaseController<StudentTestEnrol
 	@GetMapping("/{testEnrollNo}")
 	public ResObject get(@PathVariable String testEnrollNo) {
 		return studentTestEnrollRepository.getById(testEnrollNo);
+	}
+	@ApiOperation("获取学员考试报名表")
+	@ApiImplicitParam(name = "testEnrollNo", required = true, dataType = "String", paramType = "path")
+	@PreAuthorize("hasPermission('/admin/studentTestEnroll',  'admin:studentTestEnroll:query')")
+	@GetMapping("/getByStudentId/{studentId}")
+	public ResObject getByStudentId(@PathVariable String studentId) {
+		if (StrUtil.isEmpty(studentId)){
+			return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+		}
+		StudentTestEnrollPageQueryParam pageQueryParam= new StudentTestEnrollPageQueryParam();
+		pageQueryParam.setStudentId(studentId);
+		pageQueryParam.setEnrollStatus(ExamEnrollEnum.EXAM_ACCOMPLISH.getCode());
+		return studentTestEnrollRepository.getInfo(pageQueryParam);
 	}
 
 	/**

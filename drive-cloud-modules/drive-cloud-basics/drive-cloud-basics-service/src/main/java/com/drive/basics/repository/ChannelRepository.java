@@ -2,7 +2,6 @@ package com.drive.basics.repository;
 
 import com.drive.basics.pojo.dto.ChannelEditParam;
 import com.drive.basics.pojo.dto.ChannelPageQueryParam;
-import com.drive.basics.pojo.entity.ChannelEntity;
 import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.biz.ResObject;
 

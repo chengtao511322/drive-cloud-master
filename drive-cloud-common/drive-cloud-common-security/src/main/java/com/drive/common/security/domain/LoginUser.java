@@ -18,11 +18,14 @@ public class LoginUser extends User {
      * 用户ID
      */
     private Long userId;
+    // 操作ID
+    private String operationId;
 
-    public LoginUser(Long userId, String username, String password, boolean enabled, boolean accountNonExpired,
+    public LoginUser(Long userId, String operationId,String username, String password, boolean enabled, boolean accountNonExpired,
                      boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         this.userId = userId;
+        this.operationId = operationId;
     }
 
     public Long getUserId() {
@@ -31,5 +34,15 @@ public class LoginUser extends User {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+
+
+    public String getOperationId() {
+        return operationId;
+    }
+
+    public void setOperationId(String operationId) {
+        this.operationId = operationId;
     }
 }

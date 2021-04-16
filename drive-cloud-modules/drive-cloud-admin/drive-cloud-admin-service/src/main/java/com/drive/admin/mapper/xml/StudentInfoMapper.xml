@@ -61,7 +61,12 @@
     <select id="newStudentReturnVisitPageList" resultType="com.drive.admin.pojo.vo.StudentInfoVo">
         select
             tsi.*,
-            tsse.study_enroll_no AS studyEnrollNo
+            tsse.study_enroll_no AS studyEnrollNo,
+            tsrvh.return_visit_status as returnVisitStatus,
+            tsrvh.return_visit_item as returnVisitItem,
+            tsrvh.return_visit_time as returnVisitTime,
+            tsrvh.next_return_visit_time as nextReturnVisitTime,
+            tsrvh.is_intention as isIntention
         from   t_student_info  tsi
         INNER  join   t_service_return_visit_history  tsrvh  on  tsi.id = tsrvh.student_id
         left  join   t_student_study_enroll tsse  on tsse.student_id = tsi.id

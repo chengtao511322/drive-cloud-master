@@ -1,6 +1,5 @@
 package com.drive.marketing.repository.impl;
 
-import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -8,7 +7,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.api.RemoteRecommendManagerFeignService;
 import com.drive.admin.api.RemoteRecommendUserFeignService;
 import com.drive.admin.api.RemoteStudentFeignService;
-import com.drive.admin.pojo.dto.RecommendUserPageQueryParam;
 import com.drive.admin.pojo.vo.RecommendManagerVo;
 import com.drive.admin.pojo.vo.RecommendUserVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
@@ -16,7 +14,6 @@ import com.drive.basics.feign.RemoteChannelAuthFeignService;
 import com.drive.basics.feign.RemoteChannelFeignService;
 import com.drive.basics.feign.RemoteOperatorFeignService;
 import com.drive.basics.pojo.dto.ChannelAuthEditParam;
-import com.drive.basics.pojo.dto.ChannelEditParam;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResCodeEnum;
 import com.drive.common.core.biz.ResObject;
@@ -25,7 +22,6 @@ import com.drive.common.core.enums.ExclusiveEnum;
 import com.drive.common.core.enums.StatusEnum;
 import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
-import com.drive.common.data.utils.ExcelUtils;
 import com.drive.marketing.asyn.ChannelManagerAsync;
 import com.drive.marketing.pojo.dto.ActivityCouponRelationEditParam;
 import com.drive.marketing.pojo.dto.ChannelManagerActivityEditParam;
@@ -45,23 +41,13 @@ import com.drive.marketing.service.mapstruct.CouponGetMapStruct;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Service

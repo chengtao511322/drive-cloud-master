@@ -4,7 +4,7 @@ package com.drive.admin.enums;
 /**
  * 常用状态枚举
  *
- * @Author JoyoDuan
+ * @Author xiaoguo
  * @Date 2021/1/6
  */
 public enum ReturnVisitStatusEnum {
@@ -12,7 +12,7 @@ public enum ReturnVisitStatusEnum {
     PRE("1", "售前"),
 
     AFTER("2", "售后"),
-    NEW_USER("0", "新用户待回访")
+    NEW_USER("1", "新用户待回访")
 
     ;
 

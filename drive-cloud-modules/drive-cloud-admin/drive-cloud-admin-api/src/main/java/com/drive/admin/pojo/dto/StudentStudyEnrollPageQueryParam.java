@@ -19,6 +19,8 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 
 	// 学员报名单号
 	private String studyEnrollNo;
+	// 练车状态
+	private String drivingStatus;
 	// 学员订单号
 	private String studentOrderNo;
 
@@ -39,6 +41,8 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 
 	// 学员ID
 	private String studentId;
+
+	private String recommendUserId;
 
 	// 真实姓名
 	private String realName;
@@ -175,6 +179,7 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 
 	// 是否
 	private boolean returnVisitHistory;
+	private Integer isReturnVisit;
 
 	// 转换类型(1-平台转化，2-新用户转化，3-待支付转化)
 	private String conversionType;
@@ -187,5 +192,7 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 
 	// 操作类型 1：（后台）客服取消 2：学员取消
 	private String operationType;
+	// 科目类型
+	private String subjectType;
 
 }
