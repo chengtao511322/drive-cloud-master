@@ -19,4 +19,8 @@ public interface CacheConstants {
     String REDIS_CACHE_CLASS_KEY = "redisCache:classItem:class_";
     // 教练
     String REDIS_CACHE_COACH_KEY = "redisCache:coachItem:coach_";
+    // 客服信息
+    String REDIS_CACHE_SERVICE_KEY = "redisCache:serviceItem:service_";
+
+
 }
