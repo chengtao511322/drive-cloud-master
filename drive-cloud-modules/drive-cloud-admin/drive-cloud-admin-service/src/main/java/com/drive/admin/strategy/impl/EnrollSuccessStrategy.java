@@ -3,6 +3,7 @@ package com.drive.admin.strategy.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.drive.admin.enums.EnrollStatusEnum;
 import com.drive.admin.enums.StudyEnrollEnum;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.entity.*;
@@ -47,6 +48,9 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
 
     @Autowired
     private OneFeeSystemCoachStudentService oneFeeSystemCoachStudentService;
+
+    @Autowired
+    private OneFeeSystemPriceService oneFeeSystemPriceService;
 
     @Autowired
     private AccountFlowRepository accountFlowRepository;
@@ -101,9 +105,17 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
         coachStudentQueryWrapper.eq("order_no",studentOrder.getOrderNo());
         coachStudentQueryWrapper.eq("bind_status",StudyEnrollEnum.BIND_STATUS_ALREADY_BIND.getCode());
         int count = oneFeeSystemCoachStudentService.count(coachStudentQueryWrapper);
-        if (count <=0 )throw new BizException(500,"请先为学员绑定教练",SubResultCode.NO_BINDING_COACH.subCode(),"请先为学员绑定教练");
+        // 判断自主
+        Boolean isDecide = studentStudyEnroll.getEnrollType() == 1;
+        //
+        if (!isDecide && count <= 0 )throw new BizException(500,"请先为学员绑定教练",SubResultCode.NO_BINDING_COACH.subCode(),"请先为学员绑定教练");
         //创建包过模式-报名完成账务流水
-        this.createVIPStudyEnrollCompleteAccountFlow(studyEnroll,studentOrder,accountFlow,true,false);
+        if (!isDecide){
+            this.createVIPStudyEnrollCompleteAccountFlow(studyEnroll,studentOrder,accountFlow,true,false);
+        // 自主
+        } else{
+
+        }
         return R.success("执行成功");
     }
 
@@ -255,9 +267,7 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
         }
         //--------------------------------- 计算驾校提成 end  ---------------------------------
 
-        //生成优惠卷-账务流水明细
-        // this.createCouponAccountFlowDetail(tStudentOrder,tAccountFlow);
-        // 优惠券支付的话 执行该逻辑
+
         if (StrUtil.isNotEmpty(studentOrder.getColumcouponId())){
             log.info("执行优惠券逻辑");
         }

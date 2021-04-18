@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.drive.admin.enums.EnrollStatusEnum;
 import com.drive.admin.enums.StudyEnrollEnum;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
+import com.drive.admin.pojo.dto.StudentOrderPageQueryParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollEditParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
 import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
@@ -76,6 +77,12 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	@PostMapping(value = "/drivingStudentDataPageList")
 	public ResObject drivingStudentDataPageList(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
 		return studentStudyEnrollRepository.drivingStudentDataPageList(param);
+	}
+	@ApiOperation("统计学员练车单分页列表")
+	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	@PostMapping(value = "/drillStudentDataPageList")
+	public ResObject drillStudentDataPageList(@Valid @RequestBody StudentOrderPageQueryParam param) {
+		return studentStudyEnrollRepository.drillStudentDataPageList(param);
 	}
 
 

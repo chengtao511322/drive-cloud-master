@@ -28,5 +28,10 @@ public class StudentInfoServiceImpl extends BaseService<StudentInfoMapper, Stude
     public IPage<StudentInfoVo> newStudentReturnVisitPageList(Page page, Wrapper<StudentInfoPageQueryParam> ew) {
         return this.getBaseMapper().newStudentReturnVisitPageList(page,ew);
     }
+
+    @Override
+    public IPage<StudentInfoVo> oneNewStudentReturnVisitPageList(Page page, Wrapper<StudentInfoPageQueryParam> ew) {
+        return this.getBaseMapper().oneNewStudentReturnVisitPageList(page,ew);
+    }
 }
 

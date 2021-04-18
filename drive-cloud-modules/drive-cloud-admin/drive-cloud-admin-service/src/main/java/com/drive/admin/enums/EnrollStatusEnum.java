@@ -20,7 +20,11 @@ public enum EnrollStatusEnum {
     REFUND_LOADING("14","退款处理中"),
     UPGRADE("15","已升班"),
 
-    UPGRADE_WAIT_PAY("16","已升班待支付");
+    UPGRADE_WAIT_PAY("16","已升班待支付"),
+
+    DECIDE_CLASS("1","自主");
+
+;
 
     private final String code;
     private final String info;

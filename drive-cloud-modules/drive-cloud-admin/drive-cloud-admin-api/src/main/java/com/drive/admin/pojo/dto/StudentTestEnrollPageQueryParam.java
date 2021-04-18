@@ -64,6 +64,8 @@ public class StudentTestEnrollPageQueryParam extends BasePageQueryParam {
 
 	// 报名状态（1-提交报名待支付；2-支付成功；3-支付失败；4-报名失败；5-预约成功  ; 6-报名取消 ,7-考试完成,8-考试通过,9-考试不通过，10-申请中,11-退款处理中,12-退款成功）
 	private String enrollStatus;
+
+	private String examStatus;
 	// 模糊查询字段
 	//private String vagueNameSearch
 

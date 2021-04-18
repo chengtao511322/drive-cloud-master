@@ -259,4 +259,6 @@ public class StudentStudyEnrollVo {
 	private Boolean examine;
 
 	private int examNumber = 1;
+
+	private String bindCoach;
 }

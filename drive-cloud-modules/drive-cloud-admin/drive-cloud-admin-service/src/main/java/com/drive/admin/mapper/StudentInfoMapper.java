@@ -21,5 +21,13 @@ public interface StudentInfoMapper extends BaseMapper<StudentInfoEntity> {
 
     IPage<StudentInfoVo> newStudentReturnVisitPageList(Page page, @Param("ew") Wrapper<StudentInfoPageQueryParam> ew);
 
+    /**
+     *
+     * @param page
+     * @param ew
+     * @return
+     */
+    IPage<StudentInfoVo> oneNewStudentReturnVisitPageList(Page page, @Param("ew") Wrapper<StudentInfoPageQueryParam> ew);
+
 }
 

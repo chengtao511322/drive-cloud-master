@@ -1,6 +1,7 @@
 package com.drive.admin.repository;
 
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
+import com.drive.admin.pojo.dto.StudentOrderPageQueryParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollEditParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
 import com.drive.common.core.base.BaseRepository;
@@ -60,5 +61,12 @@ public interface StudentStudyEnrollRepository extends BaseRepository<StudentStud
      * @return
      */
     ResObject drivingStudentDataPageList(@Valid StudentStudyEnrollPageQueryParam param);
+
+    /**
+     * 训练订单数据
+     * @param param
+     * @return
+     */
+    ResObject drillStudentDataPageList(@Valid StudentOrderPageQueryParam param);
 }
 

@@ -132,4 +132,6 @@ public class StudentTestEnrollVo {
 	private String coachName;
 	private String className;
 
+	private String bindCoach;
+
 }

@@ -3,6 +3,7 @@ package com.drive.admin.repository.impl;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.nosql.redis.RedisDS;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -116,10 +117,15 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         QueryWrapper queryWrapper = this.getQueryWrapper(studentTestEnrollMapStruct, param);
         // 报名单号 模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueTestEnrollNoSearch()),"test_enroll_no",param.getVagueTestEnrollNoSearch());
+
+        if (StrUtil.isNotEmpty(param.getExamStatus()) && param.getExamStatus().equals(ExamEnrollEnum.EXAM_LOADING.getCode())){
+            queryWrapper.eq("enroll_status",ExamEnrollEnum.BOOK_SUCCESS.getCode());
+            queryWrapper.apply("date_format (test_actual_time,'%Y-%m-%d') <= date_format(now(),'%Y-%m-%d')");
+        }
+
         // 预约见面时间
         if (StrUtil.isNotEmpty(param.getEnrollStatus()) && param.getEnrollStatus().equals(ExamEnrollEnum.BOOK_SUCCESS.getCode())){
-            queryWrapper.apply(StrUtil.isNotEmpty(param.getTestActualTimeSearch()),
-                    "date_format (test_actual_time,'%Y-%m-%d') > date_format(now(),'%Y-%m-%d')");
+            queryWrapper.apply("date_format (test_actual_time,'%Y-%m-%d') > date_format(now(),'%Y-%m-%d')");
         }else{
             queryWrapper.apply(StrUtil.isNotEmpty(param.getTestActualTimeSearch()),
                     "date_format (test_actual_time,'%Y-%m-%d') = date_format('" + param.getTestActualTimeSearch() + "','%Y-%m-%d')");
@@ -134,6 +140,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
+        // queryWrapper.orderByDesc("create_time");
         IPage<StudentTestEnrollEntity> pageList = studentTestEnrollService.page(page, queryWrapper);
         if (pageList.getRecords().size() <= 0){
             log.error("数据空");
@@ -193,6 +200,16 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
             if (studentStudyEnroll != null){
                 item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
+            }
+            QueryWrapper systemCoachStudentQueryWrapper = new QueryWrapper();
+            // 学员ID
+            systemCoachStudentQueryWrapper.eq("student_id",item.getStudentId());
+            systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
+            OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
+            if (systemCoachStudent != null){
+                String coachRedis = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
+                JSONObject jsonObject = JSON.parseObject(coachRedis);
+                if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
             }
         });
         log.info(this.getClass() + "pageList-方法请求结果{}",studentTestEnrollVoPage);
@@ -258,7 +275,14 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             CoachingGridEntity coachingGrid = coachingGridService.getById(studentTestEnrollVo.getTestHopeCoachingGridId());
             if(coachingGrid != null)studentTestEnrollVo.setTestHopeCoachingGridName(coachingGrid.getName());
         }
-        //studentStudyEnrollService.getById();
+        QueryWrapper queryWrapper= new QueryWrapper();
+        queryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+        queryWrapper.eq("student_id",studentTestEnrollVo.getStudentId());
+        StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(queryWrapper);
+        if (studentStudyEnroll != null){
+            studentTestEnrollVo.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
+        }
+        // 手机号
         log.info(this.getClass() + "getInfo-方法请求结果{}",studentTestEnrollVo);
         return R.success(studentTestEnrollVo);
     }
@@ -375,10 +399,11 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         // 报名完成
         queryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
         // 拼接SQL 没有预约过科目一考试
-        queryWrapper.le("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_study_enroll.student_id = t_student_test_enroll.student_id)",0);
+        //queryWrapper.le("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_study_enroll.student_id = t_student_test_enroll.student_id)",0);
         // 拼接sql 考试挂科满10天
-        //queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 10 DAY) > NOW() AND t_student_test_enroll.student_id = t_student_study_enroll.student_id)",0);
+        queryWrapper.le("(SELECT COUNT(1) FROM t_student_test_enroll WHERE DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 10 DAY) > NOW() AND t_student_test_enroll.student_id = t_student_study_enroll.student_id)",0);
         //
+        queryWrapper.orderByDesc("create_time");
         IPage<StudentStudyEnrollEntity> studentStudyEnrollPageList = studentStudyEnrollService.page(page,queryWrapper);
         if (studentStudyEnrollPageList.getRecords().size() <=0){
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentStudyEnrollPageList);
@@ -425,6 +450,17 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (studentStudyEnroll != null){
                 item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
             }
+            QueryWrapper systemCoachStudentQueryWrapper = new QueryWrapper();
+            // 学员ID
+            systemCoachStudentQueryWrapper.eq("student_id",item.getStudentId());
+            systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
+            OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
+            if (systemCoachStudent != null){
+                String coachRedis = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
+                JSONObject jsonObject = JSON.parseObject(coachRedis);
+                if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
+            }
+
         });
         return R.success(studentStudyEnrollVos);
     }
@@ -510,6 +546,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         // 拼接sql 考试挂科满10天
         queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=1 AND DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 10 DAY) > NOW() AND t_student_test_enroll.student_id = t_student_study_enroll.student_id)",0);
         //
+        queryWrapper.orderByDesc("create_time");
         IPage<StudentStudyEnrollEntity> studentStudyEnrollPageList = studentStudyEnrollService.page(page,queryWrapper);
         if (studentStudyEnrollPageList.getRecords().size() <=0){
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentStudyEnrollPageList);
@@ -554,6 +591,16 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             // 考试次数
             int examNumber = studentTestEnrollService.count(testQueryWrapper);
             item.setExamNumber(examNumber);
+            QueryWrapper systemCoachStudentQueryWrapper = new QueryWrapper();
+            // 学员ID
+            systemCoachStudentQueryWrapper.eq("student_id",item.getStudentId());
+            systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
+            OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
+            if (systemCoachStudent != null){
+                String coachRedis = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
+                JSONObject jsonObject = JSON.parseObject(coachRedis);
+                if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
+            }
         });
         return R.success(studentStudyEnrollVos);
     }
@@ -576,6 +623,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         // 拼接sql 考试挂科满10天
         queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=1 AND DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 30 DAY) > NOW() AND t_student_test_enroll.student_id = t_student_study_enroll.student_id)",0);
         //
+        queryWrapper.orderByDesc("create_time");
         IPage<StudentStudyEnrollEntity> studentStudyEnrollPageList = studentStudyEnrollService.page(page,queryWrapper);
         if (studentStudyEnrollPageList.getRecords().size() <=0){
             return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),studentStudyEnrollPageList);
@@ -621,6 +669,16 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             // 考试次数
             int examNumber = studentTestEnrollService.count(testQueryWrapper);
             item.setExamNumber(examNumber);
+            QueryWrapper systemCoachStudentQueryWrapper = new QueryWrapper();
+            // 学员ID
+            systemCoachStudentQueryWrapper.eq("student_id",item.getStudentId());
+            systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
+            OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
+            if (systemCoachStudent != null){
+                String coachRedis = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
+                JSONObject jsonObject = JSON.parseObject(coachRedis);
+                if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
+            }
         });
         return R.success(studentStudyEnrollVos);
     }
@@ -789,6 +847,16 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             // 考试次数
             int examNumber = studentTestEnrollService.count(testQueryWrapper);
             item.setExamNumber(examNumber);
+            QueryWrapper systemCoachStudentQueryWrapper = new QueryWrapper();
+            // 学员ID
+            systemCoachStudentQueryWrapper.eq("student_id",item.getStudentId());
+            systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
+            OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
+            if (systemCoachStudent != null){
+                String coachRedis = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
+                JSONObject jsonObject = JSON.parseObject(coachRedis);
+                if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
+            }
         });
         return R.success(studentStudyEnrollVos);
     }
@@ -806,7 +874,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         // 科目类型查询
         queryWrapper.eq("subject_type",studentTestEnrollPageQueryParam.getSubjectType());
         // 考实际考试时间 今天
-        queryWrapper.apply("date_format (test_hope_time,'%Y-%m-%d') <= date_format('" + LocalDateTime.now() + "','%Y-%m-%d')");
+        queryWrapper.apply("date_format (test_hope_time,'%Y-%m-%d') <= date_format(now(),'%Y-%m-%d')");
         IPage<StudentTestEnrollEntity> studentTestEnrollPageList = studentTestEnrollService.page(page,queryWrapper);
         if (studentTestEnrollPageList.getRecords().size() <=0){
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentTestEnrollPageList);
@@ -838,6 +906,18 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (studentStudyEnroll != null){
                 item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
             }
+
+            QueryWrapper systemCoachStudentQueryWrapper = new QueryWrapper();
+            // 学员ID
+            systemCoachStudentQueryWrapper.eq("student_id",item.getStudentId());
+            systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
+            OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
+            if (systemCoachStudent != null){
+                String coachRedis = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
+                JSONObject jsonObject = JSON.parseObject(coachRedis);
+                if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
+            }
+
         });
         return R.success(studentTestEnrollVoPageList);
     }
