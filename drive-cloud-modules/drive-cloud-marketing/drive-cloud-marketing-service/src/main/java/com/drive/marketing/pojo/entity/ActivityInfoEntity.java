@@ -1,10 +1,7 @@
 package com.drive.marketing.pojo.entity;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.annotation.*;
 import com.drive.common.core.base.BaseEntity;
-import com.drive.common.core.enums.StatusEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

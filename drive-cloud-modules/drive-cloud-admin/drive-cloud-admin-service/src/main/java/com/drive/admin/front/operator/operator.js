@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-                        
+
 // 分页查询运营商基础信息列表
 export function listPageOperator(query) {
   return request({

@@ -3,7 +3,6 @@ package com.drive.admin.repository;
 import com.drive.admin.pojo.dto.CoachingGridEditParam;
 import com.drive.admin.pojo.dto.CoachingGridInstallParam;
 import com.drive.admin.pojo.dto.CoachingGridPageQueryParam;
-import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.base.BasicsRepository;
 
 /**

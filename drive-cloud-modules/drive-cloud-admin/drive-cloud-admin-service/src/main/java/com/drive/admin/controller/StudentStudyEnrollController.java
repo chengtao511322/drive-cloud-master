@@ -1,5 +1,8 @@
 package com.drive.admin.controller;
 
+import cn.hutool.core.util.StrUtil;
+import com.drive.admin.enums.EnrollStatusEnum;
+import com.drive.admin.enums.StudyEnrollEnum;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollEditParam;
 import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
@@ -10,6 +13,7 @@ import com.drive.admin.service.mapstruct.StudentStudyEnrollMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
+import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.enums.EventLogEnum;
 import com.drive.common.log.annotation.EventLog;
 import io.swagger.annotations.Api;
@@ -53,6 +57,43 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	public ResObject pageList(@Valid StudentStudyEnrollPageQueryParam param) {
 		return studentStudyEnrollRepository.pageList(param);
 	}
+
+
+	@ApiOperation("学员学车报名单分页列表")
+	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	@PostMapping(value = "/studyEnrollPageList")
+	public ResObject studyEnrollPageList(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
+		return studentStudyEnrollRepository.studyEnrollPageList(param);
+	}
+	@ApiOperation("统计学员学车报名单分页列表")
+	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	@PostMapping(value = "/statisticsStudentDataPageList")
+	public ResObject statisticsStudentDataPageList(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
+		return studentStudyEnrollRepository.statisticsStudentDataPageList(param);
+	}
+	@ApiOperation("统计学员学车报名单分页列表")
+	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	@PostMapping(value = "/drivingStudentDataPageList")
+	public ResObject drivingStudentDataPageList(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
+		return studentStudyEnrollRepository.drivingStudentDataPageList(param);
+	}
+
+
+	@ApiOperation("待支付转化分页列表")
+	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	@PostMapping(value = "/stayPayChangePageList")
+	public ResObject stayPayChangePageList(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
+		// 状态值
+		String[] arr = new String[]
+				{
+						EnrollStatusEnum.PAY_WAIT_PUT.getCode(),
+						EnrollStatusEnum.ENROLL_SUCCESS.getCode(),
+						EnrollStatusEnum.PUT_WAIT_AUDIT.getCode(),
+						EnrollStatusEnum.PASSWORD_SUBMIT_WAIT_AUDIT.getCode()
+				};
+		param.setOrderStatusArr(arr);
+		return studentStudyEnrollRepository.stayPayChangePageList(param);
+	}
 	/**
 	* 学员学车报名单 列表
 	*/
@@ -72,6 +113,27 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	@GetMapping("/{studyEnrollNo}")
 	public ResObject get(@PathVariable String studyEnrollNo) {
 		return studentStudyEnrollRepository.getById(studyEnrollNo);
+	}
+
+	@ApiOperation("获取学员学车报名单")
+	@ApiImplicitParam(name = "studyEnrollNo", required = true, dataType = "String", paramType = "path")
+	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	@GetMapping("/getByStudentId/{studentId}")
+	public ResObject getByStudentId(@PathVariable String studentId) {
+		if (StrUtil.isEmpty(studentId)){
+			return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+		}
+		String[] arr = {
+				StudyEnrollEnum.ENROLL_STATUS_PAY_SUCCESS.getCode(),
+				StudyEnrollEnum.ENROLL_STATUS_PREPARE_STAY_EXAMINE.getCode(),
+				StudyEnrollEnum.ENROLL_STATUS_PASSWORD_EXAMINE.getCode(),
+				StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode(),
+		};
+		StudentStudyEnrollPageQueryParam param = new StudentStudyEnrollPageQueryParam();
+		param.setStudentId(studentId);
+		param.setOrderStatusArr(arr);
+		// param.setEnrollStatus(StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+		return studentStudyEnrollRepository.getInfo(param);
 	}
 	@ApiOperation("获取学员学车报名单（条件查询一条数据）")
 	@ApiImplicitParam(name = "studyEnrollNo", required = true, dataType = "String", paramType = "path")

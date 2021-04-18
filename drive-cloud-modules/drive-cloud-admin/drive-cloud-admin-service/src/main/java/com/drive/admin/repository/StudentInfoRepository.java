@@ -14,11 +14,20 @@ import com.drive.common.core.biz.ResObject;
 public interface StudentInfoRepository extends BaseRepository<StudentInfoPageQueryParam, StudentInfoEditParam>{
 
 
+    ResObject reduceInventoryRollback();
+
     /**
      * 查询新用户列表  分页
      * @param param
      * @return
      */
     ResObject newStudentPageList(StudentInfoPageQueryParam param);
+
+    /**
+     * +新用户已回访
+     * @param param
+     * @return
+     */
+    ResObject newStudentReturnVisitPageList(StudentInfoPageQueryParam param);
 }
 

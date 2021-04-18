@@ -1,0 +1,21 @@
+package com.drive.admin.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.drive.admin.pojo.entity.StudentTrainCarApplyEntity;
+
+/**
+ * 学员学车预约表 Mapper 接口
+ *
+ * @author xiaoguo
+ */
+public interface StudentTrainCarApplyMapper extends BaseMapper<StudentTrainCarApplyEntity> {
+
+    /**
+     * 课时求和
+     * @param studentId
+     * @param subjectType
+     * @return
+     */
+    Integer classHoursSum(String studentId,String subjectType);
+}
+

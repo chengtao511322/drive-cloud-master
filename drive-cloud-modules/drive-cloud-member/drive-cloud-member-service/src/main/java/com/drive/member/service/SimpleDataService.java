@@ -1,3 +1,4 @@
+/*
 package com.drive.member.service;
 
 import com.zhoyq.server.jt808.starter.dto.SimAuthDto;
@@ -7,13 +8,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+*/
 /**
  * @Author 小郭
  * @Description //TODO
  * @Date $ $
  * @Param $
  * @return $
- **/
+ **//*
+
 @Component
 public class SimpleDataService implements DataService {
     @Override
@@ -111,3 +114,4 @@ public class SimpleDataService implements DataService {
         return null;
     }
 }
+*/

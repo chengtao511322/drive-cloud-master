@@ -1,10 +1,10 @@
 package com.drive.basics.repository;
 
-import com.drive.basics.pojo.dto.*;
-import com.drive.common.core.base.BaseRepository;
+import com.drive.basics.pojo.dto.ChannelAuthEditParam;
+import com.drive.basics.pojo.dto.ChannelAuthInstallParam;
+import com.drive.basics.pojo.dto.ChannelAuthPageQueryParam;
 import com.drive.common.core.base.BasicsRepository;
 import com.drive.common.core.biz.ResObject;
-import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  *

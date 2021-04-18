@@ -1,9 +1,6 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import cn.hutool.core.util.StrUtil;
-import com.drive.common.core.utils.BeanConvertUtils;
-import com.drive.common.core.utils.CoachUtil;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -31,6 +28,9 @@ public class StudentInfoVo {
 	@Excel(name = "市", width = 20)
 	private String cityId;
 	private String cityName;
+
+	// 售前客服
+	private String serviceId;
 
 	// 区
 	@Excel(name = "区", width = 20)
@@ -152,6 +152,8 @@ public class StudentInfoVo {
 	// 运营商id(数据权限标记)
 	@Excel(name = "运营商id(数据权限标记)", width = 20)
 	private String operatorId;
+	// 是否
+	private boolean returnVisitHistory;
 
 	// 登录设备类型
 	@Excel(name = "登录设备类型", width = 20)
@@ -160,19 +162,24 @@ public class StudentInfoVo {
 	// 注册渠道（直接存入中文，为防止活动平凡切换，造成字典表无法适应）
 	@Excel(name = "注册渠道（直接存入中文，为防止活动平凡切换，造成字典表无法适应）", width = 20)
 	private String logonChannel;
+	// 客服名称
+	private String serviceName;
+	// 报名单号
+	private String studyEnrollNo;
 
-	public void setProvinceId(String provinceId) {
-		this.provinceId = provinceId;
-		//if (StrUtil.isNotEmpty(provinceId))this.provinceName = BeanConvertUtils.copy(CoachUtil.getAreaCoach(provinceId),StudentInfoVo.class).provinceName;
-	}
+	// 回访状态  1：售前回访 2 售后回访
+	private String returnVisitStatus;
+	// 回访类型明细
+	private String returnVisitItem;
 
-	public void setCityId(String cityId) {
-		this.cityId = cityId;
-		//if (StrUtil.isNotEmpty(cityId))this.cityName = BeanConvertUtils.copy(CoachUtil.getAreaCoach(provinceId),StudentInfoVo.class).cityName;
-	}
+	// 回访时间
+	private LocalDateTime returnVisitTime;
 
-	public void setAreaId(String areaId) {
-		this.areaId = areaId;
-		//if (StrUtil.isNotEmpty(areaId))this.areaName = BeanConvertUtils.copy(CoachUtil.getAreaCoach(provinceId),StudentInfoVo.class).areaName;
-	}
+	// 预计下次回访时间
+	private LocalDateTime nextReturnVisitTime;
+
+	// 是否有意向 0 否 1 是
+	private String isIntention;
+
+
 }

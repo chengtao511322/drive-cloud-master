@@ -11,6 +11,7 @@ public interface ServiceNameConstants {
 
     // 系统服务
     String SYSTEM_SERVICE = "drive-cloud-system-service";
+    String MARKETING_SERVICE = "drive-cloud-marketing-service";
 
 
     String ADMIN_SERVICE = "drive-cloud-admin-service";

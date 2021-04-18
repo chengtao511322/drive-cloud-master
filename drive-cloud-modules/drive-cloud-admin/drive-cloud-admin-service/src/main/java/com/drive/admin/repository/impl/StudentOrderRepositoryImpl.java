@@ -5,30 +5,38 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.drive.admin.enums.OperationTypeEnum;
+import com.drive.admin.enums.StudyEnrollEnum;
 import com.drive.admin.pojo.dto.StudentOrderEditParam;
 import com.drive.admin.pojo.dto.StudentOrderPageQueryParam;
 import com.drive.admin.pojo.entity.StudentOrderEntity;
+import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
 import com.drive.admin.pojo.vo.StudentOrderVo;
+import com.drive.admin.pojo.vo.StudentStudyEnrollVo;
 import com.drive.admin.repository.StudentOrderRepository;
 import com.drive.admin.service.StudentInfoService;
 import com.drive.admin.service.StudentOrderService;
+import com.drive.admin.service.StudentStudyEnrollService;
 import com.drive.admin.service.mapstruct.StudentOrderMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
+import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.data.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-                                                                                                                                
+
 /**
  *
  * 学员订单表 服务类
@@ -48,6 +56,9 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
 
     @Autowired
     private StudentInfoService studentInfoService;
+
+    @Autowired
+    private StudentStudyEnrollService studentStudyEnrollService;
 
     /*
      *
@@ -233,5 +244,91 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
         return result ?R.success(result):R.failure(result);
     }
 
-}
+    @Override
+    public ResObject getOrderByStudentId(String studentId) {
+        log.info(this.getClass()+ "getOrderByStudentId-方法请求参数",studentId);
+        if (StrUtil.isEmpty(studentId)){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 条件查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("t2.student_id",studentId);
+        // 状态值
+      /* List<String> arr = new ArrayList<String>();
+        arr.add(StudyEnrollEnum.STAT_PAY.getCode());
+        arr.add(StudyEnrollEnum.PAY_WAIT_PUT.getCode());
+        arr.add(StudyEnrollEnum.ENROLL_SUCCESS.getCode());
+        arr.add(StudyEnrollEnum.AUTO_ENROLL_SUCCESS.getCode());
+        arr.add(StudyEnrollEnum.PUT_WAIT_AUDIT.getCode());
+        arr.add(StudyEnrollEnum.PASSWORD_SUBMIT_WAIT_AUDIT.getCode());*/
+        queryWrapper.eq("t1.status",StudyEnrollEnum.STAT_PAY.getCode());
+        List<StudentStudyEnrollVo> studentOrderVos= studentStudyEnrollService.studyEnrollList(queryWrapper);
+        if (studentOrderVos.size() <=0){
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        }
 
+        // .collect(Collectors.toList())
+        //List<StudentStudyEnrollVo> studentOrderVo= studentOrderVos.stream().filter(order -> arr.contains(order.getOrderStatus())).collect(Collectors.toList());
+        StudentStudyEnrollVo studyEnrollVo = new StudentStudyEnrollVo();
+      /*  if (studentOrderVo.size() <=0){
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentOrderVo);
+        }*/
+        QueryWrapper queryWrapperCount = new QueryWrapper();
+        queryWrapperCount.eq("student_id",studentId);
+        queryWrapperCount.eq("status", StudyEnrollEnum.CANCEL_ORDER.getCode());
+        int cancelNum= studentOrderService.count(queryWrapperCount);
+        //studentOrderVos.stream().mapToDouble(StudentStudyEnrollVo::getOrderStatus).sum()
+        // 取消次数
+        //IntSummaryStatistics sumcc = studentOrderVos.stream().collect(Collectors.summarizingInt(e->Integer.valueOf(String.valueOf(e.getOrderStatus()=="5"))));
+        // 取消订单次数
+        studyEnrollVo.setCancelNum(cancelNum);
+        // 这里只可能出现一条数据 应该多个状态筛选后
+        studyEnrollVo.setStudentOrderNo(studentOrderVos.get(0).getStudentOrderNo());
+        // 订单时间
+        studyEnrollVo.setOrderTime(studentOrderVos.get(0).getCreateTime());
+        return R.success(studyEnrollVo);
+    }
+
+    @Transactional
+    @Override
+    public ResObject cancelOrder(StudentOrderEditParam studentOrderEditParam) {
+        log.info(this.getClass()+"cancelOrder-方法请求参数");
+        if (studentOrderEditParam == null){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 通过订单查询订单信息
+        StudentOrderEntity studentOrder  =studentOrderService.getById(studentOrderEditParam.getOrderNo());
+        if (studentOrder == null){
+            return R.success(SubResultCode.NOT_ORDER_OPERATION.subCode(),SubResultCode.NOT_ORDER_OPERATION.subMsg(),false);
+        }
+        //订单状态判断
+    /*    if (!(studentOrder.getStatus().equals(StudyEnrollEnum.STAT_PAY.getCode()))){
+            return R.success(SubResultCode.ORDER_STATUS_NOT_OPERATION.subCode(),SubResultCode.ORDER_STATUS_NOT_OPERATION.subMsg(),false);
+        }*/
+        // 取消时间
+        studentOrder.setUpdateTime(LocalDateTime.now());
+        studentOrder.setStatus(StudyEnrollEnum.CANCEL_ORDER.getCode());
+        Boolean result = studentOrderService.updateById(studentOrder);
+        if (!result){
+            // 操作失败
+            throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+        }
+        // 查询报名单
+        //QueryWrapper queryWrapper = new QueryWrapper();
+        StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getById(studentOrder.getStudyEnrollNo());
+        if (studentStudyEnroll == null){
+            throw new BizException(500,SubResultCode.OPERATION_ERROR.subCode(),SubResultCode.OPERATION_ERROR.subMsg(),false);
+        }
+        //
+        studentStudyEnroll.setOperationType(OperationTypeEnum.BACK_SERVICE.getCode());
+        studentStudyEnroll.setCancelReason("后台操作取消");
+        studentStudyEnroll.setCancelTime(LocalDateTime.now());
+        studentStudyEnroll.setEnrollStatus(StudyEnrollEnum.ENROLL_STATUS_CANCEL.getCode());
+        Boolean studyResult = studentStudyEnrollService.updateById(studentStudyEnroll);
+        if (!studyResult){
+            // 操作失败
+            throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+        }
+        return R.success("操作成功");
+    }
+}

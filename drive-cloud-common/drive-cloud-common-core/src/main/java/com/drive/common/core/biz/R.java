@@ -4,7 +4,7 @@ package com.drive.common.core.biz;
 /**
  * 通用返回结果
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public class R implements java.io.Serializable{
 

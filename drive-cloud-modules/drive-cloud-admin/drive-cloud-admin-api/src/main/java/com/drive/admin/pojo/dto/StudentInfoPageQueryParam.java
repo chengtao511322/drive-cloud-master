@@ -135,4 +135,28 @@ public class StudentInfoPageQueryParam extends BasePageQueryParam {
 	private String searchLoginDate;
 	// 推荐时间
 	private String searchRecommendDate;
+	// 城市数组
+	private String cityArr;
+
+	private String createTimeSearch;
+
+
+	// 是否
+	private boolean returnVisitHistory;
+
+
+
+	// 售前客服
+	private String serviceId;
+
+
+	// 预计下次回访时间
+	private String nextReturnVisitTimeSearch;
+	private String vagueSearch;
+
+	private Integer isIntentionSearch;
+	// 线上
+	private String onLineServiceId;
+	// 线下
+	private String offlineServiceId;
 }

@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
  * @author xiaoguo
  */
 @Data
-public class StudentOrderVo {
+public class StudentOrderVo implements java.io.Serializable {
+
+
 
 
 	// 订单号
@@ -132,6 +134,8 @@ public class StudentOrderVo {
 	@Excel(name = "对应的产品ID", width = 20)
 	private String productId;
 
+	private String className;
+
 	// 新订单号
 	@Excel(name = "新订单号", width = 20)
 	private String newOrderNo;
@@ -142,4 +146,9 @@ public class StudentOrderVo {
 
 	// 学员姓名
 	private String studentName;
+
+	public void setProductId(String productId) {
+		this.productId = productId;
+
+	}
 }

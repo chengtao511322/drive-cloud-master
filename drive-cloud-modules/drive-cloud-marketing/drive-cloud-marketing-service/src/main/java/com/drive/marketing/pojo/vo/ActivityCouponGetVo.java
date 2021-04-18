@@ -1,6 +1,5 @@
 package com.drive.marketing.pojo.vo;
 
-import com.alibaba.fastjson.JSONObject;
 import com.drive.admin.pojo.vo.RecommendUserVo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

@@ -1,6 +1,8 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.*;
+import com.drive.admin.pojo.dto.PlatformWalletEditParam;
+import com.drive.admin.pojo.dto.PlatformWalletInstallParam;
+import com.drive.admin.pojo.dto.PlatformWalletPageQueryParam;
 import com.drive.common.core.base.BasicsRepository;
 import com.drive.common.core.biz.ResObject;
 

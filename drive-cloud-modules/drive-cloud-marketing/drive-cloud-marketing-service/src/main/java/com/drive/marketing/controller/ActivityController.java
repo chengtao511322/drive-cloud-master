@@ -10,7 +10,6 @@ import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.enums.EventLogEnum;
-import com.drive.common.core.enums.StatusEnum;
 import com.drive.common.data.utils.ExcelUtils;
 import com.drive.common.log.annotation.EventLog;
 import com.drive.marketing.pojo.dto.ActivityEditParam;
@@ -94,6 +93,12 @@ public class ActivityController extends BaseController<ActivityInfoPageQueryPara
     public ResObject transfer(@Valid String account) {
         return activityRepository.transfer(account);
     }*/
+
+
+    @PostMapping("/reduceInventoryRollback")
+    ResObject reduceInventoryRollback(){
+        return activityInfoRepository.reduceInventoryRollback();
+    }
 
 
     /**

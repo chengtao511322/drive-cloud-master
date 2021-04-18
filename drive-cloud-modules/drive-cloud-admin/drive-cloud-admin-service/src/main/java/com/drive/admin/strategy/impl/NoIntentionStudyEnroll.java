@@ -1,7 +1,6 @@
 package com.drive.admin.strategy.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.drive.admin.enums.StudyEnrollEnum;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.entity.StudentOrderEntity;
 import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
@@ -77,5 +76,10 @@ public class NoIntentionStudyEnroll implements StudyEnrollStrategy {
           return R.success("操作成功");
       }
     return R.failure("该状态下不允许该操作");
+    }
+
+    @Override
+    public ResObject completeExamEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam) {
+        return null;
     }
 }

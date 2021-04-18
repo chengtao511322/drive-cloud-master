@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class OneFeeSystemCoachStudentVo {
 
 
+
 	// 主键
 	@Excel(name = "主键", width = 20)
 	private String id;
@@ -60,6 +61,8 @@ public class OneFeeSystemCoachStudentVo {
 	// 现班班型ID
 	@Excel(name = "现班班型ID", width = 20)
 	private String classId;
+	// 班型名称
+	private String className;
 
 	// 运营商id(数据权限标记)
 	@Excel(name = "运营商id(数据权限标记)", width = 20)
@@ -153,4 +156,12 @@ public class OneFeeSystemCoachStudentVo {
 	@Excel(name = "平台提成金额（所有上级运营商提成金）", width = 20)
 	private BigDecimal serviceChangeMoney;
 
+	public void setCoachId(String coachId) {
+		this.coachId = coachId;
+		/*String coach = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY+coachId);
+		if(StrUtil.isNotEmpty(coach)){
+			JSONObject coachInfo = JSONObject.parseObject(coach);
+			this.coachName = coachInfo.getString("realName");
+		}*/
+	}
 }

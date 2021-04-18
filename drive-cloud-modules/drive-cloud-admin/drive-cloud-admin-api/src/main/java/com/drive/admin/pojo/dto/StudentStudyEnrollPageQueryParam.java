@@ -19,6 +19,10 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 
 	// 学员报名单号
 	private String studyEnrollNo;
+	// 练车状态
+	private String drivingStatus;
+	// 学员订单号
+	private String studentOrderNo;
 
 	// 省-学员的省
 	private String provinceId;
@@ -37,6 +41,8 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 
 	// 学员ID
 	private String studentId;
+
+	private String recommendUserId;
 
 	// 真实姓名
 	private String realName;
@@ -61,6 +67,7 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 
 	// 报名状态（1-提交报名；2-已联系待支付；3-已支付待备案；5-支付失败 ;6-报名完成 ;7-报名取消;8-报名失败 ;9-已退款，10-自动报名完成，11-自动报名待审核，12-已备案待审核,13-密码已提交待审核）
 	private String enrollStatus;
+	private String enrollStatusArr;
 
 	// 报名驾校id
 	private String driveSchoolId;
@@ -166,5 +173,26 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 	private String vagueStudyEnrollNoSearch;
 	// 下次回访时间查询
 	private String nextReturnVisitTimeSearch;
+	// 创建订单时间
+	private String createTimeSearch;
+
+
+	// 是否
+	private boolean returnVisitHistory;
+	private Integer isReturnVisit;
+
+	// 转换类型(1-平台转化，2-新用户转化，3-待支付转化)
+	private String conversionType;
+	// 订单状态
+	private String orderStatusSearch;
+	// 状态ARR
+	private String[] orderStatusArr;
+	//支付时间
+	private String payTimeSearch;
+
+	// 操作类型 1：（后台）客服取消 2：学员取消
+	private String operationType;
+	// 科目类型
+	private String subjectType;
 
 }

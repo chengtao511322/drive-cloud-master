@@ -7,6 +7,8 @@ import com.drive.marketing.pojo.dto.CouponGetPageQueryParam;
 
 public interface ActivityInfoRepository {
 
+    ResObject reduceInventoryRollback();
+
     /**+
      * 条件查询优惠券
      * @param activityCouponRelationEditParam

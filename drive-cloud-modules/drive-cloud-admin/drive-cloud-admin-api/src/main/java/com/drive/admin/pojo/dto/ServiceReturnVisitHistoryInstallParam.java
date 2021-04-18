@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 
@@ -22,12 +21,12 @@ public class ServiceReturnVisitHistoryInstallParam {
     private String id;
 
     // 回访类型（1-学车报名；2-考试报名；3-常规训练；4-考试训练）
-    @NotBlank(message = "回访类型不能为空")
+    //@NotBlank(message = "回访类型不能为空")
     @ApiModelProperty(value = "回访类型（1-学车报名；2-考试报名；3-常规训练；4-考试训练）")
     private String returnVisitType;
 
     // 订单明细单号
-    @NotBlank(message = "订单明细单号不能为空")
+    //@NotBlank(message = "订单明细单号不能为空")
     @ApiModelProperty(value = "订单明细单号")
     private String orderDetailNo;
 
@@ -39,6 +38,14 @@ public class ServiceReturnVisitHistoryInstallParam {
     // 回访时间
     @ApiModelProperty(value = "回访时间")
     private LocalDateTime returnVisitTime;
+
+    // 回访状态  1：售前回访 2 售后回访
+    private String returnVisitStatus;
+
+    // 是否有意向 0 否 1 是
+    private String isIntention;
+    // 回访类型明细
+    private String returnVisitItem;
 
     // 回访内容
     @NotBlank(message = "回访内容不能为空")
@@ -68,6 +75,9 @@ public class ServiceReturnVisitHistoryInstallParam {
     @NotBlank(message = "运营商id(数据权限标记)不能为空")
     @ApiModelProperty(value = "运营商id(数据权限标记)")
     private String operatorId;
+
+    // 用户信息
+    private StudentInfoEditParam studentInfoEditParam;
 
 
 }

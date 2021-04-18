@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-                        
+
 // 分页查询合作驾校用户列表
 export function listPageSchoolUser(query) {
   return request({

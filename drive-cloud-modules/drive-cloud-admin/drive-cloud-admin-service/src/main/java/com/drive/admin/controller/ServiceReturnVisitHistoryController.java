@@ -1,33 +1,30 @@
 package com.drive.admin.controller;
 
-import cn.afterturn.easypoi.excel.entity.ExportParams;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Arrays;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import com.drive.admin.pojo.dto.ServiceReturnVisitHistoryEditParam;
+import com.drive.admin.pojo.dto.ServiceReturnVisitHistoryInstallParam;
+import com.drive.admin.pojo.dto.ServiceReturnVisitHistoryPageQueryParam;
+import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
+import com.drive.admin.pojo.entity.ServiceReturnVisitHistoryEntity;
+import com.drive.admin.repository.ServiceReturnVisitHistoryRepository;
+import com.drive.admin.service.ServiceReturnVisitHistoryService;
+import com.drive.admin.service.mapstruct.ServiceReturnVisitHistoryMapStruct;
+import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.enums.EventLogEnum;
-import com.drive.common.data.utils.ExcelUtils;
 import com.drive.common.log.annotation.EventLog;
 import io.swagger.annotations.Api;
-import com.drive.common.core.base.BaseController;
-import com.drive.admin.pojo.entity.*;
-import com.drive.admin.pojo.vo.*;
-import com.drive.admin.pojo.dto.*;
-import com.drive.admin.service.mapstruct.*;
-import com.drive.admin.service.ServiceReturnVisitHistoryService;
-import com.drive.admin.repository.ServiceReturnVisitHistoryRepository;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.util.Arrays;
 
 
 /**
@@ -88,13 +85,24 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	}
 
 	/**
+	* 获取客服回访记录
+	*/
+	@ApiOperation("通过学员ID 获取聚合客服回访记录")
+	@ApiImplicitParam(name = "studnetId", required = true, dataType = "String", paramType = "path")
+	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
+	@GetMapping("/aggregationListReturnVisitHistory/{studnetId}")
+	public ResObject aggregationListReturnVisitHistory(@PathVariable String studnetId) {
+		return serviceReturnVisitHistoryRepository.aggregationListReturnVisitHistory(studnetId);
+	}
+
+	/**
 	 * 条件查询获取客服回访记录
 	 */
 	@ApiOperation("条件查询获取客服回访记录")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable ServiceReturnVisitHistoryPageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@PathVariable @RequestBody ServiceReturnVisitHistoryPageQueryParam param) {
 		return serviceReturnVisitHistoryRepository.getInfo(param);
 	}
 
@@ -108,6 +116,14 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	@PostMapping
 	public ResObject save(@Valid @RequestBody ServiceReturnVisitHistoryInstallParam serviceReturnVisitHistoryInstallParam) {
 		return serviceReturnVisitHistoryRepository.save(serviceReturnVisitHistoryInstallParam);
+	}
+	@ApiOperation("添加回访记录")
+	@ApiImplicitParam(name = "ServiceReturnVisitHistoryEditParam ", value = "新增客服回访记录", dataType = "ServiceReturnVisitHistoryEditParam")
+	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:add')")
+	@EventLog(message = "新增客服回访记录", businessType = EventLogEnum.CREATE)
+	@PostMapping("/addReturnVisitHistory")
+	public ResObject addReturnVisitHistory(@Valid @RequestBody ServiceReturnVisitHistoryInstallParam serviceReturnVisitHistoryInstallParam) {
+		return serviceReturnVisitHistoryRepository.addReturnVisitHistory(serviceReturnVisitHistoryInstallParam);
 	}
 
 	/**

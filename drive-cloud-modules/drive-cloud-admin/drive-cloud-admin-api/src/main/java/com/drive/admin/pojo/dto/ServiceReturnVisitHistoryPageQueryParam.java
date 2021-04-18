@@ -45,6 +45,12 @@ public class ServiceReturnVisitHistoryPageQueryParam extends BasePageQueryParam 
 	// 回访内容
 	@ApiModelProperty(value = "回访内容")
 	private String returnVisitContent;
+
+	// 回访状态  1：售前回访 2 售后回访
+	private String returnVisitStatus;
+
+	// 回访类型明细
+	private String returnVisitItem;
 	// 模糊查询字段
 
 	// 预计下次回访时间
@@ -65,6 +71,10 @@ public class ServiceReturnVisitHistoryPageQueryParam extends BasePageQueryParam 
 	// 科目类型(1-科目一，2-科目三，3-科目三，4-科目四)
 	@ApiModelProperty(value = "科目类型(1-科目一，2-科目三，3-科目三，4-科目四)")
 	private String subjectType;
+
+
+	// 是否有意向 0 否 1 是
+	private String isIntention;
 	// 模糊查询字段
 
 	// 运营商id(数据权限标记)

@@ -5,7 +5,6 @@ import com.drive.basics.pojo.entity.BannerEntity;
 import com.drive.basics.service.BannerService;
 import com.drive.common.core.base.BaseService;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**

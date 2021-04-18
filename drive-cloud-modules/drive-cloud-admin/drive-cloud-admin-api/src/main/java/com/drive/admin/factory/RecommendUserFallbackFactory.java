@@ -2,7 +2,6 @@
 package com.drive.admin.factory;
 
 import com.drive.admin.api.RemoteRecommendUserFeignService;
-import com.drive.admin.pojo.dto.RecommendUserPageQueryParam;
 import com.drive.admin.pojo.vo.RecommendUserVo;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;

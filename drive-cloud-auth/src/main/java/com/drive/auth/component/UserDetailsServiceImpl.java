@@ -58,7 +58,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         Collection<? extends GrantedAuthority> authorities = AuthorityUtils
                 .createAuthorityList(dbAuthsSet.toArray(new String[0]));
-        return new LoginUser(user.getUserId(), user.getUserName(), user.getPassword(), true, true, true, true,
+        return new LoginUser(user.getUserId(), user.getOperationId(),user.getUserName(), user.getPassword(), true, true, true, true,
                 authorities);
     }
 

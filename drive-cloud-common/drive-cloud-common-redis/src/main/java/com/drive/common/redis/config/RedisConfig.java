@@ -26,7 +26,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 /**
  * redis 配置
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Configuration
 @EnableCaching

@@ -1,36 +1,40 @@
 package com.drive.admin.repository.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.drive.admin.enums.StudyEnrollEnum;
-import com.drive.admin.pojo.entity.PlatformWalletEntity;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.drive.admin.enums.StudyEnrollEnum;
+import com.drive.admin.pojo.dto.PlatformWalletEditParam;
+import com.drive.admin.pojo.dto.PlatformWalletInstallParam;
+import com.drive.admin.pojo.dto.PlatformWalletPageQueryParam;
+import com.drive.admin.pojo.entity.AccountFlowDetailEntity;
+import com.drive.admin.pojo.entity.PlatformWalletDetailEntity;
+import com.drive.admin.pojo.entity.PlatformWalletEntity;
+import com.drive.admin.pojo.vo.PlatformWalletVo;
+import com.drive.admin.repository.PlatformWalletRepository;
 import com.drive.admin.service.AccountFlowDetailService;
 import com.drive.admin.service.AccountFlowService;
 import com.drive.admin.service.PlatformWalletDetailService;
+import com.drive.admin.service.PlatformWalletService;
+import com.drive.admin.service.mapstruct.PlatformWalletMapStruct;
 import com.drive.common.core.base.BaseController;
-import com.drive.admin.repository.PlatformWalletRepository;
-import com.drive.admin.pojo.entity.*;
-import com.drive.admin.pojo.vo.*;
-import com.drive.admin.pojo.dto.*;
-import com.drive.admin.service.mapstruct.*;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import cn.hutool.core.util.StrUtil;
 import com.drive.common.core.biz.R;
+import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
-import lombok.extern.slf4j.Slf4j;
-import com.drive.common.core.biz.ResObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.drive.admin.service.PlatformWalletService;
 import com.drive.common.data.utils.ExcelUtils;
-import java.util.List;
-import java.util.Arrays;
-import java.io.IOException;
-import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -334,4 +338,3 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
         return R.success(SubResultCode.WALLET_SETTLE_SUCCESS.subCode(),SubResultCode.WALLET_SETTLE_SUCCESS.subMsg());
     }
 }
-

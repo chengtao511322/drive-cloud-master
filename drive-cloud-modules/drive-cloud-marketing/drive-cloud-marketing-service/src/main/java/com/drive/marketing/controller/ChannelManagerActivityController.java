@@ -16,7 +16,6 @@ import com.drive.marketing.pojo.dto.ChannelManagerActivityEditParam;
 import com.drive.marketing.pojo.dto.ChannelManagerActivityPageQueryParam;
 import com.drive.marketing.pojo.entity.ChannelManagerActivityEntity;
 import com.drive.marketing.pojo.vo.ChannelManagerActivityVo;
-import com.drive.marketing.pojo.vo.CouponGetVo;
 import com.drive.marketing.repository.ActivityInfoRepository;
 import com.drive.marketing.repository.ChannelManagerActivityRepository;
 import com.drive.marketing.repository.RecommendManagertRepository;

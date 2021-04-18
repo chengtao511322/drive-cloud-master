@@ -1,10 +1,11 @@
 package com.drive.admin.service.mapstruct;
 
-import com.drive.admin.pojo.entity.*;
-import com.drive.admin.pojo.vo.*;
-import com.drive.admin.pojo.dto.*;
-import org.mapstruct.Mapper;
+import com.drive.admin.pojo.dto.OneFeeSystemVipCoachEditParam;
+import com.drive.admin.pojo.dto.OneFeeSystemVipCoachPageQueryParam;
+import com.drive.admin.pojo.entity.OneFeeSystemVipCoachEntity;
+import com.drive.admin.pojo.vo.OneFeeSystemVipCoachVo;
 import com.drive.common.core.base.BaseMapStruct;
+import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 

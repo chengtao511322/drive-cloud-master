@@ -87,4 +87,7 @@ public class UserVo {
 
 	/** 岗位数组 */
 	private Long[] postIds;
+
+	// 操作者ID，可以是客服ID
+	private String operationId;
 }

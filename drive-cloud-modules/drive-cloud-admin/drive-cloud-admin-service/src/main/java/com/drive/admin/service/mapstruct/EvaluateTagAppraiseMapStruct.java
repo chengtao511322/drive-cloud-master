@@ -1,10 +1,11 @@
 package com.drive.admin.service.mapstruct;
 
-import com.drive.admin.pojo.entity.*;
-import com.drive.admin.pojo.vo.*;
-import com.drive.admin.pojo.dto.*;
-import org.mapstruct.Mapper;
+import com.drive.admin.pojo.dto.EvaluateTagAppraiseEditParam;
+import com.drive.admin.pojo.dto.EvaluateTagAppraisePageQueryParam;
+import com.drive.admin.pojo.entity.EvaluateTagAppraiseEntity;
+import com.drive.admin.pojo.vo.EvaluateTagAppraiseVo;
 import com.drive.common.core.base.BaseMapStruct;
+import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 

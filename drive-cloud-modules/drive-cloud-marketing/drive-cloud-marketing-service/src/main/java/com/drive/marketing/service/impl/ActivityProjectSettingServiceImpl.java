@@ -19,7 +19,6 @@ public class ActivityProjectSettingServiceImpl extends BaseService<ActivityProje
     @Autowired
     private ActivityProjectSettingMapper activityProjectSettingMapper;
 
-    @Override
     public Boolean deleteByCondition(ActivityProjectSettingEntity activityProjectSettingEntity) {
         if (StrUtil.isEmpty(activityProjectSettingEntity.getActivityId())){
             return false;

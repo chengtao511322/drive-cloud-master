@@ -38,7 +38,7 @@ public class GeneratorMain {
     private static String basePackage = "com.drive";
 
     //作者
-    private static String authorName = "guyi";
+    private static String authorName = "xiaoguo";
 
 
     //数据库连接参数配置  driverprince_production
@@ -51,14 +51,14 @@ public class GeneratorMain {
     private static Boolean fileOverride = true;
 
     //table前缀
-    private static String prefix = "tb";
+    private static String prefix = "t";
 
     //模块名称
     private static String modulesName = "admin";
 
     //要生成的表名templatestemplates
     private static String[] tables = {
-            "tb_app_version",
+            "t_student_train_car_apply",
     };
 
 

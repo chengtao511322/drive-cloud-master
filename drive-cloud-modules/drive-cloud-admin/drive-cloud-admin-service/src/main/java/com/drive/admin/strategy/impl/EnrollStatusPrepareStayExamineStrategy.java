@@ -3,21 +3,19 @@ package com.drive.admin.strategy.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.drive.admin.enums.StudyEnrollEnum;
+import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.entity.StudentOrderEntity;
 import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
 import com.drive.admin.repository.PlatformWalletRepository;
-import com.drive.admin.service.PlatformWalletService;
 import com.drive.admin.service.StudentInfoService;
 import com.drive.admin.service.StudentOrderService;
 import com.drive.admin.service.StudentStudyEnrollService;
-import com.drive.common.core.biz.R;
-import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.strategy.StudyEnrollStrategy;
+import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResCodeEnum;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
-import com.drive.common.core.enums.StatusEnum;
 import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -140,5 +138,10 @@ public class EnrollStatusPrepareStayExamineStrategy implements StudyEnrollStrate
             throw new BizException(500,res.getSubCode(),res.getSubMsg());
         }*/
         return R.success("执行成功");
+    }
+
+    @Override
+    public ResObject completeExamEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam) {
+        return null;
     }
 }

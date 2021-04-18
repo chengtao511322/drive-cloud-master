@@ -1,7 +1,8 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.*;
-import com.drive.common.core.base.BaseRepository;
+import com.drive.admin.pojo.dto.AccountFlowDetailEditParam;
+import com.drive.admin.pojo.dto.AccountFlowDetailInstallParam;
+import com.drive.admin.pojo.dto.AccountFlowDetailPageQueryParam;
 import com.drive.common.core.base.BasicsRepository;
 
 /**

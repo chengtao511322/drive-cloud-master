@@ -3,7 +3,6 @@ package com.drive.admin.pojo.dto;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -20,7 +19,7 @@ public class CompleteStudyEnrollParam {
     private String id;
 
     // 学员报名单号
-    @NotBlank(message = "学员报名单号不能为空")
+    //@NotBlank(message = "学员报名单号不能为空")
     private String studyEnrollNo;
 
     // 省-学员的省
@@ -39,7 +38,7 @@ public class CompleteStudyEnrollParam {
     private String latitude;
 
     // 学员ID
-    @NotBlank(message = "学员ID不能为空")
+    //@NotBlank(message = "学员ID不能为空")
     private String studentId;
 
     // 真实姓名
@@ -49,7 +48,7 @@ public class CompleteStudyEnrollParam {
     private String idCard;
 
     // 电话号码
-    @NotBlank(message = "电话号码不能为空")
+    //@NotBlank(message = "电话号码不能为空")
     private String telephone;
 
     // 年龄
@@ -167,4 +166,22 @@ public class CompleteStudyEnrollParam {
     private Integer opType;
     // 策略值
     private String strategyValue;
+
+    // 转换类型(1-平台转化，2-新用户转化，3-待支付转化)
+    private String conversionType;
+
+
+    // 希望预约考试时间
+    private LocalDateTime testHopeTime;
+
+    // 实际考试时间
+    private LocalDateTime testActualTime;
+
+    // 希望预约考试场地ID
+    private String testHopeCoachingGridId;
+
+    // 实际预约考试场地ID
+    private String testActualCoachingGridId;
+
+    private String testEnrollNo;
 }

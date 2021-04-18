@@ -16,6 +16,8 @@ public enum StatusEnum {
 
     NOTPUBLISH("0","未发布"),
     PUBLISH("1","发布"),
+
+    NORMAL("2", "正常"),
     SOLD("2","已下架");
 
     private final String code;

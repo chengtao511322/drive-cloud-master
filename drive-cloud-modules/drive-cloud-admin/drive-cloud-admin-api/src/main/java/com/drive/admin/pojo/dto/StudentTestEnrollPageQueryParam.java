@@ -131,4 +131,6 @@ public class StudentTestEnrollPageQueryParam extends BasePageQueryParam {
 
 	private String testActualTimeSearch;
 
+	private String[] examPassTimeArr = new String[2];
+
 }

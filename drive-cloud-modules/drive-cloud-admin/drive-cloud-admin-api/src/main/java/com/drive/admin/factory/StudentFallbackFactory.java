@@ -28,6 +28,11 @@ public class StudentFallbackFactory implements FallbackFactory<RemoteStudentFeig
             public ResObject<StudentInfoVo> get(String id) {
                 return R.failure();
             }
+
+            @Override
+            public ResObject reduceInventoryRollback() {
+                return R.failure();
+            }
         };
     }
 }

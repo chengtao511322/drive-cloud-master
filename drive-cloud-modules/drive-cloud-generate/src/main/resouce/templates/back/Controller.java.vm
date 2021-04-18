@@ -63,8 +63,8 @@ public class ${entity}Controller extends BaseController<${entity}PageQueryParam,
 	*/
 	@ApiOperation("${table.comment}分页列表")
 	@PreAuthorize("hasPermission('/${cfg.moduleName}/${className}',  '${cfg.moduleName}:${className}:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid ${entity}PageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody ${entity}PageQueryParam param) {
 		return ${className}Repository.pageList(param);
 	}
 	/**
@@ -72,8 +72,8 @@ public class ${entity}Controller extends BaseController<${entity}PageQueryParam,
 	*/
 	@ApiOperation("${table.comment}列表")
 	@PreAuthorize("hasPermission('/${cfg.moduleName}/${className}',  '${cfg.moduleName}:${className}:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid ${entity}PageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody ${entity}PageQueryParam param) {
 		return ${className}Repository.findList(param);
 	}
 

@@ -30,4 +30,5 @@ public interface SecurityConstants {
      * 用户名字段
      */
     String DETAILS_USERNAME = "username";
+    String OPERATION_ID = "operationId";
 }

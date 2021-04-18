@@ -45,6 +45,35 @@ public enum StudyEnrollEnum {
 
     AFD_SYSTEM_COUPON_PAY("20","优惠券支出",""),
 
+    // 待支付
+    STAT_PAY("1","待支付",""),
+    PAY_SUCCESS("2","支付成功",""),
+    PAY_LOADING("3","支付处理中",""),
+    PAY_ERROR("4","支付失败",""),
+    CANCEL_ORDER("5","已取消",""),
+    STAT_EVALUATE("6","待评价",""),
+    EVALUATE_SUCCESS("7","已评价",""),
+    REFUND_SUCCESS("8","退款成功",""),
+    REFUND_LOADING("9","退款处理中",""),
+
+
+    //
+    BOOK_SUCCESS("5","预约成功",""),
+    EXAM_ACCOMPLISH("7","考试完成",""),
+    EXAM_PASS("8","考试通过",""),
+    EXAM_NO_PASS("9","考试不通过",""),
+    APPLY_LOADING("10","申请中",""),
+    REFUND_DISPOSE_LOADING("11","退款处理中",""),
+    EXAM_REFUND_SUCCESS("12","退款成功",""),
+
+
+    YET_APPOINTMENT("2","已预约",""),
+    TEACHING_LOADING("3","教学中",""),
+    TEACHING_SUCCESS("4","已预约",""),
+    PICK_SOMEBODY_UP("6","接人中",""),
+    YET_GET_ON("7","已上车",""),
+
+
     ;
 
     private final String code;

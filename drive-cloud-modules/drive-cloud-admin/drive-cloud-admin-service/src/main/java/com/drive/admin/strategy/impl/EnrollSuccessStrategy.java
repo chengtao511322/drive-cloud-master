@@ -4,13 +4,13 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.drive.admin.enums.StudyEnrollEnum;
+import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.entity.*;
 import com.drive.admin.repository.AccountFlowRepository;
 import com.drive.admin.repository.PlatformWalletRepository;
 import com.drive.admin.service.*;
-import com.drive.common.core.biz.R;
-import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.strategy.StudyEnrollStrategy;
+import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.constant.FlowTypeConstant;
@@ -18,14 +18,12 @@ import com.drive.common.core.enums.StatusEnum;
 import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.ArithUtil;
 import com.drive.common.core.utils.BeanConvertUtils;
-import com.drive.common.core.utils.MathMoney;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -107,6 +105,11 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
         //创建包过模式-报名完成账务流水
         this.createVIPStudyEnrollCompleteAccountFlow(studyEnroll,studentOrder,accountFlow,true,false);
         return R.success("执行成功");
+    }
+
+    @Override
+    public ResObject completeExamEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam) {
+        return null;
     }
 
 

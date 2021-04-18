@@ -6,11 +6,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.mapper.StudentInfoMapper;
 import com.drive.admin.pojo.dto.StudentInfoPageQueryParam;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
+import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.admin.service.StudentInfoService;
 import com.drive.common.core.base.BaseService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * 学员信息表 服务实现类
@@ -21,8 +20,13 @@ import java.util.List;
 public class StudentInfoServiceImpl extends BaseService<StudentInfoMapper, StudentInfoEntity> implements StudentInfoService {
 
     @Override
-    public IPage newStudentPageList(Page page, Wrapper<StudentInfoPageQueryParam> ew) {
+    public IPage<StudentInfoVo> newStudentPageList(Page page, Wrapper<StudentInfoPageQueryParam> ew) {
         return this.getBaseMapper().newStudentPageList(page,ew);
+    }
+
+    @Override
+    public IPage<StudentInfoVo> newStudentReturnVisitPageList(Page page, Wrapper<StudentInfoPageQueryParam> ew) {
+        return this.getBaseMapper().newStudentReturnVisitPageList(page,ew);
     }
 }
 

@@ -123,5 +123,7 @@ public class StudentInfoEntity extends BaseEntity {
 
 	// 注册渠道（直接存入中文，为防止活动平凡切换，造成字典表无法适应）
 	private String logonChannel;
+	// 售前客服
+	private String serviceId;
 
 }

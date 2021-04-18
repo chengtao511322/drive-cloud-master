@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.StudentTrainCarApplyMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.StudentTrainCarApplyEntity">
+        <id column="train_apply_no" property="trainApplyNo" />
+        <result column="train_type" property="trainType" />
+        <result column="class_id" property="classId" />
+        <result column="student_id" property="studentId" />
+        <result column="drive_type" property="driveType" />
+        <result column="subject_type" property="subjectType" />
+        <result column="price" property="price" />
+        <result column="sum_price" property="sumPrice" />
+        <result column="service_charge_percent" property="serviceChargePercent" />
+        <result column="coach_charge_percent" property="coachChargePercent" />
+        <result column="service_charge" property="serviceCharge" />
+        <result column="coach_charge" property="coachCharge" />
+        <result column="coach_id" property="coachId" />
+        <result column="coaching_grid_id" property="coachingGridId" />
+        <result column="take_time" property="takeTime" />
+        <result column="aboard_time" property="aboardTime" />
+        <result column="class_date" property="classDate" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="class_hours" property="classHours" />
+        <result column="apply_status" property="applyStatus" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="student_recommend_user_type" property="studentRecommendUserType" />
+        <result column="student_recommend_user_id" property="studentRecommendUserId" />
+        <result column="student_recommend_user_charge_percent" property="studentRecommendUserChargePercent" />
+        <result column="student_recommend_user_charge" property="studentRecommendUserCharge" />
+        <result column="common_address_id" property="commonAddressId" />
+        <result column="coach_recommend_user_type" property="coachRecommendUserType" />
+        <result column="coach_recommend_user_id" property="coachRecommendUserId" />
+        <result column="coach_recommend_user_charge_percent" property="coachRecommendUserChargePercent" />
+        <result column="coach_recommend_user_charge" property="coachRecommendUserCharge" />
+        <result column="cancel_tiem" property="cancelTiem" />
+        <result column="cancel_reason" property="cancelReason" />
+        <result column="cancel_withhold_percent" property="cancelWithholdPercent" />
+        <result column="cancel_withhold_money" property="cancelWithholdMoney" />
+        <result column="cancel_refund_money" property="cancelRefundMoney" />
+        <result column="car_type" property="carType" />
+        <result column="is_delete" property="isDelete" />
+        <result column="actual_start_time" property="actualStartTime" />
+        <result column="actual_end_time" property="actualEndTime" />
+        <result column="class_appraise" property="classAppraise" />
+        <result column="public_car_price" property="publicCarPrice" />
+        <result column="operator_id" property="operatorId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            train_apply_no, train_type, class_id, student_id, drive_type, subject_type, price, sum_price, service_charge_percent, coach_charge_percent, service_charge, coach_charge, coach_id, coaching_grid_id, take_time, aboard_time, class_date, start_time, end_time, class_hours, apply_status, create_time, update_time, student_recommend_user_type, student_recommend_user_id, student_recommend_user_charge_percent, student_recommend_user_charge, common_address_id, coach_recommend_user_type, coach_recommend_user_id, coach_recommend_user_charge_percent, coach_recommend_user_charge, cancel_tiem, cancel_reason, cancel_withhold_percent, cancel_withhold_money, cancel_refund_money, car_type, is_delete, actual_start_time, actual_end_time, class_appraise, public_car_price, operator_id
+    </sql>
+
+
+    <select id="classHoursSum" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT
+            SUM(class_hours)
+        FROM
+            t_student_train_car_apply
+        WHERE
+            student_id = #{arg0}
+        AND subject_type = #{arg1}
+        AND apply_status in(1,4,5,6,7)
+    </select>
+</mapper>

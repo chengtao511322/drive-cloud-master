@@ -1,36 +1,44 @@
 package com.drive.admin.repository.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.drive.admin.pojo.entity.ServiceReturnVisitHistoryEntity;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
-import com.drive.admin.service.*;
-import com.drive.common.core.base.BaseController;
-import com.drive.admin.repository.ServiceReturnVisitHistoryRepository;
-import com.drive.admin.pojo.entity.*;
-import com.drive.admin.pojo.vo.*;
-import com.drive.admin.pojo.dto.*;
-import com.drive.admin.service.mapstruct.*;
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import cn.hutool.core.util.StrUtil;
+import com.drive.admin.enums.ReturnVisitStatusEnum;
+import com.drive.admin.pojo.dto.ServiceReturnVisitHistoryEditParam;
+import com.drive.admin.pojo.dto.ServiceReturnVisitHistoryInstallParam;
+import com.drive.admin.pojo.dto.ServiceReturnVisitHistoryPageQueryParam;
+import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
+import com.drive.admin.pojo.entity.ServiceInfoEntity;
+import com.drive.admin.pojo.entity.ServiceReturnVisitHistoryEntity;
+import com.drive.admin.pojo.entity.StudentInfoEntity;
+import com.drive.admin.pojo.vo.ReturnVisitHistoryEnrollVo;
+import com.drive.admin.pojo.vo.ServiceReturnVisitHistoryVo;
+import com.drive.admin.repository.ServiceReturnVisitHistoryRepository;
+import com.drive.admin.service.*;
+import com.drive.admin.service.mapstruct.ServiceReturnVisitHistoryMapStruct;
+import com.drive.admin.service.mapstruct.StudentStudyEnrollMapStruct;
+import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
+import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.core.utils.StringUtils;
+import com.drive.common.data.utils.ExcelUtils;
 import com.drive.common.security.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
-import com.drive.common.core.biz.ResObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.drive.common.data.utils.ExcelUtils;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Arrays;
-import java.io.IOException;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -49,6 +57,9 @@ public class  ServiceReturnVisitHistoryRepositoryImpl extends BaseController<Ser
     //  客服回访记录 DO-DTO转化
     @Autowired
     private ServiceReturnVisitHistoryMapStruct serviceReturnVisitHistoryMapStruct;
+
+    @Autowired
+    private StudentInfoService studentInfoService;
 
     @Autowired
     private ServiceInfoService serviceInfoService;
@@ -209,6 +220,7 @@ public class  ServiceReturnVisitHistoryRepositoryImpl extends BaseController<Ser
         }
         // 回访时间
         installParam.setReturnVisitTime(LocalDateTime.now());
+        // 客服ID
         installParam.setServiceId(String.valueOf(SecurityUtils.getLoginUser().getUserId()));
         ServiceReturnVisitHistoryEntity serviceReturnVisitHistory = BeanConvertUtils.copy(installParam, ServiceReturnVisitHistoryEntity.class);
         Boolean result = serviceReturnVisitHistoryService.save(serviceReturnVisitHistory);
@@ -332,6 +344,8 @@ public class  ServiceReturnVisitHistoryRepositoryImpl extends BaseController<Ser
         Page<ReturnVisitHistoryEnrollVo> page = new Page<>(param.getPageNum(), param.getPageSize());
 
         QueryWrapper queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getStudentId()),"t1.student_id",param.getStudentId());
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getStudentId()),"t2.enroll_status",param.getEnrollStatus());
         queryWrapper.setEntity(param);
         String sortColumn = param.getSortColumn();
         String underSortColumn = StringUtils.lowerCamelToLowerUnderscore(sortColumn);
@@ -374,6 +388,66 @@ public class  ServiceReturnVisitHistoryRepositoryImpl extends BaseController<Ser
         });
         log.info(this.getClass() + "pageList-方法请求结果{}",pageList);
         return R.success(pageList);
+    }
+
+    @Override
+    public ResObject aggregationListReturnVisitHistory(String studentId) {
+        log.info(this.getClass() + "aggregationListReturnVisitHistory-方法请求参数{}",studentId);
+        if (StrUtil.isEmpty(studentId)){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 先查询售前
+        QueryWrapper queryWrapper= new QueryWrapper();
+        queryWrapper.eq("student_id",studentId);
+        queryWrapper.eq("return_visit_status", ReturnVisitStatusEnum.PRE.getCode());
+        // 如 queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"phone",param.getPhone());
+        List<ServiceReturnVisitHistoryEntity> preReturnVisitHistoryList = serviceReturnVisitHistoryService.list(queryWrapper);
+        // 售后
+        QueryWrapper afterQueryWrapper= new QueryWrapper();
+        afterQueryWrapper.eq("student_id",studentId);
+        afterQueryWrapper.eq("return_visit_status", ReturnVisitStatusEnum.AFTER.getCode());
+        List<ServiceReturnVisitHistoryEntity> afterReturnVisitHistoryList = serviceReturnVisitHistoryService.list(afterQueryWrapper);
+        // 聚合List
+        /*List<ServiceReturnVisitHistoryEntity> aggregationList = Stream.concat(preReturnVisitHistoryList.stream(), afterReturnVisitHistoryList.stream())
+                .distinct()
+                .collect(Collectors.toList());
+        if (aggregationList.size() <=0){
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),aggregationList);
+        }*/
+        // do转化
+        JSONObject json = new JSONObject();
+        json.put("pre",BeanConvertUtils.copyList(preReturnVisitHistoryList,ServiceReturnVisitHistoryVo.class));
+        json.put("after",BeanConvertUtils.copyList(afterReturnVisitHistoryList,ServiceReturnVisitHistoryVo.class));
+        return R.success(json);
+    }
+
+    @Override
+    @Transactional
+    public ResObject addReturnVisitHistory(ServiceReturnVisitHistoryInstallParam serviceReturnVisitHistoryEditParam) {
+        log.info(this.getClass() + "addReturnVisitHistory-方法请求参数{}",serviceReturnVisitHistoryEditParam);
+        if (serviceReturnVisitHistoryEditParam == null){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 回访时间
+        serviceReturnVisitHistoryEditParam.setReturnVisitTime(LocalDateTime.now());
+        // 客服ID
+        /*ServiceInfoEntity serviceInfo = serviceInfoService.getById(SecurityUtils.getLoginUser().getOperationId());
+        log.info("客服信息{}",serviceInfo);*/
+        serviceReturnVisitHistoryEditParam.setServiceId(SecurityUtils.getLoginUser().getOperationId());
+        // 添加回访记录
+        ServiceReturnVisitHistoryEntity returnVisitHistoryEntity = BeanConvertUtils.copy(serviceReturnVisitHistoryEditParam,ServiceReturnVisitHistoryEntity.class);
+        Boolean result = serviceReturnVisitHistoryService.save(returnVisitHistoryEntity);
+        if (!result){
+            throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+        }
+        // 修改学员信息
+        StudentInfoEntity studentInfo = BeanConvertUtils.copy(serviceReturnVisitHistoryEditParam.getStudentInfoEditParam(),StudentInfoEntity.class);
+        log.info("修改的信息是{}",studentInfo);
+        Boolean studentResult = studentInfoService.updateById(studentInfo);
+        if (!studentResult){
+            throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+        }
+        return R.success("执行成功");
     }
 }
 

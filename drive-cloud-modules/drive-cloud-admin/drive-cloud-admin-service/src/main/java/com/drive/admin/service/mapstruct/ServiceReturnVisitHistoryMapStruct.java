@@ -1,10 +1,11 @@
 package com.drive.admin.service.mapstruct;
 
-import com.drive.admin.pojo.entity.*;
-import com.drive.admin.pojo.vo.*;
-import com.drive.admin.pojo.dto.*;
-import org.mapstruct.Mapper;
+import com.drive.admin.pojo.dto.ServiceReturnVisitHistoryEditParam;
+import com.drive.admin.pojo.dto.ServiceReturnVisitHistoryPageQueryParam;
+import com.drive.admin.pojo.entity.ServiceReturnVisitHistoryEntity;
+import com.drive.admin.pojo.vo.ServiceReturnVisitHistoryVo;
 import com.drive.common.core.base.BaseMapStruct;
+import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 
