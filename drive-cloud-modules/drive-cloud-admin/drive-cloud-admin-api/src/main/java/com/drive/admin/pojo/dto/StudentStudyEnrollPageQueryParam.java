@@ -42,6 +42,8 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 	// 学员ID
 	private String studentId;
 
+	private String classType;
+
 	private String recommendUserId;
 
 	// 真实姓名
@@ -194,5 +196,7 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 	private String operationType;
 	// 科目类型
 	private String subjectType;
+	// 约考状态
+	private String aboutStatus;
 
 }

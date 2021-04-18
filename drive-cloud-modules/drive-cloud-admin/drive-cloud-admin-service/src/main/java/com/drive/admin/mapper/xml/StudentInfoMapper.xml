@@ -59,14 +59,34 @@
     </select>
 
     <select id="newStudentReturnVisitPageList" resultType="com.drive.admin.pojo.vo.StudentInfoVo">
+        SELECT
+            tsi.*, tsse.study_enroll_no AS studyEnrollNo,
+            tsrvh.return_visit_status AS returnVisitStatus,
+            tsrvh.return_visit_item AS returnVisitItem,
+            tsrvh.return_visit_time AS returnVisitTime,
+            tsrvh.next_return_visit_time AS nextReturnVisitTime,
+            tsrvh.is_intention AS isIntention
+    FROM
+        t_student_info tsi
+        INNER  join (select
+        id,
+        return_visit_type,
+        return_visit_status,
+        return_visit_item,
+        order_detail_no,
+        student_id,
+        is_intention,
+        max(return_visit_time) as return_visit_time,
+        return_visit_content,
+        next_return_visit_time
+        from   t_service_return_visit_history  GROUP BY student_id) as tsrvh    on  tsi.id = tsrvh.student_id
+        LEFT JOIN t_student_study_enroll tsse ON tsse.student_id = tsi.id
+        ${ew.customSqlSegment}
+    </select>
+    <select id="oneNewStudentReturnVisitPageList" resultType="com.drive.admin.pojo.vo.StudentInfoVo">
         select
             tsi.*,
-            tsse.study_enroll_no AS studyEnrollNo,
-            tsrvh.return_visit_status as returnVisitStatus,
-            tsrvh.return_visit_item as returnVisitItem,
-            tsrvh.return_visit_time as returnVisitTime,
-            tsrvh.next_return_visit_time as nextReturnVisitTime,
-            tsrvh.is_intention as isIntention
+            tsse.study_enroll_no AS studyEnrollNo
         from   t_student_info  tsi
         INNER  join   t_service_return_visit_history  tsrvh  on  tsi.id = tsrvh.student_id
         left  join   t_student_study_enroll tsse  on tsse.student_id = tsi.id

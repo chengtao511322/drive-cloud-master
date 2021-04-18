@@ -147,6 +147,21 @@ public class StudentOrderVo implements java.io.Serializable {
 	// 学员姓名
 	private String studentName;
 
+	private String onlineServiceName;
+	private String lineServiceName;
+
+	private StudentInfoVo studentVo;
+	private String provinceName;
+	private String cityName;
+	private String areaName;
+	// 总课时
+	private int totalHour;
+
+	private String CoachName;
+
+	private StudentStudyEnrollVo studentStudyEnrollVo;
+	private StudentTrainCarApplyVo studentTrainCarApplyVo;
+
 	public void setProductId(String productId) {
 		this.productId = productId;
 

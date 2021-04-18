@@ -17,6 +17,7 @@ public enum ExamEnrollEnum {
     SUBMIT_AWAIT_PAY("1","提交报名待支付",""),
     PAY_SUCCESS("2","支付成功",""),
     BOOK_SUCCESS("5","预约成功","applySuccessStrategy"),
+    EXAM_LOADING("15","考试中",""),
     EXAM_ACCOMPLISH("7","考试完成",""),
     EXAM_PASS("8","考试通过","examPassStrategy"),
     EXAM_NO_PASS("9","考试不通过","examNoPassStrategy"),

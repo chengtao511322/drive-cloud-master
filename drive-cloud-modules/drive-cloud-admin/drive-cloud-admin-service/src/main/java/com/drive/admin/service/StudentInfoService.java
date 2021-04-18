@@ -29,5 +29,13 @@ public interface StudentInfoService extends IService<StudentInfoEntity>{
      */
     IPage<StudentInfoVo> newStudentReturnVisitPageList(Page page, Wrapper<StudentInfoPageQueryParam> ew);
 
+    /**
+     * 数据查询
+     * @param page
+     * @param ew
+     * @return
+     */
+    IPage<StudentInfoVo> oneNewStudentReturnVisitPageList(Page page, Wrapper<StudentInfoPageQueryParam> ew);
+
 }
 

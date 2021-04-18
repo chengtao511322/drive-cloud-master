@@ -168,11 +168,12 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         // 真实姓名
         queryWrapper.like(StrUtil.isNotEmpty(param.getRealName()),"tsse.real_name", param.getRealName());
         queryWrapper.eq("tsrvh.return_visit_status", ReturnVisitStatusEnum.PRE.getCode());
+        //
+        // queryWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t1.id = t_service_return_visit_history.student_id AND t_service_return_visit_history.return_visit_status="+ReturnVisitStatusEnum.PRE.getCode()+" AND t_service_return_visit_history.return_visit_item = "+param.getChannel()+")",0);
         // 是否有意向
         queryWrapper.eq(param.getIsIntentionSearch() !=null,"tsrvh.is_intention", param.getIsIntentionSearch());
         // 线上
-        //queryWrapper.eq(StrUtil.isNotEmpty(param.getOfflineServiceId()),"tsse.user_id", param.getOfflineServiceId());
-        queryWrapper.eq(StrUtil.isNotEmpty(param.getOnLineServiceId()),"tsi.service_id", param.getOnLineServiceId());
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getOfflineServiceId()),"tsse.user_id", param.getOfflineServiceId());
         queryWrapper.eq("tsrvh.return_visit_item", ReturnVisitStatusEnum.NEW_USER.getCode());
         // 手机号码查询
         queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"tsi.phone",param.getPhone());
@@ -249,6 +250,112 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
             if (returnVisitHistory != null && returnVisitHistory.getNextReturnVisitTime() != null)item.setNextReturnVisitTime(returnVisitHistory.getNextReturnVisitTime());
             if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitItem()))item.setIsIntention(returnVisitHistory.getIsIntention());
 */
+        });
+/*
+        if (param.isReturnVisitHistory()){
+            // 根据条件查询回访
+            List<StudentInfoVo> studentInfoVoList = studentInfoVoPage.getRecords().stream().filter((StudentInfoVo student)->student.isReturnVisitHistory() == param.isReturnVisitHistory())
+                    .collect(Collectors.toList());
+            studentInfoVoPage.setRecords(studentInfoVoList);
+            studentInfoVoPage.setTotal(studentInfoVoList.size());
+        }*/
+        return R.success(studentInfoVoPage);
+    }
+    @Override
+    public ResObject oneNewStudentReturnVisitPageList(StudentInfoPageQueryParam param) {
+        log.info(this.getClass() + "newStudentPageList-方法请求参数{}",param);
+        Page<StudentInfoEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.isNull("tsse.study_enroll_no");
+        // 运营商查询
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getOperatorId()),"tsi.operator_id",param.getOperatorId());
+        // 渠道查询
+        queryWrapper.eq(param.getChannel() != null,"tsi.channel",param.getChannel());
+        // AND tsrvh.return_visit_status=1 AND return_visit_item=0
+        // 真实姓名
+        queryWrapper.like(StrUtil.isNotEmpty(param.getRealName()),"tsse.real_name", param.getRealName());
+        // queryWrapper.eq("tsrvh.return_visit_status", ReturnVisitStatusEnum.PRE.getCode());
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getOnLineServiceId()),"tsi.service_id", param.getOnLineServiceId());
+        // 是否有意向
+        queryWrapper.eq(param.getIsIntentionSearch() !=null,"tsrvh.is_intention", param.getIsIntentionSearch());
+        // 线上
+        //queryWrapper.eq(StrUtil.isNotEmpty(param.getOfflineServiceId()),"tsse.user_id", param.getOfflineServiceId());
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getOnLineServiceId()),"tsi.service_id", param.getOnLineServiceId());
+        queryWrapper.eq("tsrvh.return_visit_item", ReturnVisitStatusEnum.NEW_USER.getCode());
+        // 手机号码查询
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"tsi.phone",param.getPhone());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"tsi.phone",param.getVaguePhoneSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueUserNameSearch()),"tsi.username",param.getVagueUserNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"tsi.real_name",param.getVagueRealNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueEmailSearch()),"tsi.email",param.getVagueEmailSearch());
+        // queryWrapper.apply(" (SELECT COUNT(1) FROM t_service_return_visit_history t3 WHERE t3.student_id =tsi.id) <=0");
+        /*if (param.isReturnVisitHistory()){
+            queryWrapper.apply(" (SELECT COUNT(1) FROM t_service_return_visit_history t3 WHERE t3.student_id =tsi.id) >0");
+        }*/
+
+        // tsrvh
+        queryWrapper.apply(StrUtil.isNotEmpty(param.getNextReturnVisitTimeSearch()),
+                "date_format (tsrvh.next_return_visit_time,'%Y-%m-%d') = date_format('" +param.getNextReturnVisitTimeSearch()  + "','%Y-%m-%d')");
+
+        // 登录时间
+        queryWrapper.apply(StrUtil.isNotBlank(param.getSearchLoginDate()),
+                "date_format (login_time,'%Y-%m-%d') = date_format('" + param.getSearchLoginDate() + "','%Y-%m-%d')");
+        // 推荐时间
+        queryWrapper.apply(StrUtil.isNotBlank(param.getSearchRecommendDate()),
+                "date_format (recommend_date,'%Y-%m-%d') <= date_format('" + LocalDate.now().toString() + "','%Y-%m-%d')");
+
+        // 省市区
+        if (StrUtil.isNotEmpty(param.getCityArr())){
+            String[] splitParam = param.getCityArr().split(",");
+            if (splitParam.length >=1 && StrUtil.isNotEmpty(splitParam[0]))queryWrapper.eq(StrUtil.isNotEmpty(splitParam[0]),"tsi.province_id",splitParam[0]);
+            if (splitParam.length >=2 && StrUtil.isNotEmpty(splitParam[1]))queryWrapper.eq(StrUtil.isNotEmpty(splitParam[1]),"tsi.city_id",splitParam[1]);
+            if (splitParam.length >=3 && StrUtil.isNotEmpty(splitParam[2]))queryWrapper.eq(StrUtil.isNotEmpty(splitParam[2]),"tsi.area_id",splitParam[2]);
+        }
+        if (StrUtil.isNotEmpty(param.getCreateTimeSearch())){
+            String[] arr = param.getCreateTimeSearch().split(",");
+            // queryWrapper.between("date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[0] + "','%Y-%m-%d')","date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[1] + "','%Y-%m-%d')");
+            queryWrapper.between("date_format(tsi.create_time, '%Y-%m-%d')",arr[0],arr[1]);
+        }
+        //
+        queryWrapper.groupBy("tsi.id");
+        String sortColumn = param.getSortColumn();
+        String underSortColumn = StringUtils.lowerCamelToLowerUnderscore(sortColumn);
+        if (param.getIsAsc()) {
+            queryWrapper.orderByAsc("tsi."+underSortColumn);
+        } else {
+            queryWrapper.orderByDesc("tsi."+underSortColumn);
+        }
+        IPage<StudentInfoVo> studentInfoVoPage = studentInfoService.oneNewStudentReturnVisitPageList(page,queryWrapper);
+        if (studentInfoVoPage.getRecords().size() <= 0){
+            log.error(this.getClass() +"数据空");
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentInfoVoPage);
+        }
+
+        studentInfoVoPage.getRecords().stream().forEach((item) ->{
+            QueryWrapper returnVisitHistoryQueryWrapper = new QueryWrapper();
+            /*if (StrUtil.isNotEmpty(item.getId())){
+                returnVisitHistoryQueryWrapper.eq("student_id",item.getId());
+                int countReturnVisitHistory =serviceReturnVisitHistoryService.count(returnVisitHistoryQueryWrapper);
+                if (countReturnVisitHistory > 0){
+                    item.setReturnVisitHistory(true);
+                }
+            }*/
+            if (StrUtil.isNotEmpty(item.getServiceId())){
+                ServiceInfoEntity serviceInfo =serviceInfoService.getById(item.getServiceId());
+                if (serviceInfo != null){
+                    item.setServiceName(serviceInfo.getRealName());
+                }
+            }
+            // 回访阶段
+            returnVisitHistoryQueryWrapper.eq("student_id",item.getId());
+            returnVisitHistoryQueryWrapper.orderByDesc("return_visit_time");
+            returnVisitHistoryQueryWrapper.last("limit 1");
+            ServiceReturnVisitHistoryEntity returnVisitHistory =serviceReturnVisitHistoryService.getOne(returnVisitHistoryQueryWrapper);
+            if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitStatus()))item.setReturnVisitStatus(returnVisitHistory.getReturnVisitStatus());
+            if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitItem()))item.setReturnVisitItem(returnVisitHistory.getReturnVisitItem());
+            if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitItem()))item.setReturnVisitTime(returnVisitHistory.getReturnVisitTime());
+            if (returnVisitHistory != null && returnVisitHistory.getNextReturnVisitTime() != null)item.setNextReturnVisitTime(returnVisitHistory.getNextReturnVisitTime());
+            if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitItem()))item.setIsIntention(returnVisitHistory.getIsIntention());
         });
 /*
         if (param.isReturnVisitHistory()){
