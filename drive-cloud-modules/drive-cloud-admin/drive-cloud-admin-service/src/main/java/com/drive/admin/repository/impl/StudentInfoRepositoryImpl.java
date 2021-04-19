@@ -75,6 +75,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.isNull("tsrvh.id");
         queryWrapper.isNull("tsse.study_enroll_no");
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"tsi.phone",param.getVaguePhoneSearch());
         // 运营商查询
         queryWrapper.eq(StrUtil.isNotEmpty(param.getOperatorId()),"tsi.operator_id",param.getOperatorId());
         // 渠道查询

@@ -144,6 +144,8 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueStudyEnrollNoSearch()),"study_enroll_no",param.getVagueStudyEnrollNoSearch());
         // 真实姓名模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"real_name",param.getVagueRealNameSearch());
+        // 电话号码模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"telephone",param.getVaguePhoneSearch());
 
         if (param.getIsReturnVisit()!= null && param.getIsReturnVisit() == 1){
             queryWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id AND t_service_return_visit_history.return_visit_item IN(2,3))",0);
