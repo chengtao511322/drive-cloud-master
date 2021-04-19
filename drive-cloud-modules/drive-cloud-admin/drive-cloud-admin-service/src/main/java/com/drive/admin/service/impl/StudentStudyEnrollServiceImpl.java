@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.mapper.StudentStudyEnrollMapper;
 import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
+import com.drive.admin.pojo.dto.StudyCarScheduleQueryParam;
 import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
 import com.drive.admin.pojo.vo.StatisticsStudentDataVo;
 import com.drive.admin.pojo.vo.StudentStudyEnrollVo;
+import com.drive.admin.pojo.vo.StudyCarScheduleVo;
 import com.drive.admin.service.StudentStudyEnrollService;
 import com.drive.common.core.base.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,11 @@ public class StudentStudyEnrollServiceImpl extends BaseService<StudentStudyEnrol
     @Override
     public IPage<StatisticsStudentDataVo> statisticsStudentDataPageList(Page page, Wrapper<StudentStudyEnrollPageQueryParam> ew) {
         return this.getBaseMapper().statisticsStudentDataPageList(page,ew);
+    }
+
+    @Override
+    public IPage<StudyCarScheduleVo> studyCarSchedulePageList(Page page, Wrapper<StudyCarScheduleQueryParam> ew) {
+        return this.getBaseMapper().studyCarSchedulePageList(page,ew);
     }
 }
 
