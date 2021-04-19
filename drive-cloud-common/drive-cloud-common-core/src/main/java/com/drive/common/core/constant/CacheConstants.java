@@ -22,5 +22,4 @@ public interface CacheConstants {
     // 客服信息
     String REDIS_CACHE_SERVICE_KEY = "redisCache:serviceItem:service_";
 
-
 }
