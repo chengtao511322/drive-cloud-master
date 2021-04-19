@@ -1,5 +1,6 @@
 package com.drive.admin.repository;
 
+import com.drive.admin.pojo.dto.AccountFlowDetailInstallParam;
 import com.drive.admin.pojo.dto.PlatformWalletEditParam;
 import com.drive.admin.pojo.dto.PlatformWalletInstallParam;
 import com.drive.admin.pojo.dto.PlatformWalletPageQueryParam;
@@ -20,5 +21,19 @@ public interface PlatformWalletRepository extends BasicsRepository<PlatformWalle
      * @return
      */
     ResObject walletSettle(String orderNo);
+
+    /**
+     * 通过订单钱包结算
+     * @param orderNo
+     * @return
+     */
+    ResObject settlementByOrder(String orderNo);
+
+    /**
+     * 单个钱包结算
+     * @param orderNo
+     * @return
+     */
+    ResObject settlementToWallet(AccountFlowDetailInstallParam accountFlowDetailInstallParam);
 }
 

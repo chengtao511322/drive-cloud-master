@@ -37,6 +37,11 @@ public class ArithUtil {
         BigDecimal b2 = new BigDecimal(Double.toString(v2));
         return b1.subtract(b2);
     }
+
+    public static BigDecimal sub(BigDecimal v1,BigDecimal v2){
+        return v1.subtract(v2);
+    }
+
     /**
      * 提供精确的乘法运算。
      * @param v1 被乘数
@@ -122,6 +127,21 @@ public class ArithUtil {
         }
         // 被除数.divide(除数,保留小数位, RoundingMode.结果处理);
         return v1.divide(v2,scale, RoundingMode.DOWN);
+    }
+    /**
+     * 提供精确的乘法运算
+     * 由scale参数指定精度，以后的小数直接省略
+     * @param v1 乘数
+     * @param v2 被乘数
+     * @return 两个参数的积
+     *
+     *  BigDecimal 处理浮点数计算时, 需要将浮点数对象以字符串的形式转为BigDecimal 对象；
+     */
+    public static BigDecimal mulDown(BigDecimal v1,BigDecimal v2,int scale){
+        if(scale<0){
+            throw new IllegalArgumentException("The scale must be a positive integer or zero");
+        }
+        return v1.multiply(v2).setScale(scale,RoundingMode.DOWN);
     }
 
     public static void main(String[] args) {

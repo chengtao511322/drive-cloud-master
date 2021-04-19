@@ -48,4 +48,41 @@
             id, class_name, coach_id, coaching_grid_id, student_id, drive_type, subject_type, class_type, class_date, start_time, end_time, class_hours, status, service_change_percent, coach_charge_percent, car_charge_percent, sum_charge, service_charge, coace_charge, car_charge, remarks, create_time, update_time, aboard_time, take_time, actual_start_time, actual_end_time, surplus_class_hours, coaching_grid_id_2, coaching_grid_id_3, release_subject_type, withhold_percent, withhold_charge, is_handle_withhole, operator_id, is_expect, expect_class_id
     </sql>
 
+    <select id="selectExpectCoachIncomeSum" parameterType="com.drive.admin.pojo.dto.CoachTeachTimePageQueryParam" resultType="java.math.BigDecimal" >
+        SELECT
+       SUM(t1.coace_charge) as sumCharge
+      FROM
+       t_coach_teach_time t1
+      WHERE
+       t1.student_id=#{studentId}
+      AND
+       t1.drive_type=#{driveType}
+      AND
+       t1.subject_type=#{subjectType}
+      AND
+       (t1.status=2 or t1.status=3 or t1.status=4 or t1.status=6 or t1.status=7)
+      AND
+       t1.is_expect=#{isExpect}
+    </select>
+
+
+    <select id="selectExpectSchoolIncomeSum" parameterType="com.drive.admin.pojo.dto.CoachTeachTimePageQueryParam" resultType="java.math.BigDecimal" >
+        SELECT
+           SUM(t1.car_charge) as sumCharge
+          FROM
+           t_coach_teach_time t1
+          WHERE
+           t1.coach_id=#{coachId}
+          AND
+           t1.student_id=#{studentId}
+          AND
+           t1.drive_type=#{driveType}
+          AND
+           t1.subject_type=#{subjectType}
+          AND
+           (t1.status=2 or t1.status=3 or t1.status=4 or t1.status=6 or t1.status=7)
+          AND
+           t1.is_expect=#{isExpect}
+    </select>
+
 </mapper>

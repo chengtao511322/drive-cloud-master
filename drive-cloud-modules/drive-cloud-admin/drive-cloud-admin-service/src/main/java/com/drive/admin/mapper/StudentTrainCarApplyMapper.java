@@ -1,6 +1,7 @@
 package com.drive.admin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.drive.admin.pojo.dto.StudentTrainCarApplyPageQueryParam;
 import com.drive.admin.pojo.entity.StudentTrainCarApplyEntity;
 
 /**
@@ -17,5 +18,12 @@ public interface StudentTrainCarApplyMapper extends BaseMapper<StudentTrainCarAp
      * @return
      */
     Integer classHoursSum(String studentId,String subjectType);
+
+    /**
+     * 查询课时
+     * @param studentTrainCarApplyPageQueryParam
+     * @return
+     */
+    int selectVipTeachingNumber(StudentTrainCarApplyPageQueryParam studentTrainCarApplyPageQueryParam);
 }
 

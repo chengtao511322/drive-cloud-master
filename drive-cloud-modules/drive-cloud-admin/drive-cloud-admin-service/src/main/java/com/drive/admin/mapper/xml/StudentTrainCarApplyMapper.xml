@@ -66,4 +66,24 @@
         AND subject_type = #{arg1}
         AND apply_status in(1,4,5,6,7)
     </select>
+
+
+    <select id="selectVipTeachingNumber" parameterType="com.drive.admin.pojo.dto.StudentTrainCarApplyPageQueryParam" resultType="java.lang.Integer">
+        select
+           count(1)
+          from  t_student_order tso
+          left join  t_student_train_car_apply  tstca  on tso.train_apply_no = tstca.train_apply_no
+          where
+           tstca.apply_status = '5'
+          and
+           (tso.order_type = '3' or tso.order_type = '4')
+          and
+           tso.pay_type = '4'
+          and
+           tstca.student_id = #{studentId}
+          and
+           tstca.coach_id = #{coachId}
+          and
+           tstca.subject_type = #{subjectType}
+    </select>
 </mapper>

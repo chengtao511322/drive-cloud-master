@@ -1,9 +1,10 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.AccountFlowEditParam;
-import com.drive.admin.pojo.dto.AccountFlowInstallParam;
-import com.drive.admin.pojo.dto.AccountFlowPageQueryParam;
+import com.drive.admin.pojo.dto.*;
 import com.drive.common.core.base.BasicsRepository;
+import com.drive.common.core.biz.ResObject;
+
+import java.util.List;
 
 /**
  *
@@ -12,5 +13,19 @@ import com.drive.common.core.base.BasicsRepository;
  * @author xiaoguo
  */
 public interface AccountFlowRepository extends BasicsRepository<AccountFlowPageQueryParam, AccountFlowEditParam,AccountFlowInstallParam> {
+
+
+    /**
+     * 查询出账户流水
+     * @return
+     */
+    ResObject createTestPassVIPCoachFlowDetail(StudentTestEnrollEditParam studentTestEnrollEditParam);
+
+    /**
+     * 设置流水
+     * @param accountFlowDetailEditParams
+     * @return
+     */
+    ResObject settlementByFlowDetailList(List<AccountFlowDetailEditParam> accountFlowDetailEditParams);
 }
 

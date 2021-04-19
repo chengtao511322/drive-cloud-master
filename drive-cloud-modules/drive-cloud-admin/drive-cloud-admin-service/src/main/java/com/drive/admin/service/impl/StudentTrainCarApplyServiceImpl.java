@@ -1,6 +1,7 @@
 package com.drive.admin.service.impl;
 
 import com.drive.admin.mapper.StudentTrainCarApplyMapper;
+import com.drive.admin.pojo.dto.StudentTrainCarApplyPageQueryParam;
 import com.drive.admin.pojo.entity.StudentTrainCarApplyEntity;
 import com.drive.admin.service.StudentTrainCarApplyService;
 import com.drive.common.core.base.BaseService;
@@ -17,6 +18,11 @@ public class StudentTrainCarApplyServiceImpl extends BaseService<StudentTrainCar
     @Override
     public Integer classHoursSum(String studentId, String subjectType) {
         return this.getBaseMapper().classHoursSum(studentId,subjectType);
+    }
+
+    @Override
+    public int selectVipTeachingNumber(StudentTrainCarApplyPageQueryParam studentTrainCarApplyPageQueryParam) {
+        return this.getBaseMapper().selectVipTeachingNumber(studentTrainCarApplyPageQueryParam);
     }
 }
 

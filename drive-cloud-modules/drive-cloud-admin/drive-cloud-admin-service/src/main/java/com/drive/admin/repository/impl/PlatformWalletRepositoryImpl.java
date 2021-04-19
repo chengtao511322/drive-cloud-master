@@ -5,7 +5,9 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.enums.StudyEnrollEnum;
+import com.drive.admin.pojo.dto.AccountFlowDetailInstallParam;
 import com.drive.admin.pojo.dto.PlatformWalletEditParam;
 import com.drive.admin.pojo.dto.PlatformWalletInstallParam;
 import com.drive.admin.pojo.dto.PlatformWalletPageQueryParam;
@@ -23,6 +25,7 @@ import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
+import com.drive.common.core.enums.WalletEnum;
 import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.data.utils.ExcelUtils;
@@ -33,6 +36,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -337,4 +342,83 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
         }});
         return R.success(SubResultCode.WALLET_SETTLE_SUCCESS.subCode(),SubResultCode.WALLET_SETTLE_SUCCESS.subMsg());
     }
+    /** 根据订单结算司机，平台，推荐人等相关费用，并且记录结算流水
+     * @param orderNo 订单号
+     * @throws Exception
+     */
+    @Transactional
+    @Override
+    public ResObject settlementByOrder(String orderNo) {
+        if (StrUtil.isEmpty(orderNo)){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),"订单号不能为空");
+        }
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("order_no",orderNo);
+        //查询出该订单的账务流水明细
+        List<AccountFlowDetailEntity> accountFlowDetailList = accountFlowDetailService.list(queryWrapper);
+        if (accountFlowDetailList.size() <= 0){
+            return R.failure(SubResultCode.OPERATION_ERROR.subCode(),"数据异常不可操作");
+        }
+        List<AccountFlowDetailInstallParam> accountFlowDetailInstall = BeanConvertUtils.copyList(accountFlowDetailList,AccountFlowDetailInstallParam.class);
+        accountFlowDetailInstall.stream().forEach((item) ->{
+            // 循环 插入数据
+            this.settlementToWallet(item);
+        });
+        return R.success("执行成功");
+    }
+
+    @Transactional
+    @Override
+    public ResObject settlementToWallet(AccountFlowDetailInstallParam accountFlowDetailInstallParam) {
+        log.info(this.getClass() + "settlementToWallet-方法请求参数{}",accountFlowDetailInstallParam);
+        //1.先查询用户钱包
+        // 条件查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 钱包用户ID
+        queryWrapper.eq("user_id",accountFlowDetailInstallParam.getWalletUserId());
+        PlatformWalletEntity platformWallet = platformWalletService.getOne(queryWrapper);
+        if (platformWallet == null){
+            return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),"数据异常");
+        }
+        // 钱包计算
+        platformWallet.setWalletAmount(platformWallet.getWalletAmount().add(accountFlowDetailInstallParam.getItemAmount()));
+        // 更新数据
+        Boolean platformWalletRes = platformWalletService.updateById(platformWallet);
+        if (!platformWalletRes){
+            throw new BizException(500,SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
+        }
+        //2 记录钱包流水明细
+        PlatformWalletDetailEntity platformWalletDetail = new PlatformWalletDetailEntity();
+        // 用户ID
+        platformWalletDetail.setUserId(accountFlowDetailInstallParam.getAccountId());
+        // 交易金额
+        platformWalletDetail.setTradeAmount(accountFlowDetailInstallParam.getItemAmount());
+        // 交易类型科目
+        platformWalletDetail.setTradeSubject(accountFlowDetailInstallParam.getTradeSubject());
+        // 交易类型科目明细
+        platformWalletDetail.setTradeSubjectItems(accountFlowDetailInstallParam.getTradeSubjectItems());
+        // 默认正数 正数（收益）
+        platformWalletDetail.setTradeType(WalletEnum.DRIVER_WALLET_INCOME.getCode());
+        if((accountFlowDetailInstallParam.getItemAmount().compareTo(BigDecimal.ZERO)) == -1){
+            //负数（支出）
+            platformWalletDetail.setTradeType(WalletEnum.DRIVER_WALLET_SUBMIT_CASH.getCode());
+        }
+        // 收入/支出名称
+        platformWalletDetail.setWalletDetailName(accountFlowDetailInstallParam.getItemName());
+        // 创建时间
+        platformWalletDetail.setCreateTime(LocalDateTime.now());
+        //  账务流水明细id/提现时为清算记录id
+        platformWalletDetail.setAccountDetailId(accountFlowDetailInstallParam.getId());
+        // 余额(进账，处长之前的余额)
+        platformWalletDetail.setBalance(platformWallet.getWalletAmount()); //账户余额
+        platformWalletDetail.setOperatorId(platformWallet.getOperatorId());  // 运营商
+        Boolean platformWalletDetailRes = platformWalletDetailService.save(platformWalletDetail);
+        if (!platformWalletDetailRes){
+            throw new BizException(500,SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
+        }
+        return R.success("执行成功");
+    }
+
+
+
 }

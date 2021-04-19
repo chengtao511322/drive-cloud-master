@@ -1,6 +1,8 @@
 package com.drive.admin.enums;
 
 
+import cn.hutool.core.util.StrUtil;
+
 /**
  * 常用状态枚举
  *
@@ -29,4 +31,19 @@ public enum SubjectTypeEnum {
     public String getInfo() {
         return info;
     }
+
+    public static String getSubjectValueByCode(String code) {
+        if (StrUtil.isEmpty(code)) {
+            return "";
+        }
+
+        for (SubjectTypeEnum enumItem : SubjectTypeEnum.values()) {
+            if (enumItem.getCode().equals(code)) {
+                return enumItem.getInfo();
+            }
+        }
+        return "";
+
+    }
+
 }

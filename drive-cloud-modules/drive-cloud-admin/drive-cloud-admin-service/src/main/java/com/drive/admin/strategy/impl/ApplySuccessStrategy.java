@@ -3,10 +3,13 @@ package com.drive.admin.strategy.impl;
 import cn.hutool.core.util.StrUtil;
 import com.drive.admin.enums.ExamEnrollEnum;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
+import com.drive.admin.pojo.dto.StudentStudyProgressHistoryInstallParam;
 import com.drive.admin.pojo.entity.StudentTestEnrollEntity;
+import com.drive.admin.repository.StudentStudyProgressHistoryRepository;
 import com.drive.admin.service.StudentTestEnrollService;
 import com.drive.admin.strategy.StudyEnrollStrategy;
 import com.drive.common.core.biz.R;
+import com.drive.common.core.biz.ResCodeEnum;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.exception.BizException;
@@ -28,6 +31,9 @@ public class ApplySuccessStrategy implements StudyEnrollStrategy {
 
     @Autowired
     private StudentTestEnrollService studentTestEnrollService;
+    
+    @Autowired
+    private StudentStudyProgressHistoryRepository studentStudyProgressHistoryRepository;
 
     @Override
     public ResObject completeStudyEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam) {
@@ -65,9 +71,13 @@ public class ApplySuccessStrategy implements StudyEnrollStrategy {
         StudentTestEnrollEntity studentTestEnrol = new StudentTestEnrollEntity();
         // 报名单号
         studentTestEnrol.setTestEnrollNo(studentStudyEnrollEditParam.getTestEnrollNo());
+        // 考试时间
         studentTestEnrol.setTestHopeTime(studentStudyEnrollEditParam.getTestHopeTime());
+        // 实际考试时间
         studentTestEnrol.setTestActualTime(studentStudyEnrollEditParam.getTestActualTime());
+        // 场地
         studentTestEnrol.setTestHopeCoachingGridId(studentStudyEnrollEditParam.getTestHopeCoachingGridId());
+        //实际考试场地
         studentTestEnrol.setTestActualCoachingGridId(studentStudyEnrollEditParam.getTestActualCoachingGridId());
         // 预约成功
         studentTestEnrol.setEnrollStatus(ExamEnrollEnum.BOOK_SUCCESS.getCode());
@@ -75,6 +85,22 @@ public class ApplySuccessStrategy implements StudyEnrollStrategy {
         if (!result){
             throw new BizException(500,SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
         }
-        return R.success();
+        // 添加历史记录
+        StudentStudyProgressHistoryInstallParam studentStudyProgressHistoryInstall = new StudentStudyProgressHistoryInstallParam();
+        // 学员ID
+        studentStudyProgressHistoryInstall.setStudentId(studentStudyEnrollEditParam.getStudentId());
+        // 考试场地
+        studentStudyProgressHistoryInstall.setTestCoachingGridId(studentStudyEnrollEditParam.getTestActualCoachingGridId());
+        // 考试类型
+        studentStudyProgressHistoryInstall.setTestResultType(ExamEnrollEnum.SUBMIT_AWAIT_PAY.getCode());
+        // 实际考试时间
+        studentStudyProgressHistoryInstall.setTestEnrollTime(studentStudyEnrollEditParam.getTestActualTime());
+        // 科目类型
+        studentStudyProgressHistoryInstall.setTestEnrollSubject(studentTestEnroll.getSubjectType());
+        ResObject resObject = studentStudyProgressHistoryRepository.addStudyProgressHisstory(studentStudyProgressHistoryInstall);
+        if (resObject.getCode() != ResCodeEnum.SUCCESS.getCode()){
+            return resObject;
+        }
+        return R.success("执行成功");
     }
 }

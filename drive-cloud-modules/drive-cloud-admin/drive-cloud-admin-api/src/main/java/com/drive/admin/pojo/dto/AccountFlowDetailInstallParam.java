@@ -92,5 +92,8 @@ public class AccountFlowDetailInstallParam {
     @ApiModelProperty(value = "交易类型科目明细(010101-报名费提成,010201-考试费提成，010202-考试接送费提成,010301-课时费提成;	020101-驾校提成支出,020201-考试报名费支出,020301-课时教练提成支出,020302-课时驾校提成支出,020401-推荐新用户佣金支出,020402-推荐用户报名推荐费用支出,020403-推荐用户报名课时提成支出)")
     private String tradeSubjectItems;
 
+    // 钱包用户ID
+    private String walletUserId;
+
 
 }
