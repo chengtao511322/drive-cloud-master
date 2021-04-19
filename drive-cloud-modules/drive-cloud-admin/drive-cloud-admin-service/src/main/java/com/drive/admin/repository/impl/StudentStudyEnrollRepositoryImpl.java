@@ -937,93 +937,107 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
     @Override
     public ResObject drivingStudentDataPageList(@Valid StudentStudyEnrollPageQueryParam param) {
         log.info("drivingStudentDataPageList-方法请求参数{}",param);
+        /**
+         * 用于管理学员-学车业务，方便客服查看跟踪学员的  练车状态，考试状态。
+         *
+         * 条件：
+         * 1.科目一考试通过
+         * 2.科目二，科目三.考试未通 （未预约考试。考试挂科）
+         */
         Page<CoachTeachTimeEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         QueryWrapper queryWrapper = new QueryWrapper();
+        IPage<StudyCarScheduleVo> pageList =  studentStudyEnrollService.studyCarSchedulePageList(page,queryWrapper);
+        return R.success(pageList);
+
+
+
+//        Page<CoachTeachTimeEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
+//        QueryWrapper queryWrapper = new QueryWrapper();
         // 运营商查询
-        queryWrapper.eq(StrUtil.isNotEmpty(param.getOperatorId()),"operator_id",param.getOperatorId());
-        // 学员ID
-        queryWrapper.eq(StrUtil.isNotEmpty(param.getStudentId()),"student_id",param.getStudentId());
-        //
-        queryWrapper.eq(StrUtil.isNotEmpty(param.getClassType()),"class_type",param.getClassType());
-        if (StrUtil.isNotEmpty(param.getDrivingStatus())){
-            queryWrapper.eq("status",param.getDrivingStatus());
-        }else{
-            //
-            String[] arr = {
-                    StudyEnrollEnum.YET_APPOINTMENT.getCode(),
-                    StudyEnrollEnum.TEACHING_LOADING.getCode(),
-                    StudyEnrollEnum.TEACHING_SUCCESS.getCode(),
-                    StudyEnrollEnum.PICK_SOMEBODY_UP.getCode(),
-                    StudyEnrollEnum.YET_GET_ON.getCode(),
-            };
-            queryWrapper.in("status",arr);
-        }
-        // 科目类型
-        queryWrapper.eq(StrUtil.isNotEmpty(param.getSubjectType()),"subject_type",param.getSubjectType());
-
-        if (StrUtil.isNotEmpty(param.getSubjectType()) && StrUtil.isNotEmpty(param.getAboutStatus())){
-            queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_coach_teach_time.student_id = t_student_test_enroll.student_id AND t_student_test_enroll.subject_type="+param.getSubjectType()+" AND t_student_test_enroll.enroll_status = "+param.getAboutStatus()+")",0);
-        }
-        queryWrapper.groupBy("student_id,subject_type");
-        queryWrapper.orderByDesc("create_time");
-        IPage<CoachTeachTimeEntity> pageList = coachTeachTimeService.page(page,queryWrapper);
-        Page<CoachTeachTimeVo> coachTeachTimeVoPage = coachTeachTimeMapStruct.toVoList(pageList);
-        if (coachTeachTimeVoPage.getRecords().size() <= 0 ){
-            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),coachTeachTimeVoPage);
-        }
-        // 处理数据
-        coachTeachTimeVoPage.getRecords().stream().forEach((item) ->{
-            // 学员
-            StudentInfoEntity student  = studentInfoService.getById(item.getStudentId());
-            if (student != null){
-                item.setStudentVo(BeanConvertUtils.copy(student, StudentInfoVo.class));
-            }
-
-            String[] arrStatus = {
-                    EnrollStatusEnum.ENROLL_SUCCESS.getCode(),
-                    EnrollStatusEnum.AUTO_ENROLL_SUCCESS.getCode(),
-                    EnrollStatusEnum.AUTO_ENROLL_WAIT_AUDIT.getCode(),
-            };
-            // 客服
-            QueryWrapper studentStudyQueryWrapper = new QueryWrapper();
-            // 报名状态
-            studentStudyQueryWrapper.in("enroll_status",arrStatus);
-            // 学员ID
-            studentStudyQueryWrapper.eq("student_id",item.getStudentId());
-            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studentStudyQueryWrapper);
-            if (studentStudyEnroll != null){
-                if (StrUtil.isNotEmpty(studentStudyEnroll.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(studentStudyEnroll.getUserId()).getRealName());
-                if (StrUtil.isNotEmpty(studentStudyEnroll.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(studentStudyEnroll.getLineUnderUserId()).getRealName());
-
-                // 省市区  后续放缓存
-                if (StrUtil.isNotEmpty(studentStudyEnroll.getProvinceId()))item.setProvinceName(areaService.getByBaCode(studentStudyEnroll.getProvinceId()).getBaName());
-                if (StrUtil.isNotEmpty(studentStudyEnroll.getCityId()))item.setCityName(areaService.getByBaCode(studentStudyEnroll.getCityId()).getBaName());
-                if (StrUtil.isNotEmpty(studentStudyEnroll.getAreaId()))item.setAreaName(areaService.getByBaCode(studentStudyEnroll.getAreaId()).getBaName());
-            }
-
-            // 教练信息
-            CoachInfoEntity coachInfo = coachInfoService.getById(item.getCoachId());
-            if (coachInfo != null) {
-                item.setCoachName(coachInfo.getRealName());
-            }
-
-            // 统计课时
-            Integer subjectTwoClassHour = studentTrainCarApplyService.classHoursSum(item.getStudentId(),item.getSubjectType());
-            if (subjectTwoClassHour != null)item.setTotalHour(subjectTwoClassHour);
-
-            // 考试
-            QueryWrapper testQueryWrapper = new QueryWrapper();
-            //testQueryWrapper.eq(studentStudyEnroll != null,"order_detail_no",studentStudyEnroll.getStudyEnrollNo());
-            testQueryWrapper.eq("student_id",item.getStudentId());
-            testQueryWrapper.eq(StrUtil.isNotEmpty(param.getAboutStatus()),"enroll_status",param.getAboutStatus());
-            testQueryWrapper.orderByDesc("create_time");
-            testQueryWrapper.last("limit 1");
-            StudentTestEnrollEntity studentTestEnroll = studentTestEnrollService.getOne(testQueryWrapper);
-            if (studentTestEnroll != null){
-                item.setStudentTestEnrollVo(BeanConvertUtils.copy(studentTestEnroll,StudentTestEnrollVo.class));
-            }
-        });
-        return R.success(coachTeachTimeVoPage);
+//        queryWrapper.eq(StrUtil.isNotEmpty(param.getOperatorId()),"operator_id",param.getOperatorId());
+//        // 学员ID
+//        queryWrapper.eq(StrUtil.isNotEmpty(param.getStudentId()),"student_id",param.getStudentId());
+//        //
+//        queryWrapper.eq(StrUtil.isNotEmpty(param.getClassType()),"class_type",param.getClassType());
+//        if (StrUtil.isNotEmpty(param.getDrivingStatus())){
+//            queryWrapper.eq("status",param.getDrivingStatus());
+//        }else{
+//            //
+//            String[] arr = {
+//                    StudyEnrollEnum.YET_APPOINTMENT.getCode(),
+//                    StudyEnrollEnum.TEACHING_LOADING.getCode(),
+//                    StudyEnrollEnum.TEACHING_SUCCESS.getCode(),
+//                    StudyEnrollEnum.PICK_SOMEBODY_UP.getCode(),
+//                    StudyEnrollEnum.YET_GET_ON.getCode(),
+//            };
+//            queryWrapper.in("status",arr);
+//        }
+//        // 科目类型
+//        queryWrapper.eq(StrUtil.isNotEmpty(param.getSubjectType()),"subject_type",param.getSubjectType());
+//
+//        if (StrUtil.isNotEmpty(param.getSubjectType()) && StrUtil.isNotEmpty(param.getAboutStatus())){
+//            queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_coach_teach_time.student_id = t_student_test_enroll.student_id AND t_student_test_enroll.subject_type="+param.getSubjectType()+" AND t_student_test_enroll.enroll_status = "+param.getAboutStatus()+")",0);
+//        }
+//        queryWrapper.groupBy("student_id,subject_type");
+//        queryWrapper.orderByDesc("create_time");
+//        IPage<CoachTeachTimeEntity> pageList = coachTeachTimeService.page(page,queryWrapper);
+//        Page<CoachTeachTimeVo> coachTeachTimeVoPage = coachTeachTimeMapStruct.toVoList(pageList);
+//        if (coachTeachTimeVoPage.getRecords().size() <= 0 ){
+//            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),coachTeachTimeVoPage);
+//        }
+//        // 处理数据
+//        coachTeachTimeVoPage.getRecords().stream().forEach((item) ->{
+//            // 学员
+//            StudentInfoEntity student  = studentInfoService.getById(item.getStudentId());
+//            if (student != null){
+//                item.setStudentVo(BeanConvertUtils.copy(student, StudentInfoVo.class));
+//            }
+//
+//            String[] arrStatus = {
+//                    EnrollStatusEnum.ENROLL_SUCCESS.getCode(),
+//                    EnrollStatusEnum.AUTO_ENROLL_SUCCESS.getCode(),
+//                    EnrollStatusEnum.AUTO_ENROLL_WAIT_AUDIT.getCode(),
+//            };
+//            // 客服
+//            QueryWrapper studentStudyQueryWrapper = new QueryWrapper();
+//            // 报名状态
+//            studentStudyQueryWrapper.in("enroll_status",arrStatus);
+//            // 学员ID
+//            studentStudyQueryWrapper.eq("student_id",item.getStudentId());
+//            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studentStudyQueryWrapper);
+//            if (studentStudyEnroll != null){
+//                if (StrUtil.isNotEmpty(studentStudyEnroll.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(studentStudyEnroll.getUserId()).getRealName());
+//                if (StrUtil.isNotEmpty(studentStudyEnroll.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(studentStudyEnroll.getLineUnderUserId()).getRealName());
+//
+//                // 省市区  后续放缓存
+//                if (StrUtil.isNotEmpty(studentStudyEnroll.getProvinceId()))item.setProvinceName(areaService.getByBaCode(studentStudyEnroll.getProvinceId()).getBaName());
+//                if (StrUtil.isNotEmpty(studentStudyEnroll.getCityId()))item.setCityName(areaService.getByBaCode(studentStudyEnroll.getCityId()).getBaName());
+//                if (StrUtil.isNotEmpty(studentStudyEnroll.getAreaId()))item.setAreaName(areaService.getByBaCode(studentStudyEnroll.getAreaId()).getBaName());
+//            }
+//
+//            // 教练信息
+//            CoachInfoEntity coachInfo = coachInfoService.getById(item.getCoachId());
+//            if (coachInfo != null) {
+//                item.setCoachName(coachInfo.getRealName());
+//            }
+//
+//            // 统计课时
+//            Integer subjectTwoClassHour = studentTrainCarApplyService.classHoursSum(item.getStudentId(),item.getSubjectType());
+//            if (subjectTwoClassHour != null)item.setTotalHour(subjectTwoClassHour);
+//
+//            // 考试
+//            QueryWrapper testQueryWrapper = new QueryWrapper();
+//            //testQueryWrapper.eq(studentStudyEnroll != null,"order_detail_no",studentStudyEnroll.getStudyEnrollNo());
+//            testQueryWrapper.eq("student_id",item.getStudentId());
+//            testQueryWrapper.eq(StrUtil.isNotEmpty(param.getAboutStatus()),"enroll_status",param.getAboutStatus());
+//            testQueryWrapper.orderByDesc("create_time");
+//            testQueryWrapper.last("limit 1");
+//            StudentTestEnrollEntity studentTestEnroll = studentTestEnrollService.getOne(testQueryWrapper);
+//            if (studentTestEnroll != null){
+//                item.setStudentTestEnrollVo(BeanConvertUtils.copy(studentTestEnroll,StudentTestEnrollVo.class));
+//            }
+//        });
+//        return R.success();
     }
 
     @Override

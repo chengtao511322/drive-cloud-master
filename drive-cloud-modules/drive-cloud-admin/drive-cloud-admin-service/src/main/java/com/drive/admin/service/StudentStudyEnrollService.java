@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
+import com.drive.admin.pojo.dto.StudyCarScheduleQueryParam;
 import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
 import com.drive.admin.pojo.vo.StatisticsStudentDataVo;
 import com.drive.admin.pojo.vo.StudentStudyEnrollVo;
+import com.drive.admin.pojo.vo.StudyCarScheduleVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -28,7 +30,7 @@ public interface StudentStudyEnrollService extends IService<StudentStudyEnrollEn
     Boolean updateByEnrollNo(StudentStudyEnrollEntity studentStudyEnrollEntity);
 
     /**
-     * 分页查询总数
+     * 分页查询报名数据
      * @param page
      * @param ew
      * @return
@@ -36,8 +38,6 @@ public interface StudentStudyEnrollService extends IService<StudentStudyEnrollEn
     IPage<StudentStudyEnrollVo> studyEnrollPageList(Page page, Wrapper<StudentStudyEnrollPageQueryParam> ew);
     // 不分页查询报名信息
     List<StudentStudyEnrollVo> studyEnrollList(Wrapper<StudentStudyEnrollPageQueryParam> ew);
-
-
     /**
      * 数据统计
      * @param page
@@ -45,5 +45,15 @@ public interface StudentStudyEnrollService extends IService<StudentStudyEnrollEn
      * @return
      */
     IPage<StatisticsStudentDataVo> statisticsStudentDataPageList(Page page, @Param("ew") Wrapper<StudentStudyEnrollPageQueryParam> ew);
+
+
+    /**
+     * 分页查询_学员学车进度列表
+     * @param page
+     * @param ew
+     * @return
+     */
+    IPage<StudyCarScheduleVo> studyCarSchedulePageList(Page page, Wrapper<StudyCarScheduleQueryParam> ew);
+
 }
 

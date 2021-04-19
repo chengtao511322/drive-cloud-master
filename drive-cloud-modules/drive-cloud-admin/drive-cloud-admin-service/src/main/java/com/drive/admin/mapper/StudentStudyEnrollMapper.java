@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam;
+import com.drive.admin.pojo.dto.StudyCarScheduleQueryParam;
 import com.drive.admin.pojo.entity.StudentStudyEnrollEntity;
 import com.drive.admin.pojo.vo.StatisticsStudentDataVo;
 import com.drive.admin.pojo.vo.StudentStudyEnrollVo;
+import com.drive.admin.pojo.vo.StudyCarScheduleVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -43,5 +45,15 @@ public interface StudentStudyEnrollMapper extends BaseMapper<StudentStudyEnrollE
      * @return
      */
     IPage<StatisticsStudentDataVo> statisticsStudentDataPageList(Page page, @Param("ew") Wrapper<StudentStudyEnrollPageQueryParam> ew);
+
+
+
+    /**
+     * 分页查询_学员学车进度列表
+     * @param page
+     * @param ew
+     * @return
+     */
+    IPage<StudyCarScheduleVo> studyCarSchedulePageList(Page page, @Param("ew") Wrapper<StudyCarScheduleQueryParam> ew);
 }
 
