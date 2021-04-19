@@ -13,6 +13,7 @@ import com.drive.common.core.exception.BizException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @Author 小郭
@@ -33,6 +34,7 @@ public class ExamPassStrategy implements StudyEnrollStrategy {
         return null;
     }
 
+    @Transactional
     @Override
     public ResObject completeExamEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam) {
         log.info(this.getClass() + "completeExamEnroll-方法请求参数{}",studentStudyEnrollEditParam);
@@ -42,6 +44,18 @@ public class ExamPassStrategy implements StudyEnrollStrategy {
         if (StrUtil.isEmpty(studentStudyEnrollEditParam.getEnrollStatus())){
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+        // 查询出考试信息
+        StudentTestEnrollEntity studentTestEnroll = studentTestEnrollService.getById(studentStudyEnrollEditParam.getTestEnrollNo());
+        if (studentTestEnroll == null){
+            log.info("数据异常，");
+            return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),"数据异常");
+        }
+        //判断实际考试时间 是否小于 当前时间
+        long time = System.currentTimeMillis() - tStudentTestEnroll.getTestActualTime().getTime();
+        if(time<0){
+            return MsgUtil.returnError("10005", "请在学员考试结束后在进行操作");
+        }
+
         StudentTestEnrollEntity studentTestEnrol = new StudentTestEnrollEntity();
         // 预约成功
         studentTestEnrol.setEnrollStatus(ExamEnrollEnum.EXAM_PASS.getCode());
@@ -50,6 +64,7 @@ public class ExamPassStrategy implements StudyEnrollStrategy {
         if (!result){
             throw new BizException(500,SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
         }
+        // 插入历史
         return R.success();
     }
 }

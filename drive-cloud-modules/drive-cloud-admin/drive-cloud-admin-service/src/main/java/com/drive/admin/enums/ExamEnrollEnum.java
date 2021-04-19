@@ -16,9 +16,11 @@ public enum ExamEnrollEnum {
     // 报名状态（1-提交报名待支付；2-支付成功；3-支付失败；4-报名失败；5-预约成功  ; 6-报名取消 ,7-考试完成,8-考试通过,9-考试不通过，10-申请中,11-退款处理中,12-退款成功）
     SUBMIT_AWAIT_PAY("1","提交报名待支付",""),
     PAY_SUCCESS("2","支付成功",""),
+    TEST_RESULT_STATUS_NOPASS("3","考试不通过",""),
     BOOK_SUCCESS("5","预约成功","applySuccessStrategy"),
     EXAM_LOADING("15","考试中",""),
     EXAM_ACCOMPLISH("7","考试完成",""),
+    EXAM_CANCEL("6","考试取消",""),
     EXAM_PASS("8","考试通过","examPassStrategy"),
     EXAM_NO_PASS("9","考试不通过","examNoPassStrategy"),
     APPLY_LOADING("10","申请中","payStayApplyStrategy"),

@@ -139,17 +139,29 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             studentOrderList  = studentOrderService.list(orderQueryWrapper);
         }
 
-        QueryWrapper queryWrapper = this.getQueryWrapper(studentStudyEnrollMapStruct, param);
+        QueryWrapper<StudentStudyEnrollEntity> queryWrapper = this.getQueryWrapper(studentStudyEnrollMapStruct, param);
         // 报名单号 模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueStudyEnrollNoSearch()),"study_enroll_no",param.getVagueStudyEnrollNoSearch());
         // 真实姓名模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"real_name",param.getVagueRealNameSearch());
 
         if (param.getIsReturnVisit()!= null && param.getIsReturnVisit() == 1){
-            queryWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id)",0);
+            queryWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id AND t_service_return_visit_history.return_visit_item IN(2,3))",0);
         }
         if (param.getIsReturnVisit()!= null && param.getIsReturnVisit() == 0){
-            queryWrapper.eq("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id)",0);
+            //queryWrapper.eq("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id )",0);
+            //queryWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id AND t_service_return_visit_history.return_visit_item IN(1,4))",0);
+
+            queryWrapper.and(wrapper ->{
+                wrapper.and(nameAgeQueryWrapper ->{
+                    nameAgeQueryWrapper.or(itemWrapper ->{
+                        itemWrapper.eq("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id )",0);
+                    });
+                    nameAgeQueryWrapper.or(itemWrapper ->{
+                        itemWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id AND t_service_return_visit_history.return_visit_item IN(1,4))",0);
+                    });
+                });
+            });
         }
 
         if (StrUtil.isNotEmpty(param.getNextReturnVisitTimeSearch())){

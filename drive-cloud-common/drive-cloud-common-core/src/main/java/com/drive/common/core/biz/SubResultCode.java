@@ -106,7 +106,7 @@ public enum  SubResultCode {
 
     // 订单类
     NOT_ORDER_OPERATION("NOT_ORDER_OPERATION","没有订单可操作"),
-    ORDER_STATUS_NOT_OPERATION("ORDER_STATUS_NOT__OPERATION","该订单状态下啊不可操作"),
+    ORDER_STATUS_NOT_OPERATION("ORDER_STATUS_NOT_OPERATION","该订单状态下不可操作"),
     OPERATION_ERROR("OPERATION_ERROR","操作错误"),
     ;
     /*状态码*/

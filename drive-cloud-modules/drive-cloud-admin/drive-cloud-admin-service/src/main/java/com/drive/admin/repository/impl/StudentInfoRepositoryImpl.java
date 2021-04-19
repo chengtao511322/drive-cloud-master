@@ -239,9 +239,9 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
                     item.setServiceName(serviceInfo.getRealName());
                 }
             }
-            // 回访阶段
-            /*returnVisitHistoryQueryWrapper.eq("student_id",item.getId());
-            returnVisitHistoryQueryWrapper.orderByDesc("create_time");
+            // 回访阶段 return_visit_time
+            returnVisitHistoryQueryWrapper.eq("student_id",item.getId());
+            returnVisitHistoryQueryWrapper.orderByDesc("return_visit_time");
             returnVisitHistoryQueryWrapper.last("limit 1");
             ServiceReturnVisitHistoryEntity returnVisitHistory =serviceReturnVisitHistoryService.getOne(returnVisitHistoryQueryWrapper);
             if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitStatus()))item.setReturnVisitStatus(returnVisitHistory.getReturnVisitStatus());
@@ -249,7 +249,6 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
             if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitItem()))item.setReturnVisitTime(returnVisitHistory.getReturnVisitTime());
             if (returnVisitHistory != null && returnVisitHistory.getNextReturnVisitTime() != null)item.setNextReturnVisitTime(returnVisitHistory.getNextReturnVisitTime());
             if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitItem()))item.setIsIntention(returnVisitHistory.getIsIntention());
-*/
         });
 /*
         if (param.isReturnVisitHistory()){

@@ -21,6 +21,7 @@ public class StudentStudyEnrollVo {
 	private String studyEnrollNo;
 
 	private StudentStudyEnrollVo StudentStudyEnrollVo;
+	private StudentTestEnrollVo studentTestEnrollVo;
 
 	// 订单号
 	private String studentOrderNo;
@@ -261,4 +262,7 @@ public class StudentStudyEnrollVo {
 	private int examNumber = 1;
 
 	private String bindCoach;
+	private String examStatus ="未考试";
+
+	private String testEnrollNo;
 }
