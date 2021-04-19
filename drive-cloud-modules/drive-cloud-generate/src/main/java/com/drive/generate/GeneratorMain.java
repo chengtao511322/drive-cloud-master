@@ -58,7 +58,7 @@ public class GeneratorMain {
 
     //要生成的表名templatestemplates
     private static String[] tables = {
-            "t_student_train_car_apply",
+            "t_student_study_progress_history",
     };
 
 

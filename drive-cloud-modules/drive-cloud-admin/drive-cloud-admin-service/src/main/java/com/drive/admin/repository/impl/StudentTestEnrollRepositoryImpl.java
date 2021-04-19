@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.nosql.redis.RedisDS;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -39,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -393,7 +395,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
 
         //3. 考试挂科满10天
         // 条件查询
-        QueryWrapper queryWrapper = new QueryWrapper();
+        QueryWrapper<StudentStudyEnrollEntity> queryWrapper = new QueryWrapper();
         // 运营商查询
         queryWrapper.eq(StrUtil.isNotEmpty(studentTestEnrollPageQueryParam.getOperatorId()),"operator_id",studentTestEnrollPageQueryParam.getOperatorId());
         // 报名完成
@@ -401,15 +403,54 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         // 拼接SQL 没有预约过科目一考试
         //queryWrapper.le("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_study_enroll.student_id = t_student_test_enroll.student_id)",0);
         // 拼接sql 考试挂科满10天
-        queryWrapper.le("(SELECT COUNT(1) FROM t_student_test_enroll WHERE DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 10 DAY) > NOW() AND t_student_test_enroll.student_id = t_student_study_enroll.student_id)",0);
-        //
+        /**
+         * LambdaQueryWrapper<Task> queryWrapper2 = new QueryWrapper<Task>().lambda();
+         *  queryWrapper2
+         *   .eq(Task::getUserId, "15")
+         *   .and(wrapper -> wrapper.eq(Task::getStatus, 2).or().eq(Task::getFileSize, 3251544304L));
+         */
+
+        queryWrapper.and(wrapper ->{
+            wrapper.and(nameAgeQueryWrapper ->{
+             /*   nameAgeQueryWrapper.or(itemWrapper ->{
+                    itemWrapper.eq("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id )",0);
+                });*/
+                // 考试挂科满10
+                nameAgeQueryWrapper.or(itemWrapper ->{
+                    itemWrapper.apply("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.student_id = t_student_study_enroll.student_id AND DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 10 DAY) <= NOW() AND t_student_test_enroll.enroll_status=9) <=0");
+                });
+                // 没有预约过科目一考试
+                nameAgeQueryWrapper.or(itemWrapper ->{
+                    itemWrapper.apply("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.student_id = t_student_study_enroll.student_id and t_student_test_enroll.subject_type=1) <=0");
+                });
+            });
+        });
+        // 状态变速
+        queryWrapper.apply("(SELECT COUNT(1) FROM t_student_test_enroll WHERE  t_student_test_enroll.student_id = t_student_study_enroll.student_id and t_student_test_enroll.enroll_status in(1,2,5,7,8,10)) <= 0");
+        //queryWrapper.le("(SELECT COUNT(1) FROM t_student_test_enroll WHERE DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 10 DAY) > NOW() AND t_student_test_enroll.student_id = t_student_study_enroll.student_id)",0);
+        // queryWrapper .eq(“name”,“测试”).or().eq(“sim”,“2”);
         queryWrapper.orderByDesc("create_time");
         IPage<StudentStudyEnrollEntity> studentStudyEnrollPageList = studentStudyEnrollService.page(page,queryWrapper);
         if (studentStudyEnrollPageList.getRecords().size() <=0){
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentStudyEnrollPageList);
         }
         IPage<StudentStudyEnrollVo> studentStudyEnrollVos = studentStudyEnrollMapStruct.toVoList(studentStudyEnrollPageList);
+        List<StudentStudyEnrollVo> newStudentStudyEnrollVos = new ArrayList<>();
         studentStudyEnrollVos.getRecords().stream().forEach((item) ->{
+            // 查询报名单号
+           QueryWrapper studyQueryWrapper = new QueryWrapper();
+            studyQueryWrapper.eq("student_id",item.getStudentId());
+            studyQueryWrapper.eq("subject_type",SubjectTypeEnum.SUBJECT_ONE.getCode());
+            // studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+            studyQueryWrapper.orderByDesc("test_actual_time");
+            studyQueryWrapper.last("limit 1");
+            StudentTestEnrollEntity studentTestEnroll = studentTestEnrollService.getOne(studyQueryWrapper);
+            if (studentTestEnroll != null){
+                // 考试单号
+                item.setTestEnrollNo(studentTestEnroll.getTestEnrollNo());
+                item.setExamStatus(studentTestEnroll.getEnrollStatus());
+                // 正常
+            }
             if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(item.getUserId()).getRealName());
             if (StrUtil.isNotEmpty(item.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(item.getLineUnderUserId()).getRealName());
             if (StrUtil.isNotEmpty(item.getDriveSchoolId())){
@@ -440,16 +481,9 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             testQueryWrapper.eq("operator_id", item.getOperatorId());
             // 考试次数
             int examNumber = studentTestEnrollService.count(testQueryWrapper);
-            item.setExamNumber(examNumber);
+            item.setExamNumber(examNumber + 1);
 
-            // 查询报名单号
-            QueryWrapper studyQueryWrapper = new QueryWrapper();
-            studyQueryWrapper.eq("student_id",item.getStudentId());
-            studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
-            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
-            if (studentStudyEnroll != null){
-                item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
-            }
+
             QueryWrapper systemCoachStudentQueryWrapper = new QueryWrapper();
             // 学员ID
             systemCoachStudentQueryWrapper.eq("student_id",item.getStudentId());
@@ -460,7 +494,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
                 JSONObject jsonObject = JSON.parseObject(coachRedis);
                 if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
             }
-
+            //newStudentStudyEnrollVos.add(item);
         });
         return R.success(studentStudyEnrollVos);
     }
@@ -532,19 +566,39 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
     public ResObject noSubscribeSubjectTwoExamPageList(StudentTestEnrollPageQueryParam studentTestEnrollPageQueryParam) {
         log.info(this.getClass()+"noSubscribeSubjectOneExamPageList-方法请求参数{}",studentTestEnrollPageQueryParam);
         Page<StudentStudyEnrollEntity> page = new Page<>(studentTestEnrollPageQueryParam.getPageNum(), studentTestEnrollPageQueryParam.getPageSize());
-        // 学车报名单 包名完成
-        //2.没有预约过科目一考试
-
-        //3. 考试挂科满10天
+        // 报名状态是报名的
+        // 1.科目一考试合格10天的学员
+        //2.科目二考试不合格10天的学员
+        //3. 考试状态是取消
         // 条件查询
-        QueryWrapper queryWrapper = new QueryWrapper();
+        QueryWrapper<StudentStudyEnrollEntity> queryWrapper = new QueryWrapper();
         // 运营商查询
         queryWrapper.eq(StrUtil.isNotEmpty(studentTestEnrollPageQueryParam.getOperatorId()),"operator_id",studentTestEnrollPageQueryParam.getOperatorId());
         // 报名完成
+        queryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
         //queryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
-        // 拼接SQL 没有预约过科目一考试
-        // 拼接sql 考试挂科满10天
-        queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=1 AND DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 10 DAY) > NOW() AND t_student_test_enroll.student_id = t_student_study_enroll.student_id)",0);
+        // 拼接sql 科目一考试合格10天的学员
+        // 科目二考试不合格10天的学员
+
+        queryWrapper.and(wrapper ->{
+            wrapper.and(nameAgeQueryWrapper ->{
+                nameAgeQueryWrapper.or(itemWrapper ->{
+                    itemWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=1 AND DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 10 DAY) <= NOW() AND t_student_test_enroll.student_id = t_student_study_enroll.student_id AND t_student_test_enroll.enroll_status=8)",0);
+                });
+                nameAgeQueryWrapper.or(itemWrapper ->{
+                    itemWrapper.apply("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=2 AND DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 10 DAY) <= NOW() AND t_student_test_enroll.student_id = t_student_study_enroll.student_id AND t_student_test_enroll.enroll_status=9) <=0");
+
+                });
+                nameAgeQueryWrapper.or(itemWrapper ->{
+                    itemWrapper.apply("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type = 2 AND t_student_test_enroll.student_id = t_student_study_enroll.student_id AND t_student_test_enroll.enroll_status = 6) > 0");
+
+                });
+            });
+        });
+
+        // 考试状态是取消
+        // queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=2 AND t_student_test_enroll.student_id = t_student_study_enroll.student_id AND t_student_test_enroll.enroll_status=6)",0);
+        queryWrapper.apply("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=2 AND t_student_test_enroll.student_id = t_student_study_enroll.student_id AND t_student_test_enroll.enroll_status in(1,2,5,7,8,10)) <= 0");
         //
         queryWrapper.orderByDesc("create_time");
         IPage<StudentStudyEnrollEntity> studentStudyEnrollPageList = studentStudyEnrollService.page(page,queryWrapper);
@@ -563,19 +617,26 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
             if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
             if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
-            // 查询报名单号
-            QueryWrapper studyQueryWrapper = new QueryWrapper();
-            studyQueryWrapper.eq("student_id",item.getStudentId());
-            studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
-            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
-            if (studentStudyEnroll != null){
-                item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
+            // 查询考试
+            QueryWrapper examQueryWrapper = new QueryWrapper();
+            examQueryWrapper.eq("student_id",item.getStudentId());
+            examQueryWrapper.eq("subject_type",SubjectTypeEnum.SUBJECT_TWO.getCode());
+            // studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+            examQueryWrapper.orderByDesc("test_actual_time");
+            examQueryWrapper.last("limit 1");
+            StudentTestEnrollEntity studentTestEnroll = studentTestEnrollService.getOne(examQueryWrapper);
+            if (studentTestEnroll != null){
+                // 考试单号
+                item.setTestEnrollNo(studentTestEnroll.getTestEnrollNo());
+                item.setStudentTestEnrollVo(BeanConvertUtils.copy(studentTestEnroll,StudentTestEnrollVo.class));
+                item.setExamStatus(studentTestEnroll.getEnrollStatus());
+                // 正常
             }
 
             // 查询次数
             QueryWrapper testQueryWrapper = new QueryWrapper();
             testQueryWrapper.eq("student_id",item.getStudentId());
-            testQueryWrapper.eq("subject_type","1");
+            testQueryWrapper.eq("subject_type",SubjectTypeEnum.SUBJECT_TWO.getCode());
             String[] arr = {
                     StudyEnrollEnum.PAY_SUCCESS.getCode(),
                     StudyEnrollEnum.EXAM_ACCOMPLISH.getCode(),
@@ -610,19 +671,33 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         log.info(this.getClass()+"noSubscribeSubjectOneExamPageList-方法请求参数{}",studentTestEnrollPageQueryParam);
         Page<StudentStudyEnrollEntity> page = new Page<>(studentTestEnrollPageQueryParam.getPageNum(), studentTestEnrollPageQueryParam.getPageSize());
         // 学车报名单 包名完成
-        //2.没有预约过科目一考试
-
-        //3. 考试挂科满10天
-        // 条件查询
-        QueryWrapper queryWrapper = new QueryWrapper();
+        //1.科目一考试满30天
+        // 科目三考试不通过满10
+        //科目三考试取消的
+        QueryWrapper<StudentStudyEnrollEntity> queryWrapper = new QueryWrapper();
         // 运营商查询
         queryWrapper.eq(StrUtil.isNotEmpty(studentTestEnrollPageQueryParam.getOperatorId()),"operator_id",studentTestEnrollPageQueryParam.getOperatorId());
         // 报名完成
-        //queryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+        queryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
         // 拼接SQL 没有预约过科目一考试
         // 拼接sql 考试挂科满10天
-        queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=1 AND DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 30 DAY) > NOW() AND t_student_test_enroll.student_id = t_student_study_enroll.student_id)",0);
+        //queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=1 AND DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 30 DAY) > NOW() AND t_student_test_enroll.student_id = t_student_study_enroll.student_id)",0);
         //
+
+        queryWrapper.and(wrapper ->{
+            wrapper.and(nameAgeQueryWrapper ->{
+                nameAgeQueryWrapper.or(itemWrapper ->{
+                    itemWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=1 AND DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 30 DAY) <= NOW() AND t_student_test_enroll.student_id = t_student_study_enroll.student_id AND t_student_test_enroll.enroll_status=8)",0);
+                });
+                nameAgeQueryWrapper.or(itemWrapper ->{
+                    itemWrapper.apply("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=3 AND DATE_ADD(t_student_test_enroll.test_actual_time,INTERVAL 10 DAY) <= NOW() AND t_student_test_enroll.student_id = t_student_study_enroll.student_id AND t_student_test_enroll.enroll_status=9) <=0");
+
+                });
+            });
+        });
+        // 考试状态是取消
+        queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=3 AND t_student_test_enroll.student_id = t_student_study_enroll.student_id AND t_student_test_enroll.enroll_status=6)",0);
+        queryWrapper.apply("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=3 AND t_student_test_enroll.student_id = t_student_study_enroll.student_id AND t_student_test_enroll.enroll_status in(1,2,5,7,8,10)) <= 0");
         queryWrapper.orderByDesc("create_time");
         IPage<StudentStudyEnrollEntity> studentStudyEnrollPageList = studentStudyEnrollService.page(page,queryWrapper);
         if (studentStudyEnrollPageList.getRecords().size() <=0){
@@ -642,18 +717,34 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
 
             // 查询报名单号
-            QueryWrapper studyQueryWrapper = new QueryWrapper();
+  /*          QueryWrapper studyQueryWrapper = new QueryWrapper();
             studyQueryWrapper.eq("student_id",item.getStudentId());
             studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
             StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
             if (studentStudyEnroll != null){
                 item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
+            }*/
+
+            // 查询考试
+            QueryWrapper examQueryWrapper = new QueryWrapper();
+            examQueryWrapper.eq("student_id",item.getStudentId());
+            examQueryWrapper.eq("subject_type",SubjectTypeEnum.SUBJECT_THREE.getCode());
+            // studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+            examQueryWrapper.orderByDesc("test_actual_time");
+            examQueryWrapper.last("limit 1");
+            StudentTestEnrollEntity studentTestEnroll = studentTestEnrollService.getOne(examQueryWrapper);
+            if (studentTestEnroll != null){
+                // 考试单号
+                item.setTestEnrollNo(studentTestEnroll.getTestEnrollNo());
+                item.setStudentTestEnrollVo(BeanConvertUtils.copy(studentTestEnroll,StudentTestEnrollVo.class));
+                item.setExamStatus(studentTestEnroll.getEnrollStatus());
+                // 正常
             }
 
             // 查询次数
             QueryWrapper testQueryWrapper = new QueryWrapper();
             testQueryWrapper.eq("student_id",item.getStudentId());
-            testQueryWrapper.eq("subject_type","1");
+            testQueryWrapper.eq("subject_type",SubjectTypeEnum.SUBJECT_THREE.getCode());
             String[] arr = {
                     StudyEnrollEnum.PAY_SUCCESS.getCode(),
                     StudyEnrollEnum.EXAM_ACCOMPLISH.getCode(),
@@ -787,21 +878,23 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         log.info(this.getClass()+"noSubscribeSubjectOneExamPageList-方法请求参数{}",studentTestEnrollPageQueryParam);
         Page<StudentStudyEnrollEntity> page = new Page<>(studentTestEnrollPageQueryParam.getPageNum(), studentTestEnrollPageQueryParam.getPageSize());
         // 学车报名单 包名完成
-        //2.没有预约过科目一考试
+        //2.科目二考试通过
 
-        //3. 考试挂科满10天
+        //3.科目三考试通过
         // 条件查询
         QueryWrapper queryWrapper = new QueryWrapper();
         // 运营商查询
         queryWrapper.eq(StrUtil.isNotEmpty(studentTestEnrollPageQueryParam.getOperatorId()),"operator_id",studentTestEnrollPageQueryParam.getOperatorId());
         // 报名完成
-        //queryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+        queryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
         // 拼接SQL 没有预约过科目一考试
         // 拼接sql 考试挂科满10天
         queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=1 AND t_student_test_enroll.enroll_status=8 AND t_student_test_enroll.student_id = t_student_study_enroll.student_id)",0);
         queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=2 AND t_student_test_enroll.enroll_status=8 AND t_student_test_enroll.student_id = t_student_study_enroll.student_id)",0);
         queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=3 AND t_student_test_enroll.enroll_status=8 AND t_student_test_enroll.student_id = t_student_study_enroll.student_id)",0);
         //
+        queryWrapper.apply("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t_student_test_enroll.subject_type=4 AND t_student_test_enroll.student_id = t_student_study_enroll.student_id AND t_student_test_enroll.enroll_status in(1,2,5,7,8,10)) <= 0");
+        queryWrapper.orderByDesc("create_time");
         IPage<StudentStudyEnrollEntity> studentStudyEnrollPageList = studentStudyEnrollService.page(page,queryWrapper);
         if (studentStudyEnrollPageList.getRecords().size() <=0){
             return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),studentStudyEnrollPageList);
@@ -819,13 +912,20 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
             if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
 
-            // 查询报名单号
-            QueryWrapper studyQueryWrapper = new QueryWrapper();
-            studyQueryWrapper.eq("student_id",item.getStudentId());
-            studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
-            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
-            if (studentStudyEnroll != null){
-                item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
+            // 查询考试
+            QueryWrapper examQueryWrapper = new QueryWrapper();
+            examQueryWrapper.eq("student_id",item.getStudentId());
+            examQueryWrapper.eq("subject_type",SubjectTypeEnum.SUBJECT_FOUR.getCode());
+            // studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+            examQueryWrapper.orderByDesc("test_actual_time");
+            examQueryWrapper.last("limit 1");
+            StudentTestEnrollEntity studentTestEnroll = studentTestEnrollService.getOne(examQueryWrapper);
+            if (studentTestEnroll != null){
+                item.setStudentTestEnrollVo(BeanConvertUtils.copy(studentTestEnroll,StudentTestEnrollVo.class));
+                // 考试单号
+                item.setTestEnrollNo(studentTestEnroll.getTestEnrollNo());
+                item.setExamStatus(studentTestEnroll.getEnrollStatus());
+                // 正常
             }
 
             // 查询次数
