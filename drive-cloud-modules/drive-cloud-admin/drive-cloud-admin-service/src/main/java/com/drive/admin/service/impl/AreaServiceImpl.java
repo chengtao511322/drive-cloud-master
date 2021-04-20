@@ -8,6 +8,7 @@ import com.drive.admin.mapper.AreaMapper;
 import com.drive.admin.pojo.entity.AreaEntity;
 import com.drive.admin.pojo.vo.ViewDataVo;
 import com.drive.admin.service.AreaService;
+import com.drive.common.core.constant.CacheConstants;
 import com.drive.common.core.constant.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -59,32 +61,22 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
     }
 
 
-    // @PostConstruct
+     @PostConstruct
     public void init() {
-       List<ViewDataVo> viewList = areaMapper.findView();
-       log.info(this.getClass() + "数据{}", viewList.size());
+        QueryWrapper<AreaEntity> wrapper = new QueryWrapper<AreaEntity>();
+        List<AreaEntity> operatorEntityList = areaMapper.selectList(wrapper);
         Jedis jedis = RedisDS.create().getJedis();
         Pipeline pipe = jedis.pipelined(); // 先创建一个 pipeline 的链接对象
-      // redisTemplate.opsForValue().set("viewList:", viewList);
         long startTime = System.currentTimeMillis();
-       viewList.stream().forEach((item) -> {
-       //for (int i = 0; i < viewList.size(); i++) {
-           //pipe.set("pipe:"+viewList.get(0).getCode(), viewList.get(0).getValue());
-           // sleep可明显看到使用的是线程池里面以前的线程，没有创建新的线程
-           //Thread.sleep(1000);
+        operatorEntityList.stream().forEach((item) -> {
            cachedThreadPool.execute(new Runnable() {
                public void run() {
                    // 打印正在执行的缓存线程信息
-                   //pipeline.sadd("viewList:"+item.getCode(), item.getValue());
-                     redisTemplate.opsForValue().set("viewList:"+item.getCode(), item.getValue());
-                   try {
-                       Thread.sleep(1000);
-                   } catch (InterruptedException e) {
-                       e.printStackTrace();
-                   }
+                   redisTemplate.opsForValue().set(getCacheKey(item.getBaCode()), item);
                }
            });
        });
+        cachedThreadPool.shutdown();
         pipe.sync(); // 获取所有的 response
         long endTime = System.currentTimeMillis();
         System.out.println(endTime - startTime);
@@ -116,7 +108,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
      */
     private String getCacheKey(String configKey)
     {
-        return Constants.AREA_KEY + configKey;
+        return CacheConstants.REDIS_CACHE_AREA_KEY + configKey;
     }
 }
 
