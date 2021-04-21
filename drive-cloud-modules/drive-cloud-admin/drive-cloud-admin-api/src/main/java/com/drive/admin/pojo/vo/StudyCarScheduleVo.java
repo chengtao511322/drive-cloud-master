@@ -1,16 +1,8 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import cn.hutool.db.nosql.redis.RedisDS;
-import com.alibaba.fastjson.JSONObject;
-import com.drive.common.core.constant.CacheConstants;
-import com.drive.common.core.utils.CoachUtil;
-import com.drive.common.core.utils.StringUtils;
+import com.drive.admin.util.AdminCacheUtil;
 import lombok.Data;
-import redis.clients.jedis.Jedis;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 
 /**
@@ -109,17 +101,17 @@ public class StudyCarScheduleVo {
 
 	public void setCoachId(String coachId) {
 		this.coachId = coachId;
-		this.coachName = CoachUtil.getCoachName(coachId);
+		this.coachName = AdminCacheUtil.getCoachName(coachId);
 	}
 
 	public void setUserId(String userId) {
 		this.userId = userId;
-		this.userName = CoachUtil.getServiceName(userId);
+		this.userName = AdminCacheUtil.getServiceRealName(userId);
 	}
 
 	public void setLineUnderUserId(String lineUnderUserId) {
 		this.lineUnderUserId = lineUnderUserId;
-		this.lineUnderUserName =  CoachUtil.getServiceName(lineUnderUserId);
+		this.lineUnderUserName = AdminCacheUtil.getServiceRealName(userId);
 	}
 
 	// 科二约考状态

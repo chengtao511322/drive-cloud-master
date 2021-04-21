@@ -48,7 +48,7 @@ public class ExamPassStrategy implements StudyEnrollStrategy {
 
     @Autowired
     private StudentTestEnrollService studentTestEnrollService;
-    
+
     @Autowired
     private StudentStudyProgressHistoryRepository studentStudyProgressHistoryRepository;
 

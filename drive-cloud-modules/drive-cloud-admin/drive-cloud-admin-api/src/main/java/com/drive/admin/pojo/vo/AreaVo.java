@@ -21,6 +21,7 @@ public class AreaVo {
 	@Excel(name = "区域名称", width = 20)
 	private String baName;
 
+
 	@Excel(name = "", width = 20)
 	private String baParentId;
 

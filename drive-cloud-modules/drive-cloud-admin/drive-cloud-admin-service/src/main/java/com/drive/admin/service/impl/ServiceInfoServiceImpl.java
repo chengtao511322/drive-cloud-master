@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 客服人员信息表 服务实现类
  *
- * @author xiaoguo
- */
+         * @author xiaoguo
+        */
 @Service
 public class ServiceInfoServiceImpl extends BaseService<ServiceInfoMapper, ServiceInfoEntity> implements ServiceInfoService {
 
