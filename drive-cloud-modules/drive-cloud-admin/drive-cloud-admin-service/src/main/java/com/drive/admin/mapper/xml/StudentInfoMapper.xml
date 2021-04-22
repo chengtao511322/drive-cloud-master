@@ -51,6 +51,9 @@
     <select id="newStudentPageList" resultType="com.drive.admin.pojo.vo.StudentInfoVo">
         select
             tsi.*,
+            tsi.province_id as provinceId,
+            tsi.city_id as cityId,
+            tsi.area_id as areaId,
             tsse.study_enroll_no AS studyEnrollNo
         from   t_student_info  tsi
         left  join   t_service_return_visit_history  tsrvh  on  tsi.id = tsrvh.student_id

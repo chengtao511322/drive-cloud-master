@@ -75,4 +75,8 @@ public class SecurityUtils {
     public static boolean isAdmin(Long userId) {
         return userId != null && Constants.ADMIN_USER_ID == userId;
     }
+
+    public static void main(String[] args) {
+        System.out.println(SecurityUtils.encryptPassword("xcxwz123321."));
+    }
 }

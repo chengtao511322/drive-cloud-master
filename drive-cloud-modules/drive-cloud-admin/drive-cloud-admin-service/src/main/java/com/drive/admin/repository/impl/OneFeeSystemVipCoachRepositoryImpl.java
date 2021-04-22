@@ -10,6 +10,7 @@ import com.drive.admin.pojo.dto.OneFeeSystemVipCoachInstallParam;
 import com.drive.admin.pojo.dto.OneFeeSystemVipCoachPageQueryParam;
 import com.drive.admin.pojo.entity.CoachInfoEntity;
 import com.drive.admin.pojo.entity.OneFeeSystemVipCoachEntity;
+import com.drive.admin.pojo.entity.StudentOrderEntity;
 import com.drive.admin.pojo.vo.OneFeeSystemVipCoachVo;
 import com.drive.admin.repository.OneFeeSystemVipCoachRepository;
 import com.drive.admin.service.CoachInfoService;
@@ -27,10 +28,12 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-                                                    
+
 /**
  *
  * 一费制vip教练 服务类
@@ -67,13 +70,19 @@ public class  OneFeeSystemVipCoachRepositoryImpl extends BaseController<OneFeeSy
         Page<OneFeeSystemVipCoachEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         // 条件查询
         QueryWrapper queryWrapper = this.getQueryWrapper(oneFeeSystemVipCoachMapStruct, param);
+        List<CoachInfoEntity> coachInfoList = new ArrayList<>();
+        if (StrUtil.isNotEmpty(param.getVagueCoachName())){
+            //  模糊查询
+            QueryWrapper coachQueryWrapper = new QueryWrapper();
+            coachQueryWrapper.like("real_name",param.getVagueCoachName());
+            coachInfoList = coachInfoService.list(coachQueryWrapper);
+        }
 
-        //  模糊查询
-        //queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
+        queryWrapper.in(coachInfoList.size() > 0,"coach_id",coachInfoList.stream().map(CoachInfoEntity::getId).collect(Collectors.toList()));
         IPage<OneFeeSystemVipCoachEntity> pageList = oneFeeSystemVipCoachService.page(page, queryWrapper);
         if (pageList.getRecords().size() <= 0){
             log.error("数据空");

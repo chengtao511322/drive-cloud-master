@@ -34,6 +34,7 @@ import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.core.utils.DateUtils;
 import com.drive.common.data.utils.ExcelUtils;
+import com.drive.common.redis.util.JedisConnect;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,9 +75,6 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
     private DriveSchoolService driveSchoolService;
 
     @Autowired
-    private AreaService areaService;
-
-    @Autowired
     private ServiceReturnVisitHistoryService serviceReturnVisitHistoryService;
     @Autowired
     private ServiceReturnVisitHistoryRepository serviceReturnVisitHistoryRepository;
@@ -90,7 +88,6 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
     @Autowired
     private OneFeeSystemCoachStudentService oneFeeSystemCoachStudentService;
 
-    private  final Jedis jedis = RedisDS.create().getJedis();
 
     @Autowired
     private StudentTestEnrollService studentTestEnrollService;
@@ -108,6 +105,10 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
 
     @Autowired
     private StudentOrderMapStruct studentOrderMapStruct;
+
+    @Autowired
+    private OneFeeSystemPriceService oneFeeSystemPriceService;
+
 
 
 
@@ -154,13 +155,19 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             //queryWrapper.eq("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id )",0);
             //queryWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id AND t_service_return_visit_history.return_visit_item IN(1,4))",0);
 
+            // 查询出 最新的一条回访记录
+            QueryWrapper returnVisitQueryWrapper = new QueryWrapper();
+            returnVisitQueryWrapper.orderByDesc("return_visit_time");
+            returnVisitQueryWrapper.last("limit 1");
+            serviceReturnVisitHistoryService.getOne(returnVisitQueryWrapper);
+
             queryWrapper.and(wrapper ->{
                 wrapper.and(nameAgeQueryWrapper ->{
                     nameAgeQueryWrapper.or(itemWrapper ->{
                         itemWrapper.eq("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id )",0);
                     });
                     nameAgeQueryWrapper.or(itemWrapper ->{
-                        itemWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id AND t_service_return_visit_history.return_visit_item IN(1,4))",0);
+                        itemWrapper.gt("(SELECT count(1) FROM (select  t.* from (SELECT * FROM t_service_return_visit_history HAVING 1 ORDER BY create_time DESC) t GROUP BY t.student_id) t1 WHERE t1.student_id = t_student_study_enroll.student_id  AND t1.return_visit_item IN (1, 4))",0);
                     });
                 });
             });
@@ -209,9 +216,6 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
                 if (driveSchoolEntity != null)item.setLineServiceName(driveSchoolEntity.getSchoolName());
             }
             // 省市区  后续放缓存
-            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
             QueryWrapper serviceQueryWrapper = new QueryWrapper();
             serviceQueryWrapper.eq("order_detail_no",item.getStudyEnrollNo());
             serviceQueryWrapper.eq("student_id",item.getStudentId());
@@ -229,10 +233,13 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             studentOrderQueryWrapper.eq("study_enroll_no",item.getStudyEnrollNo());
             StudentOrderEntity studentOrder  = studentOrderService.getOne(studentOrderQueryWrapper);
             if (studentOrder != null){
-                String classRes = jedis.get(CacheConstants.REDIS_CACHE_CLASS_KEY+studentOrder.getProductId());
-                JSONObject jsonObject = (JSONObject) JSONObject.parse(classRes);
+                JSONObject jsonObject = JedisConnect.get(CacheConstants.REDIS_CACHE_CLASS_KEY+studentOrder.getProductId());
                 if (jsonObject != null)item.setClassName(jsonObject.getString("name"));
                 item.setStudentOrderVo(BeanConvertUtils.copy(studentOrder, StudentOrderVo.class));
+                // 订单价格
+                item.setOrderAmount(studentOrder.getOrderAmount());
+                // 支付金额
+                item.setPayAmount(studentOrder.getPayableAmount());
             }
 
             // 状态是3
@@ -263,9 +270,11 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             if (oneFeeSystemCoachStudent != null) {
                 OneFeeSystemCoachStudentVo feeSystemCoachStudent = BeanConvertUtils.copy(oneFeeSystemCoachStudent,OneFeeSystemCoachStudentVo.class);
                 log.info("教练绑定数据{}",feeSystemCoachStudent);
-                String cacheRes = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY+feeSystemCoachStudent.getCoachId());
-                JSONObject jsonObject = (JSONObject) JSONObject.parse(cacheRes);
+                JSONObject jsonObject =JedisConnect.get(CacheConstants.REDIS_CACHE_COACH_KEY+feeSystemCoachStudent.getCoachId());
                 if (jsonObject != null)item.setCoachName(jsonObject.getString("realName"));
+                // 版型
+                OneFeeSystemPriceEntity oneFeeSystemPrice = oneFeeSystemPriceService.getById(oneFeeSystemCoachStudent.getClassId());
+                if (oneFeeSystemPrice != null)item.setClassName(oneFeeSystemPrice.getName());
             }
             // 学员
             StudentInfoEntity student = studentInfoService.getById(item.getStudentId());
@@ -368,15 +377,11 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             if (driveSchoolEntity != null)studentStudyEnrollVo.setLineServiceName(driveSchoolEntity.getSchoolName());
         }
         // 省市区
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getProvinceId()))studentStudyEnrollVo.setProvinceName(areaService.getByBaCode(studentStudyEnrollVo.getProvinceId()).getBaName());
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getCityId()))studentStudyEnrollVo.setCityName(areaService.getByBaCode(studentStudyEnrollVo.getCityId()).getBaName());
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getAreaId()))studentStudyEnrollVo.setAreaName(areaService.getByBaCode(studentStudyEnrollVo.getAreaId()).getBaName());
         QueryWrapper studentOrderQueryWrapper = new QueryWrapper();
         studentOrderQueryWrapper.eq("study_enroll_no",studentStudyEnrollVo.getStudyEnrollNo());
         StudentOrderEntity studentOrder  = studentOrderService.getOne(studentOrderQueryWrapper);
         if (studentOrder != null){
-            String classRes = jedis.get(CacheConstants.REDIS_CACHE_CLASS_KEY+studentOrder.getProductId());
-            JSONObject jsonObject = (JSONObject) JSONObject.parse(classRes);
+            JSONObject jsonObject =JedisConnect.get(CacheConstants.REDIS_CACHE_CLASS_KEY+studentOrder.getProductId());
             if (jsonObject != null)studentStudyEnrollVo.setClassName(jsonObject.getString("name"));
         }
 
@@ -407,10 +412,6 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             DriveSchoolEntity driveSchoolEntity =driveSchoolService.getById(studentStudyEnrollVo.getDriveSchoolId());
             if (driveSchoolEntity != null)studentStudyEnrollVo.setDriveSchoolName(driveSchoolEntity.getSchoolName());
         }
-        // 省市区
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getProvinceId()))studentStudyEnrollVo.setProvinceName(areaService.getByBaCode(studentStudyEnrollVo.getProvinceId()).getBaName());
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getCityId()))studentStudyEnrollVo.setCityName(areaService.getByBaCode(studentStudyEnrollVo.getCityId()).getBaName());
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getAreaId()))studentStudyEnrollVo.setAreaName(areaService.getByBaCode(studentStudyEnrollVo.getAreaId()).getBaName());
         log.info(this.getClass() + "getInfo-方法请求结果{}",studentStudyEnrollVo);
         return R.success(studentStudyEnrollVo);
     }
@@ -575,9 +576,6 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
                 if (driveSchoolEntity != null)item.setLineServiceName(driveSchoolEntity.getSchoolName());
             }
             // 省市区
-            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
             QueryWrapper serviceQueryWrapper = new QueryWrapper();
             serviceQueryWrapper.eq("order_detail_no",item.getStudyEnrollNo());
             serviceQueryWrapper.eq("student_id",item.getStudentId());
@@ -673,9 +671,6 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         if (StrUtil.isNotEmpty(studentStudyEnrollVo.getLineUnderUserId()))studentStudyEnrollVo.setLineServiceName(serviceInfoService.getById(studentStudyEnrollVo.getLineUnderUserId()).getRealName());
         if (StrUtil.isNotEmpty(studentStudyEnrollVo.getDriveSchoolId()))studentStudyEnrollVo.setLineServiceName(serviceInfoService.getById(studentStudyEnrollVo.getLineUnderUserId()).getRealName());
         // 省市区
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getProvinceId()))studentStudyEnrollVo.setProvinceName(areaService.getByBaCode(studentStudyEnrollVo.getProvinceId()).getBaName());
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getCityId()))studentStudyEnrollVo.setCityName(areaService.getByBaCode(studentStudyEnrollVo.getCityId()).getBaName());
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getAreaId()))studentStudyEnrollVo.setAreaName(areaService.getByBaCode(studentStudyEnrollVo.getAreaId()).getBaName());
         log.info(this.getClass() + "getStudentStudyEnrollInfo-请求结果{}",studentStudy);
         return R.success(studentStudyEnrollVo);
     }
@@ -700,6 +695,8 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         Page<StudentStudyEnrollEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq(StrUtil.isNotEmpty(param.getOrderStatusSearch()),"t1.status",param.getOrderStatusSearch());
+        // 运营商
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getOperatorId()),"t1.operator_id",param.getOperatorId());
         // 转化类型
         queryWrapper.eq(StrUtil.isNotEmpty(param.getConversionType()),"t2.conversion_type",param.getConversionType());
         //
@@ -708,9 +705,10 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         // 报名单号 模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueStudyEnrollNoSearch()),"t2.study_enroll_no",param.getVagueStudyEnrollNoSearch());
         // 订单号查询
-        queryWrapper.like(StrUtil.isNotEmpty(param.getStudentOrderNo()),"t1.order_no",param.getStudentOrderNo());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueOrderNoSearch()),"t1.order_no",param.getVagueOrderNoSearch());
         // 真实姓名模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"t2.real_name",param.getVagueRealNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"t2.telephone",param.getVaguePhoneSearch());
         // 预约见面时间
         queryWrapper.apply(StrUtil.isNotBlank(param.getBeSpeakMeetTimeSearch()),
                 "date_format (t2.be_speak_meet_time,'%Y-%m-%d') = date_format('" + param.getBeSpeakMeetTimeSearch() + "','%Y-%m-%d')");
@@ -759,10 +757,10 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             studentOrderVo.setStatus(item.getOrderStatus());
             //studentOrderVo.setPayTime(DateUtil.parseTime(item.getPayTime()));
             item.setStudentOrderVo(studentOrderVo);
+            // 版型
+            OneFeeSystemPriceEntity oneFeeSystemPrice = oneFeeSystemPriceService.getById(item.getClassId());
+            if (oneFeeSystemPrice != null)item.setClassName(oneFeeSystemPrice.getName());
             // 省市区
-            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
             QueryWrapper serviceQueryWrapper = new QueryWrapper();
             serviceQueryWrapper.eq("order_detail_no",item.getStudyEnrollNo());
             serviceQueryWrapper.eq("student_id",item.getStudentId());
@@ -882,8 +880,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
             OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
             if (systemCoachStudent != null){
-                String coachRedis = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
-                JSONObject jsonObject = JSON.parseObject(coachRedis);
+                JSONObject jsonObject = JedisConnect.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
                 if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
             }
 
@@ -1081,16 +1078,12 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
                 if (StrUtil.isNotEmpty(studentStudyEnroll.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(studentStudyEnroll.getLineUnderUserId()).getRealName());
                 item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
                 // 省市区  后续放缓存
-                if (StrUtil.isNotEmpty(studentStudyEnroll.getProvinceId()))item.setProvinceName(areaService.getByBaCode(studentStudyEnroll.getProvinceId()).getBaName());
-                if (StrUtil.isNotEmpty(studentStudyEnroll.getCityId()))item.setCityName(areaService.getByBaCode(studentStudyEnroll.getCityId()).getBaName());
-                if (StrUtil.isNotEmpty(studentStudyEnroll.getAreaId()))item.setAreaName(areaService.getByBaCode(studentStudyEnroll.getAreaId()).getBaName());
             }
             // 教练信息
             StudentTrainCarApplyEntity studentTrainCarApply = studentTrainCarApplyService.getById(item.getTrainApplyNo());
             if (studentTrainCarApply != null){
                 item.setStudentTrainCarApplyVo(BeanConvertUtils.copy(studentTrainCarApply,StudentTrainCarApplyVo.class));
-                String cacheRes = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY+studentTrainCarApply.getCoachId());
-                JSONObject jsonObject = (JSONObject) JSONObject.parse(cacheRes);
+                JSONObject jsonObject = JedisConnect.get(CacheConstants.REDIS_CACHE_COACH_KEY+studentTrainCarApply.getCoachId());
                 if (jsonObject != null)item.setCoachName(jsonObject.getString("realName"));
             }
         });

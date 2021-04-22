@@ -31,6 +31,8 @@ import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.constant.CacheConstants;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.data.utils.ExcelUtils;
+import com.drive.common.redis.util.CacheUtils;
+import com.drive.common.redis.util.JedisConnect;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,8 +69,6 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
     private CoachingGridService coachingGridService;
 
 
-    @Autowired
-    private AreaService areaService;
 
     @Autowired
     private StudentInfoService studentInfoService;
@@ -97,7 +97,6 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
     @Autowired
     private OneFeeSystemCoachStudentService oneFeeSystemCoachStudentService;
 
-    private  final Jedis jedis = RedisDS.create().getJedis();
 
     @Autowired
     private OneFeeSystemPriceService oneFeeSystemPriceService;
@@ -158,14 +157,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             }
             if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(item.getUserId()).getRealName());
             if (StrUtil.isNotEmpty(item.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(item.getLineUnderUserId()).getRealName());
-            // 省市区
-            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId())){
-                // 换redis
-                AreaEntity area = areaService.getByBaCode(item.getAreaId());
-                if (area != null)item.setAreaName(area.getBaName());
-            }
+
             // 平台训练场地
             if (StrUtil.isNotEmpty(item.getTestActualCoachingGridId())){
                 CoachingGridEntity coachingGridEntity =coachingGridService.getById(item.getTestActualCoachingGridId());
@@ -209,8 +201,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
             OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
             if (systemCoachStudent != null){
-                String coachRedis = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
-                JSONObject jsonObject = JSON.parseObject(coachRedis);
+                JSONObject jsonObject = JedisConnect.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
                 if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
             }
         });
@@ -264,10 +255,6 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         if (StrUtil.isNotEmpty(studentTestEnrollVo.getStudentId()))studentTestEnrollVo.setStudentName(studentInfoService.getById(studentTestEnrollVo.getStudentId()).getRealName());
         if (StrUtil.isNotEmpty(studentTestEnrollVo.getUserId()))studentTestEnrollVo.setOnlineServiceName(serviceInfoService.getById(studentTestEnrollVo.getUserId()).getRealName());
         if (StrUtil.isNotEmpty(studentTestEnrollVo.getLineUnderUserId()))studentTestEnrollVo.setLineServiceName(serviceInfoService.getById(studentTestEnrollVo.getLineUnderUserId()).getRealName());
-        // 省市区
-        if (StrUtil.isNotEmpty(studentTestEnrollVo.getProvinceId()))studentTestEnrollVo.setProvinceName(areaService.getByBaCode(studentTestEnrollVo.getProvinceId()).getBaName());
-        if (StrUtil.isNotEmpty(studentTestEnrollVo.getCityId()))studentTestEnrollVo.setCityName(areaService.getByBaCode(studentTestEnrollVo.getCityId()).getBaName());
-        if (StrUtil.isNotEmpty(studentTestEnrollVo.getAreaId()))studentTestEnrollVo.setAreaName(areaService.getByBaCode(studentTestEnrollVo.getAreaId()).getBaName());
         // 平台训练场地
         if (StrUtil.isNotEmpty(studentTestEnrollVo.getTestActualCoachingGridId())){
             CoachingGridEntity coachingGridEntity =coachingGridService.getById(studentTestEnrollVo.getTestActualCoachingGridId());
@@ -457,10 +444,6 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
                 DriveSchoolEntity driveSchoolEntity =driveSchoolService.getById(item.getLineUnderUserId());
                 if (driveSchoolEntity != null)item.setLineServiceName(driveSchoolEntity.getSchoolName());
             }
-            // 省市区  后续放缓存
-            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
 
 
             // 查询次数
@@ -490,8 +473,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
             OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
             if (systemCoachStudent != null){
-                String coachRedis = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
-                JSONObject jsonObject = JSON.parseObject(coachRedis);
+                JSONObject jsonObject = JedisConnect.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
                 if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
             }
             //newStudentStudyEnrollVos.add(item);
@@ -613,10 +595,6 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
                 DriveSchoolEntity driveSchoolEntity =driveSchoolService.getById(item.getLineUnderUserId());
                 if (driveSchoolEntity != null)item.setLineServiceName(driveSchoolEntity.getSchoolName());
             }
-            // 省市区  后续放缓存
-            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
             // 查询考试
             QueryWrapper examQueryWrapper = new QueryWrapper();
             examQueryWrapper.eq("student_id",item.getStudentId());
@@ -658,8 +636,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
             OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
             if (systemCoachStudent != null){
-                String coachRedis = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
-                JSONObject jsonObject = JSON.parseObject(coachRedis);
+                JSONObject jsonObject = JedisConnect.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
                 if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
             }
         });
@@ -711,10 +688,6 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
                 DriveSchoolEntity driveSchoolEntity =driveSchoolService.getById(item.getLineUnderUserId());
                 if (driveSchoolEntity != null)item.setLineServiceName(driveSchoolEntity.getSchoolName());
             }
-            // 省市区  后续放缓存
-            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
 
             // 查询报名单号
   /*          QueryWrapper studyQueryWrapper = new QueryWrapper();
@@ -766,8 +739,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
             OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
             if (systemCoachStudent != null){
-                String coachRedis = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
-                JSONObject jsonObject = JSON.parseObject(coachRedis);
+                JSONObject jsonObject = JedisConnect.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
                 if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
             }
         });
@@ -814,14 +786,6 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             }
             if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(item.getUserId()).getRealName());
             if (StrUtil.isNotEmpty(item.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(item.getLineUnderUserId()).getRealName());
-            // 省市区
-            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId())){
-                // 换redis
-                AreaEntity area = areaService.getByBaCode(item.getAreaId());
-                if (area != null)item.setAreaName(area.getBaName());
-            }
             // 平台训练场地
             if (StrUtil.isNotEmpty(item.getTestActualCoachingGridId())){
                 CoachingGridEntity coachingGridEntity =coachingGridService.getById(item.getTestActualCoachingGridId());
@@ -848,8 +812,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (oneFeeSystemCoachStudent != null) {
                 OneFeeSystemCoachStudentVo feeSystemCoachStudent = BeanConvertUtils.copy(oneFeeSystemCoachStudent,OneFeeSystemCoachStudentVo.class);
                 log.info("教练绑定数据{}",feeSystemCoachStudent);
-                String cacheRes = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY+feeSystemCoachStudent.getCoachId());
-                JSONObject jsonObject = (JSONObject) JSONObject.parse(cacheRes);
+                JSONObject jsonObject = JedisConnect.get(CacheConstants.REDIS_CACHE_COACH_KEY+feeSystemCoachStudent.getCoachId());
                 if (jsonObject != null)item.setCoachName(jsonObject.getString("realName"));
                 OneFeeSystemPriceEntity oneFeeSystemPrice = oneFeeSystemPriceService.getById(feeSystemCoachStudent.getClassId());
                 if (oneFeeSystemPrice != null)item.setClassName(oneFeeSystemPrice.getName());
@@ -907,10 +870,6 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
                 DriveSchoolEntity driveSchoolEntity =driveSchoolService.getById(item.getLineUnderUserId());
                 if (driveSchoolEntity != null)item.setLineServiceName(driveSchoolEntity.getSchoolName());
             }
-            // 省市区  后续放缓存
-            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
 
             // 查询考试
             QueryWrapper examQueryWrapper = new QueryWrapper();
@@ -953,8 +912,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
             OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
             if (systemCoachStudent != null){
-                String coachRedis = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
-                JSONObject jsonObject = JSON.parseObject(coachRedis);
+                JSONObject jsonObject = JedisConnect.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
                 if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
             }
         });
@@ -985,9 +943,6 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(item.getUserId()).getRealName());
             if (StrUtil.isNotEmpty(item.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(item.getLineUnderUserId()).getRealName());
             // 省市区
-            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
             // 平台训练场地
             if (StrUtil.isNotEmpty(item.getTestActualCoachingGridId())){
                 CoachingGridEntity coachingGridEntity =coachingGridService.getById(item.getTestActualCoachingGridId());
@@ -1013,8 +968,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
             OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
             if (systemCoachStudent != null){
-                String coachRedis = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
-                JSONObject jsonObject = JSON.parseObject(coachRedis);
+                JSONObject jsonObject = JedisConnect.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
                 if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
             }
 

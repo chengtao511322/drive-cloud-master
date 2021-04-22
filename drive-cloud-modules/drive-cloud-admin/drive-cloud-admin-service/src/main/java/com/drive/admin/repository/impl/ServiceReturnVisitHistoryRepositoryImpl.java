@@ -2,7 +2,9 @@ package com.drive.admin.repository.impl;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.db.nosql.redis.RedisDS;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -24,6 +26,7 @@ import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
+import com.drive.common.core.constant.CacheConstants;
 import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.core.utils.StringUtils;
@@ -33,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -79,6 +83,8 @@ public class  ServiceReturnVisitHistoryRepositoryImpl extends BaseController<Ser
 
     @Autowired
     private AreaService areaService;
+
+    private final Jedis jedis = RedisDS.create().getJedis();
 
     /*
      *
@@ -400,12 +406,14 @@ public class  ServiceReturnVisitHistoryRepositoryImpl extends BaseController<Ser
         QueryWrapper queryWrapper= new QueryWrapper();
         queryWrapper.eq("student_id",studentId);
         queryWrapper.eq("return_visit_status", ReturnVisitStatusEnum.PRE.getCode());
+        queryWrapper.orderByDesc("return_visit_time");
         // 如 queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"phone",param.getPhone());
         List<ServiceReturnVisitHistoryEntity> preReturnVisitHistoryList = serviceReturnVisitHistoryService.list(queryWrapper);
         // 售后
         QueryWrapper afterQueryWrapper= new QueryWrapper();
         afterQueryWrapper.eq("student_id",studentId);
         afterQueryWrapper.eq("return_visit_status", ReturnVisitStatusEnum.AFTER.getCode());
+        afterQueryWrapper.orderByDesc("return_visit_time");
         List<ServiceReturnVisitHistoryEntity> afterReturnVisitHistoryList = serviceReturnVisitHistoryService.list(afterQueryWrapper);
         // 聚合List
         /*List<ServiceReturnVisitHistoryEntity> aggregationList = Stream.concat(preReturnVisitHistoryList.stream(), afterReturnVisitHistoryList.stream())
@@ -415,9 +423,24 @@ public class  ServiceReturnVisitHistoryRepositoryImpl extends BaseController<Ser
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),aggregationList);
         }*/
         // do转化
+        List<ServiceReturnVisitHistoryVo> preList= BeanConvertUtils.copyList(preReturnVisitHistoryList,ServiceReturnVisitHistoryVo.class);
+        preList.stream().forEach((item) ->{
+            if (StrUtil.isNotEmpty(item.getServiceId())){
+                ServiceInfoEntity serviceInfo = serviceInfoService.getById(item.getServiceId());
+                if (serviceInfo != null)item.setServiceName(serviceInfo.getRealName());
+            }
+        });
+        List<ServiceReturnVisitHistoryVo> afterList= BeanConvertUtils.copyList(afterReturnVisitHistoryList,ServiceReturnVisitHistoryVo.class);
+        afterList.stream().forEach((item) ->{
+            if (StrUtil.isNotEmpty(item.getServiceId())){
+                ServiceInfoEntity serviceInfo = serviceInfoService.getById(item.getServiceId());
+                if (serviceInfo != null)item.setServiceName(serviceInfo.getRealName());
+            }
+        });
+
         JSONObject json = new JSONObject();
-        json.put("pre",BeanConvertUtils.copyList(preReturnVisitHistoryList,ServiceReturnVisitHistoryVo.class));
-        json.put("after",BeanConvertUtils.copyList(afterReturnVisitHistoryList,ServiceReturnVisitHistoryVo.class));
+        json.put("pre",preList);
+        json.put("after",afterList);
         return R.success(json);
     }
 

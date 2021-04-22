@@ -1,9 +1,11 @@
 package com.drive.admin;
 
+import com.drive.common.core.utils.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.ApplicationContext;
 
 import java.lang.management.ManagementFactory;
 
@@ -17,7 +19,9 @@ import java.lang.management.ManagementFactory;
 public class DriveCloudAdminApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DriveCloudAdminApplication.class,args);
+        //SpringApplication.run(DriveCloudAdminApplication.class,args);
+        ApplicationContext applicationContext = SpringApplication.run(DriveCloudAdminApplication.class, args);
+        SpringContextUtil.setApplicationContext(applicationContext);
         String jvmName = ManagementFactory.getRuntimeMXBean().getName();
         log.info("后台服务启动成功   ლ(´ڡ`ლ)ﾞ  \n" +
                 "                \" .-------.       ____     __        \n" +

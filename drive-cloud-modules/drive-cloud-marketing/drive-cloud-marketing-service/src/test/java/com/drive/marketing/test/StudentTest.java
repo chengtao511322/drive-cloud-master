@@ -1,3 +1,4 @@
+/*
 
 package com.drive.marketing.test;
 
@@ -75,7 +76,8 @@ public class StudentTest {
     }
 
 
-  /*  @Test
+  */
+/*  @Test
     public void bigDataExport() throws Exception {
         QueryWrapper<CouponGetEntity> wrapper = new QueryWrapper<CouponGetEntity>();
         wrapper.eq("source","1323709835872100353");
@@ -124,11 +126,13 @@ public class StudentTest {
         FileOutputStream fos = new FileOutputStream("D:/excel/VIP包过优惠券领取记录.xlsx");
         workbook.write(fos);
         fos.close();
-    }*/
+    }*//*
 
 
 
-   /* @Test
+
+   */
+/* @Test
     public void excelData(){
         QueryWrapper<CouponGetEntity> wrapper = new QueryWrapper<CouponGetEntity>();
         wrapper.eq("source","1323709835872100353");
@@ -167,9 +171,11 @@ public class StudentTest {
 
 
         //ExcelUtils.exportExcel(nweCouponGetVo, CouponGetVo.class, "参加活动人员", new ExportParams());
-    }*/
+    }*//*
+
 
 
 }
 
 
+*/

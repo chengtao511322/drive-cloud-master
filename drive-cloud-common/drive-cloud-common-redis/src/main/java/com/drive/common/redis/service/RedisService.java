@@ -1,5 +1,6 @@
 package com.drive.common.redis.service;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -100,7 +101,7 @@ public class RedisService {
      * @return 值
      */
     public String getStr(String key) {
-        return key == null ? null : redisTemplate.opsForValue().get(key).toString();
+        return key == null ? null : JSONObject.toJSONString(redisTemplate.opsForValue().get(key));
     }
 
     /**

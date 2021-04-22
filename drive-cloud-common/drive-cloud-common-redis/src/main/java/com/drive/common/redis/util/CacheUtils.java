@@ -1,9 +1,16 @@
 package com.drive.common.redis.util;
 
+import cn.hutool.db.nosql.redis.RedisDS;
 import com.alibaba.fastjson.JSONObject;
+import com.drive.common.core.constant.CacheConstants;
+import com.drive.common.core.utils.ApplicationContextUtil;
+import com.drive.common.core.utils.SpringContextUtil;
 import com.drive.common.core.utils.SpringUtils;
 import com.drive.common.core.utils.StringUtils;
 import com.drive.common.redis.service.RedisService;
+import lombok.extern.slf4j.Slf4j;
+import redis.clients.jedis.Jedis;
+import sun.plugin.javascript.ocx.JSObject;
 
 import java.util.List;
 
@@ -12,8 +19,10 @@ import java.util.List;
  * 
  * @author ruoyi
  */
+@Slf4j
 public class CacheUtils<T>
 {
+
     /**
      * 设置字典缓存
      * 
@@ -30,15 +39,32 @@ public class CacheUtils<T>
         SpringUtils.getBean(RedisService.class).set(getCacheKey(key), data);
     }
 
-    public static JSONObject getDataCache(String key)
+    public static Object getDataCache(String key)
     {
-        Object cacheObj = SpringUtils.getBean(RedisService.class).getStr(getCacheKey(key));
-        if (StringUtils.isNotNull(cacheObj))
+        Object cacheObj = SpringContextUtil.getBean(RedisService.class).getStr(getCacheKey(key));
+        return cacheObj;
+    }
+
+    /***
+     * redis
+     * @param key
+     * @return
+     */
+    public static String getCache(String key)
+    {
+        RedisService redisService = SpringContextUtil.getBean(RedisService.class);
+        String str =redisService.getStr(CacheConstants.REDIS_CACHE_COACH_KEY  + key);
+        return str;
+    }
+    public static JSONObject getDataJedisCache(String key)
+    {
+        JSONObject cacheObj= null;
+        log.debug("区域{}",cacheObj);
+/*        if (StringUtils.isNotNull(cacheObj))
         {
             JSONObject dictDatas = StringUtils.cast(cacheObj);
-            return dictDatas;
-        }
-        return null;
+        }*/
+        return cacheObj;
     }
 
     /**

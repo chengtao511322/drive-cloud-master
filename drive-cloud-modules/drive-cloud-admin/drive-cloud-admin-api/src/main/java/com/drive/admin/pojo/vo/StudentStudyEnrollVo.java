@@ -1,6 +1,7 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.drive.admin.util.AdminCacheUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -25,6 +26,8 @@ public class StudentStudyEnrollVo {
 
 	// 订单号
 	private String studentOrderNo;
+	private String classId;
+
 
 	// 省-学员的省
 	@Excel(name = "省-学员的省", width = 20)
@@ -265,4 +268,34 @@ public class StudentStudyEnrollVo {
 	private String examStatus ="未考试";
 
 	private String testEnrollNo;
+	// 班型名称
+	private String classTypeName;
+
+	private BigDecimal orderAmount;
+	private BigDecimal payAmount;
+
+	private String payType;
+
+	public void setProvinceId(String provinceId) {
+		this.provinceId = provinceId;
+		this.provinceName =  AdminCacheUtil.getAreaName(provinceId);
+	}
+	//
+//	public String getCityId() {
+//		return cityId;
+//	}
+//
+	public void setCityId(String cityId) {
+		this.cityId = cityId;
+		this.cityName = AdminCacheUtil.getAreaName(cityId);
+	}
+	//
+//	public String getAreaId() {
+//		return areaId;
+//	}
+//
+	public void setAreaId(String areaId) {
+		this.areaId = areaId;
+		this.areaName=AdminCacheUtil.getAreaName(areaId);
+	}
 }

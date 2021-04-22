@@ -1,6 +1,9 @@
 package com.drive.admin.repository.impl;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.db.nosql.redis.RedisDS;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -21,12 +24,14 @@ import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
+import com.drive.common.core.constant.CacheConstants;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.core.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
@@ -54,6 +59,8 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
     private ServiceInfoService serviceInfoService;
     @Autowired
     private ServiceReturnVisitHistoryService serviceReturnVisitHistoryService;
+
+    private static Jedis jedis = RedisDS.create().getJedis();
 
     @Transactional
     @Override
@@ -129,6 +136,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
                     item.setReturnVisitHistory(true);
                 }
             }*/
+
             if (StrUtil.isNotEmpty(item.getServiceId())){
                 ServiceInfoEntity serviceInfo =serviceInfoService.getById(item.getServiceId());
                 if (serviceInfo != null){
@@ -452,6 +460,9 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
             return R.failure("数据空");
         }
         StudentInfoEntity studentInfo = studentInfoService.getById(id);
+        if (studentInfo == null){
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentInfo);
+        }
         StudentInfoVo studentInfoVo = BeanConvertUtils.copy(studentInfo, StudentInfoVo.class);
         log.info(this.getClass() + "getInfo-方法请求结果{}",studentInfoVo);
         if (studentInfoVo ==null){

@@ -1,3 +1,4 @@
+/*
 package com.drive.marketing.test;
 
 import java.util.concurrent.Semaphore;
@@ -52,4 +53,4 @@ public class ThreadCq4 {
 			}
 		}).start();
 	}
-}
+}*/

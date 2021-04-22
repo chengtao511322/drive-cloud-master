@@ -37,6 +37,7 @@ public class StudentStudyProgressHistoryEntity extends BaseEntity {
 	private LocalDateTime testEnrollTime;
 
 	// 考试场地ID
+	@TableField(fill = FieldFill.INSERT,value="test_coaching_grid_id")
 	private String testCoachingGridId;
 
 	// 考试结果类型（1：考试预约成功；2：考试通过；3考试不通过）

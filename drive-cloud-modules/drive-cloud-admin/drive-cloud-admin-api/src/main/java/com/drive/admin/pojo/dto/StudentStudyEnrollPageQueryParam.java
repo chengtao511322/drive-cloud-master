@@ -23,6 +23,7 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 	private String drivingStatus;
 	// 学员订单号
 	private String studentOrderNo;
+	private String vagueOrderNoSearch;
 
 	// 省-学员的省
 	private String provinceId;

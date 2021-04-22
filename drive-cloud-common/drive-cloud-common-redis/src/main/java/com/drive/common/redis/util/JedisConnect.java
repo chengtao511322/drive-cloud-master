@@ -1,5 +1,7 @@
 package com.drive.common.redis.util;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.db.nosql.redis.RedisDS;
 import com.alibaba.fastjson.JSONObject;
 import redis.clients.jedis.Jedis;
 
@@ -13,7 +15,7 @@ import redis.clients.jedis.Jedis;
 public class JedisConnect {
 
     // 指向自己实例的私有静态引用
-    private static Jedis jedisConnect;
+    private static Jedis jedisConnect =RedisDS.create().getJedis();
 
     // 私有的构造方法
     private JedisConnect(){}
@@ -21,18 +23,17 @@ public class JedisConnect {
     // 以自己实例为返回值的静态的公有方法，静态工厂方法 双重检查锁定
     public static Jedis getJedisConnect(){
         // 被动创建，在真正需要使用时才去创建,双重验证
-        if (jedisConnect == null) {
-            synchronized (Jedis.class) {
-                if (jedisConnect == null) {
-                    jedisConnect = getConnect();
-                }
-            }
+ //       if (jedisConnect == null) {
+ //               if (jedisConnect == null) {
+ //                   jedisConnect =  RedisDS.create().getJedis();
+ //               }
 
-        }
+ //       }
         return jedisConnect;
     }
 
-    static Jedis getConnect(){
+    // 测试 已费
+    Jedis getConnect(){
         Jedis jedis = null;
       try {
           //jedis=new Jedis("172.24.86.62",4579);// 创建客户端 设置IP和端口
@@ -59,7 +60,8 @@ public class JedisConnect {
     // get 方法
     public static JSONObject get(String key){
         Jedis jedisConnect= getJedisConnect();
-        return JSONObject.parseObject(jedisConnect.get(key));
+        if (StrUtil.isEmpty(key))return null;
+        return null;
     }
 
     // get 方法

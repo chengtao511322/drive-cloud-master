@@ -96,7 +96,7 @@ public class ExamPassStrategy implements StudyEnrollStrategy {
             return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),"请在学员考试结束后在进行操作");
         }
 
-
+        studentTestEnroll.setEnrollStatus(ExamEnrollEnum.EXAM_PASS.getCode());
         StudentTestEnrollEntity studentTestEnrol = new StudentTestEnrollEntity();
         // 预约成功
         studentTestEnrol.setEnrollStatus(ExamEnrollEnum.EXAM_PASS.getCode());
@@ -108,6 +108,7 @@ public class ExamPassStrategy implements StudyEnrollStrategy {
 
         //考试通过，更新学员科目一考试是否通过信息
         StudentInfoEntity tStudentInfo = new StudentInfoEntity();
+        tStudentInfo.setId(studentTestEnroll.getStudentId());
         //科目一考试通过
         if(SubjectTypeEnum.SUBJECT_ONE.getCode().equals(studentTestEnrol.getSubjectType())){
             tStudentInfo.setSubject1TestResultType(StatusEnum.ENABLE.getCode());
@@ -157,8 +158,9 @@ public class ExamPassStrategy implements StudyEnrollStrategy {
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("student_id",studentTestEnroll.getStudentId());
         queryWrapper.eq("test_enroll_subject",studentTestEnroll.getSubjectType());
-        queryWrapper.eq("test_coaching_gridId",studentTestEnroll.getTestActualCoachingGridId());
-        queryWrapper.eq("test_actual_time",studentTestEnroll.getTestActualTime());
+        queryWrapper.eq("test_coaching_grid_id",studentTestEnroll.getTestActualCoachingGridId());
+        queryWrapper.orderByDesc("create_time");
+        queryWrapper.last("limit 1");
         StudentStudyProgressHistoryEntity studentStudyProgressHistory = studentStudyProgressHistoryService.getOne(queryWrapper);
         if(studentStudyProgressHistory != null){
             // 考试完成

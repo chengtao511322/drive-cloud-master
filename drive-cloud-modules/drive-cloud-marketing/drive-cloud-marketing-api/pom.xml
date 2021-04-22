@@ -32,6 +32,12 @@
             <groupId>com.drive</groupId>
             <artifactId>drive-cloud-common-core</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.drive</groupId>
+            <artifactId>drive-cloud-admin-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -187,26 +187,26 @@ public class StudentInfoVo {
 //		return provinceId;
 //	}
 //
-//	public void setProvinceId(String provinceId) {
-//		this.provinceId = provinceId;
-//		this.provinceName =  AdminCacheUtil.getAreaName(provinceId);
-//	}
+	public void setProvinceId(String provinceId) {
+		this.provinceId = provinceId;
+		this.provinceName =  AdminCacheUtil.getAreaName(provinceId);
+	}
 //
 //	public String getCityId() {
 //		return cityId;
 //	}
 //
-//	public void setCityId(String cityId) {
-//		this.cityId = cityId;
-//		this.cityName = AdminCacheUtil.getAreaName(cityId);
-//	}
+	public void setCityId(String cityId) {
+		this.cityId = cityId;
+		this.cityName = AdminCacheUtil.getAreaName(cityId);
+	}
 //
 //	public String getAreaId() {
 //		return areaId;
 //	}
 //
-//	public void setAreaId(String areaId) {
-//		this.areaId = areaId;
-//		this.areaName=AdminCacheUtil.getAreaName(areaId);
-//	}
+	public void setAreaId(String areaId) {
+		this.areaId = areaId;
+		this.areaName=AdminCacheUtil.getAreaName(areaId);
+	}
 }

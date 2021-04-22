@@ -68,7 +68,7 @@ public class ExamNoPassStrategy implements StudyEnrollStrategy {
         if (!result){
             throw new BizException(500,SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
         }
-
+        studentTestEnroll.setEnrollStatus(ExamEnrollEnum.EXAM_NO_PASS.getCode());
 
         if(!SubjectTypeEnum.SUBJECT_FOUR.getCode().equals(studentTestEnroll.getSubjectType())){
             //订单号

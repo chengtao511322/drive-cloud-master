@@ -2,6 +2,7 @@ package com.drive.admin.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.nosql.redis.RedisDS;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.drive.admin.mapper.AreaMapper;
@@ -10,6 +11,7 @@ import com.drive.admin.pojo.vo.ViewDataVo;
 import com.drive.admin.service.AreaService;
 import com.drive.common.core.constant.CacheConstants;
 import com.drive.common.core.constant.Constants;
+import com.drive.common.redis.util.JedisConnect;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -42,7 +44,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
     // 创建数组型缓冲等待队列
     BlockingQueue<Runnable> bq = new ArrayBlockingQueue<Runnable>(10);
     // ThreadPoolExecutor:创建自定义线程池，池中保存的线程数为3，允许最大的线程数为6
-    ExecutorService cachedThreadPool = Executors.newFixedThreadPool(100);
+    ExecutorService cachedThreadPool = Executors.newFixedThreadPool(3);
     // 创建一个可缓存线程池
 
     @Override
@@ -65,19 +67,12 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
     public void init() {
         QueryWrapper<AreaEntity> wrapper = new QueryWrapper<AreaEntity>();
         List<AreaEntity> operatorEntityList = areaMapper.selectList(wrapper);
-        Jedis jedis = RedisDS.create().getJedis();
-        Pipeline pipe = jedis.pipelined(); // 先创建一个 pipeline 的链接对象
         long startTime = System.currentTimeMillis();
         operatorEntityList.stream().forEach((item) -> {
-           cachedThreadPool.execute(new Runnable() {
-               public void run() {
-                   // 打印正在执行的缓存线程信息
-                   redisTemplate.opsForValue().set(getCacheKey(item.getBaCode()), item);
-               }
-           });
+           // 打印正在执行的缓存线程信息
+           redisTemplate.opsForValue().set(getCacheKey(item.getBaCode()),item);
        });
-        cachedThreadPool.shutdown();
-        pipe.sync(); // 获取所有的 response
+        //cachedThreadPool.shutdown();
         long endTime = System.currentTimeMillis();
         System.out.println(endTime - startTime);
    }
