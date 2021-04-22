@@ -26,7 +26,6 @@ public class StudyCarScheduleVo {
 	@Excel(name = "驾照类型", width = 20)
 	private String driveType;
 
-
 	//驾照类型
 	@Excel(name = "报名线上客服", width = 20)
 	private String userId;
@@ -88,6 +87,10 @@ public class StudyCarScheduleVo {
 	@Excel(name = "科二约考状态", width = 20)
 	private String coachId;
 
+	// 科二约考状态
+	@Excel(name = "教练姓名", width = 20)
+	private String coachName;
+
 
 	// 线上客服名称
 	@Excel(name = "线上客服名称", width = 20)
@@ -97,6 +100,21 @@ public class StudyCarScheduleVo {
 	@Excel(name = "线下客服名称", width = 20)
 	private String lineUnderUserName;
 
+	// 运营商id
+	@Excel(name = "运营商id", width = 20)
+	private String operatorId;
+
+	// 学员id
+	@Excel(name = "学员id", width = 20)
+	private String studentId;
+
+	// 学员id
+	@Excel(name = "班型id", width = 20)
+	private String classId;
+
+	// 学员id
+	@Excel(name = "班型名称", width = 20)
+	private String className;
 
 
 	public void setCoachId(String coachId) {
@@ -114,8 +132,8 @@ public class StudyCarScheduleVo {
 		this.lineUnderUserName = AdminCacheUtil.getServiceRealName(userId);
 	}
 
-	// 科二约考状态
-	@Excel(name = "教练姓名", width = 20)
-	private String coachName;
-
+	public void setClassId(String classId) {
+		this.classId = classId;
+		this.className =  AdminCacheUtil.getServiceRealName(classId);
+	}
 }
