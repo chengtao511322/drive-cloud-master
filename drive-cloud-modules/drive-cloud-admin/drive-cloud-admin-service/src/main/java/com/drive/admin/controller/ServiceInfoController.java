@@ -47,7 +47,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	* 客服人员信息表 分页列表
 	*/
 	@ApiOperation("客服人员信息表分页列表")
-	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid ServiceInfoPageQueryParam param) {
 		return serviceInfoRepository.pageList(param);
@@ -56,7 +56,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	* 客服人员信息表 列表
 	*/
 	@ApiOperation("客服人员信息表列表")
-	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid ServiceInfoPageQueryParam param) {
 		return serviceInfoRepository.findList(param);
@@ -67,7 +67,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	*/
 	@ApiOperation("获取客服人员信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return serviceInfoRepository.getById(id);
@@ -78,7 +78,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	*/
 	@ApiOperation("新增客服人员信息表")
 	@ApiImplicitParam(name = "ServiceInfoEditParam ", value = "新增客服人员信息表", dataType = "ServiceInfoEditParam")
-	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:add')")
+	//@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:add')")
 	@EventLog(message = "新增客服人员信息表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody ServiceInfoEditParam serviceInfoEditParam) {
@@ -90,7 +90,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	*/
 	@ApiOperation("修改客服人员信息表")
 	@ApiImplicitParam(name = "ServiceInfoEditParam ", value = "修改客服人员信息表", dataType = "ServiceInfoEditParam")
-	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:edit')")
+	//@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:edit')")
 	@EventLog(message = "修改客服人员信息表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody ServiceInfoEditParam serviceInfoEditParam) {
@@ -102,7 +102,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	*/
 	@ApiOperation("删除客服人员信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:delete')")
+	//@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:delete')")
 	@EventLog(message = "删除客服人员信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -114,7 +114,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	*/
 	@ApiOperation("通过主键删除客服人员信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除客服人员信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -125,7 +125,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	* 导出客服人员信息表
 	*/
 	@ApiOperation("导出客服人员信息表")
-	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:export')")
+	//@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:export')")
 	@SneakyThrows
 	@EventLog(message = "导出客服人员信息表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -138,7 +138,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用客服人员信息表")
-	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用客服人员信息表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")
@@ -149,7 +149,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	/**
 	 * 重置密码
 	 */
-	@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:resetPwd')")
+	//@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:resetPwd')")
 	@EventLog(message = "重置密码", businessType = EventLogEnum.UPDATE)
 	@PutMapping("/resetPwd")
 	public ResObject resetPwd(@RequestBody ServiceInfoEditParam serviceInfoEditParam) {

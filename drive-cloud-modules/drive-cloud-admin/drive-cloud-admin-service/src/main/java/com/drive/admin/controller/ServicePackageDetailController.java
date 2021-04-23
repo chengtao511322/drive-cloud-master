@@ -48,7 +48,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	* 服务项目打包明细表 分页列表
 	*/
 	@ApiOperation("服务项目打包明细表分页列表")
-	@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:query')")
+	//@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid ServicePackageDetailPageQueryParam param) {
 		return servicePackageDetailRepository.pageList(param);
@@ -57,7 +57,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	* 服务项目打包明细表 分页列表
 	*/
 	@ApiOperation("服务项目打包明细表列表")
-	@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:query')")
+	//@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid ServicePackageDetailPageQueryParam param) {
 		return servicePackageDetailRepository.findList(param);
@@ -68,7 +68,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	*/
 	@ApiOperation("获取服务项目打包明细表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:query')")
+	//@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return servicePackageDetailRepository.getById(id);
@@ -79,7 +79,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	*/
 	@ApiOperation("新增服务项目打包明细表")
 	@ApiImplicitParam(name = "ServicePackageDetailEditParam ", value = "新增服务项目打包明细表", dataType = "ServicePackageDetailEditParam")
-	@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:add')")
+	//@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:add')")
 	@EventLog(message = "新增服务项目打包明细表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody ServicePackageDetailEditParam servicePackageDetailEditParam) {
@@ -92,7 +92,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	*/
 	@ApiOperation("批量修改服务项目打包明细表")
 	@ApiImplicitParam(name = "ServicePackageDetailEditParam ", value = "批量修改服务项目打包明细表", dataType = "ServicePackageDetailEditParam")
-	@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:updateBatch')")
+	//@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:updateBatch')")
 	@EventLog(message = "批量修改服务项目打包明细表", businessType = EventLogEnum.UPDATE)
 	@PostMapping("/updateBatch")
 	public ResObject updateBatch(@Valid @RequestBody List<ServicePackageDetailEditParam> servicePackageDetailEditParamList) {
@@ -100,7 +100,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	}
 	@ApiOperation("修改服务项目打包明细表")
 	@ApiImplicitParam(name = "ServicePackageDetailEditParam ", value = "修改服务项目打包明细表", dataType = "ServicePackageDetailEditParam")
-	@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:edit')")
+	//@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:edit')")
 	@EventLog(message = "修改服务项目打包明细表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody ServicePackageDetailEditParam servicePackageDetailEditParam) {
@@ -112,7 +112,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	*/
 	@ApiOperation("删除服务项目打包明细表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:delete')")
+	//@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:delete')")
 	@EventLog(message = "删除服务项目打包明细表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable String[] ids) {
@@ -124,7 +124,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	*/
 	@ApiOperation("删除教练信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "删除教练信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -135,7 +135,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	* 导出服务项目打包明细表
 	*/
 	@ApiOperation("导出服务项目打包明细表")
-	@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:export')")
+	//@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:export')")
 	@SneakyThrows
 	@EventLog(message = "导出服务项目打包明细表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -148,7 +148,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用服务项目打包明细表")
-	@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用服务项目打包明细表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

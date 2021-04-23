@@ -18,6 +18,7 @@ import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.utils.BeanConvertUtils;
+import com.drive.common.core.utils.StringUtils;
 import com.drive.common.data.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +62,9 @@ public class  DriveSchoolRepositoryImpl extends BaseController<DriveSchoolPageQu
     @Override
     public ResObject pageList(DriveSchoolPageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
+        Page<DriveSchoolEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         QueryWrapper queryWrapper = this.getQueryWrapper(driveSchoolMapStruct, param);
-        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueSchoolName()),"school_name",param.getVagueSchoolName());
+        queryWrapper.like(StringUtils.isNotBlank(param.getVagueSchoolName()),"school_name",param.getVagueSchoolName());
         // 登录时间
         //queryWrapper.apply(StrUtil.isNotBlank(param.getSearchLoginDate()),
                 //"date_format (login_time,'%Y-%m-%d') = date_format('" + param.getSearchLoginDate() + "','%Y-%m-%d')");
@@ -84,12 +86,10 @@ public class  DriveSchoolRepositoryImpl extends BaseController<DriveSchoolPageQu
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
-
-        Page<DriveSchoolEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<DriveSchoolEntity> pageList = driveSchoolService.page(page, this.getQueryWrapper(driveSchoolMapStruct, param));
+        IPage<DriveSchoolEntity> pageList = driveSchoolService.page(page, queryWrapper);
         if (pageList.getRecords().size() <= 0){
             log.error("数据空");
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<DriveSchoolVo> driveSchoolVoPage = driveSchoolMapStruct.toVoList(pageList);
         driveSchoolVoPage.getRecords().stream().forEach((item) ->{

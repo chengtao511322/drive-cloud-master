@@ -55,7 +55,7 @@ public class StudentStudyProgressHistoryController extends BaseController<Studen
 	* 学员学车报名单 分页列表
 	*/
 	@ApiOperation("学员学车报名单分页列表")
-	@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid @RequestBody StudentStudyProgressHistoryPageQueryParam param) {
 		return studentStudyProgressHistoryRepository.pageList(param);
@@ -64,7 +64,7 @@ public class StudentStudyProgressHistoryController extends BaseController<Studen
 	* 学员学车报名单 列表
 	*/
 	@ApiOperation("学员学车报名单列表")
-	@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid @RequestBody StudentStudyProgressHistoryPageQueryParam param) {
 		return studentStudyProgressHistoryRepository.findList(param);
@@ -75,7 +75,7 @@ public class StudentStudyProgressHistoryController extends BaseController<Studen
 	*/
 	@ApiOperation("获取学员学车报名单")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return studentStudyProgressHistoryRepository.getById(id);
@@ -86,7 +86,7 @@ public class StudentStudyProgressHistoryController extends BaseController<Studen
 	 */
 	@ApiOperation("条件查询获取学员学车报名单")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:query')")
 	@GetMapping("/getInfo")
 	public ResObject getInfo(@PathVariable StudentStudyProgressHistoryPageQueryParam param) {
 		return studentStudyProgressHistoryRepository.getInfo(param);
@@ -97,7 +97,7 @@ public class StudentStudyProgressHistoryController extends BaseController<Studen
 	*/
 	@ApiOperation("新增学员学车报名单")
 	@ApiImplicitParam(name = "StudentStudyProgressHistoryEditParam ", value = "新增学员学车报名单", dataType = "StudentStudyProgressHistoryEditParam")
-	@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:add')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:add')")
 	@EventLog(message = "新增学员学车报名单", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody StudentStudyProgressHistoryInstallParam studentStudyProgressHistoryInstallParam) {
@@ -109,7 +109,7 @@ public class StudentStudyProgressHistoryController extends BaseController<Studen
 	*/
 	@ApiOperation("修改学员学车报名单")
 	@ApiImplicitParam(name = "StudentStudyProgressHistoryEditParam ", value = "修改学员学车报名单", dataType = "StudentStudyProgressHistoryEditParam")
-	@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:edit')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:edit')")
 	@EventLog(message = "修改学员学车报名单", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody StudentStudyProgressHistoryEditParam studentStudyProgressHistoryEditParam) {
@@ -121,7 +121,7 @@ public class StudentStudyProgressHistoryController extends BaseController<Studen
 	*/
 	@ApiOperation("删除学员学车报名单")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:delete')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:delete')")
 	@EventLog(message = "删除学员学车报名单", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -133,7 +133,7 @@ public class StudentStudyProgressHistoryController extends BaseController<Studen
 	*/
 	@ApiOperation("通过主键删除学员学车报名单")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除学员学车报名单", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -144,7 +144,7 @@ public class StudentStudyProgressHistoryController extends BaseController<Studen
 	* 导出学员学车报名单
 	*/
 	@ApiOperation("导出学员学车报名单")
-	@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:export')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:export')")
 	@SneakyThrows
 	@EventLog(message = "导出学员学车报名单", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -157,7 +157,7 @@ public class StudentStudyProgressHistoryController extends BaseController<Studen
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用学员学车报名单")
-	@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyProgressHistory',  'admin:studentStudyProgressHistory:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用学员学车报名单", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

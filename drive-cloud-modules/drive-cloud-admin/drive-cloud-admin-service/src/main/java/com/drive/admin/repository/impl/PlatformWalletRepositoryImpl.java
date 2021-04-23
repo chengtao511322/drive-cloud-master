@@ -30,6 +30,7 @@ import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.data.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -295,7 +296,7 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
     public ResObject walletSettle(String orderNo) {
         log.info(this.getClass()+"walletSettle-方法请求参数{}",orderNo);
         if (StrUtil.isEmpty(orderNo)){
-            return R.failure(SubResultCode.PARAMISBLANK.subCode(),"订单号不能为空");
+            throw new BizException(500,SubResultCode.PARAMISBLANK.subCode(),"订单号不能为空");
         }
         // 订单号查询 钱包明细
         QueryWrapper accountFlowQueryWrapper = new QueryWrapper();
@@ -357,7 +358,7 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
         //查询出该订单的账务流水明细
         List<AccountFlowDetailEntity> accountFlowDetailList = accountFlowDetailService.list(queryWrapper);
         if (accountFlowDetailList.size() <= 0){
-            return R.failure(SubResultCode.OPERATION_ERROR.subCode(),"数据异常不可操作");
+            throw new BizException(500,SubResultCode.OPERATION_ERROR.subCode(),"数据异常不可操作");
         }
         List<AccountFlowDetailInstallParam> accountFlowDetailInstall = BeanConvertUtils.copyList(accountFlowDetailList,AccountFlowDetailInstallParam.class);
         accountFlowDetailInstall.stream().forEach((item) ->{
@@ -375,10 +376,10 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
         // 条件查询
         QueryWrapper queryWrapper = new QueryWrapper();
         // 钱包用户ID
-        queryWrapper.eq("user_id",accountFlowDetailInstallParam.getWalletUserId());
+        queryWrapper.eq("user_id",accountFlowDetailInstallParam.getIncomeUserId());
         PlatformWalletEntity platformWallet = platformWalletService.getOne(queryWrapper);
         if (platformWallet == null){
-            return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),"数据异常");
+            throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),"数据异常");
         }
         // 钱包计算
         platformWallet.setWalletAmount(platformWallet.getWalletAmount().add(accountFlowDetailInstallParam.getItemAmount()));
@@ -405,6 +406,10 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
         }
         // 收入/支出名称
         platformWalletDetail.setWalletDetailName(accountFlowDetailInstallParam.getItemName());
+        // 数据时间
+        platformWalletDetail.setSetUpDate(LocalDateTime.now());
+        // 状态 成功
+        platformWalletDetail.setStatus(StatusEnum.ENABLE.getCode());
         // 创建时间
         platformWalletDetail.setCreateTime(LocalDateTime.now());
         //  账务流水明细id/提现时为清算记录id

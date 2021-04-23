@@ -4,8 +4,6 @@ import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.db.nosql.redis.RedisDS;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -25,6 +23,7 @@ import com.drive.admin.service.mapstruct.StudentOrderMapStruct;
 import com.drive.admin.service.mapstruct.StudentStudyEnrollMapStruct;
 import com.drive.admin.strategy.StudyEnrollStrategy;
 import com.drive.admin.strategy.context.SpringContextUtil;
+import com.drive.admin.util.AdminCacheUtil;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
@@ -34,7 +33,6 @@ import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.core.utils.DateUtils;
 import com.drive.common.data.utils.ExcelUtils;
-import com.drive.common.redis.util.JedisConnect;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -233,8 +231,8 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             studentOrderQueryWrapper.eq("study_enroll_no",item.getStudyEnrollNo());
             StudentOrderEntity studentOrder  = studentOrderService.getOne(studentOrderQueryWrapper);
             if (studentOrder != null){
-                JSONObject jsonObject = JedisConnect.get(CacheConstants.REDIS_CACHE_CLASS_KEY+studentOrder.getProductId());
-                if (jsonObject != null)item.setClassName(jsonObject.getString("name"));
+                String className = AdminCacheUtil.getClassName(studentOrder.getProductId());
+                if(StrUtil.isNotEmpty(className))item.setClassName(className);
                 item.setStudentOrderVo(BeanConvertUtils.copy(studentOrder, StudentOrderVo.class));
                 // 订单价格
                 item.setOrderAmount(studentOrder.getOrderAmount());
@@ -270,11 +268,12 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             if (oneFeeSystemCoachStudent != null) {
                 OneFeeSystemCoachStudentVo feeSystemCoachStudent = BeanConvertUtils.copy(oneFeeSystemCoachStudent,OneFeeSystemCoachStudentVo.class);
                 log.info("教练绑定数据{}",feeSystemCoachStudent);
-                JSONObject jsonObject =JedisConnect.get(CacheConstants.REDIS_CACHE_COACH_KEY+feeSystemCoachStudent.getCoachId());
-                if (jsonObject != null)item.setCoachName(jsonObject.getString("realName"));
+
+                String coachName = AdminCacheUtil.getCoachName(feeSystemCoachStudent.getCoachId());
+                if(StrUtil.isNotEmpty(coachName))item.setCoachName(coachName);
                 // 版型
-                OneFeeSystemPriceEntity oneFeeSystemPrice = oneFeeSystemPriceService.getById(oneFeeSystemCoachStudent.getClassId());
-                if (oneFeeSystemPrice != null)item.setClassName(oneFeeSystemPrice.getName());
+                String className = AdminCacheUtil.getClassName(oneFeeSystemCoachStudent.getClassId());
+                if (StrUtil.isNotEmpty(className))item.setClassName(className);
             }
             // 学员
             StudentInfoEntity student = studentInfoService.getById(item.getStudentId());
@@ -381,8 +380,8 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         studentOrderQueryWrapper.eq("study_enroll_no",studentStudyEnrollVo.getStudyEnrollNo());
         StudentOrderEntity studentOrder  = studentOrderService.getOne(studentOrderQueryWrapper);
         if (studentOrder != null){
-            JSONObject jsonObject =JedisConnect.get(CacheConstants.REDIS_CACHE_CLASS_KEY+studentOrder.getProductId());
-            if (jsonObject != null)studentStudyEnrollVo.setClassName(jsonObject.getString("name"));
+            String className = AdminCacheUtil.getClassName(studentOrder.getProductId());
+            if(StrUtil.isNotEmpty(className))studentStudyEnrollVo.setCoachName(className);
         }
 
         return R.success(studentStudyEnrollVo);
@@ -729,7 +728,8 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             String[] arr = param.getPayTimeSearch().split(",");
             queryWrapper.between("t1.pay_time",arr[0],arr[1]);
         }
-
+        // 默认排序
+        queryWrapper.orderByDesc("t1.create_time");
         IPage<StudentStudyEnrollVo> pageList = studentStudyEnrollService.studyEnrollPageList(page,queryWrapper);
         if (pageList.getRecords().size() <= 0){
             log.error(this.getClass() +"数据空");
@@ -762,7 +762,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             if (oneFeeSystemPrice != null)item.setClassName(oneFeeSystemPrice.getName());
             // 省市区
             QueryWrapper serviceQueryWrapper = new QueryWrapper();
-            serviceQueryWrapper.eq("order_detail_no",item.getStudyEnrollNo());
+            //serviceQueryWrapper.eq("order_detail_no",item.getStudyEnrollNo());
             serviceQueryWrapper.eq("student_id",item.getStudentId());
             serviceQueryWrapper.orderByDesc("create_time");
             serviceQueryWrapper.last("limit 1");
@@ -804,6 +804,11 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         // 推荐人ID
         queryWrapper.eq(StrUtil.isNotEmpty(param.getRecommendUserId()),"t3.recommend_user_id",param.getRecommendUserId());
 
+        // 模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"t3.phone",param.getVaguePhoneSearch());
+        // 真实
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"t3.real_name",param.getVagueRealNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePromoterName()),"t3.real_name",param.getVaguePromoterName());
         if (StrUtil.isNotEmpty(param.getSubjectType()) && StrUtil.isNotEmpty(param.getEnrollStatus())){
             queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t1.student_id = t_student_test_enroll.student_id AND t_student_test_enroll.subject_type="+param.getSubjectType()+" AND t_student_test_enroll.enroll_status = "+param.getEnrollStatus()+")",0);
         }
@@ -852,7 +857,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             if (studentTestEnrollThree != null){
                 item.setSubjectThreeStatus(studentTestEnrollThree.getEnrollStatus());
                 item.setSubjectThreeStatusName(ExamEnrollEnum.getNameByCode(studentTestEnrollThree.getEnrollStatus()));
-                item.setSubjectOneExamTime(studentTestEnrollThree.getTestActualTime());
+                item.setSubjectThreeExamTime(studentTestEnrollThree.getTestActualTime());
             }
 
             // 查询科目四
@@ -880,8 +885,8 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             systemCoachStudentQueryWrapper.eq("bind_status",StatusEnum.NORMAL.getCode());
             OneFeeSystemCoachStudentEntity systemCoachStudent = oneFeeSystemCoachStudentService.getOne(systemCoachStudentQueryWrapper);
             if (systemCoachStudent != null){
-                JSONObject jsonObject = JedisConnect.get(CacheConstants.REDIS_CACHE_COACH_KEY + systemCoachStudent.getCoachId());
-                if (jsonObject != null)item.setBindCoach(jsonObject.getString("realName"));
+                String coachName = AdminCacheUtil.getCoachName(systemCoachStudent.getCoachId());
+                if(StrUtil.isNotEmpty(coachName))item.setBindCoach(coachName);
             }
 
             // 客服
@@ -945,6 +950,23 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
          */
         Page<CoachTeachTimeEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         QueryWrapper queryWrapper = new QueryWrapper();
+        // 通过状态查询
+        queryWrapper.eq("tsse.enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+        List<StudentInfoEntity> studentInfoList = new ArrayList<>();
+        if (StrUtil.isNotEmpty(param.getVaguePhoneSearch()) ||
+                StrUtil.isNotEmpty(param.getVagueRealNameSearch())){
+            QueryWrapper studentQueryWrapper = new QueryWrapper();
+            // 手机号
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"phone",param.getVaguePhoneSearch());
+            // 真实姓名
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"real_name",param.getVagueRealNameSearch());
+
+            studentInfoList = studentInfoService.list(studentQueryWrapper);
+            if(studentInfoList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentInfoList);
+        }
+        // 学员ID
+        queryWrapper.in(studentInfoList.size() > 0,"tsse.student_id",studentInfoList.stream().map(StudentInfoEntity::getId).collect(Collectors.toList()));
+        queryWrapper.orderByDesc("tsse.create_time");
         IPage<StudyCarScheduleVo> pageList =  studentStudyEnrollService.studyCarSchedulePageList(page,queryWrapper);
         return R.success(pageList);
 
@@ -1044,6 +1066,19 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         log.info("drivingStudentDataPageList-方法请求参数{}",param);
         Page<StudentOrderEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         QueryWrapper queryWrapper = new QueryWrapper();
+        List<StudentInfoEntity> studentInfoList = new ArrayList<>();
+        if (StrUtil.isNotEmpty(param.getVaguePhoneSearch()) || StrUtil.isNotEmpty(param.getVagueRealNameSearch())){
+            QueryWrapper studentQueryWrapper = new QueryWrapper();
+            // 手机号
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"phone",param.getVaguePhoneSearch());
+            // 真实姓名
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"real_name",param.getVagueRealNameSearch());
+
+            studentInfoList = studentInfoService.list(studentQueryWrapper);
+            if(studentInfoList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentInfoList);
+        }
+        // 学员ID
+        queryWrapper.in(studentInfoList.size() > 0,"student_id",studentInfoList.stream().map(StudentInfoEntity::getId).collect(Collectors.toList()));
         // 运营商查询
         queryWrapper.eq(StrUtil.isNotEmpty(param.getOperatorId()),"operator_id",param.getOperatorId());
         // 学员ID
@@ -1051,7 +1086,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueOrderNoSearch()),"order_no",param.getVagueOrderNoSearch());
         //
         // 科目类型
-        queryWrapper.in("order_type",3,4);
+        queryWrapper.in("order_type",SubjectTypeEnum.SUBJECT_THREE.getCode(),SubjectTypeEnum.SUBJECT_FOUR.getCode());
 
         queryWrapper.orderByDesc("create_time");
         IPage<StudentOrderEntity> pageList = studentOrderService.page(page,queryWrapper);
@@ -1083,8 +1118,8 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             StudentTrainCarApplyEntity studentTrainCarApply = studentTrainCarApplyService.getById(item.getTrainApplyNo());
             if (studentTrainCarApply != null){
                 item.setStudentTrainCarApplyVo(BeanConvertUtils.copy(studentTrainCarApply,StudentTrainCarApplyVo.class));
-                JSONObject jsonObject = JedisConnect.get(CacheConstants.REDIS_CACHE_COACH_KEY+studentTrainCarApply.getCoachId());
-                if (jsonObject != null)item.setCoachName(jsonObject.getString("realName"));
+                String coachName = AdminCacheUtil.getCoachName(studentTrainCarApply.getCoachId());
+                if(StrUtil.isNotEmpty(coachName))item.setCoachName(coachName);
             }
         });
         return R.success(studentOrderVoPage);

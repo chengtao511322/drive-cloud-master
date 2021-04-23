@@ -53,7 +53,7 @@ public class CacheUtils<T>
     public static String getCache(String key)
     {
         RedisService redisService = SpringContextUtil.getBean(RedisService.class);
-        String str =redisService.getStr(CacheConstants.REDIS_CACHE_COACH_KEY  + key);
+        String str =redisService.getStr(key);
         return str;
     }
     public static JSONObject getDataJedisCache(String key)

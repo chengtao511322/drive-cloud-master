@@ -26,6 +26,9 @@ public enum OperatorEnum {
     INCOME_USER_TYPE_SCHOOL("6","驾校"),
     DRIVERPRINCE_OPERATORID("8d26f5f6cae74532bf0baf37fc8ccd0f","学车小王子"),
     PUBLIC_CAR_ROYALTY_COST("22","驾校公车提成费用"),
+    PLATFORM_WALLET_OPERATOR_PAY("35","运营商支出"),
+    AFD_SCHOOL_ENROLL_COST ("1","学车报名驾校提成"),
+    PLATFORM_WALLET_OPERATOR ("34","运营商收入"),
 
 
 

@@ -199,5 +199,6 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 	private String subjectType;
 	// 约考状态
 	private String aboutStatus;
+	private String vaguePromoterName;
 
 }

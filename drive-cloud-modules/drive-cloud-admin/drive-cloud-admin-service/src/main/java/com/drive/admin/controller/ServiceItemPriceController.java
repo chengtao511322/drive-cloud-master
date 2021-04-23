@@ -47,7 +47,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	* 服务项目价格表 分页列表
 	*/
 	@ApiOperation("服务项目价格表分页列表")
-	@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid ServiceItemPricePageQueryParam param) {
 		return serviceItemPriceRepository.pageList(param);
@@ -56,7 +56,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	* 服务项目价格表 分页列表
 	*/
 	@ApiOperation("服务项目价格表列表")
-	@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid ServiceItemPricePageQueryParam param) {
 		return serviceItemPriceRepository.findList(param);
@@ -67,7 +67,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	 * 服务项目价格表 分页列表
 	 */
 	@ApiOperation("服务项目价格表列表")
-	@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
 	@PostMapping(value = "/findListContrast")
 	public ResObject findListContrast(@Valid ServiceItemPricePageQueryParam param) {
 		return serviceItemPriceRepository.findListContrast(param);
@@ -78,7 +78,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	*/
 	@ApiOperation("获取服务项目价格表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return serviceItemPriceRepository.getById(id);
@@ -88,14 +88,14 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	*/
 	@ApiOperation("获取服务项目价格表")
 	@ApiImplicitParam(name = "queryList", required = true, dataType = "Entity", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
 	@PostMapping("/queryList")
 	public ResObject queryList(@RequestBody ServiceItemPricePageQueryParam param) {
 		return serviceItemPriceRepository.queryList(param);
 	}
 	@ApiOperation("获取分页查询服务项目价格表")
 	@ApiImplicitParam(name = "queryPageList", required = true, dataType = "Entity", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
 	@PostMapping("/queryPageList")
 	public ResObject queryPageList(@RequestBody ServiceItemPricePageQueryParam param) {
 		return serviceItemPriceRepository.queryPageList(param);
@@ -104,7 +104,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 
 	@ApiOperation("通过班型ID获取关联服务项目价格表")
 	@ApiImplicitParam(name = "queryPageList", required = true, dataType = "Entity", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
 	@PostMapping("/getQueryListById")
 	public ResObject getQueryListById(@RequestBody ServiceItemPricePageQueryParam param) {
 		return serviceItemPriceRepository.getQueryListById(param);
@@ -115,7 +115,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	*/
 	@ApiOperation("新增服务项目价格表")
 	@ApiImplicitParam(name = "ServiceItemPriceEditParam ", value = "新增服务项目价格表", dataType = "ServiceItemPriceEditParam")
-	@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:add')")
+	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:add')")
 	@EventLog(message = "新增服务项目价格表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody ServiceItemPriceEditParam serviceItemPriceEditParam) {
@@ -127,7 +127,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	*/
 	@ApiOperation("修改服务项目价格表")
 	@ApiImplicitParam(name = "ServiceItemPriceEditParam ", value = "修改服务项目价格表", dataType = "ServiceItemPriceEditParam")
-	@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:edit')")
+	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:edit')")
 	@EventLog(message = "修改服务项目价格表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody ServiceItemPriceEditParam serviceItemPriceEditParam) {
@@ -139,7 +139,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	*/
 	@ApiOperation("删除服务项目价格表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:delete')")
+	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:delete')")
 	@EventLog(message = "删除服务项目价格表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -151,7 +151,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	*/
 	@ApiOperation("删除教练信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "删除教练信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -162,7 +162,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	* 导出服务项目价格表
 	*/
 	@ApiOperation("导出服务项目价格表")
-	@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:export')")
+	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:export')")
 	@SneakyThrows
 	@EventLog(message = "导出服务项目价格表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -175,7 +175,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用服务项目价格表")
-	@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用服务项目价格表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

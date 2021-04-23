@@ -53,7 +53,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	* 学员学车报名单 分页列表
 	*/
 	@ApiOperation("学员学车报名单分页列表")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid StudentStudyEnrollPageQueryParam param) {
 		return studentStudyEnrollRepository.pageList(param);
@@ -61,25 +61,25 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 
 
 	@ApiOperation("学员学车报名单分页列表")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
 	@PostMapping(value = "/studyEnrollPageList")
 	public ResObject studyEnrollPageList(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
 		return studentStudyEnrollRepository.studyEnrollPageList(param);
 	}
 	@ApiOperation("统计学员学车报名单分页列表")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
 	@PostMapping(value = "/statisticsStudentDataPageList")
 	public ResObject statisticsStudentDataPageList(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
 		return studentStudyEnrollRepository.statisticsStudentDataPageList(param);
 	}
 	@ApiOperation("统计学员学车报名单分页列表")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
 	@PostMapping(value = "/drivingStudentDataPageList")
 	public ResObject drivingStudentDataPageList(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
 		return studentStudyEnrollRepository.drivingStudentDataPageList(param);
 	}
 	@ApiOperation("统计学员练车单分页列表")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
 	@PostMapping(value = "/drillStudentDataPageList")
 	public ResObject drillStudentDataPageList(@Valid @RequestBody StudentOrderPageQueryParam param) {
 		return studentStudyEnrollRepository.drillStudentDataPageList(param);
@@ -87,7 +87,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 
 
 	@ApiOperation("待支付转化分页列表")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
 	@PostMapping(value = "/stayPayChangePageList")
 	public ResObject stayPayChangePageList(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
 		// 状态值
@@ -105,7 +105,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	* 学员学车报名单 列表
 	*/
 	@ApiOperation("学员学车报名单列表")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid StudentStudyEnrollPageQueryParam param) {
 		return studentStudyEnrollRepository.findList(param);
@@ -116,7 +116,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	*/
 	@ApiOperation("获取学员学车报名单")
 	@ApiImplicitParam(name = "studyEnrollNo", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
 	@GetMapping("/{studyEnrollNo}")
 	public ResObject get(@PathVariable String studyEnrollNo) {
 		return studentStudyEnrollRepository.getById(studyEnrollNo);
@@ -124,7 +124,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 
 	@ApiOperation("获取学员学车报名单")
 	@ApiImplicitParam(name = "studyEnrollNo", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
 	@GetMapping("/getByStudentId/{studentId}")
 	public ResObject getByStudentId(@PathVariable String studentId) {
 		if (StrUtil.isEmpty(studentId)){
@@ -144,7 +144,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	}
 	@ApiOperation("获取学员学车报名单（条件查询一条数据）")
 	@ApiImplicitParam(name = "studyEnrollNo", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
 	@GetMapping("/getStudentStudyEnrollInfo")
 	public ResObject getStudentStudyEnrollInfo(@Valid StudentStudyEnrollPageQueryParam studentStudyEnrollPageQueryParam) {
 		return studentStudyEnrollRepository.getStudentStudyEnrollInfo(studentStudyEnrollPageQueryParam);
@@ -155,7 +155,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	*/
 	@ApiOperation("完善学员学车报名单")
 	@ApiImplicitParam(name = "StudentStudyEnrollEditParam ", value = "新增学员学车报名单", dataType = "StudentStudyEnrollEditParam")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:add')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:add')")
 	@EventLog(message = "新增学员学车报名单", businessType = EventLogEnum.CREATE)
 	@PutMapping("/completeStudyEnroll")
 	public ResObject completeStudyEnroll(@Valid @RequestBody CompleteStudyEnrollParam completeStudyEnrollParam) {
@@ -163,7 +163,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	}
 	@ApiOperation("新增学员学车报名单")
 	@ApiImplicitParam(name = "StudentStudyEnrollEditParam ", value = "新增学员学车报名单", dataType = "StudentStudyEnrollEditParam")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:add')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:add')")
 	@EventLog(message = "新增学员学车报名单", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody StudentStudyEnrollEditParam studentStudyEnrollEditParam) {
@@ -175,7 +175,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	*/
 	@ApiOperation("修改学员学车报名单")
 	@ApiImplicitParam(name = "StudentStudyEnrollEditParam ", value = "修改学员学车报名单", dataType = "StudentStudyEnrollEditParam")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:edit')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:edit')")
 	@EventLog(message = "修改学员学车报名单", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody StudentStudyEnrollEditParam studentStudyEnrollEditParam) {
@@ -187,7 +187,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	*/
 	@ApiOperation("删除学员学车报名单")
 	@ApiImplicitParam(name = "studyEnrollNo", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:delete')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:delete')")
 	@EventLog(message = "删除学员学车报名单", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{studyEnrollNos}")
 	public ResObject delete(@PathVariable Long[] studyEnrollNos) {
@@ -199,7 +199,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	*/
 	@ApiOperation("通过主键删除学员学车报名单")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除学员学车报名单", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -210,7 +210,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	* 导出学员学车报名单
 	*/
 	@ApiOperation("导出学员学车报名单")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:export')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:export')")
 	@SneakyThrows
 	@EventLog(message = "导出学员学车报名单", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -223,7 +223,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用学员学车报名单")
-	@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用学员学车报名单", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

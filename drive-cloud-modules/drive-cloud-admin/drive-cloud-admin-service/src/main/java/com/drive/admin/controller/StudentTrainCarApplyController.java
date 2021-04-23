@@ -51,7 +51,7 @@ public class StudentTrainCarApplyController extends BaseController<StudentTrainC
 	* 学员学车预约表 分页列表
 	*/
 	@ApiOperation("学员学车预约表分页列表")
-	@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:query')")
+	//@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid @RequestBody StudentTrainCarApplyPageQueryParam param) {
 		return studentTrainCarApplyRepository.pageList(param);
@@ -60,7 +60,7 @@ public class StudentTrainCarApplyController extends BaseController<StudentTrainC
 	* 学员学车预约表 列表
 	*/
 	@ApiOperation("学员学车预约表列表")
-	@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:query')")
+	//@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid @RequestBody StudentTrainCarApplyPageQueryParam param) {
 		return studentTrainCarApplyRepository.findList(param);
@@ -71,7 +71,7 @@ public class StudentTrainCarApplyController extends BaseController<StudentTrainC
 	*/
 	@ApiOperation("获取学员学车预约表")
 	@ApiImplicitParam(name = "trainApplyNo", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:query')")
+	//@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:query')")
 	@GetMapping("/{trainApplyNo}")
 	public ResObject get(@PathVariable String trainApplyNo) {
 		return studentTrainCarApplyRepository.getById(trainApplyNo);
@@ -82,7 +82,7 @@ public class StudentTrainCarApplyController extends BaseController<StudentTrainC
 	 */
 	@ApiOperation("条件查询获取学员学车预约表")
 	@ApiImplicitParam(name = "trainApplyNo", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:query')")
+	//@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:query')")
 	@GetMapping("/getInfo")
 	public ResObject getInfo(@PathVariable StudentTrainCarApplyPageQueryParam param) {
 		return studentTrainCarApplyRepository.getInfo(param);
@@ -93,7 +93,7 @@ public class StudentTrainCarApplyController extends BaseController<StudentTrainC
 	*/
 	@ApiOperation("新增学员学车预约表")
 	@ApiImplicitParam(name = "StudentTrainCarApplyEditParam ", value = "新增学员学车预约表", dataType = "StudentTrainCarApplyEditParam")
-	@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:add')")
+	//@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:add')")
 	@EventLog(message = "新增学员学车预约表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody StudentTrainCarApplyInstallParam studentTrainCarApplyInstallParam) {
@@ -105,7 +105,7 @@ public class StudentTrainCarApplyController extends BaseController<StudentTrainC
 	*/
 	@ApiOperation("修改学员学车预约表")
 	@ApiImplicitParam(name = "StudentTrainCarApplyEditParam ", value = "修改学员学车预约表", dataType = "StudentTrainCarApplyEditParam")
-	@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:edit')")
+	//@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:edit')")
 	@EventLog(message = "修改学员学车预约表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody StudentTrainCarApplyEditParam studentTrainCarApplyEditParam) {
@@ -117,7 +117,7 @@ public class StudentTrainCarApplyController extends BaseController<StudentTrainC
 	*/
 	@ApiOperation("删除学员学车预约表")
 	@ApiImplicitParam(name = "trainApplyNo", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:delete')")
+	//@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:delete')")
 	@EventLog(message = "删除学员学车预约表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{trainApplyNos}")
 	public ResObject delete(@PathVariable Long[] trainApplyNos) {
@@ -129,7 +129,7 @@ public class StudentTrainCarApplyController extends BaseController<StudentTrainC
 	*/
 	@ApiOperation("通过主键删除学员学车预约表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除学员学车预约表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -140,7 +140,7 @@ public class StudentTrainCarApplyController extends BaseController<StudentTrainC
 	* 导出学员学车预约表
 	*/
 	@ApiOperation("导出学员学车预约表")
-	@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:export')")
+	//@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:export')")
 	@SneakyThrows
 	@EventLog(message = "导出学员学车预约表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -153,7 +153,7 @@ public class StudentTrainCarApplyController extends BaseController<StudentTrainC
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用学员学车预约表")
-	@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用学员学车预约表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

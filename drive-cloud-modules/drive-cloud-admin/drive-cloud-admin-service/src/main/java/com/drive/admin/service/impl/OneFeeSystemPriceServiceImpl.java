@@ -2,7 +2,9 @@ package com.drive.admin.service.impl;
 
 import cn.hutool.db.nosql.redis.RedisDS;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.mapper.OneFeeSystemPriceMapper;
 import com.drive.admin.pojo.dto.TreeNodeCategoryDto;
@@ -10,13 +12,19 @@ import com.drive.admin.pojo.entity.OneFeeSystemPriceEntity;
 import com.drive.admin.service.OneFeeSystemPriceService;
 import com.drive.common.core.base.BaseService;
 import com.drive.common.core.constant.CacheConstants;
+import com.drive.common.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.PostConstruct;
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 学车一费制定价表 服务实现类
@@ -27,16 +35,40 @@ import java.util.List;
 @Slf4j
 public class OneFeeSystemPriceServiceImpl extends BaseService<OneFeeSystemPriceMapper, OneFeeSystemPriceEntity> implements OneFeeSystemPriceService {
 
-    private  final Jedis jedis = RedisDS.create().getJedis();
+
+    // 指向自己实例的私有静态引用
+    //private static Jedis jedis =RedisDS.create().getJedis();
 
     @Autowired
-    private OneFeeSystemPriceMapper oneFeeSystemPriceMapper;
-
+    private RedisService redisService;
     @Override
     public List<TreeNodeCategoryDto> getServicePackageTree(String tenantId) {
-        return oneFeeSystemPriceMapper.getServicePackageTree(tenantId);
+        return this.getBaseMapper().getServicePackageTree(tenantId);
     }
 
+    @CacheEvict(value = "redisCache", key = "'redisCache:classItem:class_'+ #entity.getId()")
+    @Override
+    public boolean save(OneFeeSystemPriceEntity entity) {
+        return super.save(entity);
+    }
+
+    @CacheEvict(value = "redisCache", key = "'redisCache:classItem:class_'+ #id")
+    @Override
+    public boolean removeById(Serializable id) {
+        return super.removeById(id);
+    }
+
+    @CacheEvict(value = "redisCache", key = "'redisCache:classItem:class_'+ #entity.getId()")
+    @Override
+    public boolean updateById(OneFeeSystemPriceEntity entity) {
+        return super.updateById(entity);
+    }
+
+    //@Cacheable(value = "redisCache", key = "'redisCache:classItem:class_'+ #id")
+    @Override
+    public <E extends IPage<OneFeeSystemPriceEntity>> E page(E page, Wrapper<OneFeeSystemPriceEntity> queryWrapper) {
+        return super.page(page,queryWrapper);
+    }
 
     @PostConstruct
     public void init() {
@@ -50,6 +82,7 @@ public class OneFeeSystemPriceServiceImpl extends BaseService<OneFeeSystemPriceM
 
         // redisTemplate.opsForValue().set("viewList:", viewList);
         long startTime = System.currentTimeMillis();
+        Map map = new HashMap(oneFeeSystemPriceList.size());
         oneFeeSystemPriceList.stream().forEach((item) -> {
             //for (int i = 0; i < viewList.size(); i++) {
             //pipe.set("pipe:"+viewList.get(0).getCode(), viewList.get(0).getValue());
@@ -57,10 +90,12 @@ public class OneFeeSystemPriceServiceImpl extends BaseService<OneFeeSystemPriceM
             //Thread.sleep(1000);
             // 打印正在执行的缓存线程信息
             //pipeline.sadd("viewList:"+item.getCode(), item.getValue());
-            jedis.set(CacheConstants.REDIS_CACHE_CLASS_KEY +item.getId(), JSONObject.toJSONString(item));
+            //jedis.set(CacheConstants.REDIS_CACHE_CLASS_KEY +item.getId(), JSONObject.toJSONString(item));
+            map.put(CacheConstants.REDIS_CACHE_CLASS_KEY +item.getId(),JSONObject.toJSONString(item));
         });
+        //redisService.executePipelined(map,60);
         long endTime = System.currentTimeMillis();
-        System.out.println(endTime - startTime);
+        System.out.println((endTime - startTime) +"毫秒");
     }
 }
 

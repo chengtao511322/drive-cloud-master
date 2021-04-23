@@ -134,6 +134,6 @@ public class StudyCarScheduleVo {
 
 	public void setClassId(String classId) {
 		this.classId = classId;
-		this.className =  AdminCacheUtil.getServiceRealName(classId);
+		this.className =  AdminCacheUtil.getClassName(classId);
 	}
 }

@@ -5,6 +5,7 @@ import cn.hutool.db.nosql.redis.RedisDS;
 import com.alibaba.fastjson.JSONObject;
 import com.drive.admin.pojo.vo.AreaVo;
 import com.drive.admin.pojo.vo.CoachInfoVo;
+import com.drive.admin.pojo.vo.OneFeeSystemPriceVo;
 import com.drive.admin.pojo.vo.ServiceInfoVo;
 import com.drive.common.core.constant.CacheConstants;
 import com.drive.common.core.constant.Constants;
@@ -117,5 +118,20 @@ public class AdminCacheUtil {
             return null;
         }
         return serviceInfoVo.getRealName();
+    }
+    /**
+     * 根据id，获取版型
+     * @param serviceId  id
+     * @return 返回版型名称
+     */
+    public static String getClassName(String classId){
+        if (StrUtil.isEmpty(classId)){
+            return null;
+        }
+        OneFeeSystemPriceVo oneFeeSystemPriceVo = JSONObject.parseObject(CacheUtils.getCache(CacheConstants.REDIS_CACHE_CLASS_KEY+classId),OneFeeSystemPriceVo.class);
+        if(StringUtils.isNull(oneFeeSystemPriceVo)){
+            return null;
+        }
+        return oneFeeSystemPriceVo.getName();
     }
 }

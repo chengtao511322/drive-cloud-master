@@ -52,7 +52,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	* 客服回访记录 分页列表
 	*/
 	@ApiOperation("客服回访记录分页列表")
-	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid ServiceReturnVisitHistoryPageQueryParam param) {
 		return serviceReturnVisitHistoryRepository.pageList(param);
@@ -61,13 +61,13 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	* 客服回访记录 列表
 	*/
 	@ApiOperation("客服回访记录列表")
-	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
 	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid ServiceReturnVisitHistoryPageQueryParam param) {
 		return serviceReturnVisitHistoryRepository.findList(param);
 	}
 	@ApiOperation("记录列表")
-	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
 	@GetMapping(value = "/pageListReturnVisitHistory")
 	public ResObject pageListReturnVisitHistory(@Valid StudentStudyEnrollPageQueryParam param) {
 		return serviceReturnVisitHistoryRepository.pageListReturnVisitHistory(param);
@@ -78,7 +78,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	*/
 	@ApiOperation("获取客服回访记录")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return serviceReturnVisitHistoryRepository.getById(id);
@@ -89,7 +89,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	*/
 	@ApiOperation("通过学员ID 获取聚合客服回访记录")
 	@ApiImplicitParam(name = "studnetId", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
 	@GetMapping("/aggregationListReturnVisitHistory/{studnetId}")
 	public ResObject aggregationListReturnVisitHistory(@PathVariable String studnetId) {
 		return serviceReturnVisitHistoryRepository.aggregationListReturnVisitHistory(studnetId);
@@ -100,7 +100,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	 */
 	@ApiOperation("条件查询获取客服回访记录")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
 	@PostMapping("/getInfo")
 	public ResObject getInfo(@PathVariable @RequestBody ServiceReturnVisitHistoryPageQueryParam param) {
 		return serviceReturnVisitHistoryRepository.getInfo(param);
@@ -111,7 +111,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	*/
 	@ApiOperation("新增客服回访记录")
 	@ApiImplicitParam(name = "ServiceReturnVisitHistoryEditParam ", value = "新增客服回访记录", dataType = "ServiceReturnVisitHistoryEditParam")
-	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:add')")
+	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:add')")
 	@EventLog(message = "新增客服回访记录", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody ServiceReturnVisitHistoryInstallParam serviceReturnVisitHistoryInstallParam) {
@@ -119,7 +119,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	}
 	@ApiOperation("添加回访记录")
 	@ApiImplicitParam(name = "ServiceReturnVisitHistoryEditParam ", value = "新增客服回访记录", dataType = "ServiceReturnVisitHistoryEditParam")
-	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:add')")
+	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:add')")
 	@EventLog(message = "新增客服回访记录", businessType = EventLogEnum.CREATE)
 	@PostMapping("/addReturnVisitHistory")
 	public ResObject addReturnVisitHistory(@Valid @RequestBody ServiceReturnVisitHistoryInstallParam serviceReturnVisitHistoryInstallParam) {
@@ -131,7 +131,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	*/
 	@ApiOperation("修改客服回访记录")
 	@ApiImplicitParam(name = "ServiceReturnVisitHistoryEditParam ", value = "修改客服回访记录", dataType = "ServiceReturnVisitHistoryEditParam")
-	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:edit')")
+	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:edit')")
 	@EventLog(message = "修改客服回访记录", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody ServiceReturnVisitHistoryEditParam serviceReturnVisitHistoryEditParam) {
@@ -144,7 +144,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	 */
 	@ApiOperation("发布客服回访记录")
 	@ApiImplicitParam(name = "ServiceReturnVisitHistoryEditParam ", value = "修改客服回访记录", dataType = "ServiceReturnVisitHistoryEditParam")
-	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:edit')")
+	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:edit')")
 	@EventLog(message = "修改客服回访记录", businessType = EventLogEnum.UPDATE)
 	@PostMapping("/publishReturnVisit")
 	ResObject publishReturnVisit(@RequestBody ServiceReturnVisitHistoryEditParam returnVisitHistoryEditParam){
@@ -157,7 +157,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	*/
 	@ApiOperation("删除客服回访记录")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:delete')")
+	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:delete')")
 	@EventLog(message = "删除客服回访记录", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -169,7 +169,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	*/
 	@ApiOperation("通过主键删除客服回访记录")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除客服回访记录", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -180,7 +180,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	* 导出客服回访记录
 	*/
 	@ApiOperation("导出客服回访记录")
-	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:export')")
+	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:export')")
 	@SneakyThrows
 	@EventLog(message = "导出客服回访记录", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -193,7 +193,7 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用客服回访记录")
-	@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用客服回访记录", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

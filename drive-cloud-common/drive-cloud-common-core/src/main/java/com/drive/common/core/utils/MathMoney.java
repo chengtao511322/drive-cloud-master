@@ -72,6 +72,9 @@ public class MathMoney {
         BigDecimal b2 = new BigDecimal(v2);
         return b1.multiply(b2).toString();
     }
+    public static BigDecimal mul(BigDecimal v1, BigDecimal v2) {
+        return v1.multiply(v2);
+    }
 
     /**
      * 提供精确的乘法运算。
@@ -199,6 +202,10 @@ public class MathMoney {
     public static float computeShareMoney(float amount, float percentage) {
       BigDecimal percentageTemp = new BigDecimal(String.valueOf(percentage));  //提成百分比
       return percentageTemp.multiply(new BigDecimal(String.valueOf(amount))).floatValue(); //提成金额
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new BigDecimal(100).negate());
     }
     
 }

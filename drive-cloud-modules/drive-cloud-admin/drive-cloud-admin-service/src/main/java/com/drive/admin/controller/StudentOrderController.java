@@ -50,7 +50,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	* 学员订单表 分页列表
 	*/
 	@ApiOperation("学员订单表分页列表")
-	@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:query')")
+	//@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid StudentOrderPageQueryParam param) {
 		return studentOrderRepository.pageList(param);
@@ -59,7 +59,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	* 学员订单表 列表
 	*/
 	@ApiOperation("学员订单表列表")
-	@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:query')")
+	//@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid StudentOrderPageQueryParam param) {
 		return studentOrderRepository.findList(param);
@@ -70,7 +70,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	*/
 	@ApiOperation("获取学员订单表")
 	@ApiImplicitParam(name = "orderNo", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:query')")
+	//@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:query')")
 	@GetMapping("/{orderNo}")
 	public ResObject get(@PathVariable String orderNo) {
 		return studentOrderRepository.getById(orderNo);
@@ -78,7 +78,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 
 	@ApiOperation("获取学员订单表")
 	@ApiImplicitParam(name = "orderNo", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:getOrderByStudentId')")
+	///@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:getOrderByStudentId')")
 	@GetMapping("/getOrderByStudentId/{studentId}")
 	public ResObject getOrderByStudentId(@PathVariable String studentId) {
 		return studentOrderRepository.getOrderByStudentId(studentId);
@@ -89,7 +89,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	*/
 	@ApiOperation("新增学员订单表")
 	@ApiImplicitParam(name = "StudentOrderEditParam ", value = "新增学员订单表", dataType = "StudentOrderEditParam")
-	@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:add')")
+	//@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:add')")
 	@EventLog(message = "新增学员订单表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody StudentOrderEditParam studentOrderEditParam) {
@@ -101,7 +101,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	*/
 	@ApiOperation("修改学员订单表")
 	@ApiImplicitParam(name = "StudentOrderEditParam ", value = "修改学员订单表", dataType = "StudentOrderEditParam")
-	@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:edit')")
+	//@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:edit')")
 	@EventLog(message = "修改学员订单表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody StudentOrderEditParam studentOrderEditParam) {
@@ -113,7 +113,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	*/
 	@ApiOperation("删除学员订单表")
 	@ApiImplicitParam(name = "orderNo", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:delete')")
+	//@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:delete')")
 	@EventLog(message = "删除学员订单表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{orderNos}")
 	public ResObject delete(@PathVariable Long[] orderNos) {
@@ -125,7 +125,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	*/
 	@ApiOperation("通过主键删除学员订单表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除学员订单表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -136,7 +136,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	* 导出学员订单表
 	*/
 	@ApiOperation("导出学员订单表")
-	@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:export')")
+	//@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:export')")
 	@SneakyThrows
 	@EventLog(message = "导出学员订单表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -149,7 +149,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用学员订单表")
-	@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用学员订单表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")
@@ -160,7 +160,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	* 状态启用/停用
 	*/
 	@ApiOperation("订单取消")
-	@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:cancelOrder')")
+	//@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:cancelOrder')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用学员订单表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/cancelOrder")

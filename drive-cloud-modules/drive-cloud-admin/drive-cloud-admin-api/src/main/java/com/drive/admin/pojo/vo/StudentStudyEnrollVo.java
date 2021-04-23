@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 @Data
 public class StudentStudyEnrollVo {
 
+	private String subjectType;
+
 
 	// 学员报名单号
 	@Excel(name = "学员报名单号", width = 20)
@@ -297,5 +299,15 @@ public class StudentStudyEnrollVo {
 	public void setAreaId(String areaId) {
 		this.areaId = areaId;
 		this.areaName=AdminCacheUtil.getAreaName(areaId);
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+		this.onlineServiceName=AdminCacheUtil.getServiceRealName(userId);
+	}
+
+	public void setLineUnderUserId(String lineUnderUserId) {
+		this.lineUnderUserId = lineUnderUserId;
+		this.lineServiceName=AdminCacheUtil.getServiceRealName(lineUnderUserId);
 	}
 }

@@ -51,7 +51,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	* 学员教练互评表 分页列表
 	*/
 	@ApiOperation("学员教练互评表分页列表")
-	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
+	//@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid StudentCoachAppraisePageQueryParam param) {
 		return studentCoachAppraiseRepository.pageList(param);
@@ -60,7 +60,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	* 学员教练互评表 列表
 	*/
 	@ApiOperation("学员教练互评表列表")
-	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
+	//@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
 	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid StudentCoachAppraisePageQueryParam param) {
 		return studentCoachAppraiseRepository.findList(param);
@@ -71,7 +71,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	*/
 	@ApiOperation("获取学员教练互评表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
+	//@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return studentCoachAppraiseRepository.getById(id);
@@ -82,7 +82,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	 */
 	@ApiOperation("条件查询获取学员教练互评表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
+	//@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
 	@GetMapping("/getInfo")
 	public ResObject getInfo(@PathVariable StudentCoachAppraisePageQueryParam param) {
 		return studentCoachAppraiseRepository.getInfo(param);
@@ -93,7 +93,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	*/
 	@ApiOperation("新增学员教练互评表")
 	@ApiImplicitParam(name = "StudentCoachAppraiseEditParam ", value = "新增学员教练互评表", dataType = "StudentCoachAppraiseEditParam")
-	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:add')")
+	//@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:add')")
 	@EventLog(message = "新增学员教练互评表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody StudentCoachAppraiseInstallParam studentCoachAppraiseInstallParam) {
@@ -105,7 +105,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	*/
 	@ApiOperation("修改学员教练互评表")
 	@ApiImplicitParam(name = "StudentCoachAppraiseEditParam ", value = "修改学员教练互评表", dataType = "StudentCoachAppraiseEditParam")
-	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:edit')")
+	//@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:edit')")
 	@EventLog(message = "修改学员教练互评表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody StudentCoachAppraiseEditParam studentCoachAppraiseEditParam) {
@@ -117,7 +117,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	*/
 	@ApiOperation("删除学员教练互评表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:delete')")
+	//@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:delete')")
 	@EventLog(message = "删除学员教练互评表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable String[] ids) {
@@ -129,7 +129,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	*/
 	@ApiOperation("通过主键删除学员教练互评表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除学员教练互评表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -140,7 +140,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	* 导出学员教练互评表
 	*/
 	@ApiOperation("导出学员教练互评表")
-	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:export')")
+	//@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:export')")
 	@SneakyThrows
 	@EventLog(message = "导出学员教练互评表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -153,7 +153,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用学员教练互评表")
-	@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用学员教练互评表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

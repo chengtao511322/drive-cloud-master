@@ -157,4 +157,14 @@ public class StudentTestEnrollVo {
 		this.areaId = areaId;
 		this.areaName=AdminCacheUtil.getAreaName(areaId);
 	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+		this.onlineServiceName = AdminCacheUtil.getServiceRealName(userId);
+	}
+
+	public void setLineUnderUserId(String lineUnderUserId) {
+		this.lineUnderUserId = lineUnderUserId;
+		this.lineServiceName = AdminCacheUtil.getServiceRealName(lineUnderUserId);
+	}
 }

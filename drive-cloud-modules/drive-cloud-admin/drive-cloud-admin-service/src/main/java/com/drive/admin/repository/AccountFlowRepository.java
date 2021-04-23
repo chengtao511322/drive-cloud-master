@@ -27,5 +27,6 @@ public interface AccountFlowRepository extends BasicsRepository<AccountFlowPageQ
      * @return
      */
     ResObject settlementByFlowDetailList(List<AccountFlowDetailEditParam> accountFlowDetailEditParams);
+
 }
 

@@ -71,18 +71,21 @@
             tsrvh.is_intention AS isIntention
     FROM
         t_student_info tsi
-        INNER  join (select
-        id,
-        return_visit_type,
-        return_visit_status,
-        return_visit_item,
-        order_detail_no,
-        student_id,
-        is_intention,
-        max(return_visit_time) as return_visit_time,
-        return_visit_content,
-        next_return_visit_time
-        from   t_service_return_visit_history  GROUP BY student_id) as tsrvh    on  tsi.id = tsrvh.student_id
+        INNER  join (SELECT
+			t.*
+		FROM
+			(
+				SELECT
+					*
+				FROM
+					t_service_return_visit_history
+				HAVING
+					1
+				ORDER BY
+					create_time DESC
+			) t
+		GROUP BY
+			t.student_id) as tsrvh    on  tsi.id = tsrvh.student_id
         LEFT JOIN t_student_study_enroll tsse ON tsse.student_id = tsi.id
         ${ew.customSqlSegment}
     </select>

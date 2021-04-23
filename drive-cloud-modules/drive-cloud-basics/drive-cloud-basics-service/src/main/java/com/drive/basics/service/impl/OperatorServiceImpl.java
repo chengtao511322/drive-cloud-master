@@ -35,7 +35,7 @@ public class OperatorServiceImpl extends BaseService<OperatorMapper, OperatorEnt
     @Autowired
     private RedisService redisService;
 
-    @PostConstruct
+   /* @PostConstruct
     public void init()
     {
         Jedis jedis = RedisDS.create().getJedis();
@@ -46,7 +46,7 @@ public class OperatorServiceImpl extends BaseService<OperatorMapper, OperatorEnt
             //JSONObject jsonObject = BeanConvertUtils.convertBean(operator, JSONObject.class);
             jedis.set(getCacheKey(operator.getId()), JSONObject.toJSONString(operator));
         }
-    }
+    }*/
     /**
      * 设置cache key
      *

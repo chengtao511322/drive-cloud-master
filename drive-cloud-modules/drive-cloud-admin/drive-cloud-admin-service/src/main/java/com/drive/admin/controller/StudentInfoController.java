@@ -48,7 +48,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	 * 新用户列表 分页列表
 	 */
 	@ApiOperation("新用户列表分页")
-	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
+	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
 	@GetMapping(value = "/newStudentPageList")
 	public ResObject newStudentPageList(@Valid StudentInfoPageQueryParam param) {
 		return studentInfoRepository.newStudentPageList(param);
@@ -67,7 +67,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	 * 新用户列表 分页列表
 	 */
 	@ApiOperation("新用户已回访列表分页")
-	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
+	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
 	@GetMapping(value = "/newStudentReturnVisitPageList")
 	public ResObject newStudentReturnVisitPageList(@Valid StudentInfoPageQueryParam param) {
 		return studentInfoRepository.newStudentReturnVisitPageList(param);
@@ -78,7 +78,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	* 学员信息表 分页列表
 	*/
 	@ApiOperation("学员信息表分页列表")
-	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
+	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid StudentInfoPageQueryParam param) {
 		return studentInfoRepository.pageList(param);
@@ -89,7 +89,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	* 学员信息表 分页列表
 	*/
 	@ApiOperation("学员信息表列表")
-	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
+	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid StudentInfoPageQueryParam param) {
 		return studentInfoRepository.findList(param);
@@ -100,7 +100,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	*/
 	@ApiOperation("获取学员信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
+	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
 	@GetMapping("/{id}")
 	public ResObject<StudentInfoVo> get(@PathVariable String id) {
 		return studentInfoRepository.getById(id);
@@ -111,7 +111,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	*/
 	@ApiOperation("新增学员信息表")
 	@ApiImplicitParam(name = "StudentInfoEditParam ", value = "新增学员信息表", dataType = "StudentInfoEditParam")
-	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:add')")
+	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:add')")
 	@EventLog(message = "新增学员信息表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody StudentInfoEditParam studentInfoEditParam) {
@@ -123,7 +123,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	*/
 	@ApiOperation("修改学员信息表")
 	@ApiImplicitParam(name = "StudentInfoEditParam ", value = "修改学员信息表", dataType = "StudentInfoEditParam")
-	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:edit')")
+	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:edit')")
 	@EventLog(message = "修改学员信息表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody StudentInfoEditParam studentInfoEditParam) {
@@ -135,7 +135,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	*/
 	@ApiOperation("删除学员信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:delete')")
+	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:delete')")
 	@EventLog(message = "删除学员信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -147,7 +147,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	*/
 	@ApiOperation("删除教练信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "删除教练信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -158,7 +158,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	* 导出学员信息表
 	*/
 	@ApiOperation("导出学员信息表")
-	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:export')")
+	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:export')")
 	@SneakyThrows
 	@EventLog(message = "导出学员信息表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -171,7 +171,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用学员信息表")
-	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用学员信息表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

@@ -1,13 +1,20 @@
 package com.drive.common.redis.service;
 
 import com.alibaba.fastjson.JSONObject;
+import io.seata.common.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisStringCommands;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.types.Expiration;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -119,6 +126,27 @@ public class RedisService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * 功能描述: 使用pipelined批量存储
+     *
+     * @param: [map, seconds]
+     * @return: void
+     * @auther: liyiyu
+     * @date: 2020/4/19 14:34
+     */
+    public void executePipelined(Map map, long seconds) {
+        RedisSerializer serializer = redisTemplate.getStringSerializer();
+        redisTemplate.executePipelined(new RedisCallback() {
+            @Override
+            public String doInRedis(RedisConnection connection) throws DataAccessException {
+                map.forEach((key, value) -> {
+                    connection.set(serializer.serialize(key), serializer.serialize(value), Expiration.seconds(seconds), RedisStringCommands.SetOption.UPSERT);
+                });
+                return null;
+            }
+        },serializer);
     }
 
     /**

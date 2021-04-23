@@ -93,7 +93,7 @@ public class AccountFlowDetailInstallParam {
     private String tradeSubjectItems;
 
     // 钱包用户ID
-    private String walletUserId;
+    //private String walletUserId;
 
 
 }

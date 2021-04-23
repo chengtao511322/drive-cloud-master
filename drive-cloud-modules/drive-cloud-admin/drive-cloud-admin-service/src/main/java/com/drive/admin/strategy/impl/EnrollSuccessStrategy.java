@@ -4,6 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.drive.admin.enums.EnrollStatusEnum;
+import com.drive.admin.enums.OperationTypeEnum;
+import com.drive.admin.enums.OperatorEnum;
 import com.drive.admin.enums.StudyEnrollEnum;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.entity.*;
@@ -19,6 +21,7 @@ import com.drive.common.core.enums.StatusEnum;
 import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.ArithUtil;
 import com.drive.common.core.utils.BeanConvertUtils;
+import com.drive.common.core.utils.MathMoney;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +45,9 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
     @Autowired
     private StudentStudyEnrollService studentStudyEnrollService;
 
+    @Autowired
+    private OperatorService operatorService;
+
     // 订单
     @Autowired
     private StudentOrderService studentOrderService;
@@ -58,8 +64,6 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
     @Autowired
     private AccountFlowDetailService accountFlowDetailService;
 
-    @Autowired
-    private OperatorService operatorService;
 
     @Autowired
     private DriveSchoolService driveSchoolService;
@@ -72,7 +76,7 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
 
     @Transactional
     @Override
-    public ResObject completeStudyEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam) {
+    public ResObject completeStudyEnroll(CompleteStudyEnrollParam studentStudyEnrollEditParam)  {
         if (studentStudyEnrollEditParam == null){
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
@@ -114,7 +118,7 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
             this.createVIPStudyEnrollCompleteAccountFlow(studyEnroll,studentOrder,accountFlow,true,false);
         // 自主
         } else{
-
+            this.createStudyEnrollCompleteAccountFlow(studentOrder, studentStudyEnroll,accountFlow,true);
         }
         return R.success("执行成功");
     }
@@ -276,7 +280,7 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
     }
 
 
-    public void createCouponAccountFlowDetail(StudentOrderEntity tStudentOrder,AccountFlowEntity tAccountFlow) throws Exception {
+    public void createCouponAccountFlowDetail(StudentOrderEntity tStudentOrder,AccountFlowEntity tAccountFlow){
         if(StrUtil.isNotEmpty(tStudentOrder.getColumcouponId())) {
             // 创建运营商支出流水
             AccountFlowDetailEntity tAccountFlowDetail = new AccountFlowDetailEntity();
@@ -381,4 +385,130 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
             return getCoupon;
         }*/
     }
+
+
+    public String createStudyEnrollCompleteAccountFlow(StudentOrderEntity studentOrder,StudentStudyEnrollEntity studentStudyEnroll,AccountFlowEntity accountFlow,boolean isSettlementSchool)  {
+
+        //判断是否已经生成过流水
+        QueryWrapper accountFlowQueryWrapper = new QueryWrapper();
+        accountFlowQueryWrapper.eq("order_no",studentOrder.getOrderNo());
+        List<AccountFlowDetailEntity>  accountFlowDetailList = accountFlowDetailService.list(accountFlowQueryWrapper);
+        BigDecimal sumItemAmount = accountFlowDetailList.stream().map(AccountFlowDetailEntity::getItemAmount).reduce(BigDecimal::add).get();
+
+        // 若已经生成流水，则直接返回
+        boolean isEq = sumItemAmount.compareTo(studentStudyEnroll.getPrice()) == 0;
+        if(isEq){
+            return null;
+        }
+
+
+        OperatorEntity upOperator ; // 上级运营商
+        // 最低存运营商的，上一级运营商
+        OperatorEntity downOperator = operatorService.getById(studentStudyEnroll.getOperatorId());
+        BigDecimal sysChargePercent = MathMoney.div(downOperator.getPlatformChargePercent(),new BigDecimal(100),2);
+        //平台提成金额
+        BigDecimal sysIncome = MathMoney.mul(sysChargePercent,studentStudyEnroll.getPrice());
+
+        // 当前运营商收入
+        BigDecimal currentOperatorIncome = new BigDecimal(0);
+        // 上级运营-分掉的费用
+
+        while (StrUtil.isNotEmpty(downOperator.getParentId())) {
+            upOperator = operatorService.getById(downOperator.getParentId());
+            //计算下级运营商的收入
+
+            //上级运营商提成百分比 = （下级运营商提成百分  - 上级运营商）
+            BigDecimal upOperatorPercentage = downOperator.getPlatformChargePercent().subtract(upOperator.getPlatformChargePercent());
+            upOperatorPercentage = MathMoney.div(upOperatorPercentage, new BigDecimal(100), 2);
+            // 下级运营商收益金额(下级运营商提成百分比 * 订单实际支付金额)
+            currentOperatorIncome = upOperatorPercentage.multiply(studentStudyEnroll.getPrice());
+            AccountFlowDetailEntity accountFlowDetail = new AccountFlowDetailEntity();
+            accountFlowDetail.setAccountId(accountFlow.getId());
+            accountFlowDetail.setOrderNo(accountFlow.getOrderNo());
+            //
+            accountFlowDetail.setItemName(upOperator.getName() + "提成费用");
+            // //订单金额
+            accountFlowDetail.setItemAmount(currentOperatorIncome);
+            // //运营商id
+            accountFlowDetail.setOperatorId(upOperator.getId());
+            //是否对账
+            accountFlowDetail.setIsReconciled(StatusEnum.NO.getCode());
+            //是否提现
+            accountFlowDetail.setPutForward(StatusEnum.NO.getCode());
+
+            accountFlowDetail.setItemType(OperatorEnum.PLATFORM_WALLET_OPERATOR.getCode());
+            //
+            accountFlowDetail.setPayType(accountFlow.getPayType());
+            //报名收入
+            accountFlowDetail.setTradeSubject(FlowTypeConstant.ENROLL_INCOME.getCode());
+            // 报名提成
+            accountFlowDetail.setTradeSubjectItems(FlowTypeConstant.ENROLL_INCOME.getItemsMap("ENROLL_SHARE"));
+            // 收益人类型
+            accountFlowDetail.setIncomeUserType(OperatorEnum.INCOME_USER_TYPE_TOPERATOR.getCode());
+            // 收益人id
+            accountFlowDetail.setIncomeUserId(upOperator.getId());
+            Boolean result = accountFlowDetailService.save(accountFlowDetail);
+            downOperator = upOperator;
+        }
+
+        AccountFlowDetailEntity accountFlowDetail = new AccountFlowDetailEntity();
+        //获取最低层运营商
+        downOperator = operatorService.getById(studentStudyEnroll.getOperatorId());
+        //------------------------------------计算当驾校收益 start--------------------
+        //订单号
+        accountFlowDetail.setOrderNo(studentOrder.getOrderNo());
+        //账务流水id
+        accountFlowDetail.setAccountId(accountFlow.getId());
+        //是否对账
+        accountFlowDetail.setIsReconciled(StatusEnum.NO.getCode());
+        //是否提现
+        accountFlowDetail.setPutForward(StatusEnum.NO.getCode());
+        // 支付类型
+        accountFlowDetail.setPayType(accountFlow.getPayType());
+        //最底层运营商
+        accountFlowDetail.setOperatorId(downOperator.getId());
+
+
+        DriveSchoolEntity tDriveSchool = driveSchoolService.getById(studentStudyEnroll.getDriveSchoolId());
+        BigDecimal schoolIncome = tDriveSchool.getEnrollPrice();
+        if(tDriveSchool != null && StatusEnum.YES.getCode().equals(tDriveSchool.getIsAloneSettlement()) && isSettlementSchool){
+            accountFlowDetail.setItemType(OperatorEnum.AFD_SCHOOL_ENROLL_COST.getCode());
+            accountFlowDetail.setItemName(studentStudyEnroll.getRealName() + "报名,驾校提成"); //项目名称
+            accountFlowDetail.setItemAmount(schoolIncome); //金额
+            accountFlowDetail.setIncomeUserType(OperatorEnum.INCOME_USER_TYPE_SCHOOL.getCode()); //收益人类型
+            accountFlowDetail.setIncomeUserId(studentStudyEnroll.getDriveSchoolId()); //收益人id(驾校)
+            accountFlowDetail.setTradeSubject(FlowTypeConstant.ENROLL_INCOME.getCode());  //报名收入
+            accountFlowDetail.setTradeSubjectItems(FlowTypeConstant.ENROLL_INCOME.getItemsMap("ENROLL_SHARE")); // 报名提成
+            accountFlowDetailService.save(accountFlowDetail);
+
+            //最底层运营商支出
+            accountFlowDetail.setItemType(OperatorEnum.PLATFORM_WALLET_OPERATOR_PAY.getCode());
+            accountFlowDetail.setItemName(studentStudyEnroll.getRealName() + "报名," + tDriveSchool.getSchoolName()+"报名费"); //项目名称
+            accountFlowDetail.setItemAmount(schoolIncome.negate()); //金额 new BigDecimail().negate()
+            accountFlowDetail.setIncomeUserType(OperatorEnum.INCOME_USER_TYPE_TOPERATOR.getCode()); //收益人类型 == 运营商id
+            accountFlowDetail.setIncomeUserId(downOperator.getId()); //收益人id(平台支付宝钱包用户id  )
+            accountFlowDetail.setTradeSubject(FlowTypeConstant.ENROLL_PAY.getCode());  //报名支出
+            accountFlowDetail.setTradeSubjectItems(FlowTypeConstant.ENROLL_PAY.getItemsMap("SCHOOL_PAY")); // 驾校提成支出
+            accountFlowDetailService.save(accountFlowDetail);
+        }
+
+        //最底层运营商收益 (订单金额 - (驾校提成+ 平台总提成))
+        accountFlowDetail.setItemType(OperatorEnum.PLATFORM_WALLET_OPERATOR.getCode());
+        accountFlowDetail.setItemName(studentStudyEnroll.getRealName() + "报名,运营商提成"); //项目名称
+        accountFlowDetail.setItemAmount(studentStudyEnroll.getPrice().subtract(sysIncome)); //金额
+        accountFlowDetail.setIncomeUserType(OperatorEnum.INCOME_USER_TYPE_TOPERATOR.getCode()); //收益人类型 == 运营商id
+        accountFlowDetail.setIncomeUserId(downOperator.getId()); //收益人id(平台支付宝钱包用户id  )
+        accountFlowDetail.setTradeSubject(FlowTypeConstant.ENROLL_INCOME.getCode());  //报名收入
+        accountFlowDetail.setTradeSubjectItems(FlowTypeConstant.ENROLL_INCOME.getItemsMap("ENROLL_SHARE")); // 报名提成
+        accountFlowDetailService.save(accountFlowDetail);
+        //------------------------------------计算当前驾校收益 end--------------------
+
+        //生成优惠卷-账务流水明细
+        this.createCouponAccountFlowDetail(studentOrder,accountFlow);
+
+        //给钱包结算费用
+        platformWalletRepository.settlementByOrder(studentOrder.getOrderNo());
+        return "success";
+    }
+
 }

@@ -47,7 +47,7 @@ public class ServiceItemController extends BaseController<ServiceItemPageQueryPa
 	* 服务项目表 分页列表
 	*/
 	@ApiOperation("服务项目表分页列表")
-	@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid ServiceItemPageQueryParam param) {
 		return serviceItemRepository.pageList(param);
@@ -56,7 +56,7 @@ public class ServiceItemController extends BaseController<ServiceItemPageQueryPa
 	* 服务项目表 分页列表
 	*/
 	@ApiOperation("服务项目表列表")
-	@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid ServiceItemPageQueryParam param) {
 		return serviceItemRepository.findList(param);
@@ -67,7 +67,7 @@ public class ServiceItemController extends BaseController<ServiceItemPageQueryPa
 	*/
 	@ApiOperation("获取服务项目表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:query')")
+	//@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return serviceItemRepository.getById(id);
@@ -78,7 +78,7 @@ public class ServiceItemController extends BaseController<ServiceItemPageQueryPa
 	*/
 	@ApiOperation("新增服务项目表")
 	@ApiImplicitParam(name = "ServiceItemEditParam ", value = "新增服务项目表", dataType = "ServiceItemEditParam")
-	@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:add')")
+	//@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:add')")
 	@EventLog(message = "新增服务项目表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody ServiceItemEditParam serviceItemEditParam) {
@@ -90,7 +90,7 @@ public class ServiceItemController extends BaseController<ServiceItemPageQueryPa
 	*/
 	@ApiOperation("修改服务项目表")
 	@ApiImplicitParam(name = "ServiceItemEditParam ", value = "修改服务项目表", dataType = "ServiceItemEditParam")
-	@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:edit')")
+	//@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:edit')")
 	@EventLog(message = "修改服务项目表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody ServiceItemEditParam serviceItemEditParam) {
@@ -102,7 +102,7 @@ public class ServiceItemController extends BaseController<ServiceItemPageQueryPa
 	*/
 	@ApiOperation("删除服务项目表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:delete')")
+	//@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:delete')")
 	@EventLog(message = "删除服务项目表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -114,7 +114,7 @@ public class ServiceItemController extends BaseController<ServiceItemPageQueryPa
 	*/
 	@ApiOperation("删除教练信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "删除教练信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -125,7 +125,7 @@ public class ServiceItemController extends BaseController<ServiceItemPageQueryPa
 	* 导出服务项目表
 	*/
 	@ApiOperation("导出服务项目表")
-	@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:export')")
+	//@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:export')")
 	@SneakyThrows
 	@EventLog(message = "导出服务项目表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -138,7 +138,7 @@ public class ServiceItemController extends BaseController<ServiceItemPageQueryPa
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用服务项目表")
-	@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用服务项目表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")
