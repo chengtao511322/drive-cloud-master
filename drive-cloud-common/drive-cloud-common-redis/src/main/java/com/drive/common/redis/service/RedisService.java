@@ -133,7 +133,7 @@ public class RedisService {
      *
      * @param: [map, seconds]
      * @return: void
-     * @auther: liyiyu
+     * @auther: xiaoguo
      * @date: 2020/4/19 14:34
      */
     public void executePipelined(Map map, long seconds) {
@@ -143,6 +143,23 @@ public class RedisService {
             public String doInRedis(RedisConnection connection) throws DataAccessException {
                 map.forEach((key, value) -> {
                     connection.set(serializer.serialize(key), serializer.serialize(value), Expiration.seconds(seconds), RedisStringCommands.SetOption.UPSERT);
+                });
+                return null;
+            }
+        },serializer);
+    }
+
+    /**
+     * 批量插入
+     * @param map
+     */
+    public void executePipelined(Map map) {
+        RedisSerializer serializer = redisTemplate.getStringSerializer();
+        redisTemplate.executePipelined(new RedisCallback() {
+            @Override
+            public String doInRedis(RedisConnection connection) throws DataAccessException {
+                map.forEach((key, value) -> {
+                    connection.set(serializer.serialize(key), serializer.serialize(value));
                 });
                 return null;
             }
