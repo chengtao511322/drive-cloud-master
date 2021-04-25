@@ -16,12 +16,12 @@ public interface CacheConstants {
      */
     String CLIENT_DETAILS_KEY = "oauth:client:details";
     // 班型
-    String REDIS_CACHE_CLASS_KEY = "redisCache:classItem:class_";
+    String REDIS_CACHE_CLASS_KEY = "redisCache::classItem:class_";
     // 教练
-    String REDIS_CACHE_COACH_KEY = "redisCache:coachItem:coach_";
+    String REDIS_CACHE_COACH_KEY = "redisCache::coachItem:coach_";
     // 区划表
-    String REDIS_CACHE_AREA_KEY = "redisCache:areaItem:area_";
+    String REDIS_CACHE_AREA_KEY = "redisCache::areaItem:area_";
     // 客服信息
-    String REDIS_CACHE_SERVICE_KEY = "redisCache:serviceItem:service_";
+    String REDIS_CACHE_SERVICE_KEY = "redisCache::serviceItem:service_";
 
 }
