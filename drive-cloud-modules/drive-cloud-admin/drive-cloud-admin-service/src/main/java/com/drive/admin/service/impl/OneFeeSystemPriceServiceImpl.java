@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 学车一费制定价表 服务实现类
@@ -46,34 +47,39 @@ public class OneFeeSystemPriceServiceImpl extends BaseService<OneFeeSystemPriceM
         return this.getBaseMapper().getServicePackageTree(tenantId);
     }
 
-    @CacheEvict(value = "redisCache", key = "'redisCache:classItem:class_'+ #entity.getId()")
+    @CacheEvict(value = "redisCache", key = "'classItem:class_'+#entity.getId()")
     @Override
     public boolean save(OneFeeSystemPriceEntity entity) {
         return super.save(entity);
     }
 
-    @CacheEvict(value = "redisCache", key = "'redisCache:classItem:class_'+ #id")
+    @CacheEvict(value = "redisCache", key = "'classItem:class_'+#entity.getId()")
     @Override
     public boolean removeById(Serializable id) {
         return super.removeById(id);
     }
 
-    @CacheEvict(value = "redisCache", key = "'redisCache:classItem:class_'+ #entity.getId()")
+    @CacheEvict(value = "redisCache", key = "'classItem:class_'+#entity.getId()")
     @Override
     public boolean updateById(OneFeeSystemPriceEntity entity) {
         return super.updateById(entity);
     }
 
-    //@Cacheable(value = "redisCache", key = "'redisCache:classItem:class_'+ #id")
     @Override
     public <E extends IPage<OneFeeSystemPriceEntity>> E page(E page, Wrapper<OneFeeSystemPriceEntity> queryWrapper) {
         return super.page(page,queryWrapper);
     }
 
+    //@Cacheable(value = "redisCache", key = "'classItem:class_'+ #id")
+    @Override
+    public OneFeeSystemPriceEntity getById(Serializable id) {
+        return super.getById(id);
+    }
+
     @PostConstruct
     public void init() {
         QueryWrapper coachQueryWrapper = new QueryWrapper();
-        coachQueryWrapper.eq("status", StatusEnum.ENABLE.getCode());
+        //coachQueryWrapper.eq("status", StatusEnum.ENABLE.getCode());
         List<OneFeeSystemPriceEntity> oneFeeSystemPriceList = this.getBaseMapper().selectList(coachQueryWrapper);
         log.info(this.getClass() + "数据{}", oneFeeSystemPriceList);
         if (oneFeeSystemPriceList.size() <= 0){
@@ -82,7 +88,7 @@ public class OneFeeSystemPriceServiceImpl extends BaseService<OneFeeSystemPriceM
 
         // redisTemplate.opsForValue().set("viewList:", viewList);
         long startTime = System.currentTimeMillis();
-        Map map = new HashMap(oneFeeSystemPriceList.size());
+        Map map = new ConcurrentHashMap(oneFeeSystemPriceList.size());
         oneFeeSystemPriceList.stream().forEach((item) -> {
             //for (int i = 0; i < viewList.size(); i++) {
             //pipe.set("pipe:"+viewList.get(0).getCode(), viewList.get(0).getValue());
@@ -93,7 +99,7 @@ public class OneFeeSystemPriceServiceImpl extends BaseService<OneFeeSystemPriceM
             //jedis.set(CacheConstants.REDIS_CACHE_CLASS_KEY +item.getId(), JSONObject.toJSONString(item));
             map.put(CacheConstants.REDIS_CACHE_CLASS_KEY +item.getId(),JSONObject.toJSONString(item));
         });
-        //redisService.executePipelined(map,60);
+        redisService.executePipelined(map);
         long endTime = System.currentTimeMillis();
         System.out.println((endTime - startTime) +"毫秒");
     }

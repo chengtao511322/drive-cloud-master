@@ -43,7 +43,7 @@ import java.util.Arrays;
 public class StudentStudyEnrollController extends BaseController<StudentStudyEnrollPageQueryParam, StudentStudyEnrollEntity> {
 
 	@Autowired
-	private StudentStudyEnrollService studentStudyEnrollService;
+	private StudentStudyEnrollService studentStudyEnrollSedrvice;
 	@Autowired
 	private StudentStudyEnrollRepository studentStudyEnrollRepository;
 	@Autowired
@@ -182,29 +182,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 		return studentStudyEnrollRepository.update(studentStudyEnrollEditParam);
 	}
 
-	/**
-	* 删除学员学车报名单
-	*/
-	@ApiOperation("删除学员学车报名单")
-	@ApiImplicitParam(name = "studyEnrollNo", required = true, dataType = "Long", paramType = "path")
-	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:delete')")
-	@EventLog(message = "删除学员学车报名单", businessType = EventLogEnum.DELETE)
-	@DeleteMapping("/{studyEnrollNos}")
-	public ResObject delete(@PathVariable Long[] studyEnrollNos) {
-		return R.toRes(studentStudyEnrollService.removeByIds(Arrays.asList(studyEnrollNos)));
-	}
 
-	/**
-	* 通过主键删除学员学车报名单
-	*/
-	@ApiOperation("通过主键删除学员学车报名单")
-	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
-	@EventLog(message = "通过主键删除学员学车报名单", businessType = EventLogEnum.DELETE)
-	@DeleteMapping("/delById/{id}")
-	public ResObject delete(@PathVariable String id) {
-		return studentStudyEnrollRepository.deleteById(id);
-	}
 
 	/**
 	* 导出学员学车报名单

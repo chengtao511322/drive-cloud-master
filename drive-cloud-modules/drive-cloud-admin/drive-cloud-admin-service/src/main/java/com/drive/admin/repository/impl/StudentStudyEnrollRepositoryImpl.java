@@ -405,8 +405,8 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         }
         StudentStudyEnrollVo studentStudyEnrollVo = BeanConvertUtils.copy(studentStudyEnroll, StudentStudyEnrollVo.class);
         // 数据回显
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getUserId()))studentStudyEnrollVo.setOnlineServiceName(serviceInfoService.getById(studentStudyEnrollVo.getUserId()).getRealName());
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getLineUnderUserId()))studentStudyEnrollVo.setLineServiceName(serviceInfoService.getById(studentStudyEnrollVo.getLineUnderUserId()).getRealName());
+        //if (StrUtil.isNotEmpty(studentStudyEnrollVo.getUserId()))studentStudyEnrollVo.setOnlineServiceName(serviceInfoService.getById(studentStudyEnrollVo.getUserId()).getRealName());
+        //if (StrUtil.isNotEmpty(studentStudyEnrollVo.getLineUnderUserId()))studentStudyEnrollVo.setLineServiceName(serviceInfoService.getById(studentStudyEnrollVo.getLineUnderUserId()).getRealName());
         if (StrUtil.isNotEmpty(studentStudyEnrollVo.getDriveSchoolId())){
             DriveSchoolEntity driveSchoolEntity =driveSchoolService.getById(studentStudyEnrollVo.getDriveSchoolId());
             if (driveSchoolEntity != null)studentStudyEnrollVo.setDriveSchoolName(driveSchoolEntity.getSchoolName());

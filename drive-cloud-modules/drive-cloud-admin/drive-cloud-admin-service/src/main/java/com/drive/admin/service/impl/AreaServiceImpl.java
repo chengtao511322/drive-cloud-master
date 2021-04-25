@@ -11,20 +11,23 @@ import com.drive.admin.pojo.vo.ViewDataVo;
 import com.drive.admin.service.AreaService;
 import com.drive.common.core.constant.CacheConstants;
 import com.drive.common.core.constant.Constants;
+import com.drive.common.redis.service.RedisService;
 import com.drive.common.redis.util.JedisConnect;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 
 import javax.annotation.PostConstruct;
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  *  服务实现类
@@ -35,11 +38,9 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> implements AreaService {
 
-    @Autowired
-    private AreaMapper areaMapper;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisService redisService;
 
     // 创建数组型缓冲等待队列
     BlockingQueue<Runnable> bq = new ArrayBlockingQueue<Runnable>(10);
@@ -54,24 +55,44 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
         }
         QueryWrapper<AreaEntity> queryWrapper = new QueryWrapper<AreaEntity>();
         queryWrapper.eq("ba_code",baCode);
-        return areaMapper.selectOne(queryWrapper);
+        return super.getById(queryWrapper);
     }
 
     @Override
     public List<ViewDataVo> findView() {
-        return areaMapper.findView();
+        return this.getBaseMapper().findView();
     }
 
 
-     @PostConstruct
+    @CacheEvict(value = "redisCache", key = "'areaItem:area_'+#entity.getId()")
+    @Override
+    public boolean save(AreaEntity entity) {
+        return super.save(entity);
+    }
+
+    @CacheEvict(value = "redisCache", key = "'areaItem:area_'+#entity.getId()")
+    @Override
+    public boolean updateById(AreaEntity entity) {
+        return super.updateById(entity);
+    }
+
+    //@Cacheable(value = "redisCache", key = "'areaItem:area_'+ #id")
+    @Override
+    public AreaEntity getById(Serializable id) {
+        return super.getById(id);
+    }
+
+    @PostConstruct
     public void init() {
         QueryWrapper<AreaEntity> wrapper = new QueryWrapper<AreaEntity>();
-        List<AreaEntity> operatorEntityList = areaMapper.selectList(wrapper);
+        List<AreaEntity> operatorEntityList = super.list(wrapper);
         long startTime = System.currentTimeMillis();
+         Map map = new ConcurrentHashMap(operatorEntityList.size());
         operatorEntityList.stream().forEach((item) -> {
            // 打印正在执行的缓存线程信息
-           redisTemplate.opsForValue().set(getCacheKey(item.getBaCode()),item);
+            map.put(CacheConstants.REDIS_CACHE_AREA_KEY +item.getBaCode(),JSONObject.toJSONString(item));
        });
+         redisService.executePipelined(map);
         //cachedThreadPool.shutdown();
         long endTime = System.currentTimeMillis();
         System.out.println(endTime - startTime);

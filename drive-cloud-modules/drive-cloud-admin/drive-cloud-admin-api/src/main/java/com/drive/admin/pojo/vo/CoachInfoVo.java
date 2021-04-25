@@ -1,6 +1,7 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.drive.admin.util.AdminCacheUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -236,4 +237,18 @@ public class CoachInfoVo {
 	private String cityName;
 	private String areaName;
 
+	public void setProvinceId(String provinceId) {
+		this.provinceId = provinceId;
+		this.provinceName = AdminCacheUtil.getAreaName(provinceId);
+	}
+
+	public void setCityId(String cityId) {
+		this.cityId = cityId;
+		this.cityName = AdminCacheUtil.getAreaName(cityId);
+	}
+
+	public void setAreaId(String areaId) {
+		this.areaId = areaId;
+		this.areaName = AdminCacheUtil.getAreaName(areaId);
+	}
 }

@@ -83,21 +83,6 @@ public class  CoachInfoRepositoryImpl extends BaseController<CoachInfoPageQueryP
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<CoachInfoVo> coachInfoVoPage = coachInfoMapStruct.toVoList(pageList);
-        coachInfoVoPage.getRecords().stream().forEach((item) ->{
-            // 省市区
-            if (StrUtil.isNotEmpty(item.getProvinceId())){
-                AreaEntity areaEntity = areaService.getByBaCode(item.getProvinceId());
-                item.setProvinceName(areaEntity.getBaName());
-            }
-            if (StrUtil.isNotEmpty(item.getCityId())){
-                AreaEntity areaEntity  = areaService.getByBaCode(item.getCityId());
-                item.setCityName(areaEntity.getBaName());
-            }
-            if (StrUtil.isNotEmpty(item.getAreaId())) {
-                AreaEntity areaEntity  = areaService.getByBaCode(item.getAreaId());
-                if(areaEntity != null)item.setAreaName(areaEntity.getBaName());
-            }
-        });
         return R.success(coachInfoVoPage);
     }
 

@@ -80,12 +80,12 @@ public class  ServiceInfoRepositoryImpl extends BaseController<ServiceInfoPageQu
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<ServiceInfoVo> serviceInfoVoPage = serviceInfoMapStruct.toVoList(pageList);
-        serviceInfoVoPage.getRecords().stream().forEach((item) ->{
+       /* serviceInfoVoPage.getRecords().stream().forEach((item) ->{
             // 省市区
             if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
             if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
             if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
-        });
+        });*/
         log.info(this.getClass() + "pageList-方法请求结果{}",serviceInfoVoPage);
         return R.success(serviceInfoVoPage);
     }

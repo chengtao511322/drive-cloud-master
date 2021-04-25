@@ -3,22 +3,27 @@ package com.drive.admin.service.impl;
 import cn.hutool.db.nosql.redis.RedisDS;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.mapper.ServiceInfoMapper;
 import com.drive.admin.pojo.entity.AreaEntity;
 import com.drive.admin.pojo.entity.ServiceInfoEntity;
 import com.drive.admin.service.ServiceInfoService;
 import com.drive.common.core.base.BaseService;
 import com.drive.common.core.constant.CacheConstants;
+import com.drive.common.redis.service.RedisService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  * 客服人员信息表 服务实现类
@@ -33,25 +38,41 @@ public class ServiceInfoServiceImpl extends BaseService<ServiceInfoMapper, Servi
     // ThreadPoolExecutor:创建自定义线程池，池中保存的线程数为3，允许最大的线程数为6
     ExecutorService cachedThreadPool = Executors.newFixedThreadPool(100);
 
-    private final Jedis jedis = RedisDS.create().getJedis();
+    @Resource
+    private RedisService redisService;
+
+    @CacheEvict(value = "redisCache", key = "'serviceItem:service_'+#entity.getId()")
+    @Override
+    public boolean save(ServiceInfoEntity entity) {
+        return super.save(entity);
+    }
+
+    @CacheEvict(value = "redisCache", key = "'serviceItem:service_'+#entity.getId()")
+    @Override
+    public boolean updateById(ServiceInfoEntity entity) {
+        return super.updateById(entity);
+    }
+
+    //@Cacheable(value = "redisCache", key = "'serviceItem:service_'+ #id")
+    @Override
+    public ServiceInfoEntity getById(Serializable id) {
+        return super.getById(id);
+    }
 
     @PostConstruct
     public void init() {
         QueryWrapper<ServiceInfoEntity> wrapper = new QueryWrapper<ServiceInfoEntity>();
+        wrapper.eq("status", StatusEnum.ENABLE.getCode());
         List<ServiceInfoEntity> serviceInfoList = this.getBaseMapper().selectList(wrapper);
 
-        Pipeline pipe = jedis.pipelined(); // 先创建一个 pipeline 的链接对象
         long startTime = System.currentTimeMillis();
+        Map map = new ConcurrentHashMap(serviceInfoList.size());
         serviceInfoList.stream().forEach((item) -> {
-            cachedThreadPool.execute(new Runnable() {
-                public void run() {
-                    // 打印正在执行的缓存线程信息
-                    jedis.set(getCacheKey(item.getId()), JSONObject.toJSONString(item));
-                }
-            });
+            // 打印正在执行的缓存线程信息
+            map.put(getCacheKey(item.getId()),JSONObject.toJSONString(item));
         });
-        cachedThreadPool.shutdown();
-        pipe.sync(); // 获取所有的 response
+        // 提交
+        redisService.executePipelined(map);
         long endTime = System.currentTimeMillis();
         System.out.println(endTime - startTime);
     }

@@ -8,14 +8,23 @@ import com.drive.admin.mapper.CoachInfoMapper;
 import com.drive.admin.pojo.entity.CoachInfoEntity;
 import com.drive.admin.service.CoachInfoService;
 import com.drive.common.core.base.BaseService;
+import com.drive.common.core.constant.CacheConstants;
+import com.drive.common.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,14 +37,29 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class CoachInfoServiceImpl extends BaseService<CoachInfoMapper, CoachInfoEntity> implements CoachInfoService {
 
-    @Autowired
-    private RedisTemplate redisTemplate;
 
-    private  final Jedis jedis = RedisDS.create().getJedis();
 
-    // ThreadPoolExecutor:创建自定义线程池，池中保存的线程数为3，允许最大的线程数为6
-    ExecutorService cachedThreadPool = Executors.newFixedThreadPool(20);
 
+    @Resource
+    private RedisService redisService;
+
+    @CacheEvict(value = "redisCache", key = "'coachItem:coach_'+#entity.getId()")
+    @Override
+    public boolean save(CoachInfoEntity entity) {
+        return super.save(entity);
+    }
+
+    @CacheEvict(value = "redisCache", key = "'coachItem:coach_'+#entity.getId()")
+    @Override
+    public boolean updateById(CoachInfoEntity entity) {
+        return super.updateById(entity);
+    }
+
+    //@Cacheable(value = "redisCache", key = "'coachItem:coach_'+ #id")
+    @Override
+    public CoachInfoEntity getById(Serializable id) {
+        return super.getById(id);
+    }
 
     @PostConstruct
     public void init() {
@@ -49,15 +73,13 @@ public class CoachInfoServiceImpl extends BaseService<CoachInfoMapper, CoachInfo
 
         // redisTemplate.opsForValue().set("viewList:", viewList);
         long startTime = System.currentTimeMillis();
+        Map map = new ConcurrentHashMap(coachInfoList.size());
         coachInfoList.stream().forEach((item) -> {
-            //for (int i = 0; i < viewList.size(); i++) {
-            //pipe.set("pipe:"+viewList.get(0).getCode(), viewList.get(0).getValue());
-            // sleep可明显看到使用的是线程池里面以前的线程，没有创建新的线程
-            //Thread.sleep(1000);
-                    // 打印正在执行的缓存线程信息
-                    //pipeline.sadd("viewList:"+item.getCode(), item.getValue());
-                    jedis.set("redisCache:coachItem:coach_"+item.getId(), JSONObject.toJSONString(item));
+                    //jedis.set("redisCache:coachItem:coach_"+item.getId(), JSONObject.toJSONString(item));
+            map.put(CacheConstants.REDIS_CACHE_COACH_KEY +item.getId(),JSONObject.toJSONString(item));
         });
+        // 提交
+        redisService.executePipelined(map);
         long endTime = System.currentTimeMillis();
         System.out.println(endTime - startTime);
     }
