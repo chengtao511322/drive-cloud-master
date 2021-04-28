@@ -22,6 +22,7 @@ public interface RoleService extends IService<RoleEntity>{
      * @return 权限列表
      */
     Set<String> getRoleListByUserId(Long userId);
+    Set<String> getRoleListAll();
 
 
     List<Integer> selectRoleListByUserId(Long userId);

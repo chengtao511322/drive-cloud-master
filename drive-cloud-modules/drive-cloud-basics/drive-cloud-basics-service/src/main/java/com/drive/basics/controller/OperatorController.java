@@ -64,7 +64,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	 * 部门列表
 	 */
 	@ApiOperation("运营商列表")
-	@PreAuthorize("hasPermission('/operator',  'basics:operator:allList')")
+	//@PreAuthorize("hasPermission('/operator',  'basics:operator:allList')")
 	@GetMapping(value = "/allList")
 	public ResObject allList() {
 		List<OperatorEntity> allList = operatorService.list();

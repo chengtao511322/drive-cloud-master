@@ -3,6 +3,7 @@ package com.drive.admin;
 import com.drive.common.core.utils.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
@@ -15,6 +16,7 @@ import java.lang.management.ManagementFactory;
 /*@Import(SpringCloudConfiguration.class)*/
 @EnableFeignClients(basePackages = "com.drive")
 @SpringCloudApplication
+@EnableCaching
 @Slf4j
 public class DriveCloudAdminApplication {
 

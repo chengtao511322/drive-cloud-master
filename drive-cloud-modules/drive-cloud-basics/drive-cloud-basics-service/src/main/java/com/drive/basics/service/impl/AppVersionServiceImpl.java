@@ -8,7 +8,6 @@ import com.drive.basics.service.AppVersionService;
 import com.drive.common.core.base.BaseService;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
-import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class AppVersionServiceImpl extends BaseService<AppVersionMapper, AppVers
 
     @Override
     //用户下单，模拟全局事务回滚
-    @GlobalTransactional//全局事务控制
+    //@GlobalTransactional//全局事务控制
     public ResObject createOrderRollback(AppVersionEditParam appVersionEditParam) {
         log.info("接收到{}号商品的下单请求,接下来调用商品微服务查询此商品信息", appVersionEditParam);
 

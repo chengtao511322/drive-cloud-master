@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -68,8 +69,8 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	 */
 	@ApiOperation("新用户已回访列表分页")
 	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
-	@GetMapping(value = "/newStudentReturnVisitPageList")
-	public ResObject newStudentReturnVisitPageList(@Valid StudentInfoPageQueryParam param) {
+	@PostMapping(value = "/newStudentReturnVisitPageList")
+	public ResObject newStudentReturnVisitPageList(@Valid @RequestBody StudentInfoPageQueryParam param) {
 		return studentInfoRepository.newStudentReturnVisitPageList(param);
 	}
 
@@ -80,7 +81,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	@ApiOperation("学员信息表分页列表")
 	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid StudentInfoPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody StudentInfoPageQueryParam param) {
 		return studentInfoRepository.pageList(param);
 	}
 
@@ -140,6 +141,16 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
 		return R.toRes(studentInfoService.removeByIds(Arrays.asList(ids)));
+	}
+
+
+	@ApiOperation("批量修改学员信息表")
+	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
+	@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:updateBatch')")
+	@EventLog(message = "批量修改学员信息表", businessType = EventLogEnum.UPDATE)
+	@PutMapping("/updateBatch")
+	public ResObject updateBatch(@RequestBody List<StudentInfoEditParam> studentInfoEditParams) {
+		return studentInfoRepository.updateBatch(studentInfoEditParams);
 	}
 
 	/**

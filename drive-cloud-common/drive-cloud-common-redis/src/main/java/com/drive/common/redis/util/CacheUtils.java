@@ -1,23 +1,18 @@
 package com.drive.common.redis.util;
 
-import cn.hutool.db.nosql.redis.RedisDS;
 import com.alibaba.fastjson.JSONObject;
-import com.drive.common.core.constant.CacheConstants;
-import com.drive.common.core.utils.ApplicationContextUtil;
 import com.drive.common.core.utils.SpringContextUtil;
 import com.drive.common.core.utils.SpringUtils;
 import com.drive.common.core.utils.StringUtils;
 import com.drive.common.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
-import redis.clients.jedis.Jedis;
-import sun.plugin.javascript.ocx.JSObject;
 
 import java.util.List;
 
 /**
  * 字典工具类
  * 
- * @author ruoyi
+ * @author xiagouo
  */
 @Slf4j
 public class CacheUtils<T>

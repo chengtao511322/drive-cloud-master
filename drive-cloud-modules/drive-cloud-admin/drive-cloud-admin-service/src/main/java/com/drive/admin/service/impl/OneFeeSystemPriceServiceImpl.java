@@ -1,11 +1,8 @@
 package com.drive.admin.service.impl;
 
-import cn.hutool.db.nosql.redis.RedisDS;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.mapper.OneFeeSystemPriceMapper;
 import com.drive.admin.pojo.dto.TreeNodeCategoryDto;
 import com.drive.admin.pojo.entity.OneFeeSystemPriceEntity;
@@ -18,11 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -70,7 +65,7 @@ public class OneFeeSystemPriceServiceImpl extends BaseService<OneFeeSystemPriceM
         return super.page(page,queryWrapper);
     }
 
-    //@Cacheable(value = "redisCache", key = "'classItem:class_'+ #id")
+    @Cacheable(value = "redisCache", key = "'classItem:class_'+ #id")
     @Override
     public OneFeeSystemPriceEntity getById(Serializable id) {
         return super.getById(id);
@@ -88,7 +83,7 @@ public class OneFeeSystemPriceServiceImpl extends BaseService<OneFeeSystemPriceM
 
         // redisTemplate.opsForValue().set("viewList:", viewList);
         long startTime = System.currentTimeMillis();
-        Map map = new ConcurrentHashMap(oneFeeSystemPriceList.size());
+        Map<String, Object> map = new ConcurrentHashMap(oneFeeSystemPriceList.size());
         oneFeeSystemPriceList.stream().forEach((item) -> {
             //for (int i = 0; i < viewList.size(); i++) {
             //pipe.set("pipe:"+viewList.get(0).getCode(), viewList.get(0).getValue());
@@ -97,7 +92,7 @@ public class OneFeeSystemPriceServiceImpl extends BaseService<OneFeeSystemPriceM
             // 打印正在执行的缓存线程信息
             //pipeline.sadd("viewList:"+item.getCode(), item.getValue());
             //jedis.set(CacheConstants.REDIS_CACHE_CLASS_KEY +item.getId(), JSONObject.toJSONString(item));
-            map.put(CacheConstants.REDIS_CACHE_CLASS_KEY +item.getId(),JSONObject.toJSONString(item));
+            map.put(CacheConstants.REDIS_CACHE_CLASS_KEY +item.getId(),item);
         });
         redisService.executePipelined(map);
         long endTime = System.currentTimeMillis();

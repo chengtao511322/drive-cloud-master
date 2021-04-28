@@ -182,6 +182,13 @@ public class StudentInfoVo {
 	// 是否有意向 0 否 1 是
 	private String isIntention;
 
+	// 创建者
+	private String createUser;
+	// 操作时间
+	private LocalDateTime operationTime;
+
+	private int returnVisitHistoryCount;
+
 
 //	public String getProvinceId() {
 //		return provinceId;

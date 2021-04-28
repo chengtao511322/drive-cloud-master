@@ -211,10 +211,10 @@ public class UserController extends BaseController<UserPageQueryParam, UserEntit
     }
 
     /**
-     * 获取用户信息
+     * 获取用户信息getUserInfo
      */
     @GetMapping("/info/{username}")
-    public ResObject<UserInfo> info(@PathVariable("username") String username) {
+    public ResObject<UserInfo> info(@PathVariable(value = "username") String username) {
         UserVo userVo = userService.getUserVoByUserName(username);
 
         if (StringUtils.isNull(userVo)) {

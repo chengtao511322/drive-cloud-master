@@ -56,6 +56,17 @@
     </sql>
 
 
+    <select id="getClassHoursSum" parameterType="com.drive.admin.pojo.dto.StudentTrainCarApplyPageQueryParam" resultType="java.lang.Integer">
+        SELECT
+            COALESCE(SUM(class_hours),0)
+        FROM
+            t_student_train_car_apply
+        WHERE
+            student_id = #{studentId}
+        AND subject_type = #{subjectType}
+        AND train_type = #{trainType}
+        AND apply_status in(1,4,5,6,7)
+    </select>
     <select id="classHoursSum" parameterType="java.lang.String" resultType="java.lang.Integer">
         SELECT
             SUM(class_hours)

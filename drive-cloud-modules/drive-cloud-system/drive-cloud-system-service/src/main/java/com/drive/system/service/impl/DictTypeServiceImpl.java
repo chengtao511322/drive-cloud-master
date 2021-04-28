@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
  * 字典类型 服务实现类
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Service
 public class DictTypeServiceImpl extends BaseService<DictTypeMapper, DictTypeEntity> implements DictTypeService {

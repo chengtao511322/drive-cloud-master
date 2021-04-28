@@ -13,4 +13,14 @@
             role_id, dept_id
     </sql>
 
+    <select id="getAllDept" resultType="com.drive.system.pojo.entity.RoleDeptEntity">
+        SELECT
+            t1.role_id,
+        GROUP_CONCAT(t2.tenant_id) as tenantIds
+        FROM
+            sys_role_dept t1
+        LEFT JOIN sys_dept t2 ON t2.dept_id = t1.dept_id
+        GROUP BY t1.role_id
+    </select>
+
 </mapper>

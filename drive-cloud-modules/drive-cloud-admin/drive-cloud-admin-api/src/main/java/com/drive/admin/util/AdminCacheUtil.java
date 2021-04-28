@@ -1,20 +1,14 @@
 package com.drive.admin.util;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.db.nosql.redis.RedisDS;
 import com.alibaba.fastjson.JSONObject;
 import com.drive.admin.pojo.vo.AreaVo;
 import com.drive.admin.pojo.vo.CoachInfoVo;
 import com.drive.admin.pojo.vo.OneFeeSystemPriceVo;
 import com.drive.admin.pojo.vo.ServiceInfoVo;
 import com.drive.common.core.constant.CacheConstants;
-import com.drive.common.core.constant.Constants;
-import com.drive.common.core.utils.BeanConvertUtils;
-import com.drive.common.core.utils.SpringContextUtil;
 import com.drive.common.core.utils.StringUtils;
-import com.drive.common.redis.service.RedisService;
 import com.drive.common.redis.util.CacheUtils;
-import redis.clients.jedis.Jedis;
 
 public class AdminCacheUtil {
 

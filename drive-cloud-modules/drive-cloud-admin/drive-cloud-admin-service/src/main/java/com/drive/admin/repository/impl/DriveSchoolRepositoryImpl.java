@@ -92,12 +92,6 @@ public class  DriveSchoolRepositoryImpl extends BaseController<DriveSchoolPageQu
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<DriveSchoolVo> driveSchoolVoPage = driveSchoolMapStruct.toVoList(pageList);
-        driveSchoolVoPage.getRecords().stream().forEach((item) ->{
-            // 省市区
-            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
-        });
         log.info(this.getClass() + "pageList-方法请求结果{}",driveSchoolVoPage);
         return R.success(driveSchoolVoPage);
     }

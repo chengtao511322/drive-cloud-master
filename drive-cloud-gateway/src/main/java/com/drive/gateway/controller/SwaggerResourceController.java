@@ -15,7 +15,7 @@ import java.util.Optional;
 /**
  * swagger访问页面
  * 限制dev和test环境下访问
- * @author DreamChan
+ * @author xiaoguo
  */
 @RestController
 @Profile({"dev", "test"})

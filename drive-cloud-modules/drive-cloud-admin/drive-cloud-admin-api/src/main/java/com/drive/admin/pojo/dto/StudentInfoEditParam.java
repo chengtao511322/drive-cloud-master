@@ -122,4 +122,9 @@ public class StudentInfoEditParam {
     private String returnVisitStatus;
     // 回访类型明细
     private String returnVisitItem;
+
+    // 创建者
+    private String createUser;
+    // 操作时间
+    private LocalDateTime operationTime;
 }

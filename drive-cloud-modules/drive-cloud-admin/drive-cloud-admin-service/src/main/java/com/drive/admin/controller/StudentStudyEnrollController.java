@@ -23,12 +23,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -180,6 +179,14 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody StudentStudyEnrollEditParam studentStudyEnrollEditParam) {
 		return studentStudyEnrollRepository.update(studentStudyEnrollEditParam);
+	}
+	@ApiOperation("批量修改学员学车报名单")
+	@ApiImplicitParam(name = "StudentStudyEnrollEditParam ", value = "修改学员学车报名单", dataType = "StudentStudyEnrollEditParam")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:edit')")
+	@EventLog(message = "修改学员学车报名单", businessType = EventLogEnum.UPDATE)
+	@PutMapping("/updateBatch")
+	public ResObject updateBatch(@Valid @RequestBody List<StudentStudyEnrollEditParam> studentStudyEnrollEditParam) {
+		return studentStudyEnrollRepository.updateBatchById(studentStudyEnrollEditParam);
 	}
 
 

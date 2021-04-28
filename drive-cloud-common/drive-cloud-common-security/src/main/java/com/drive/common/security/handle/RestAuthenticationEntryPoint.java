@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 认证失败处理
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 

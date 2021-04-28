@@ -85,5 +85,4 @@ public class UserEditParam {
     // 操作者ID，可以是客服ID
     private String operationId;
 
-
 }

@@ -8,7 +8,6 @@ import com.drive.admin.pojo.dto.CoachGiveAreaEditParam;
 import com.drive.admin.pojo.dto.CoachInfoDataEditParam;
 import com.drive.admin.pojo.dto.CoachInfoEditParam;
 import com.drive.admin.pojo.dto.CoachInfoPageQueryParam;
-import com.drive.admin.pojo.entity.AreaEntity;
 import com.drive.admin.pojo.entity.CoachGiveAreaEntity;
 import com.drive.admin.pojo.entity.CoachInfoEntity;
 import com.drive.admin.pojo.vo.CoachInfoVo;

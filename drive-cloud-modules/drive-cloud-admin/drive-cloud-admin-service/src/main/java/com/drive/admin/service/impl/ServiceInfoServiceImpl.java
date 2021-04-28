@@ -1,26 +1,24 @@
 package com.drive.admin.service.impl;
 
-import cn.hutool.db.nosql.redis.RedisDS;
-import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.mapper.ServiceInfoMapper;
-import com.drive.admin.pojo.entity.AreaEntity;
 import com.drive.admin.pojo.entity.ServiceInfoEntity;
 import com.drive.admin.service.ServiceInfoService;
 import com.drive.common.core.base.BaseService;
 import com.drive.common.core.constant.CacheConstants;
+import com.drive.common.core.utils.BeanConvertUtils;
+import com.drive.common.datascope.annotation.DataScope;
 import com.drive.common.redis.service.RedisService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -53,10 +51,16 @@ public class ServiceInfoServiceImpl extends BaseService<ServiceInfoMapper, Servi
         return super.updateById(entity);
     }
 
-    //@Cacheable(value = "redisCache", key = "'serviceItem:service_'+ #id")
+    @Cacheable(value = "redisCache", key = "'serviceItem:service_'+ #id")
     @Override
     public ServiceInfoEntity getById(Serializable id) {
-        return super.getById(id);
+        return BeanConvertUtils.copy(super.getById(id),ServiceInfoEntity.class);
+    }
+
+    @DataScope(deptAlias = "operator_id", userAlias = "id",module = "admin")
+    @Override
+    public <E extends IPage<ServiceInfoEntity>> E page(E page, Wrapper<ServiceInfoEntity> queryWrapper) {
+        return super.page(page,queryWrapper);
     }
 
     @PostConstruct
@@ -69,7 +73,7 @@ public class ServiceInfoServiceImpl extends BaseService<ServiceInfoMapper, Servi
         Map map = new ConcurrentHashMap(serviceInfoList.size());
         serviceInfoList.stream().forEach((item) -> {
             // 打印正在执行的缓存线程信息
-            map.put(getCacheKey(item.getId()),JSONObject.toJSONString(item));
+            map.put(getCacheKey(item.getId()),item);
         });
         // 提交
         redisService.executePipelined(map);

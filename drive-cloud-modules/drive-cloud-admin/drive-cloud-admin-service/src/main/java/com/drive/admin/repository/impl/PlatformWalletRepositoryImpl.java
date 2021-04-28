@@ -30,7 +30,6 @@ import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.data.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -358,7 +357,8 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
         //查询出该订单的账务流水明细
         List<AccountFlowDetailEntity> accountFlowDetailList = accountFlowDetailService.list(queryWrapper);
         if (accountFlowDetailList.size() <= 0){
-            throw new BizException(500,SubResultCode.OPERATION_ERROR.subCode(),"数据异常不可操作");
+            return R.success();
+            //throw new BizException(500,SubResultCode.OPERATION_ERROR.subCode(),"数据异常不可操作");
         }
         List<AccountFlowDetailInstallParam> accountFlowDetailInstall = BeanConvertUtils.copyList(accountFlowDetailList,AccountFlowDetailInstallParam.class);
         accountFlowDetailInstall.stream().forEach((item) ->{

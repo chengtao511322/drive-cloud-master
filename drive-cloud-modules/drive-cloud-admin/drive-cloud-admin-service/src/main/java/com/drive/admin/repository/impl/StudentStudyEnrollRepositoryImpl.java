@@ -4,7 +4,6 @@ import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -28,16 +27,15 @@ import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
-import com.drive.common.core.constant.CacheConstants;
 import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.core.utils.DateUtils;
 import com.drive.common.data.utils.ExcelUtils;
+import com.drive.common.security.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -130,7 +128,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         }*/
 
         // 订单
-
+        //log.info("获取权限{}",SecurityUtils.getAuthentication());
         List<StudentOrderEntity> studentOrderList = null;
         QueryWrapper orderQueryWrapper = new QueryWrapper();
         if (StrUtil.isNotEmpty(param.getStudentOrderNo())){
@@ -147,7 +145,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"telephone",param.getVaguePhoneSearch());
 
         if (param.getIsReturnVisit()!= null && param.getIsReturnVisit() == 1){
-            queryWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id AND t_service_return_visit_history.return_visit_item IN(2,3))",0);
+            queryWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id AND t_service_return_visit_history.order_detail_no = t_student_study_enroll.study_enroll_no AND t_service_return_visit_history.return_visit_item IN(2,3))",0);
         }
         if (param.getIsReturnVisit()!= null && param.getIsReturnVisit() == 0){
             //queryWrapper.eq("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id )",0);
@@ -162,17 +160,26 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             queryWrapper.and(wrapper ->{
                 wrapper.and(nameAgeQueryWrapper ->{
                     nameAgeQueryWrapper.or(itemWrapper ->{
-                        itemWrapper.eq("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id )",0);
+                        itemWrapper.eq("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id AND t_service_return_visit_history.order_detail_no = t_student_study_enroll.study_enroll_no)",0);
                     });
                     nameAgeQueryWrapper.or(itemWrapper ->{
-                        itemWrapper.gt("(SELECT count(1) FROM (select  t.* from (SELECT * FROM t_service_return_visit_history HAVING 1 ORDER BY create_time DESC) t GROUP BY t.student_id) t1 WHERE t1.student_id = t_student_study_enroll.student_id  AND t1.return_visit_item IN (1, 4))",0);
+                        itemWrapper.gt("(SELECT count(1) FROM (select  t.* from (SELECT * FROM t_service_return_visit_history HAVING 1 ORDER BY create_time DESC) t GROUP BY t.student_id) t1 WHERE t1.student_id = t_student_study_enroll.student_id AND t1.order_detail_no = t_student_study_enroll.study_enroll_no AND t1.return_visit_item IN (1, 4))",0);
                     });
                 });
             });
         }
 
         if (StrUtil.isNotEmpty(param.getNextReturnVisitTimeSearch())){
-            queryWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id AND date_format(t_service_return_visit_history.next_return_visit_time,'%Y-%m-%d')= DATE_FORMAT('"+param.getNextReturnVisitTimeSearch()+"','%Y-%m-%d'))",0);
+            queryWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id AND t_service_return_visit_history.order_detail_no = t_student_study_enroll.study_enroll_no AND date_format(t_service_return_visit_history.next_return_visit_time,'%Y-%m-%d')= DATE_FORMAT('"+param.getNextReturnVisitTimeSearch()+"','%Y-%m-%d'))",0);
+        }
+        if (StrUtil.isNotEmpty(param.getVagueServiceNameSearch())){
+            List<ServiceInfoEntity> serviceInfoList = null;
+            QueryWrapper serviceQueryWrapper = new QueryWrapper();
+            serviceQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueServiceNameSearch()),"real_name",param.getVagueServiceNameSearch());
+            serviceQueryWrapper.like(StrUtil.isNotEmpty(param.getVaguePreSalesServiceNameSearch()),"real_name",param.getVaguePreSalesServiceNameSearch());
+            serviceInfoList  = serviceInfoService.list(serviceQueryWrapper);
+            if (serviceInfoList.size() <= 0)R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
+            queryWrapper.in("user_id",serviceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
         }
         // 预约见面时间
         queryWrapper.apply(StrUtil.isNotBlank(param.getBeSpeakMeetTimeSearch()),
@@ -244,17 +251,17 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             if (item.getEnrollStatus().equals(StudyEnrollEnum.ENROLL_STATUS_PAY_SUCCESS.getCode())){
                 // examine
                 long examineDay= DateUtil.between(new Date(),DateUtils.asDate(studentOrder.getPayTime()), DateUnit.DAY);//两个时间间隔几
-                if (examineDay >= 1) {
+                if ((examineDay) >= 1) {
                     item.setExamine(true);
                 }
             }
-            //12 13 >=1
+            //12 13 >=1  变红 预警
             Boolean prepareStayExamine =item.getEnrollStatus().equals(StudyEnrollEnum.ENROLL_STATUS_PREPARE_STAY_EXAMINE.getCode());
             Boolean passwordExamine =item.getEnrollStatus().equals(StudyEnrollEnum.ENROLL_STATUS_PASSWORD_EXAMINE.getCode());
             if (prepareStayExamine || passwordExamine){
                 // examine
                 long examineDay= DateUtil.between(new Date(), DateUtils.asDate(item.getUpdateTime()), DateUnit.DAY);//两个时间间隔几
-                if (examineDay >= 7) {
+                if ((examineDay) >= 7) {
                     item.setExamine(true);
                 }
             }
@@ -289,10 +296,19 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             ServiceReturnVisitHistoryEntity serviceReturnVisitHistory  = serviceReturnVisitHistoryService.getOne(returnQueryWrapper);
             if (serviceReturnVisitHistory != null){
                 item.setReturnVisitTime(serviceReturnVisitHistory.getReturnVisitTime());
-                ServiceInfoEntity serviceInfo = serviceInfoService.getById(serviceReturnVisitHistory.getServiceId());
-                if (serviceInfo != null)item.setReturnVisitServiceName(serviceInfo.getRealName());
+                item.setReturnVisitServiceName(AdminCacheUtil.getServiceRealName(serviceReturnVisitHistory.getServiceId()));
                 item.setReturnVisitContent(serviceReturnVisitHistory.getReturnVisitContent());
                 item.setServiceReturnVisitHistory(BeanConvertUtils.copy(serviceReturnVisitHistory, ServiceReturnVisitHistoryVo.class));
+
+            }
+            QueryWrapper startReturnQueryWrapper = new QueryWrapper();
+            //returnQueryWrapper.eq("order_detail_no",item.getStudyEnrollNo());
+            startReturnQueryWrapper.eq("student_id",item.getStudentId());
+            startReturnQueryWrapper.orderByAsc("create_time");
+            startReturnQueryWrapper.last("limit 1");
+            ServiceReturnVisitHistoryEntity startServiceReturnVisitHistory  = serviceReturnVisitHistoryService.getOne(startReturnQueryWrapper);
+            if (startServiceReturnVisitHistory != null){
+                item.setStartReturnVisitTime(startServiceReturnVisitHistory.getReturnVisitTime());
             }
             QueryWrapper queryWrapperCount = new QueryWrapper();
             queryWrapperCount.eq("student_id",item.getStudentId());
@@ -444,6 +460,19 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         }
         StudentStudyEnrollEntity studentStudyEnroll = BeanConvertUtils.copy(updateParam, StudentStudyEnrollEntity.class);
         Boolean result = studentStudyEnrollService.updateById(studentStudyEnroll);
+        log.info(this.getClass() + "update-方法请求结果{}",result);
+        // 判断结果
+        return result ?R.success(result):R.failure(result);
+    }
+    @Override
+    public ResObject updateBatchById(List<StudentStudyEnrollEditParam> updateParam) {
+        log.info(this.getClass() + "update方法请求参数{}",updateParam);
+        if (updateParam.size() <= 0){
+            log.error("数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        List<StudentStudyEnrollEntity> studentStudyEnroll = BeanConvertUtils.copyList(updateParam, StudentStudyEnrollEntity.class);
+        Boolean result = studentStudyEnrollService.updateBatchById(studentStudyEnroll);
         log.info(this.getClass() + "update-方法请求结果{}",result);
         // 判断结果
         return result ?R.success(result):R.failure(result);
@@ -693,6 +722,17 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         }
         Page<StudentStudyEnrollEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         QueryWrapper queryWrapper = new QueryWrapper();
+        List<ServiceInfoEntity> serviceInfoList = null;
+        QueryWrapper serviceQueryWrapper = new QueryWrapper();
+        if (StrUtil.isNotEmpty(param.getVagueServiceNameSearch())){
+            serviceQueryWrapper.like("real_name",param.getVagueServiceNameSearch());
+            serviceInfoList  = serviceInfoService.list(serviceQueryWrapper);
+            if (serviceInfoList.size()<=0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
+        }
+        if (serviceInfoList != null && serviceInfoList.size() > 0){
+            queryWrapper.in("t2.user_id",serviceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
+        }
+
         queryWrapper.eq(StrUtil.isNotEmpty(param.getOrderStatusSearch()),"t1.status",param.getOrderStatusSearch());
         // 运营商
         queryWrapper.eq(StrUtil.isNotEmpty(param.getOperatorId()),"t1.operator_id",param.getOperatorId());
@@ -728,6 +768,9 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             String[] arr = param.getPayTimeSearch().split(",");
             queryWrapper.between("t1.pay_time",arr[0],arr[1]);
         }
+       /* if (param.getPayTimeArr() != null && param.getPayTimeArr().length > 0){
+            queryWrapper.between("date_format (t1.pay_time,'%Y-%m-%d')",param.getPayTimeArr()[0],param.getPayTimeArr()[1]);
+        }*/
         // 默认排序
         queryWrapper.orderByDesc("t1.create_time");
         IPage<StudentStudyEnrollVo> pageList = studentStudyEnrollService.studyEnrollPageList(page,queryWrapper);
@@ -761,18 +804,28 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             OneFeeSystemPriceEntity oneFeeSystemPrice = oneFeeSystemPriceService.getById(item.getClassId());
             if (oneFeeSystemPrice != null)item.setClassName(oneFeeSystemPrice.getName());
             // 省市区
-            QueryWrapper serviceQueryWrapper = new QueryWrapper();
+            QueryWrapper nextServiceQueryWrapper = new QueryWrapper();
             //serviceQueryWrapper.eq("order_detail_no",item.getStudyEnrollNo());
-            serviceQueryWrapper.eq("student_id",item.getStudentId());
-            serviceQueryWrapper.orderByDesc("create_time");
-            serviceQueryWrapper.last("limit 1");
-            ServiceReturnVisitHistoryEntity serviceReturnVisitHistoryEntity  = serviceReturnVisitHistoryService.getOne(serviceQueryWrapper);
+            nextServiceQueryWrapper.eq("student_id",item.getStudentId());
+            nextServiceQueryWrapper.orderByDesc("create_time");
+            nextServiceQueryWrapper.last("limit 1");
+            ServiceReturnVisitHistoryEntity serviceReturnVisitHistoryEntity  = serviceReturnVisitHistoryService.getOne(nextServiceQueryWrapper);
             if (serviceReturnVisitHistoryEntity != null){
                 item.setReturnVisitTime(serviceReturnVisitHistoryEntity.getReturnVisitTime());
                 ServiceInfoEntity serviceInfo = serviceInfoService.getById(serviceReturnVisitHistoryEntity.getServiceId());
                 if (serviceInfo != null)item.setReturnVisitServiceName(serviceInfo.getRealName());
                 item.setReturnVisitContent(serviceReturnVisitHistoryEntity.getReturnVisitContent());
                 item.setServiceReturnVisitHistory(BeanConvertUtils.copy(serviceReturnVisitHistoryEntity, ServiceReturnVisitHistoryVo.class));
+            }
+            // 首次回访时间
+            QueryWrapper startReturnQueryWrapper = new QueryWrapper();
+            //returnQueryWrapper.eq("order_detail_no",item.getStudyEnrollNo());
+            startReturnQueryWrapper.eq("student_id",item.getStudentId());
+            startReturnQueryWrapper.orderByAsc("create_time");
+            startReturnQueryWrapper.last("limit 1");
+            ServiceReturnVisitHistoryEntity startServiceReturnVisitHistory  = serviceReturnVisitHistoryService.getOne(startReturnQueryWrapper);
+            if (startServiceReturnVisitHistory != null){
+                item.setStartReturnVisitTime(startServiceReturnVisitHistory.getReturnVisitTime());
             }
 
             QueryWrapper queryWrapperCount = new QueryWrapper();

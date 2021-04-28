@@ -24,4 +24,6 @@ public class RoleDeptEntity implements Serializable {
 	// 部门ID
 	private Long deptId;
 
+	private String tenantIds;
+
 }

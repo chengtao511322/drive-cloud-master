@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
  * 终端配置表 服务实现类
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Service
 public class OauthClientDetailsServiceImpl extends ServiceImpl<OauthClientDetailsMapper, OauthClientDetailsEntity> implements OauthClientDetailsService {

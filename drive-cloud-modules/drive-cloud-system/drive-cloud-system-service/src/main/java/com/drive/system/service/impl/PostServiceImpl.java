@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 岗位信息 服务实现类
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Service
 public class PostServiceImpl extends BaseService<PostMapper, PostEntity> implements PostService {

@@ -1,8 +1,6 @@
 package com.drive.admin.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.db.nosql.redis.RedisDS;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.drive.admin.mapper.AreaMapper;
@@ -10,21 +8,15 @@ import com.drive.admin.pojo.entity.AreaEntity;
 import com.drive.admin.pojo.vo.ViewDataVo;
 import com.drive.admin.service.AreaService;
 import com.drive.common.core.constant.CacheConstants;
-import com.drive.common.core.constant.Constants;
 import com.drive.common.redis.service.RedisService;
-import com.drive.common.redis.util.JedisConnect;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -76,7 +68,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
         return super.updateById(entity);
     }
 
-    //@Cacheable(value = "redisCache", key = "'areaItem:area_'+ #id")
+    @Cacheable(value = "redisCache", key = "'areaItem:area_'+ #id")
     @Override
     public AreaEntity getById(Serializable id) {
         return super.getById(id);
@@ -90,7 +82,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
          Map map = new ConcurrentHashMap(operatorEntityList.size());
         operatorEntityList.stream().forEach((item) -> {
            // 打印正在执行的缓存线程信息
-            map.put(CacheConstants.REDIS_CACHE_AREA_KEY +item.getBaCode(),JSONObject.toJSONString(item));
+            map.put(CacheConstants.REDIS_CACHE_AREA_KEY +item.getBaCode(),item);
        });
          redisService.executePipelined(map);
         //cachedThreadPool.shutdown();

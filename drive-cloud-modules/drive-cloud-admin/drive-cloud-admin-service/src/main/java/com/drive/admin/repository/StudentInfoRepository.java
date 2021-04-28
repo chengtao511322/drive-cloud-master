@@ -5,6 +5,8 @@ import com.drive.admin.pojo.dto.StudentInfoPageQueryParam;
 import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.biz.ResObject;
 
+import java.util.List;
+
 /**
  *
  * 学员信息表 服务类
@@ -31,5 +33,12 @@ public interface StudentInfoRepository extends BaseRepository<StudentInfoPageQue
     ResObject newStudentReturnVisitPageList(StudentInfoPageQueryParam param);
 
     ResObject oneNewStudentReturnVisitPageList(StudentInfoPageQueryParam param);
+
+    /**
+     * 批量修改数据
+     * @param studentInfoList
+     * @return
+     */
+    ResObject updateBatch(List<StudentInfoEditParam> studentInfoList);
 }
 

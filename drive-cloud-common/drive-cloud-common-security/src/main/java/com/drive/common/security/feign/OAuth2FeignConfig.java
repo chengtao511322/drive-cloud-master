@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Feign配置注册
  *
- * @author DreamChan
+ * @author xiaoguo
  **/
 @Configuration
 public class OAuth2FeignConfig {

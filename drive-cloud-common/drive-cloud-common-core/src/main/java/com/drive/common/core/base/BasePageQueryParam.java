@@ -35,6 +35,7 @@ public abstract class BasePageQueryParam implements java.io.Serializable{
     private String vagueSearch;
 
     private String vaguePhoneSearch;
+    private String vaguePreSalesServiceNameSearch;
     private String vagueUserNameSearch ;
     private String vagueRealNameSearch;
     private String vagueEmailSearch;

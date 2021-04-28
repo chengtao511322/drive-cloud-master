@@ -20,6 +20,13 @@ public interface StudentTrainCarApplyMapper extends BaseMapper<StudentTrainCarAp
     Integer classHoursSum(String studentId,String subjectType);
 
     /**
+     * 课时求和多条件
+     * @param studentTrainCarApplyPageQueryParam
+     * @return
+     */
+    int getClassHoursSum(StudentTrainCarApplyPageQueryParam studentTrainCarApplyPageQueryParam);
+
+    /**
      * 查询课时
      * @param studentTrainCarApplyPageQueryParam
      * @return

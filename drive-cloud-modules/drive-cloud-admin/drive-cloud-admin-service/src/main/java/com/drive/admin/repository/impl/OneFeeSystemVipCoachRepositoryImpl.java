@@ -10,7 +10,6 @@ import com.drive.admin.pojo.dto.OneFeeSystemVipCoachInstallParam;
 import com.drive.admin.pojo.dto.OneFeeSystemVipCoachPageQueryParam;
 import com.drive.admin.pojo.entity.CoachInfoEntity;
 import com.drive.admin.pojo.entity.OneFeeSystemVipCoachEntity;
-import com.drive.admin.pojo.entity.StudentOrderEntity;
 import com.drive.admin.pojo.vo.OneFeeSystemVipCoachVo;
 import com.drive.admin.repository.OneFeeSystemVipCoachRepository;
 import com.drive.admin.service.CoachInfoService;

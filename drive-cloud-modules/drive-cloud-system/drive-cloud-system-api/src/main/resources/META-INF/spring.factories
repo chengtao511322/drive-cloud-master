@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    com.drive.system.factory.UserFallbackFactory
+    com.drive.system.factory.UserFallbackFactory,com.drive.system.factory.UserRoleFallbackFactory

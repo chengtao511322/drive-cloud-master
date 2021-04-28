@@ -31,4 +31,5 @@ public interface SecurityConstants {
      */
     String DETAILS_USERNAME = "username";
     String OPERATION_ID = "operationId";
+    String TENANT_ID = "tenantId";
 }

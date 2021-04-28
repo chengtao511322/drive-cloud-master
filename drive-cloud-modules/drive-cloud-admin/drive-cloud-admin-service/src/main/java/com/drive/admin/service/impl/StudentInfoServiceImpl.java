@@ -9,6 +9,7 @@ import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.admin.service.StudentInfoService;
 import com.drive.common.core.base.BaseService;
+import com.drive.common.datascope.annotation.DataScope;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,11 +20,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class StudentInfoServiceImpl extends BaseService<StudentInfoMapper, StudentInfoEntity> implements StudentInfoService {
 
+    @DataScope(deptAlias = "tsi.operator_id",userAlias = "tsi.service_id", module = "admin")
     @Override
     public IPage<StudentInfoVo> newStudentPageList(Page page, Wrapper<StudentInfoPageQueryParam> ew) {
         return this.getBaseMapper().newStudentPageList(page,ew);
     }
 
+    @DataScope(deptAlias = "tsi.operator_id",userAlias = "tsi.service_id", module = "admin")
     @Override
     public IPage<StudentInfoVo> newStudentReturnVisitPageList(Page page, Wrapper<StudentInfoPageQueryParam> ew) {
         return this.getBaseMapper().newStudentReturnVisitPageList(page,ew);

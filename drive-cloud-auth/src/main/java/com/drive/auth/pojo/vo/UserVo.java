@@ -71,4 +71,6 @@ public class UserVo {
 	private LocalDateTime updateTime;
 	// 操作者ID
 	private String operationId;
+	// 租户Id
+	private String tenantId;
 }

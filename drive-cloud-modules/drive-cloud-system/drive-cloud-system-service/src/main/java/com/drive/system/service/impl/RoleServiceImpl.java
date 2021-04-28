@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * 角色信息 服务实现类
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Service
 public class RoleServiceImpl extends BaseService<RoleMapper, RoleEntity> implements RoleService {
@@ -56,6 +56,21 @@ public class RoleServiceImpl extends BaseService<RoleMapper, RoleEntity> impleme
                 }
             }
         }
+        return roles;
+    }
+
+    @Override
+    public Set<String> getRoleListAll() {
+        Set<String> roles = new HashSet<>();
+        // 管理员拥有所有权限
+
+        List<RoleEntity> perms = this.baseMapper.selectRolePermissionAll();
+        for (RoleEntity perm : perms) {
+            if (StringUtils.isNotNull(perm)) {
+                roles.addAll(Arrays.asList(perm.getRoleKey().trim().split(",")));
+            }
+        }
+
         return roles;
     }
 

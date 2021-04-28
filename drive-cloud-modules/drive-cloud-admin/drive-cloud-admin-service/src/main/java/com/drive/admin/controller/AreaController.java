@@ -11,6 +11,7 @@ import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.enums.EventLogEnum;
 import com.drive.common.log.annotation.EventLog;
+import com.drive.system.api.RemoteUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -35,6 +36,9 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("/area")
 public class AreaController extends BaseController<AreaPageQueryParam, AreaEntity> {
+
+	@Autowired
+	private RemoteUserService remoteUserService;
 
 	@Autowired
 	private AreaService areaService;
@@ -66,7 +70,7 @@ public class AreaController extends BaseController<AreaPageQueryParam, AreaEntit
 	 * 部门列表
 	 */
 	@ApiOperation("城市区域列表")
-	@PreAuthorize("hasPermission('/admin/area',  'admin:area:allList')")
+	//@PreAuthorize("hasPermission('/admin/area',  'admin:area:allList')")
 	@GetMapping(value = "/allList")
 	public ResObject allList() {
 		return areaRepository.allList();

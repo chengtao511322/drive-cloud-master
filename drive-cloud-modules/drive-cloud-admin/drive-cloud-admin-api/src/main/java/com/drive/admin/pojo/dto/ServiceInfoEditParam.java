@@ -78,5 +78,8 @@ public class ServiceInfoEditParam {
     // 登录账号
     private String loginAccount;
 
+    // 客服类型 1 售前 2 售后
+    private String serviceItemType;
+
 
 }

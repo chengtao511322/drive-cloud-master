@@ -200,5 +200,13 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 	// 约考状态
 	private String aboutStatus;
 	private String vaguePromoterName;
+	//
+	private String vagueServiceNameSearch;
+
+	//
+	private String[] payTimeArr = new String[2];
+
+	// 售前客服id
+	private String preSalesServiceId;
 
 }

@@ -71,6 +71,9 @@ public class StudentTestEnrollPageQueryParam extends BasePageQueryParam {
 
 	// 希望预约考试时间
 	private LocalDateTime testHopeTime;
+	private String[] testHopeTimeArr = new String[2];
+	private String[] testActualTimeArr = new String[2];
+	private String enrollStatusArr;
 	// 模糊查询字段
 	//private String vagueNameSearch
 

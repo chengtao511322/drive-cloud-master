@@ -1,7 +1,8 @@
 package com.drive.admin.repository;
 
-import com.drive.admin.pojo.dto.*;
-import com.drive.common.core.base.BaseRepository;
+import com.drive.admin.pojo.dto.StudentStudyProgressHistoryEditParam;
+import com.drive.admin.pojo.dto.StudentStudyProgressHistoryInstallParam;
+import com.drive.admin.pojo.dto.StudentStudyProgressHistoryPageQueryParam;
 import com.drive.common.core.base.BasicsRepository;
 import com.drive.common.core.biz.ResObject;
 

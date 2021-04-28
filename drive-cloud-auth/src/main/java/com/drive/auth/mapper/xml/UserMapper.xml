@@ -30,6 +30,7 @@
         select
             u.user_id,
             u.operation_id,
+            d.tenant_id,
             u.user_name,
             u.nick_name,
             u.email,

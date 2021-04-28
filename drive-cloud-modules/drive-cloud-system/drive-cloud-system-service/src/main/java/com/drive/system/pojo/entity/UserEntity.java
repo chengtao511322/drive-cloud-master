@@ -70,4 +70,7 @@ public class UserEntity extends BaseEntity {
 	// 操作者ID，可以是客服ID
 	private String operationId;
 
+	// 租户ID
+	private String tenantId;
+
 }

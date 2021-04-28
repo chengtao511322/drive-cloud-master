@@ -2,7 +2,6 @@ package com.drive.admin.pojo.dto;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 

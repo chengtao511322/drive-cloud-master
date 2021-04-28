@@ -17,7 +17,7 @@ import java.util.UUID;
 /**
  * 验证码处理
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Service
 public class CaptchaService {

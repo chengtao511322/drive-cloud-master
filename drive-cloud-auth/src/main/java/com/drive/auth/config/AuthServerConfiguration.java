@@ -5,6 +5,7 @@ import com.drive.common.core.constant.CacheConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +16,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
@@ -78,6 +80,26 @@ public class AuthServerConfiguration extends AuthorizationServerConfigurerAdapte
                 .reuseRefreshTokens(false)
                 .pathMapping("/oauth/confirm_access", "/token/confirm_access")
                 .exceptionTranslator(new AuthExceptionTranslator());
+                //.tokenServices(defaultTokenServices());
+    }
+
+    /**
+     * <p>注意，自定义TokenServices的时候，需要设置@Primary，否则报错，</p>
+     *
+     * @return
+     */
+    @Primary
+    @Bean
+    public DefaultTokenServices defaultTokenServices() {
+        DefaultTokenServices tokenServices = new DefaultTokenServices();
+        tokenServices.setTokenStore(tokenStore());
+        tokenServices.setSupportRefreshToken(true);
+//        tokenServices.setClientDetailsService(customClientDetailsService);
+        // token有效期自定义设置，90天
+        tokenServices.setAccessTokenValiditySeconds(60 * 60 * 24 * 90);
+        // refresh_token 90天
+        tokenServices.setRefreshTokenValiditySeconds(60 * 60 * 24 * 90);
+        return tokenServices;
     }
 
     @Bean

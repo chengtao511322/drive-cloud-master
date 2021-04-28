@@ -21,6 +21,11 @@ public class StudentTrainCarApplyServiceImpl extends BaseService<StudentTrainCar
     }
 
     @Override
+    public int getClassHoursSum(StudentTrainCarApplyPageQueryParam studentTrainCarApplyPageQueryParam) {
+        return this.getBaseMapper().getClassHoursSum(studentTrainCarApplyPageQueryParam);
+    }
+
+    @Override
     public int selectVipTeachingNumber(StudentTrainCarApplyPageQueryParam studentTrainCarApplyPageQueryParam) {
         return this.getBaseMapper().selectVipTeachingNumber(studentTrainCarApplyPageQueryParam);
     }

@@ -1,6 +1,5 @@
 package com.drive.admin.strategy.impl;
 
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.drive.admin.enums.ExamEnrollEnum;
@@ -8,9 +7,11 @@ import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.enums.SubjectTypeEnum;
 import com.drive.admin.pojo.dto.AccountFlowDetailEditParam;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
-import com.drive.admin.pojo.dto.StudentStudyProgressHistoryInstallParam;
 import com.drive.admin.pojo.dto.StudentTestEnrollEditParam;
-import com.drive.admin.pojo.entity.*;
+import com.drive.admin.pojo.entity.StudentInfoEntity;
+import com.drive.admin.pojo.entity.StudentOrderEntity;
+import com.drive.admin.pojo.entity.StudentStudyProgressHistoryEntity;
+import com.drive.admin.pojo.entity.StudentTestEnrollEntity;
 import com.drive.admin.repository.AccountFlowRepository;
 import com.drive.admin.repository.PlatformWalletRepository;
 import com.drive.admin.repository.StudentStudyProgressHistoryRepository;
@@ -31,8 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**

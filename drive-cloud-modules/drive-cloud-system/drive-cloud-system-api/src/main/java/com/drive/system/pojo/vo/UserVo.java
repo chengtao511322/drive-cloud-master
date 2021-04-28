@@ -13,7 +13,7 @@ import java.util.List;
  * @author DreamChan
  */
 @Data
-public class UserVo {
+public class UserVo implements java.io.Serializable{
 
 	// 用户ID
 	private Long userId;
@@ -82,4 +82,7 @@ public class UserVo {
 
 	/** 岗位数组 */
 	private Long[] postIds;
+
+	private String operationId;
+	private String tenantId;
 }

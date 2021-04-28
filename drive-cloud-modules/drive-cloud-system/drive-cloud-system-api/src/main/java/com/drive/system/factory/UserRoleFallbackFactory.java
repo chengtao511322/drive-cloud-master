@@ -2,8 +2,7 @@ package com.drive.system.factory;
 
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
-import com.drive.system.api.RemoteUserService;
-import com.drive.system.pojo.UserInfo;
+import com.drive.system.api.RemoteUserRoleFeignService;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -15,16 +14,15 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class UserFallbackFactory implements FallbackFactory<RemoteUserService> {
+public class UserRoleFallbackFactory implements FallbackFactory<RemoteUserRoleFeignService> {
 
 
     @Override
-    public RemoteUserService create(Throwable throwable) {
+    public RemoteUserRoleFeignService create(Throwable throwable) {
+        return new RemoteUserRoleFeignService() {
 
-        return new RemoteUserService() {
             @Override
-            public ResObject<UserInfo> info(String username) {
-                log.error("异常");
+            public ResObject getDeptByRoleId(Long roleId) {
                 return R.failure();
             }
         };

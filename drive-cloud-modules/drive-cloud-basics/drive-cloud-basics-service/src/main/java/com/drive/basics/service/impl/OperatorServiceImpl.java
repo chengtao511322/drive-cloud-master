@@ -1,8 +1,5 @@
 package com.drive.basics.service.impl;
 
-import cn.hutool.db.nosql.redis.RedisDS;
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.drive.basics.mapper.OperatorMapper;
 import com.drive.basics.pojo.entity.OperatorEntity;
 import com.drive.basics.pojo.vo.OperatorItemVo;
@@ -14,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
-import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;

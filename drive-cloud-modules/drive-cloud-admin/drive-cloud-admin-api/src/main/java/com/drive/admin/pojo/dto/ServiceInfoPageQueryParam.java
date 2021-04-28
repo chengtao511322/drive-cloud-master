@@ -87,4 +87,7 @@ public class ServiceInfoPageQueryParam extends BasePageQueryParam {
 	// 模糊查询登录账户
 	private String vagueLoginAccountSearch;
 
+	// 客服类型 1 售前 2 售后
+	private String serviceItemType;
+
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 /**
  * feign 请求拦截器
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Component
 public class OAuth2FeignRequestInterceptor implements RequestInterceptor {

@@ -9,6 +9,7 @@ import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.exception.BizException;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  *
@@ -68,5 +69,12 @@ public interface StudentStudyEnrollRepository extends BaseRepository<StudentStud
      * @return
      */
     ResObject drillStudentDataPageList(@Valid StudentOrderPageQueryParam param);
+
+    /**
+     * 批量修改
+     * @param updateParam
+     * @return
+     */
+    ResObject updateBatchById(List<StudentStudyEnrollEditParam> updateParam);
 }
 

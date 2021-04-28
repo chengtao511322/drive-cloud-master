@@ -7,7 +7,8 @@
  * History:
  * <author>          <time>          <version>          <desc>
  * 作者姓名           修改时间           版本号              描述
- */
+ *//*
+
 package com.drive.gateway.filter;
 
 
@@ -23,33 +24,41 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 
+*/
 /**
  * 〈鉴权过滤〉
  *
  * @author Allen
  * @date 2020/8/29
  * @since 1.0.0
- */
+ *//*
+
 @Slf4j
 @Component
 public class AuthSignatureFilter implements GlobalFilter, Ordered {
 
-    /**
+    */
+/**
      * 注入gatewayFilterConfiguration
-     */
+     *//*
 
 
-    /**
+
+    */
+/**
      * 注入StringRedisTemplate
-     */
+     *//*
 
 
-    /**
+
+    */
+/**
      * 过滤器
      * @param exchange ServerWebExchange
      * @param chain GatewayFilter
      * @return 过滤信息
-     */
+     *//*
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -70,11 +79,13 @@ public class AuthSignatureFilter implements GlobalFilter, Ordered {
         return exchange.getResponse().setComplete();
     }
 
-    /**
+    */
+/**
      * 获得Token值
      * @param request ServerHttpRequest
      * @return Token值
-     */
+     *//*
+
     protected String extractToken(ServerHttpRequest request) {
         String authToken = request.getHeaders().getFirst("Authorization");
         if (authToken != null) {
@@ -89,13 +100,15 @@ public class AuthSignatureFilter implements GlobalFilter, Ordered {
         return authToken;
     }
 
-    /**
+    */
+/**
      * 设置Order顺序
      * @return 顺序号
-     */
+     *//*
+
     @Override
     public int getOrder() {
         return -1;
     }
 
-}
+}*/

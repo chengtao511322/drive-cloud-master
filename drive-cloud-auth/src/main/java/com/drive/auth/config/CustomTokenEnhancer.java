@@ -28,6 +28,7 @@ public class CustomTokenEnhancer implements TokenEnhancer {
 
             final Map<String, Object> additionalInfo = Maps.newHashMap();
 
+            additionalInfo.put(SecurityConstants.TENANT_ID, loginUser.getTenantId());
             additionalInfo.put(SecurityConstants.OPERATION_ID, loginUser.getOperationId());
             additionalInfo.put(SecurityConstants.DETAILS_USER_ID, loginUser.getUserId());
             additionalInfo.put(SecurityConstants.DETAILS_USERNAME, loginUser.getUsername());

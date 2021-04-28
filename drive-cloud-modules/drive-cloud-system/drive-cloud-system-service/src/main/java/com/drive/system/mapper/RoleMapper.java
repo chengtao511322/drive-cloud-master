@@ -20,6 +20,7 @@ public interface RoleMapper extends BaseMapper<RoleEntity> {
      * @return 角色列表
      */
     List<RoleEntity> selectRolePermissionByUserId(Long userId);
+    List<RoleEntity> selectRolePermissionAll();
 
     List<RoleEntity> selectRolesByUserName(String userName);
 

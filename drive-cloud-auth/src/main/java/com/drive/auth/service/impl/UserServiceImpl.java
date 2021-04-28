@@ -20,7 +20,7 @@ import java.util.Set;
 /**
  * 用户信息 服务实现类
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Service
 public class UserServiceImpl extends BaseService<UserMapper, UserEntity> implements UserService {

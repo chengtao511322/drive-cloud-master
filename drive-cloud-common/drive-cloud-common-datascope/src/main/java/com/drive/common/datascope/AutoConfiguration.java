@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @author XIAOGUO
  */
 
-@ComponentScan(value = {"cn.drive.common.datascope"})
+@ComponentScan(value = {"com.drive.common.datascope"})
 public class AutoConfiguration {
 
 }

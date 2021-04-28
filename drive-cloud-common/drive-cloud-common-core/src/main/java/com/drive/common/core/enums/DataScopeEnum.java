@@ -11,7 +11,8 @@ public enum DataScopeEnum {
     CUSTOM("2", "自定数据权限"),
     DEPT("3", "本部门数据权限"),
     DEPT_AND_CHILD("4", "本部门及以下数据权限"),
-    SELF("5", "仅本人数据权限");
+    SELF("5", "仅本人数据权限"),
+    ADMIN_MODULE("admin", "admin系统模块");
 
 
     private final String code;

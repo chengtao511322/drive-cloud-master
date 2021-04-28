@@ -12,6 +12,9 @@ spring:
     # 应用名称
     name: @project.artifactId@
     #name: drive-cloud-marketing
+  cache:
+      type: simple
+      cache-names: test
   profiles:
     # 环境配置
     active: dev

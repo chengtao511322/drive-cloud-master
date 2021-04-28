@@ -58,6 +58,9 @@ public class StudentTestEnrollVo {
 	private String enrollStatus;
 	private String studyEnrollNo;
 
+	// 是否预警
+	private Boolean examine;
+
 	// 希望预约考试时间
 	@Excel(name = "希望预约考试时间", width = 20)
 	private LocalDateTime testHopeTime;
@@ -70,6 +73,8 @@ public class StudentTestEnrollVo {
 	@Excel(name = "希望预约考试场地ID", width = 20)
 	private String testHopeCoachingGridId;
 	private String testHopeCoachingGridName;
+
+	private String coachingGridName;
 
 	// 实际预约考试场地ID
 	@Excel(name = "实际预约考试场地ID", width = 20)
@@ -129,9 +134,18 @@ public class StudentTestEnrollVo {
 	// 总费用
 	private BigDecimal totalAmount;
 
+	// 支付时间
+	private LocalDateTime payTime;
+
+	private BigDecimal payAmount;
+	private BigDecimal orderAmount;
+
 	// 教练名称
 	private String coachName;
 	private String className;
+
+	private int conventionSum;
+	private int examSum;
 
 	private String bindCoach;
 

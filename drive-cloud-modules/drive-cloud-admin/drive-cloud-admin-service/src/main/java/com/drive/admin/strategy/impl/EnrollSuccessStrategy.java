@@ -3,8 +3,6 @@ package com.drive.admin.strategy.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
-import com.drive.admin.enums.EnrollStatusEnum;
-import com.drive.admin.enums.OperationTypeEnum;
 import com.drive.admin.enums.OperatorEnum;
 import com.drive.admin.enums.StudyEnrollEnum;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
@@ -29,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author 小郭
@@ -102,19 +101,19 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
         accountFlowQueryWrapper.eq("order_no",studentOrder.getOrderNo());
         AccountFlowEntity accountFlow = accountFlowService.getOne(accountFlowQueryWrapper);
         if (studentOrder == null)throw new BizException(500,SubResultCode.STUDENT_NO_ENROLL.subCode(),SubResultCode.STUDENT_NO_ENROLL.subMsg());
-        // 验证 是否已绑定教练
-        QueryWrapper coachStudentQueryWrapper = new QueryWrapper();
-        coachStudentQueryWrapper.eq("class_id",studentOrder.getProductId());
-        coachStudentQueryWrapper.eq("student_id",studentOrder.getStudentId());
-        coachStudentQueryWrapper.eq("order_no",studentOrder.getOrderNo());
-        coachStudentQueryWrapper.eq("bind_status",StudyEnrollEnum.BIND_STATUS_ALREADY_BIND.getCode());
-        int count = oneFeeSystemCoachStudentService.count(coachStudentQueryWrapper);
         // 判断自主
         Boolean isDecide = studentStudyEnroll.getEnrollType() == 1;
-        //
-        if (!isDecide && count <= 0 )throw new BizException(500,"请先为学员绑定教练",SubResultCode.NO_BINDING_COACH.subCode(),"请先为学员绑定教练");
         //创建包过模式-报名完成账务流水
         if (!isDecide){
+            // 验证 是否已绑定教练
+            QueryWrapper coachStudentQueryWrapper = new QueryWrapper();
+            coachStudentQueryWrapper.eq("class_id",studentOrder.getProductId());
+            coachStudentQueryWrapper.eq("student_id",studentOrder.getStudentId());
+            coachStudentQueryWrapper.eq("order_no",studentOrder.getOrderNo());
+            coachStudentQueryWrapper.eq("bind_status",StudyEnrollEnum.BIND_STATUS_ALREADY_BIND.getCode());
+            int count = oneFeeSystemCoachStudentService.count(coachStudentQueryWrapper);
+            //
+            if (!isDecide && count <= 0 )throw new BizException(500,"请先为学员绑定教练",SubResultCode.NO_BINDING_COACH.subCode(),"请先为学员绑定教练");
             this.createVIPStudyEnrollCompleteAccountFlow(studyEnroll,studentOrder,accountFlow,true,false);
         // 自主
         } else{
@@ -393,7 +392,10 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
         QueryWrapper accountFlowQueryWrapper = new QueryWrapper();
         accountFlowQueryWrapper.eq("order_no",studentOrder.getOrderNo());
         List<AccountFlowDetailEntity>  accountFlowDetailList = accountFlowDetailService.list(accountFlowQueryWrapper);
-        BigDecimal sumItemAmount = accountFlowDetailList.stream().map(AccountFlowDetailEntity::getItemAmount).reduce(BigDecimal::add).get();
+        BigDecimal sumItemAmount = new BigDecimal(0);
+        if (accountFlowDetailList.size() >0){
+            sumItemAmount=accountFlowDetailList.stream().map(AccountFlowDetailEntity::getItemAmount).reduce(BigDecimal::add).get();
+        }
 
         // 若已经生成流水，则直接返回
         boolean isEq = sumItemAmount.compareTo(studentStudyEnroll.getPrice()) == 0;

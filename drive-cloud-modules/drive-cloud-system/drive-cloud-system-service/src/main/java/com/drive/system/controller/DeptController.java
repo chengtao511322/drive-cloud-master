@@ -1,19 +1,26 @@
 package com.drive.system.controller;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
+import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.enums.EventLogEnum;
+import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.data.utils.ExcelUtils;
 import com.drive.common.log.annotation.EventLog;
 import com.drive.system.pojo.dto.DeptEditParam;
 import com.drive.system.pojo.dto.DeptPageQueryParam;
 import com.drive.system.pojo.entity.DeptEntity;
+import com.drive.system.pojo.entity.RoleDeptEntity;
 import com.drive.system.pojo.vo.DeptVo;
+import com.drive.system.pojo.vo.RoleDeptVo;
 import com.drive.system.service.DeptService;
+import com.drive.system.service.RoleDeptService;
 import com.drive.system.service.mapstruct.DeptMapStruct;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -47,6 +54,9 @@ public class DeptController extends BaseController<DeptPageQueryParam, DeptEntit
     private DeptService deptService;
     @Autowired
     private DeptMapStruct deptMapStruct;
+
+    @Autowired
+    private RoleDeptService roleDeptService;
 
     /**
      * 部门 分页列表
@@ -84,6 +94,22 @@ public class DeptController extends BaseController<DeptPageQueryParam, DeptEntit
     public ResObject get(@PathVariable Long deptId) {
         DeptEntity dept = deptService.getById(deptId);
         return R.success(dept);
+    }
+    /**
+     * 获取部门
+     */
+    @ApiOperation("获取部门")
+    @ApiImplicitParam(name = "deptId", required = true, dataType = "Long", paramType = "path")
+    @PreAuthorize("hasPermission('/dept',  'system:dept:query')")
+    @GetMapping("/getDeptByRoleId/{roleId}")
+    public ResObject<RoleDeptVo> getDeptByRoleId(@PathVariable Long roleId) {
+        if (roleId == null){
+            return R.failure(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        }
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("role_id",roleId);
+        List<RoleDeptEntity> roleDeptList = roleDeptService.list(queryWrapper);
+        return R.success(BeanConvertUtils.copyList(roleDeptList,com.drive.system.pojo.vo.RoleDeptVo.class));
     }
 
     /**

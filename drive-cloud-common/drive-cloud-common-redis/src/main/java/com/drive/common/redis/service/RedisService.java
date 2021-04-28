@@ -1,8 +1,8 @@
 package com.drive.common.redis.service;
 
 import com.alibaba.fastjson.JSONObject;
-import io.seata.common.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisStringCommands;
 import org.springframework.data.redis.core.RedisCallback;
@@ -153,13 +153,13 @@ public class RedisService {
      * 批量插入
      * @param map
      */
-    public void executePipelined(Map map) {
-        RedisSerializer serializer = redisTemplate.getStringSerializer();
+    public void executePipelined(Map<String, Object> map) {
+        RedisSerializer serializer = redisTemplate.getValueSerializer();
         redisTemplate.executePipelined(new RedisCallback() {
             @Override
             public String doInRedis(RedisConnection connection) throws DataAccessException {
                 map.forEach((key, value) -> {
-                    connection.set(serializer.serialize(key), serializer.serialize(value));
+                    connection.set(key.getBytes(), serializer.serialize(value));
                 });
                 return null;
             }

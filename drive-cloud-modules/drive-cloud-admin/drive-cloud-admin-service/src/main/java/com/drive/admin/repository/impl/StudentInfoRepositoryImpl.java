@@ -2,8 +2,6 @@ package com.drive.admin.repository.impl;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.nosql.redis.RedisDS;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -20,13 +18,14 @@ import com.drive.admin.service.ServiceInfoService;
 import com.drive.admin.service.ServiceReturnVisitHistoryService;
 import com.drive.admin.service.StudentInfoService;
 import com.drive.admin.service.mapstruct.StudentInfoMapStruct;
+import com.drive.admin.util.AdminCacheUtil;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
-import com.drive.common.core.constant.CacheConstants;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.core.utils.StringUtils;
+import com.drive.common.security.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,8 +34,11 @@ import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -114,6 +116,13 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
             // queryWrapper.between("date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[0] + "','%Y-%m-%d')","date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[1] + "','%Y-%m-%d')");
             queryWrapper.between("date_format(tsi.create_time, '%Y-%m-%d')",arr[0],arr[1]);
         }
+        if (param.getHasPreOnlineServicer() !=null && param.getHasPreOnlineServicer().equals(0)){
+            queryWrapper.isNull("tsi.service_id");
+        }
+        if (param.getHasPreOnlineServicer() !=null && param.getHasPreOnlineServicer().equals(1)){
+            queryWrapper.isNotNull("tsi.service_id");
+        }
+
         String sortColumn = param.getSortColumn();
         String underSortColumn = StringUtils.lowerCamelToLowerUnderscore(sortColumn);
         if (param.getIsAsc()) {
@@ -168,6 +177,16 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         log.info(this.getClass() + "newStudentPageList-方法请求参数{}",param);
         Page<StudentInfoEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         QueryWrapper queryWrapper = new QueryWrapper();
+        // 客服模糊
+        List<ServiceInfoEntity> serviceInfoList = new ArrayList<>();
+        if (StrUtil.isNotEmpty(param.getVagueServiceNameSearch()) || StrUtil.isNotEmpty(param.getVagueServicePhoneSearch())){
+            QueryWrapper studentQueryWrapper = new QueryWrapper();
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueServiceNameSearch()),"real_name",param.getVagueServiceNameSearch());
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueServicePhoneSearch()),"phone",param.getVagueServicePhoneSearch());
+            serviceInfoList = serviceInfoService.list(studentQueryWrapper);
+            if(serviceInfoList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
+        }
+        queryWrapper.in(serviceInfoList.size() > 0,"tsi.service_id",serviceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
         queryWrapper.isNull("tsse.study_enroll_no");
         // 运营商查询
         queryWrapper.eq(StrUtil.isNotEmpty(param.getOperatorId()),"tsi.operator_id",param.getOperatorId());
@@ -183,7 +202,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         queryWrapper.eq(param.getIsIntentionSearch() !=null,"tsrvh.is_intention", param.getIsIntentionSearch());
         // 线上
         queryWrapper.eq(StrUtil.isNotEmpty(param.getOfflineServiceId()),"tsse.user_id", param.getOfflineServiceId());
-        queryWrapper.eq("tsrvh.return_visit_item", ReturnVisitStatusEnum.NEW_USER.getCode());
+        // queryWrapper.eq("tsrvh.return_visit_item", ReturnVisitStatusEnum.NEW_USER.getCode());
         // 手机号码查询
         queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"tsi.phone",param.getPhone());
         queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"tsi.phone",param.getVaguePhoneSearch());
@@ -218,15 +237,23 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
             // queryWrapper.between("date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[0] + "','%Y-%m-%d')","date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[1] + "','%Y-%m-%d')");
             queryWrapper.between("date_format(tsi.create_time, '%Y-%m-%d')",arr[0],arr[1]);
         }
+        // 回访时间范围
+        if (param.getDateTimeSearchArr() != null && param.getDateTimeSearchArr().length > 0){
+            queryWrapper.between("date_format (tsrvh.return_visit_time,'%Y-%m-%d')",param.getDateTimeSearchArr()[0],param.getDateTimeSearchArr()[1]);
+        }
+        // 注册时间范围
+        if (param.getRegDateTimeSearchArr() != null && param.getRegDateTimeSearchArr().length > 0){
+            queryWrapper.between("date_format (tsi.create_time,'%Y-%m-%d')",param.getRegDateTimeSearchArr()[0],param.getRegDateTimeSearchArr()[1]);
+        }
+        // 时间范围
+        if (param.getAllocationDateTimeSearchArr() != null && param.getAllocationDateTimeSearchArr().length > 0){
+            queryWrapper.between("date_format (tsi.operation_time,'%Y-%m-%d')",param.getAllocationDateTimeSearchArr()[0],param.getAllocationDateTimeSearchArr()[1]);
+        }
         //
         queryWrapper.groupBy("tsi.id");
         String sortColumn = param.getSortColumn();
         String underSortColumn = StringUtils.lowerCamelToLowerUnderscore(sortColumn);
-        if (param.getIsAsc()) {
-            queryWrapper.orderByAsc("tsi."+underSortColumn);
-        } else {
-            queryWrapper.orderByDesc("tsi."+underSortColumn);
-        }
+        queryWrapper.orderByDesc("tsrvh.return_visit_time");
         IPage<StudentInfoVo> studentInfoVoPage = studentInfoService.newStudentReturnVisitPageList(page,queryWrapper);
         if (studentInfoVoPage.getRecords().size() <= 0){
             log.error(this.getClass() +"数据空");
@@ -258,6 +285,11 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
             if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitItem()))item.setReturnVisitTime(returnVisitHistory.getReturnVisitTime());
             if (returnVisitHistory != null && returnVisitHistory.getNextReturnVisitTime() != null)item.setNextReturnVisitTime(returnVisitHistory.getNextReturnVisitTime());
             if (returnVisitHistory != null && StrUtil.isNotEmpty(returnVisitHistory.getReturnVisitItem()))item.setIsIntention(returnVisitHistory.getIsIntention());
+            QueryWrapper returnVisitHistoryCountQueryWrapper = new QueryWrapper();
+            returnVisitHistoryCountQueryWrapper.eq("student_id",item.getId());
+            int returnVisitHistoryCount = serviceReturnVisitHistoryService.count(returnVisitHistoryCountQueryWrapper);
+            // 回访次数
+            item.setReturnVisitHistoryCount(returnVisitHistoryCount);
         });
 /*
         if (param.isReturnVisitHistory()){
@@ -374,6 +406,27 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
             studentInfoVoPage.setTotal(studentInfoVoList.size());
         }*/
         return R.success(studentInfoVoPage);
+    }
+
+    @Override
+    public ResObject updateBatch(List<StudentInfoEditParam> studentInfoList) {
+        log.info(this.getClass() + "updateBatch-方法请求参数{}",studentInfoList);
+        if(studentInfoList.size() <= 0){
+            return R.failure(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
+        }
+        String serviceId = SecurityUtils.getLoginUser().getOperationId();
+        // do dto
+        List<StudentInfoEntity> studentInfoEntityList = BeanConvertUtils.copyList(studentInfoList,StudentInfoEntity.class);
+        studentInfoEntityList.stream().forEach((item) -> {
+            // 操作者
+            item.setCreateUser(AdminCacheUtil.getServiceRealName(serviceId));
+            item.setOperationTime(LocalDateTime.now());
+        });
+        Boolean result = studentInfoService.updateBatchById(studentInfoEntityList);
+        if (!result){
+            return R.failure(SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
+        }
+        return R.success(result);
     }
 
     /**

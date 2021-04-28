@@ -3,10 +3,6 @@ package com.drive.admin.pojo.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 
 /**
  * 平台账务流水明细

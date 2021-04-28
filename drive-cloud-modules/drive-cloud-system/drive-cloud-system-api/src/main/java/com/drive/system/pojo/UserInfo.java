@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Set;
 
 @Data
-public class UserInfo {
+public class UserInfo implements java.io.Serializable {
 
     /**
      * 用户基本信息

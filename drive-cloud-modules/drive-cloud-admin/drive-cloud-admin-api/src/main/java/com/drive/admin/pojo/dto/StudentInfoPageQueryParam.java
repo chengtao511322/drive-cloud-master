@@ -131,6 +131,9 @@ public class StudentInfoPageQueryParam extends BasePageQueryParam {
 	private String vagueRealNameSearch;
 	private String vagueEmailSearch;
 
+	private String vagueServiceNameSearch;
+	private String vagueServicePhoneSearch;
+
 	// 登录时间
 	private String searchLoginDate;
 	// 推荐时间
@@ -159,4 +162,18 @@ public class StudentInfoPageQueryParam extends BasePageQueryParam {
 	private String onLineServiceId;
 	// 线下
 	private String offlineServiceId;
+
+	// 创建者
+	private String createUser;
+	// 操作时间
+	private LocalDateTime operationTime;
+
+	private String[] dateTimeSearchArr = new String[2];
+	// 注册时间
+	private String[] regDateTimeSearchArr = new String[2];
+	// 分配时间
+	private String[] allocationDateTimeSearchArr = new String[2];
+
+	// 0 否 1 是 是否有客服
+	private Integer hasPreOnlineServicer;
 }

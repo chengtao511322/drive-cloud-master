@@ -23,7 +23,7 @@ import java.util.*;
 /**
  * 菜单权限 服务实现类
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Service
 public class MenuServiceImpl extends BaseService<MenuMapper, MenuEntity> implements MenuService {

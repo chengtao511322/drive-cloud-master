@@ -15,7 +15,7 @@ import java.io.IOException;
 
 /**
  * 授权失败
- * @author DreamChan
+ * @author xiaoguo
  */
 public class RestAccessDeniedHandler implements AccessDeniedHandler {
 

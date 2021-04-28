@@ -1,3 +1,4 @@
+/*
 package com.drive.common.core.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -7,11 +8,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+*/
 /**
  *  @author: haodongdong
  *  @Date: 2020/7/22 17:25
  *  @Description:  数据源代理
- */
+ *//*
+
 @Configuration
 public class DataSourceConfiguration {
 
@@ -30,4 +33,4 @@ public class DataSourceConfiguration {
         }
     }
 
-}
+}*/

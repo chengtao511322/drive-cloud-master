@@ -22,6 +22,13 @@ public interface StudentTrainCarApplyService extends IService<StudentTrainCarApp
     Integer classHoursSum(String studentId,String subjectType);
 
     /**
+     * 课时求和
+     * @param studentTrainCarApplyPageQueryParam
+     * @return
+     */
+    int getClassHoursSum(StudentTrainCarApplyPageQueryParam studentTrainCarApplyPageQueryParam);
+
+    /**
      * 查询VIP课时
      * @return
      */

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.common.core.base.BaseService;
 import com.drive.common.core.exception.CustomException;
 import com.drive.common.core.utils.StringUtils;
+import com.drive.common.datascope.annotation.DataScope;
 import com.drive.common.security.utils.SecurityUtils;
 import com.drive.system.mapper.PostMapper;
 import com.drive.system.mapper.RoleMapper;
@@ -28,7 +29,7 @@ import java.util.List;
 /**
  * 用户信息 服务实现类
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Service
 public class UserServiceImpl extends BaseService<UserMapper, UserEntity> implements UserService {
@@ -44,6 +45,7 @@ public class UserServiceImpl extends BaseService<UserMapper, UserEntity> impleme
     @Autowired
     private UserMapStruct userMapStruct;
 
+    @DataScope(deptAlias = "d", userAlias = "u")
     @Override
     public IPage<UserVo> getUserList(Page page, QueryWrapper<UserEntity> wrapper){
         return page.setRecords(this.baseMapper.getUserList(page, wrapper));

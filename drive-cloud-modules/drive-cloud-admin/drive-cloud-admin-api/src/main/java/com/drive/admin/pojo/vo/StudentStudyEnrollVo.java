@@ -229,6 +229,7 @@ public class StudentStudyEnrollVo {
 
 	// 回访时间
 	private LocalDateTime returnVisitTime;
+	private LocalDateTime startReturnVisitTime;
 	// 回访客服
 	private String returnVisitServiceName;
 	// 回访内容
@@ -245,7 +246,7 @@ public class StudentStudyEnrollVo {
 	// 转换类型(1-平台转化，2-新用户转化，3-待支付转化)
 	private String conversionType;
 	// 支付时间
-	private String payTime;
+	private LocalDateTime payTime;
 	// 订单状态
 	private String orderStatus;
 
@@ -261,10 +262,13 @@ public class StudentStudyEnrollVo {
 	// 教练名称
 	private String coachName;
 	private String className;
-
+	// 是否预警
 	private Boolean examine;
 
 	private int examNumber = 1;
+
+	private int conventionSum;
+	private int examSum;
 
 	private String bindCoach;
 	private String examStatus ="未考试";
@@ -277,6 +281,10 @@ public class StudentStudyEnrollVo {
 	private BigDecimal payAmount;
 
 	private String payType;
+
+	// 售前客服id
+	private String preSalesServiceId;
+	private String preSalesServiceName;
 
 	public void setProvinceId(String provinceId) {
 		this.provinceId = provinceId;
@@ -309,5 +317,10 @@ public class StudentStudyEnrollVo {
 	public void setLineUnderUserId(String lineUnderUserId) {
 		this.lineUnderUserId = lineUnderUserId;
 		this.lineServiceName=AdminCacheUtil.getServiceRealName(lineUnderUserId);
+	}
+
+	public void setPreSalesServiceId(String preSalesServiceId) {
+		this.preSalesServiceId = preSalesServiceId;
+		this.preSalesServiceName=AdminCacheUtil.getServiceRealName(preSalesServiceId);
 	}
 }

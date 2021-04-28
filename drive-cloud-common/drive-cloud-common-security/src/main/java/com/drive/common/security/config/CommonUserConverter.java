@@ -47,7 +47,8 @@ public class CommonUserConverter implements UserAuthenticationConverter {
             Long userId = Long.valueOf(map.get(SecurityConstants.DETAILS_USER_ID).toString());
             String username = (String) map.get(SecurityConstants.DETAILS_USERNAME);
             String operationId = (String) map.get(SecurityConstants.OPERATION_ID);
-            LoginUser user = new LoginUser(userId,operationId, username, N_A, true, true, true, true, authorities);
+            String tenantId = (String) map.get(SecurityConstants.TENANT_ID);
+            LoginUser user = new LoginUser(userId,operationId,tenantId, username, N_A, true, true, true, true, authorities);
             return new UsernamePasswordAuthenticationToken(user, N_A, authorities);
         }
         return null;

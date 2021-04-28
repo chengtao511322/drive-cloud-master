@@ -20,12 +20,15 @@ public class LoginUser extends User {
     private Long userId;
     // 操作ID
     private String operationId;
+    // 租户ID
+    private String tenantId;
 
-    public LoginUser(Long userId, String operationId,String username, String password, boolean enabled, boolean accountNonExpired,
+    public LoginUser(Long userId, String operationId,String tenantId,String username, String password, boolean enabled, boolean accountNonExpired,
                      boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         this.userId = userId;
         this.operationId = operationId;
+        this.tenantId = tenantId;
     }
 
     public Long getUserId() {
@@ -44,5 +47,13 @@ public class LoginUser extends User {
 
     public void setOperationId(String operationId) {
         this.operationId = operationId;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

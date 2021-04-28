@@ -1,10 +1,9 @@
 package com.drive.admin.repository.impl;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -12,6 +11,7 @@ import com.drive.admin.enums.*;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
 import com.drive.admin.pojo.dto.StudentTestEnrollEditParam;
 import com.drive.admin.pojo.dto.StudentTestEnrollPageQueryParam;
+import com.drive.admin.pojo.dto.StudentTrainCarApplyPageQueryParam;
 import com.drive.admin.pojo.entity.*;
 import com.drive.admin.pojo.vo.*;
 import com.drive.admin.repository.StudentTestEnrollRepository;
@@ -25,22 +25,19 @@ import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
-import com.drive.common.core.constant.CacheConstants;
 import com.drive.common.core.utils.BeanConvertUtils;
-import com.drive.common.core.utils.StringUtils;
+import com.drive.common.core.utils.DateUtils;
 import com.drive.common.data.utils.ExcelUtils;
-import com.drive.common.redis.util.CacheUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -147,6 +144,17 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
         queryWrapper.in(studentInfoList.size() > 0,"student_id",studentInfoList.stream().map(StudentInfoEntity::getId).collect(Collectors.toList()));
+
+        if (param.getTestHopeTimeArr() .length >0){
+            queryWrapper.between("test_hope_time",param.getTestHopeTimeArr()[0],param.getTestHopeTimeArr()[1]);
+        }
+        if (param.getTestActualTimeArr() .length >0){
+            queryWrapper.between("test_actual_time",param.getTestActualTimeArr()[0],param.getTestActualTimeArr()[1]);
+        }
+        // 报名状态
+        if (StrUtil.isNotEmpty(param.getEnrollStatusArr())){
+            queryWrapper.in("enroll_status",param.getEnrollStatusArr().split(","));
+        }
         // queryWrapper.orderByDesc("create_time");
         IPage<StudentTestEnrollEntity> pageList = studentTestEnrollService.page(page, queryWrapper);
         if (pageList.getRecords().size() <= 0){
@@ -164,6 +172,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             //if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(item.getUserId()).getRealName());
             //if (StrUtil.isNotEmpty(item.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(item.getLineUnderUserId()).getRealName());
 
+
             // 平台训练场地
             if (StrUtil.isNotEmpty(item.getTestActualCoachingGridId())){
                 CoachingGridEntity coachingGridEntity =coachingGridService.getById(item.getTestActualCoachingGridId());
@@ -172,6 +181,16 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (StrUtil.isNotEmpty(item.getTestHopeCoachingGridId())){
                 CoachingGridEntity coachingGrid = coachingGridService.getById(item.getTestHopeCoachingGridId());
                 if(coachingGrid != null)item.setTestHopeCoachingGridName(coachingGrid.getName());
+            }
+            QueryWrapper trainCarApplyQueryWrapper = new QueryWrapper();
+            trainCarApplyQueryWrapper.eq("student_id",item.getStudentId());
+            // studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+            trainCarApplyQueryWrapper.orderByDesc("create_time");
+            trainCarApplyQueryWrapper.last("limit 1");
+            StudentTrainCarApplyEntity studentTrainCarApply = studentTrainCarApplyService.getOne(trainCarApplyQueryWrapper);
+            if (studentTrainCarApply != null){
+                CoachingGridEntity coachingGrid = coachingGridService.getById(studentTrainCarApply.getCoachingGridId());
+                if(coachingGrid != null)item.setCoachingGridName(coachingGrid.getName());
             }
             // 查询次数
             QueryWrapper testQueryWrapper = new QueryWrapper();
@@ -207,6 +226,50 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             if (systemCoachStudent != null){
                 String coachName = AdminCacheUtil.getCoachName(systemCoachStudent.getCoachId());
                 if(StrUtil.isNotEmpty(coachName))item.setBindCoach(coachName);
+            }
+
+            // 统计考试训练 常规训练课时
+            StudentTrainCarApplyPageQueryParam studentTrainCarApplyPageQueryParam = new StudentTrainCarApplyPageQueryParam();
+            studentTrainCarApplyPageQueryParam.setStudentId(item.getStudentId());
+            studentTrainCarApplyPageQueryParam.setSubjectType(item.getSubjectType());
+            studentTrainCarApplyPageQueryParam.setTrainType(SubjectTypeEnum.CONVENTION.getCode());
+            int conventionSum =studentTrainCarApplyService.getClassHoursSum(studentTrainCarApplyPageQueryParam);
+            studentTrainCarApplyPageQueryParam.setTrainType(SubjectTypeEnum.EXAM.getCode());
+            int examSum =studentTrainCarApplyService.getClassHoursSum(studentTrainCarApplyPageQueryParam);
+            item.setConventionSum(conventionSum);
+            item.setExamSum(examSum);
+            // 订单
+            QueryWrapper studentOrderQueryWrapper = new QueryWrapper();
+            studentOrderQueryWrapper.eq("test_enroll_no",item.getTestEnrollNo());
+            StudentOrderEntity studentOrder  = studentOrderService.getOne(studentOrderQueryWrapper);
+            if (studentOrder != null){
+                String className = AdminCacheUtil.getClassName(studentOrder.getProductId());
+                if(StrUtil.isNotEmpty(className))item.setClassName(className);
+                // 订单价格
+                item.setOrderAmount(studentOrder.getOrderAmount());
+                // 支付金额
+                item.setPayAmount(studentOrder.getPayableAmount());
+                item.setPayTime(studentOrder.getPayTime());
+            }
+
+            //12 13 >=1  变红 预警
+            Boolean isBookSuccess =item.getEnrollStatus().equals(ExamEnrollEnum.BOOK_SUCCESS.getCode());
+            Boolean isPaySuccess =item.getEnrollStatus().equals(ExamEnrollEnum.PAY_SUCCESS.getCode());
+            // 预约成功 考虑把 实际时间为明天的预警
+            if (isBookSuccess){
+                // examine
+                long examineDay= DateUtil.between(new Date(),DateUtils.asDate(item.getTestActualTime()), DateUnit.DAY);//两个时间间隔几
+                if ((examineDay+1) == 1) {
+                    item.setExamine(true);
+                }
+            }
+            // 已支付待申请 考虑把 期望时间为明天的预警
+            if (isPaySuccess){
+                // examine
+                long examineDay= DateUtil.between(new Date(), DateUtils.asDate(item.getTestHopeTime()), DateUnit.DAY);//两个时间间隔几
+                if ((examineDay+1) == 1) {
+                    item.setExamine(true);
+                }
             }
         });
         log.info(this.getClass() + "pageList-方法请求结果{}",studentTestEnrollVoPage);
@@ -439,6 +502,31 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         IPage<StudentStudyEnrollVo> studentStudyEnrollVos = studentStudyEnrollMapStruct.toVoList(studentStudyEnrollPageList);
         List<StudentStudyEnrollVo> newStudentStudyEnrollVos = new ArrayList<>();
         studentStudyEnrollVos.getRecords().stream().forEach((item) ->{
+
+            // 统计考试训练 常规训练课时
+            StudentTrainCarApplyPageQueryParam studentTrainCarApplyPageQueryParam = new StudentTrainCarApplyPageQueryParam();
+            studentTrainCarApplyPageQueryParam.setStudentId(item.getStudentId());
+            studentTrainCarApplyPageQueryParam.setSubjectType(item.getSubjectType());
+            studentTrainCarApplyPageQueryParam.setTrainType(SubjectTypeEnum.CONVENTION.getCode());
+            int conventionSum =studentTrainCarApplyService.getClassHoursSum(studentTrainCarApplyPageQueryParam);
+            studentTrainCarApplyPageQueryParam.setTrainType(SubjectTypeEnum.EXAM.getCode());
+            int examSum =studentTrainCarApplyService.getClassHoursSum(studentTrainCarApplyPageQueryParam);
+            item.setConventionSum(conventionSum);
+            item.setExamSum(examSum);
+            // 订单
+            QueryWrapper studentOrderQueryWrapper = new QueryWrapper();
+            studentOrderQueryWrapper.eq("study_enroll_no",item.getStudyEnrollNo());
+            StudentOrderEntity studentOrder  = studentOrderService.getOne(studentOrderQueryWrapper);
+            if (studentOrder != null){
+                String className = AdminCacheUtil.getClassName(studentOrder.getProductId());
+                if(StrUtil.isNotEmpty(className))item.setClassName(className);
+                // 订单价格
+                item.setOrderAmount(studentOrder.getOrderAmount());
+                // 支付金额
+                item.setPayAmount(studentOrder.getPayableAmount());
+                item.setPayTime(studentOrder.getPayTime());
+            }
+
             item.setSubjectType(SubjectTypeEnum.SUBJECT_ONE.getCode());
             // 查询报名单号
            QueryWrapper studyQueryWrapper = new QueryWrapper();
@@ -665,6 +753,31 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
                 String coachName = AdminCacheUtil.getCoachName(systemCoachStudent.getCoachId());
                 if(StrUtil.isNotEmpty(coachName))item.setBindCoach(coachName);
             }
+
+            // 订单
+            QueryWrapper studentOrderQueryWrapper = new QueryWrapper();
+            studentOrderQueryWrapper.eq("study_enroll_no",item.getStudyEnrollNo());
+            StudentOrderEntity studentOrder  = studentOrderService.getOne(studentOrderQueryWrapper);
+            if (studentOrder != null){
+                String className = AdminCacheUtil.getClassName(studentOrder.getProductId());
+                if(StrUtil.isNotEmpty(className))item.setClassName(className);
+                // 订单价格
+                item.setOrderAmount(studentOrder.getOrderAmount());
+                // 支付金额
+                item.setPayAmount(studentOrder.getPayableAmount());
+                item.setPayTime(studentOrder.getPayTime());
+            }
+
+            // 统计考试训练 常规训练课时
+            StudentTrainCarApplyPageQueryParam studentTrainCarApplyPageQueryParam = new StudentTrainCarApplyPageQueryParam();
+            studentTrainCarApplyPageQueryParam.setStudentId(item.getStudentId());
+            studentTrainCarApplyPageQueryParam.setSubjectType(item.getSubjectType());
+            studentTrainCarApplyPageQueryParam.setTrainType(SubjectTypeEnum.CONVENTION.getCode());
+            int conventionSum =studentTrainCarApplyService.getClassHoursSum(studentTrainCarApplyPageQueryParam);
+            studentTrainCarApplyPageQueryParam.setTrainType(SubjectTypeEnum.EXAM.getCode());
+            int examSum =studentTrainCarApplyService.getClassHoursSum(studentTrainCarApplyPageQueryParam);
+            item.setConventionSum(conventionSum);
+            item.setExamSum(examSum);
         });
         return R.success(studentStudyEnrollVos);
     }
@@ -729,6 +842,20 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
                 if (driveSchoolEntity != null)item.setLineServiceName(driveSchoolEntity.getSchoolName());
             }
 
+            // 订单
+            QueryWrapper studentOrderQueryWrapper = new QueryWrapper();
+            studentOrderQueryWrapper.eq("study_enroll_no",item.getStudyEnrollNo());
+            StudentOrderEntity studentOrder  = studentOrderService.getOne(studentOrderQueryWrapper);
+            if (studentOrder != null){
+                String className = AdminCacheUtil.getClassName(studentOrder.getProductId());
+                if(StrUtil.isNotEmpty(className))item.setClassName(className);
+                // 订单价格
+                item.setOrderAmount(studentOrder.getOrderAmount());
+                // 支付金额
+                item.setPayAmount(studentOrder.getPayableAmount());
+                item.setPayTime(studentOrder.getPayTime());
+            }
+
             // 查询报名单号
   /*          QueryWrapper studyQueryWrapper = new QueryWrapper();
             studyQueryWrapper.eq("student_id",item.getStudentId());
@@ -782,6 +909,17 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
                 String coachName = AdminCacheUtil.getCoachName(systemCoachStudent.getCoachId());
                 if(StrUtil.isNotEmpty(coachName))item.setBindCoach(coachName);
             }
+
+            // 统计考试训练 常规训练课时
+            StudentTrainCarApplyPageQueryParam studentTrainCarApplyPageQueryParam = new StudentTrainCarApplyPageQueryParam();
+            studentTrainCarApplyPageQueryParam.setStudentId(item.getStudentId());
+            studentTrainCarApplyPageQueryParam.setSubjectType(item.getSubjectType());
+            studentTrainCarApplyPageQueryParam.setTrainType(SubjectTypeEnum.CONVENTION.getCode());
+            int conventionSum =studentTrainCarApplyService.getClassHoursSum(studentTrainCarApplyPageQueryParam);
+            studentTrainCarApplyPageQueryParam.setTrainType(SubjectTypeEnum.EXAM.getCode());
+            int examSum =studentTrainCarApplyService.getClassHoursSum(studentTrainCarApplyPageQueryParam);
+            item.setConventionSum(conventionSum);
+            item.setExamSum(examSum);
         });
         return R.success(studentStudyEnrollVos);
     }
@@ -845,6 +983,20 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
                 if(coachingGrid != null)item.setTestHopeCoachingGridName(coachingGrid.getName());
             }
 
+            // 订单
+            QueryWrapper studentOrderQueryWrapper = new QueryWrapper();
+            studentOrderQueryWrapper.eq("study_enroll_no",item.getStudyEnrollNo());
+            StudentOrderEntity studentOrder  = studentOrderService.getOne(studentOrderQueryWrapper);
+            if (studentOrder != null){
+                String className = AdminCacheUtil.getClassName(studentOrder.getProductId());
+                if(StrUtil.isNotEmpty(className))item.setClassName(className);
+                // 订单价格
+                item.setOrderAmount(studentOrder.getOrderAmount());
+                // 支付金额
+                item.setPayAmount(studentOrder.getPayableAmount());
+                item.setPayTime(studentOrder.getPayTime());
+            }
+
             // 查询报名单号
             QueryWrapper studyQueryWrapper = new QueryWrapper();
             studyQueryWrapper.eq("student_id",item.getStudentId());
@@ -881,6 +1033,17 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             //支付金额求和
             BigDecimal totalAmount = studentOrderList.stream().map(StudentOrderEntity::getPayableAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
             item.setTotalAmount(totalAmount);
+
+            // 统计考试训练 常规训练课时
+            StudentTrainCarApplyPageQueryParam studentTrainCarApplyPageQueryParam = new StudentTrainCarApplyPageQueryParam();
+            studentTrainCarApplyPageQueryParam.setStudentId(item.getStudentId());
+            studentTrainCarApplyPageQueryParam.setSubjectType(item.getSubjectType());
+            studentTrainCarApplyPageQueryParam.setTrainType(SubjectTypeEnum.CONVENTION.getCode());
+            int conventionSum =studentTrainCarApplyService.getClassHoursSum(studentTrainCarApplyPageQueryParam);
+            studentTrainCarApplyPageQueryParam.setTrainType(SubjectTypeEnum.EXAM.getCode());
+            int examSum =studentTrainCarApplyService.getClassHoursSum(studentTrainCarApplyPageQueryParam);
+            item.setConventionSum(conventionSum);
+            item.setExamSum(examSum);
         });
         log.info(this.getClass() + "pageList-方法请求结果{}",studentTestEnrollVoPage);
         return R.success(studentTestEnrollVoPage);

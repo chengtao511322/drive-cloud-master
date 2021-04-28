@@ -125,5 +125,9 @@ public class StudentInfoEntity extends BaseEntity {
 	private String logonChannel;
 	// 售前客服
 	private String serviceId;
+	// 创建者
+	private String createUser;
+	// 操作时间
+	private LocalDateTime operationTime;
 
 }

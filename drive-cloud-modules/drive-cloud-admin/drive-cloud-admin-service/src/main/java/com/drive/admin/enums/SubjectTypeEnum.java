@@ -14,7 +14,9 @@ public enum SubjectTypeEnum {
     SUBJECT_ONE("1", "科目一"),
     SUBJECT_TWO("2", "科目二"),
     SUBJECT_THREE("3","科目三"),
-    SUBJECT_FOUR("4","科目四");
+    SUBJECT_FOUR("4","科目四"),
+    CONVENTION("1","常规训练"),
+    EXAM("2","考试训练");
 
     private final String code;
     private final String info;

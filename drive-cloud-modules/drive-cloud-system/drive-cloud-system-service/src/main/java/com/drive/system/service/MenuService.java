@@ -24,7 +24,6 @@ public interface MenuService extends IService<MenuEntity>{
      * @return 权限列表
      */
     Set<String> getMenuListByUserId(Long userId);
-
     /**
      * 根据用户ID查询菜单树信息
      *
