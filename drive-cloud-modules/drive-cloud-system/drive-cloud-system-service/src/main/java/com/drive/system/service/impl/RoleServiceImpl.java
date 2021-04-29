@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.drive.common.core.base.BaseService;
 import com.drive.common.core.constant.Constants;
 import com.drive.common.core.exception.CustomException;
+import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.core.utils.StringUtils;
 import com.drive.common.security.utils.SecurityUtils;
 import com.drive.system.mapper.RoleMapper;
@@ -118,7 +119,8 @@ public class RoleServiceImpl extends BaseService<RoleMapper, RoleEntity> impleme
         LambdaQueryWrapper<RoleDeptEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(RoleDeptEntity::getRoleId, roleId);
         roleDeptService.remove(queryWrapper);
-
+        // 修改信息
+        this.getBaseMapper().updateById(BeanConvertUtils.copy(roleEditParam,RoleEntity.class));
         // 新增角色和部门信息（数据权限）
         insertRoleDept(roleId, roleEditParam.getDeptIds());
     }

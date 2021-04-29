@@ -51,11 +51,6 @@ public class ServiceInfoServiceImpl extends BaseService<ServiceInfoMapper, Servi
         return super.updateById(entity);
     }
 
-    @Cacheable(value = "redisCache", key = "'serviceItem:service_'+ #id")
-    @Override
-    public ServiceInfoEntity getById(Serializable id) {
-        return BeanConvertUtils.copy(super.getById(id),ServiceInfoEntity.class);
-    }
 
     @DataScope(deptAlias = "operator_id", userAlias = "id",module = "admin")
     @Override

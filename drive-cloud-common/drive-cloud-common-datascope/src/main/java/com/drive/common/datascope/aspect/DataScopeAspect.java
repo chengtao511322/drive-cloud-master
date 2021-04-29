@@ -101,6 +101,7 @@ public class DataScopeAspect {
     public void dataScopeFilter(JoinPoint joinPoint, UserVo user, String deptAlias, String userAlias, String module) {
         StringBuilder sqlString = new StringBuilder();
         List<String> isArr = new ArrayList<>();
+        String dataScopePermission = null;
         for (RoleEntity role : user.getRoles()) {
             String dataScope = role.getDataScope();
             // 判断
@@ -125,12 +126,20 @@ public class DataScopeAspect {
                 } else if (DataScopeEnum.SELF.getCode().equals(dataScope)) {
                     if (StringUtils.isNotBlank(userAlias)) {
                         sqlString.append(StringUtils.format(" OR %s = '%s' ", userAlias, user.getOperationId()));
-                    } else {
+
+                    }else {
                         // 数据权限为仅本人且没有userAlias别名不查询任何数据
                         sqlString.append(" OR 1 = 0 ");
                     }
+                }else if (DataScopeEnum.CUSTOM_SELF.getCode().equals(dataScope)) {
+          /*          sqlString.append(StringUtils.format(
+                            " OR %s.operator_id IN ( '%s' ) ", deptAlias,
+                            getRoleDeptInfo(role.getRoleId())));*/
+                    isArr = Arrays.asList(getRoleDeptInfo(role.getRoleId()) .split(",")).stream().map(s -> (s.trim())).collect(Collectors.toList());;
+                    dataScopePermission =dataScope;
                 }
-            }else {
+
+            } else {
                 if (DataScopeEnum.ALL.getCode().equals(dataScope)) {
                     sqlString = new StringBuilder();
                     break;
@@ -146,7 +155,7 @@ public class DataScopeAspect {
                             deptAlias, user.getDeptId(), user.getDeptId()));
                 } else if (DataScopeEnum.SELF.getCode().equals(dataScope)) {
                     if (StringUtils.isNotBlank(userAlias)) {
-                        sqlString.append(StringUtils.format(" OR %s.user_id = %s ", userAlias, user.getUserId()));
+                        sqlString.append(StringUtils.format(" OR %s = %s ", userAlias, user.getUserId()));
                     } else {
                         // 数据权限为仅本人且没有userAlias别名不查询任何数据
                         sqlString.append(" OR 1 = 0 ");
@@ -167,6 +176,9 @@ public class DataScopeAspect {
             QueryWrapper queryWrapper = (QueryWrapper) joinPoint.getArgs()[1];
 
             queryWrapper.in( StringUtils.format("%s", deptAlias),isArr);
+            if (DataScopeEnum.CUSTOM_SELF.getCode().equals(dataScopePermission)){
+                queryWrapper.eq(StringUtils.format("%s", userAlias),user.getOperationId());
+            }
         }
     }
 

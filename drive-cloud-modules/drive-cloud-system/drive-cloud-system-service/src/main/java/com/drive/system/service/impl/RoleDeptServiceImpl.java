@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.drive.common.core.constant.CacheConstants;
 import com.drive.common.core.utils.BeanConvertUtils;
+import com.drive.common.redis.service.RedisService;
 import com.drive.system.mapper.RoleDeptMapper;
 import com.drive.system.pojo.entity.DeptEntity;
 import com.drive.system.pojo.entity.RoleDeptEntity;
@@ -16,6 +17,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,15 +29,15 @@ import java.util.stream.Collectors;
  */
 @Service
 public class RoleDeptServiceImpl extends ServiceImpl<RoleDeptMapper, RoleDeptEntity> implements RoleDeptService {
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private RedisService redisService;
 
     @PostConstruct
     public void init(){
         List<RoleDeptEntity> deptList = this.getBaseMapper().getAllDept();
         List<RoleDeptVo> deptVoList = BeanConvertUtils.copyList(deptList,RoleDeptVo.class);
         deptVoList.stream().forEach((item ->{
-            stringRedisTemplate.opsForValue().set(CacheConstants.REDIS_ROLE_DEPT_KEY + item.getRoleId(), item.getTenantIds());
+            redisService.set(CacheConstants.REDIS_ROLE_DEPT_KEY + item.getRoleId(), item.getTenantIds());
         }));
     }
 }

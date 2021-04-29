@@ -42,7 +42,7 @@ public class StudentStudyEnrollServiceImpl extends BaseService<StudentStudyEnrol
         return null;
     }
 
-    @DataScope(deptAlias = "t1.operator_id", module = "admin")
+    @DataScope(deptAlias = "t1.operator_id",userAlias = "t2.user_id", module = "admin")
     @Override
     public IPage<StudentStudyEnrollVo> studyEnrollPageList(Page page, Wrapper<StudentStudyEnrollPageQueryParam> ew) {
         return this.getBaseMapper().studyEnrollPageList(page,ew);

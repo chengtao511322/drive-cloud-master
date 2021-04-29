@@ -123,6 +123,16 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
             queryWrapper.isNotNull("tsi.service_id");
         }
 
+        if (StrUtil.isNotEmpty(param.getVagueServiceNameSearch())){
+            List<ServiceInfoEntity> serviceInfoList = null;
+            QueryWrapper serviceQueryWrapper = new QueryWrapper();
+            serviceQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueServiceNameSearch()),"real_name",param.getVagueServiceNameSearch());
+            serviceQueryWrapper.like(StrUtil.isNotEmpty(param.getVaguePreSalesServiceNameSearch()),"real_name",param.getVaguePreSalesServiceNameSearch());
+            serviceInfoList  = serviceInfoService.list(serviceQueryWrapper);
+            if (serviceInfoList.size() <= 0)R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
+            queryWrapper.in("tsi.service_id",serviceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
+        }
+
         String sortColumn = param.getSortColumn();
         String underSortColumn = StringUtils.lowerCamelToLowerUnderscore(sortColumn);
         if (param.getIsAsc()) {
@@ -249,6 +259,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         if (param.getAllocationDateTimeSearchArr() != null && param.getAllocationDateTimeSearchArr().length > 0){
             queryWrapper.between("date_format (tsi.operation_time,'%Y-%m-%d')",param.getAllocationDateTimeSearchArr()[0],param.getAllocationDateTimeSearchArr()[1]);
         }
+
         //
         queryWrapper.groupBy("tsi.id");
         String sortColumn = param.getSortColumn();
@@ -419,7 +430,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         List<StudentInfoEntity> studentInfoEntityList = BeanConvertUtils.copyList(studentInfoList,StudentInfoEntity.class);
         studentInfoEntityList.stream().forEach((item) -> {
             // 操作者
-            item.setCreateUser(AdminCacheUtil.getServiceRealName(serviceId));
+            item.setOperationUser(AdminCacheUtil.getServiceRealName(serviceId));
             item.setOperationTime(LocalDateTime.now());
         });
         Boolean result = studentInfoService.updateBatchById(studentInfoEntityList);

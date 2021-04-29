@@ -12,5 +12,6 @@ import com.drive.system.pojo.entity.RoleDeptEntity;
  */
 public interface RoleDeptService extends IService<RoleDeptEntity>{
 
+    void init();
 }
 

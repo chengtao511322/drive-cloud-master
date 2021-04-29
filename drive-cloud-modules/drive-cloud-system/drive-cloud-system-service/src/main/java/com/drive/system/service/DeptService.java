@@ -17,6 +17,8 @@ public interface DeptService extends IService<DeptEntity>{
 
     int insertDept(DeptEntity dept);
 
+    void init();
+
     List<Integer> selectDeptListByRoleId(Long roleId);
 
     List<TreeSelect> buildDeptTreeSelect(List<DeptVo> depts);

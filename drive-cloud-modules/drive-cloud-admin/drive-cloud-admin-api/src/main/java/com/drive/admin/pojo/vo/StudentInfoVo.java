@@ -183,7 +183,7 @@ public class StudentInfoVo {
 	private String isIntention;
 
 	// 创建者
-	private String createUser;
+	private String operationUser;
 	// 操作时间
 	private LocalDateTime operationTime;
 

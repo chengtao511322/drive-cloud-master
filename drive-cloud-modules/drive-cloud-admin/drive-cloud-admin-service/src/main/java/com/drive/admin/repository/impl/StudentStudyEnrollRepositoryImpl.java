@@ -196,6 +196,13 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             queryWrapper.in("enroll_status",param.getEnrollStatusArr().split(","));
         }
 
+       /* if (param.getHasPreOnlineServicer() !=null && param.getHasPreOnlineServicer().equals(0)){
+            queryWrapper.isNull("pre_sales_service_id");
+        }
+        if (param.getHasPreOnlineServicer() !=null && param.getHasPreOnlineServicer().equals(1)){
+            queryWrapper.isNotNull("pre_sales_service_id");
+        }*/
+
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
@@ -214,8 +221,8 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         Boolean globalMatch = Boolean.FALSE;
         Page<StudentStudyEnrollVo> studentStudyEnrollVoPage = studentStudyEnrollMapStruct.toVoList(pageList);
         studentStudyEnrollVoPage.getRecords().forEach((item) ->{
-            if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(item.getUserId()).getRealName());
-            if (StrUtil.isNotEmpty(item.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(item.getLineUnderUserId()).getRealName());
+            if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(AdminCacheUtil.getServiceRealName(item.getUserId()));
+            if (StrUtil.isNotEmpty(item.getLineUnderUserId()))item.setLineServiceName(AdminCacheUtil.getServiceRealName(item.getLineUnderUserId()));
             if (StrUtil.isNotEmpty(item.getDriveSchoolId())){
                 DriveSchoolEntity driveSchoolEntity =driveSchoolService.getById(item.getLineUnderUserId());
                 if (driveSchoolEntity != null)item.setLineServiceName(driveSchoolEntity.getSchoolName());
@@ -230,7 +237,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             if (serviceReturnVisitHistoryEntity != null){
                 item.setReturnVisitTime(serviceReturnVisitHistoryEntity.getReturnVisitTime());
                 ServiceInfoEntity serviceInfo = serviceInfoService.getById(serviceReturnVisitHistoryEntity.getServiceId());
-                if (serviceInfo != null)item.setReturnVisitServiceName(serviceInfo.getRealName());
+                item.setReturnVisitServiceName(AdminCacheUtil.getServiceRealName(serviceReturnVisitHistoryEntity.getServiceId()));
                 item.setReturnVisitContent(serviceReturnVisitHistoryEntity.getReturnVisitContent());
             }
             // 订单
@@ -250,7 +257,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             // 状态是3
             if (item.getEnrollStatus().equals(StudyEnrollEnum.ENROLL_STATUS_PAY_SUCCESS.getCode())){
                 // examine
-                long examineDay= DateUtil.between(new Date(),DateUtils.asDate(studentOrder.getPayTime()), DateUnit.DAY);//两个时间间隔几
+                long examineDay= DateUtil.betweenDay(new Date(),DateUtils.asDate(studentOrder.getPayTime()), true);//两个时间间隔几
                 if ((examineDay) >= 1) {
                     item.setExamine(true);
                 }
@@ -260,7 +267,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             Boolean passwordExamine =item.getEnrollStatus().equals(StudyEnrollEnum.ENROLL_STATUS_PASSWORD_EXAMINE.getCode());
             if (prepareStayExamine || passwordExamine){
                 // examine
-                long examineDay= DateUtil.between(new Date(), DateUtils.asDate(item.getUpdateTime()), DateUnit.DAY);//两个时间间隔几
+                long examineDay= DateUtil.betweenDay(new Date(), DateUtils.asDate(item.getUpdateTime()), true);//两个时间间隔几
                 if ((examineDay) >= 7) {
                     item.setExamine(true);
                 }
@@ -385,8 +392,8 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         StudentStudyEnrollVo studentStudyEnrollVo = BeanConvertUtils.copy(studentStudyEnrollEntity,StudentStudyEnrollVo.class);
         log.info(this.getClass() + "findList-方法请求结果{}",studentStudyEnrollVo);
         // 数据回显
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getUserId()))studentStudyEnrollVo.setOnlineServiceName(serviceInfoService.getById(studentStudyEnrollVo.getUserId()).getRealName());
-        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getLineUnderUserId()))studentStudyEnrollVo.setLineServiceName(serviceInfoService.getById(studentStudyEnrollVo.getLineUnderUserId()).getRealName());
+        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getUserId()))studentStudyEnrollVo.setOnlineServiceName(AdminCacheUtil.getServiceRealName(studentStudyEnrollVo.getUserId()));
+        if (StrUtil.isNotEmpty(studentStudyEnrollVo.getLineUnderUserId()))studentStudyEnrollVo.setLineServiceName(AdminCacheUtil.getServiceRealName(studentStudyEnrollVo.getLineUnderUserId()));
         if (StrUtil.isNotEmpty(studentStudyEnrollVo.getDriveSchoolId())){
             DriveSchoolEntity driveSchoolEntity =driveSchoolService.getById(studentStudyEnrollVo.getLineUnderUserId());
             if (driveSchoolEntity != null)studentStudyEnrollVo.setLineServiceName(driveSchoolEntity.getSchoolName());
@@ -597,8 +604,8 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         Boolean globalMatch = Boolean.FALSE;
         Page<StudentStudyEnrollVo> studentStudyEnrollVoPage = studentStudyEnrollMapStruct.toVoList(pageList);
         studentStudyEnrollVoPage.getRecords().forEach((item) ->{
-            if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(item.getUserId()).getRealName());
-            if (StrUtil.isNotEmpty(item.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(item.getLineUnderUserId()).getRealName());
+            //if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(item.getUserId()).getRealName());
+            //if (StrUtil.isNotEmpty(item.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(item.getLineUnderUserId()).getRealName());
             if (StrUtil.isNotEmpty(item.getDriveSchoolId())){
                 DriveSchoolEntity driveSchoolEntity =driveSchoolService.getById(item.getLineUnderUserId());
                 if (driveSchoolEntity != null)item.setLineServiceName(driveSchoolEntity.getSchoolName());
@@ -724,13 +731,23 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         QueryWrapper queryWrapper = new QueryWrapper();
         List<ServiceInfoEntity> serviceInfoList = null;
         QueryWrapper serviceQueryWrapper = new QueryWrapper();
-        if (StrUtil.isNotEmpty(param.getVagueServiceNameSearch())){
-            serviceQueryWrapper.like("real_name",param.getVagueServiceNameSearch());
+        if (StrUtil.isNotEmpty(param.getVaguePreSalesServiceNameSearch())){
+            serviceQueryWrapper.like("real_name",param.getVaguePreSalesServiceNameSearch());
             serviceInfoList  = serviceInfoService.list(serviceQueryWrapper);
             if (serviceInfoList.size()<=0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
         }
         if (serviceInfoList != null && serviceInfoList.size() > 0){
-            queryWrapper.in("t2.user_id",serviceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
+            queryWrapper.in("t2.pre_sales_service_id",serviceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
+        }
+        List<ServiceInfoEntity> onlineServiceInfoList = null;
+        QueryWrapper onlineServiceQueryWrapper = new QueryWrapper();
+        if (StrUtil.isNotEmpty(param.getVagueOnlineServiceNameSearch())){
+            onlineServiceQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueOnlineServiceNameSearch()),"real_name",param.getVagueOnlineServiceNameSearch());
+            onlineServiceInfoList  = serviceInfoService.list(onlineServiceQueryWrapper);
+            if (onlineServiceInfoList.size()<=0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
+        }
+        if (onlineServiceInfoList != null && onlineServiceInfoList.size() > 0){
+            queryWrapper.in("t2.user_id",onlineServiceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
         }
 
         queryWrapper.eq(StrUtil.isNotEmpty(param.getOrderStatusSearch()),"t1.status",param.getOrderStatusSearch());
@@ -800,9 +817,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             studentOrderVo.setStatus(item.getOrderStatus());
             //studentOrderVo.setPayTime(DateUtil.parseTime(item.getPayTime()));
             item.setStudentOrderVo(studentOrderVo);
-            // 版型
-            OneFeeSystemPriceEntity oneFeeSystemPrice = oneFeeSystemPriceService.getById(item.getClassId());
-            if (oneFeeSystemPrice != null)item.setClassName(oneFeeSystemPrice.getName());
+            item.setClassName(AdminCacheUtil.getClassName(item.getClassId()));
             // 省市区
             QueryWrapper nextServiceQueryWrapper = new QueryWrapper();
             //serviceQueryWrapper.eq("order_detail_no",item.getStudyEnrollNo());

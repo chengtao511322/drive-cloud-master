@@ -124,7 +124,7 @@ public class StudentInfoEditParam {
     private String returnVisitItem;
 
     // 创建者
-    private String createUser;
+    private String operationUser;
     // 操作时间
     private LocalDateTime operationTime;
 }

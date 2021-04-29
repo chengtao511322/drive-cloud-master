@@ -22,6 +22,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,8 +34,8 @@ import java.util.stream.Collectors;
 @Service
 public class DeptServiceImpl extends BaseService<DeptMapper, DeptEntity> implements DeptService {
 
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private RedisService redisService;
     /**
      * 根据角色查询所有的部门
      * @param roleId
@@ -76,7 +77,7 @@ public class DeptServiceImpl extends BaseService<DeptMapper, DeptEntity> impleme
                         .map(n -> String.valueOf(n.getTenantId()))
 
                         .collect(Collectors.joining(","));
-                stringRedisTemplate.opsForValue().set(CacheConstants.REDIS_DEPT_KEY + item.getDeptId(), result);
+                redisService.set(CacheConstants.REDIS_DEPT_KEY + item.getDeptId(), result);
             }
         });
     }

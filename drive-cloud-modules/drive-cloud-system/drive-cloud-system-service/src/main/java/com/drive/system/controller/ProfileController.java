@@ -74,7 +74,7 @@ public class ProfileController extends BaseController {
     public ResObject updatePwd(String oldPassword, String newPassword) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         String userName = loginUser.getUsername();
-        String password = loginUser.getPassword();
+        String password = userService.getById(loginUser.getUserId()).getPassword();
 
         if (!SecurityUtils.matchesPassword(oldPassword, password)) {
             return R.failure("修改密码失败，旧密码错误");

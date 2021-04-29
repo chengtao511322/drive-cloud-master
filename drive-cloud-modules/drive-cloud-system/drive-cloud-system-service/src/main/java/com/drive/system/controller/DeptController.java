@@ -19,6 +19,7 @@ import com.drive.system.pojo.entity.DeptEntity;
 import com.drive.system.pojo.entity.RoleDeptEntity;
 import com.drive.system.pojo.vo.DeptVo;
 import com.drive.system.pojo.vo.RoleDeptVo;
+import com.drive.system.repository.UserRepository;
 import com.drive.system.service.DeptService;
 import com.drive.system.service.RoleDeptService;
 import com.drive.system.service.mapstruct.DeptMapStruct;
@@ -57,6 +58,8 @@ public class DeptController extends BaseController<DeptPageQueryParam, DeptEntit
 
     @Autowired
     private RoleDeptService roleDeptService;
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * 部门 分页列表
@@ -192,6 +195,18 @@ public class DeptController extends BaseController<DeptPageQueryParam, DeptEntit
         result.put("checkedKeys", deptService.selectDeptListByRoleId(roleId));
         result.put("depts", deptService.buildDeptTreeSelect(deptVos));
         return R.success(result);
+    }
+
+    /**
+     * 初始化缓存
+     * @return
+     */
+    @GetMapping(value = "/initCache")
+    public ResObject initCache(){
+        deptService.init();
+        roleDeptService.init();
+        userRepository.init();
+        return R.success();
     }
 
 }

@@ -258,16 +258,16 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             // 预约成功 考虑把 实际时间为明天的预警
             if (isBookSuccess){
                 // examine
-                long examineDay= DateUtil.between(new Date(),DateUtils.asDate(item.getTestActualTime()), DateUnit.DAY);//两个时间间隔几
-                if ((examineDay+1) == 1) {
+                long examineDay= DateUtil.betweenDay(new Date(),DateUtils.asDate(item.getTestActualTime()),true);//两个时间间隔几
+                if ((examineDay) == 1) {
                     item.setExamine(true);
                 }
             }
             // 已支付待申请 考虑把 期望时间为明天的预警
             if (isPaySuccess){
                 // examine
-                long examineDay= DateUtil.between(new Date(), DateUtils.asDate(item.getTestHopeTime()), DateUnit.DAY);//两个时间间隔几
-                if ((examineDay+1) == 1) {
+                long examineDay= DateUtil.betweenDay(new Date(), DateUtils.asDate(item.getTestHopeTime()), true);//两个时间间隔几
+                if ((examineDay) == 1) {
                     item.setExamine(true);
                 }
             }
