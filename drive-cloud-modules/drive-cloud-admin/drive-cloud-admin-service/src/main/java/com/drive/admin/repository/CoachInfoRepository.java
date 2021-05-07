@@ -2,6 +2,7 @@ package com.drive.admin.repository;
 
 import com.drive.admin.pojo.dto.CoachInfoDataEditParam;
 import com.drive.admin.pojo.dto.CoachInfoEditParam;
+import com.drive.admin.pojo.dto.CoachInfoInstallParam;
 import com.drive.admin.pojo.dto.CoachInfoPageQueryParam;
 import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.biz.ResObject;
@@ -20,6 +21,13 @@ public interface CoachInfoRepository extends BaseRepository<CoachInfoPageQueryPa
      * @return
      */
     ResObject updateCoachInfo(CoachInfoDataEditParam updateParam);
+
+    /**
+     * 驳回教练
+     * @param updateParam
+     * @return
+     */
+    ResObject rejectCoach(CoachInfoInstallParam updateParam);
 
 }
 

@@ -9,16 +9,13 @@ import com.drive.admin.pojo.entity.ServiceInfoEntity;
 import com.drive.admin.service.ServiceInfoService;
 import com.drive.common.core.base.BaseService;
 import com.drive.common.core.constant.CacheConstants;
-import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.datascope.annotation.DataScope;
 import com.drive.common.redis.service.RedisService;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;

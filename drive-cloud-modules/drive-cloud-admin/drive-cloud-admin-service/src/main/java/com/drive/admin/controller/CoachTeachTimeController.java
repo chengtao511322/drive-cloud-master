@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -51,7 +50,7 @@ public class CoachTeachTimeController extends BaseController<CoachTeachTimePageQ
 	* 教练课程时间表 分页列表
 	*/
 	@ApiOperation("教练课程时间表分页列表")
-	@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:query')")
+	//@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid @RequestBody CoachTeachTimePageQueryParam param) {
 		return coachTeachTimeRepository.pageList(param);
@@ -60,7 +59,7 @@ public class CoachTeachTimeController extends BaseController<CoachTeachTimePageQ
 	* 教练课程时间表 列表
 	*/
 	@ApiOperation("教练课程时间表列表")
-	@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:query')")
+	//@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid @RequestBody CoachTeachTimePageQueryParam param) {
 		return coachTeachTimeRepository.findList(param);
@@ -71,7 +70,7 @@ public class CoachTeachTimeController extends BaseController<CoachTeachTimePageQ
 	*/
 	@ApiOperation("获取教练课程时间表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:query')")
+	//@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return coachTeachTimeRepository.getById(id);
@@ -82,7 +81,7 @@ public class CoachTeachTimeController extends BaseController<CoachTeachTimePageQ
 	 */
 	@ApiOperation("条件查询获取教练课程时间表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:query')")
+	//@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:query')")
 	@GetMapping("/getInfo")
 	public ResObject getInfo(@PathVariable CoachTeachTimePageQueryParam param) {
 		return coachTeachTimeRepository.getInfo(param);
@@ -93,7 +92,7 @@ public class CoachTeachTimeController extends BaseController<CoachTeachTimePageQ
 	*/
 	@ApiOperation("新增教练课程时间表")
 	@ApiImplicitParam(name = "CoachTeachTimeEditParam ", value = "新增教练课程时间表", dataType = "CoachTeachTimeEditParam")
-	@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:add')")
+	//@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:add')")
 	@EventLog(message = "新增教练课程时间表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody CoachTeachTimeInstallParam coachTeachTimeInstallParam) {
@@ -105,7 +104,7 @@ public class CoachTeachTimeController extends BaseController<CoachTeachTimePageQ
 	*/
 	@ApiOperation("修改教练课程时间表")
 	@ApiImplicitParam(name = "CoachTeachTimeEditParam ", value = "修改教练课程时间表", dataType = "CoachTeachTimeEditParam")
-	@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:edit')")
+	//@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:edit')")
 	@EventLog(message = "修改教练课程时间表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody CoachTeachTimeEditParam coachTeachTimeEditParam) {
@@ -117,7 +116,7 @@ public class CoachTeachTimeController extends BaseController<CoachTeachTimePageQ
 	*/
 	@ApiOperation("删除教练课程时间表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:delete')")
 	@EventLog(message = "删除教练课程时间表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -129,7 +128,7 @@ public class CoachTeachTimeController extends BaseController<CoachTeachTimePageQ
 	*/
 	@ApiOperation("通过主键删除教练课程时间表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除教练课程时间表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -140,7 +139,7 @@ public class CoachTeachTimeController extends BaseController<CoachTeachTimePageQ
 	* 导出教练课程时间表
 	*/
 	@ApiOperation("导出教练课程时间表")
-	@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:export')")
+	//@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:export')")
 	@SneakyThrows
 	@EventLog(message = "导出教练课程时间表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -153,7 +152,7 @@ public class CoachTeachTimeController extends BaseController<CoachTeachTimePageQ
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用教练课程时间表")
-	@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用教练课程时间表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

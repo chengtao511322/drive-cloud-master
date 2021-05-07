@@ -78,7 +78,7 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 	* 渠道经理 可推广表配置 分页列表
 	*/
 	@ApiOperation("渠道经理 可推广表配置分页列表")
-	@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:query')")
+	//@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid ChannelManagerActivityPageQueryParam param) {
 		log.info(this.getClass() + "pageList 请求方法{}",param);
@@ -158,7 +158,7 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 	*/
 	@ApiOperation("新增渠道经理 可推广表配置")
 	@ApiImplicitParam(name = "ChannelManagerActivityEditParam ", value = "新增渠道经理 可推广表配置", dataType = "ChannelManagerActivityEditParam")
-	@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:add')")
+	//@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:add')")
 	@EventLog(message = "新增渠道经理 可推广表配置", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody ChannelManagerActivityEditParam channelManagerActivityEditParam) {
@@ -178,7 +178,7 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 
 	@ApiOperation("新增渠道经理 可推广表配置")
 	@ApiImplicitParam(name = "ChannelManagerActivityEditParam ", value = "新增渠道经理 可推广表配置", dataType = "ChannelManagerActivityEditParam")
-	@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:add')")
+	//@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:add')")
 	@EventLog(message = "新增渠道经理 可推广表配置", businessType = EventLogEnum.CREATE)
 	@PostMapping("/savePromotionUser")
 	public ResObject savePromotionUser(@Valid @RequestBody ChannelManagerActivityEditParam channelManagerActivityEditParam) {
@@ -199,7 +199,7 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 	*/
 	@ApiOperation("新增渠道经理 可推广表配置")
 	@ApiImplicitParam(name = "ChannelManagerActivityEditParam ", value = "新增渠道经理 可推广表配置", dataType = "ChannelManagerActivityEditParam")
-	@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:add')")
+	//@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:add')")
 	@EventLog(message = "新增渠道经理 可推广表配置", businessType = EventLogEnum.CREATE)
 	@PostMapping("/publishChannelManager")
 	public ResObject publishChannelManager(@Valid @RequestBody ChannelManagerActivityEditParam channelManagerActivityEditParam) {
@@ -242,7 +242,7 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 	*/
 	@ApiOperation("修改渠道经理 可推广表配置")
 	@ApiImplicitParam(name = "ChannelManagerActivityEditParam ", value = "修改渠道经理 可推广表配置", dataType = "ChannelManagerActivityEditParam")
-	@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:edit')")
+	//@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:edit')")
 	@EventLog(message = "修改渠道经理 可推广表配置", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody ChannelManagerActivityEditParam channelManagerActivityEditParam) {
@@ -266,7 +266,7 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 	* 导出渠道经理 可推广表配置
 	*/
 	@ApiOperation("导出渠道经理 可推广表配置")
-	@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:export')")
+	//@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:export')")
 	@SneakyThrows
 	@EventLog(message = "导出渠道经理 可推广表配置", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -281,7 +281,7 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 	 */
 	@ApiOperation("批量新增渠道经理 可推广表配置")
 	@ApiImplicitParam(name = "ChannelManagerActivityEditParam ", value = "新增渠道经理 可推广表配置", dataType = "ChannelManagerActivityEditParam")
-	@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:add')")
+	//@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:add')")
 	@EventLog(message = "批量新增渠道经理 可推广表配置", businessType = EventLogEnum.CREATE)
 	@PostMapping("saveBatch")
 	@Transactional
@@ -291,7 +291,7 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 
 	@ApiOperation("发布渠道经理数据")
 	@ApiImplicitParam(name = "ChannelManagerActivityEditParam ", value = "发布渠道经理数据", dataType = "ChannelManagerActivityEditParam")
-	@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:publishChannelManagerData')")
+	//@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:publishChannelManagerData')")
 	@EventLog(message = "发布渠道经理数据", businessType = EventLogEnum.CREATE)
 	@PostMapping("publishChannelManagerData")
 	ResObject publishChannelManagerData(@RequestBody  ChannelManagerActivityEditParam channelManagerActivityEditParam){
@@ -302,7 +302,7 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 	 * 渠道经理 可推广表配置 分页列表
 	 */
 	@ApiOperation("渠道经理 可推广表配置分页列表")
-	@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:query')")
+	//@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:query')")
 	@GetMapping(value = "/pageChannelManagerList")
 	public ResObject pageChannelManagerList(@Valid ChannelManagerActivityPageQueryParam param) {
 		return channelManagerActivityRepository.pageChannelManagerList(param);
@@ -314,7 +314,7 @@ public class ChannelManagerActivityController extends BaseController<ChannelMana
 	 */
 	@ApiOperation("删除渠道经理 可推广表配置")
 	@ApiImplicitParam(name = "channelManagerId", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:delete')")
+	//@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:delete')")
 	@EventLog(message = "删除渠道经理 可推广表配置", businessType = EventLogEnum.DELETE)
 	@PostMapping("/deleteByQueryWrapper")
 	public ResObject deleteByQueryWrapper(@RequestBody ChannelManagerActivityPageQueryParam param) {

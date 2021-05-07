@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +46,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	* 推广渠道经理 分页列表
 	*/
 	@ApiOperation("推广渠道经理分页列表")
-	@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:query')")
+	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid RecommendManagerPageQueryParam param) {
 		return recommendManagerRepository.pageList(param);
@@ -56,7 +55,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	* 推广渠道经理 分页列表
 	*/
 	@ApiOperation("推广渠道经理列表")
-	@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:query')")
+	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid RecommendManagerPageQueryParam param) {
 		return recommendManagerRepository.findList(param);
@@ -67,7 +66,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	*/
 	@ApiOperation("获取推广渠道经理")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:query')")
+	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return recommendManagerRepository.getById(id);
@@ -78,7 +77,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	*/
 	@ApiOperation("新增推广渠道经理")
 	@ApiImplicitParam(name = "RecommendManagerEditParam ", value = "新增推广渠道经理", dataType = "RecommendManagerEditParam")
-	@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:add')")
+	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:add')")
 	@EventLog(message = "新增推广渠道经理", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody RecommendManagerEditParam recommendManagerEditParam) {
@@ -90,7 +89,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	*/
 	@ApiOperation("修改推广渠道经理")
 	@ApiImplicitParam(name = "RecommendManagerEditParam ", value = "修改推广渠道经理", dataType = "RecommendManagerEditParam")
-	@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:edit')")
+	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:edit')")
 	@EventLog(message = "修改推广渠道经理", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody RecommendManagerEditParam recommendManagerEditParam) {
@@ -102,7 +101,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	*/
 	@ApiOperation("删除推广渠道经理")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:delete')")
+	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:delete')")
 	@EventLog(message = "删除推广渠道经理", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -114,7 +113,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	*/
 	@ApiOperation("删除教练信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "删除教练信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -125,7 +124,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	* 导出推广渠道经理
 	*/
 	@ApiOperation("导出推广渠道经理")
-	@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:export')")
+	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:export')")
 	@SneakyThrows
 	@EventLog(message = "导出推广渠道经理", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -138,7 +137,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用推广渠道经理")
-	@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用推广渠道经理", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

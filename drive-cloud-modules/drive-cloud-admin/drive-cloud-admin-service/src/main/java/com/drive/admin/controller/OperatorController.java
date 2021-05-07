@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -51,7 +50,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	* 运营商基础信息 分页列表
 	*/
 	@ApiOperation("运营商基础信息分页列表")
-	@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
+	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid OperatorPageQueryParam param) {
 		return operatorRepository.pageList(param);
@@ -60,7 +59,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	* 运营商基础信息 列表
 	*/
 	@ApiOperation("运营商基础信息列表")
-	@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
+	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
 	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid OperatorPageQueryParam param) {
 		return operatorRepository.findList(param);
@@ -71,7 +70,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	*/
 	@ApiOperation("获取运营商基础信息")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
+	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return operatorRepository.getById(id);
@@ -82,7 +81,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	 */
 	@ApiOperation("条件查询获取运营商基础信息")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
+	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
 	@GetMapping("/getInfo")
 	public ResObject getInfo(@PathVariable OperatorPageQueryParam param) {
 		return operatorRepository.getInfo(param);
@@ -93,7 +92,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	*/
 	@ApiOperation("新增运营商基础信息")
 	@ApiImplicitParam(name = "OperatorEditParam ", value = "新增运营商基础信息", dataType = "OperatorEditParam")
-	@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:add')")
+	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:add')")
 	@EventLog(message = "新增运营商基础信息", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody OperatorInstallParam operatorInstallParam) {
@@ -105,7 +104,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	*/
 	@ApiOperation("修改运营商基础信息")
 	@ApiImplicitParam(name = "OperatorEditParam ", value = "修改运营商基础信息", dataType = "OperatorEditParam")
-	@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:edit')")
+	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:edit')")
 	@EventLog(message = "修改运营商基础信息", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody OperatorEditParam operatorEditParam) {
@@ -117,7 +116,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	*/
 	@ApiOperation("删除运营商基础信息")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:delete')")
+	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:delete')")
 	@EventLog(message = "删除运营商基础信息", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -129,7 +128,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	*/
 	@ApiOperation("通过主键删除运营商基础信息")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除运营商基础信息", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -140,7 +139,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	* 导出运营商基础信息
 	*/
 	@ApiOperation("导出运营商基础信息")
-	@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:export')")
+	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:export')")
 	@SneakyThrows
 	@EventLog(message = "导出运营商基础信息", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -153,7 +152,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用运营商基础信息")
-	@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用运营商基础信息", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

@@ -1,6 +1,5 @@
 package com.drive.system.repository.impl;
 
-import cn.hutool.db.nosql.redis.RedisDS;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -9,8 +8,6 @@ import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.constant.CacheConstants;
-import com.drive.common.core.utils.StringUtils;
-import com.drive.common.datascope.annotation.DataScope;
 import com.drive.common.redis.service.RedisService;
 import com.drive.system.pojo.UserInfo;
 import com.drive.system.pojo.dto.UserEditParam;
@@ -25,7 +22,6 @@ import com.drive.system.service.mapstruct.UserMapStruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;

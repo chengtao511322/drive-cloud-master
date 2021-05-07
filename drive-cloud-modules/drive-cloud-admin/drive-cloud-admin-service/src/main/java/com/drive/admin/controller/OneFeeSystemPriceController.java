@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -49,7 +48,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	* 学车一费制定价表 分页列表
 	*/
 	@ApiOperation("学车一费制定价表分页列表")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:query')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid OneFeeSystemPricePageQueryParam param) {
 		return oneFeeSystemPriceRepository.pageList(param);
@@ -58,7 +57,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	* 学车一费制定价表 分页列表
 	*/
 	@ApiOperation("学车一费制定价表列表")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:query')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid OneFeeSystemPricePageQueryParam param) {
 		return oneFeeSystemPriceRepository.findList(param);
@@ -69,7 +68,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	*/
 	@ApiOperation("获取学车一费制定价表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:query')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return oneFeeSystemPriceRepository.getById(id);
@@ -78,7 +77,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 
 	@ApiOperation("获取学车一费制定价树形结构")
 	@ApiImplicitParam(name = "tenantId", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:query')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:query')")
 	@PostMapping("/getServicePackageTree")
 	ResObject<List<TreeNodeCategoryDto>> getServicePackageTree(@RequestBody OneFeeSystemPriceEditParam oneFeeSystemPriceEditParam){
 		return oneFeeSystemPriceRepository.getServicePackageTree(oneFeeSystemPriceEditParam.getOperatorId());
@@ -88,7 +87,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	*/
 	@ApiOperation("新增学车一费制定价表")
 	@ApiImplicitParam(name = "OneFeeSystemPriceEditParam ", value = "新增学车一费制定价表", dataType = "OneFeeSystemPriceEditParam")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:add')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:add')")
 	@EventLog(message = "新增学车一费制定价表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody OneFeeSystemPriceEditParam oneFeeSystemPriceEditParam) {
@@ -100,7 +99,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	*/
 	@ApiOperation("修改学车一费制定价表")
 	@ApiImplicitParam(name = "OneFeeSystemPriceEditParam ", value = "修改学车一费制定价表", dataType = "OneFeeSystemPriceEditParam")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:edit')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:edit')")
 	@EventLog(message = "修改学车一费制定价表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody OneFeeSystemPriceEditParam oneFeeSystemPriceEditParam) {
@@ -113,7 +112,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	 */
 	@ApiOperation("发布学车一费制定价表")
 	@ApiImplicitParam(name = "OneFeeSystemPriceEditParam ", value = "发布学车一费制定价表", dataType = "OneFeeSystemPriceEditParam")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:publishServicePackage')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:publishServicePackage')")
 	@EventLog(message = "修改学车一费制定价表", businessType = EventLogEnum.CREATE)
 	@PostMapping("/publishServicePackage")
 	ResObject publishServicePackage(@Valid @RequestBody OneFeeSystemPriceEditParam oneFeeSystemPriceEditParam){
@@ -127,7 +126,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	 */
 	@ApiOperation("修改学车一费制定价表")
 	@ApiImplicitParam(name = "OneFeeSystemPriceEditParam ", value = "修改学车一费制定价表", dataType = "OneFeeSystemPriceEditParam")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:updateServicePackage')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:add')")
 	@EventLog(message = "修改学车一费制定价表", businessType = EventLogEnum.UPDATE)
 	@PostMapping("/updateServicePackage")
 	ResObject updateServicePackage(@Valid @RequestBody OneFeeSystemPriceEditParam oneFeeSystemPriceEditParam){
@@ -137,7 +136,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 
 	@ApiOperation("复制学车一费制定价表")
 	@ApiImplicitParam(name = "OneFeeSystemPriceEditParam ", value = "发布学车一费制定价表", dataType = "OneFeeSystemPriceEditParam")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:copyServicePackage')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:copyServicePackage')")
 	@EventLog(message = "复制学车一费制定价表", businessType = EventLogEnum.CREATE)
 	@PostMapping("/copyServicePackage")
 	ResObject copyServicePackage(@Valid @RequestBody OneFeeSystemPriceEditParam oneFeeSystemPriceEditParam){
@@ -148,7 +147,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	*/
 	@ApiOperation("删除学车一费制定价表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:delete')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:delete')")
 	@EventLog(message = "删除学车一费制定价表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -160,7 +159,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	*/
 	@ApiOperation("删除教练信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "删除教练信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -171,7 +170,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	* 导出学车一费制定价表
 	*/
 	@ApiOperation("导出学车一费制定价表")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:export')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:export')")
 	@SneakyThrows
 	@EventLog(message = "导出学车一费制定价表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -184,7 +183,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用学车一费制定价表")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用学车一费制定价表", businessType = EventLogEnum.UPDATE)
 	@PostMapping("/changeStatus")

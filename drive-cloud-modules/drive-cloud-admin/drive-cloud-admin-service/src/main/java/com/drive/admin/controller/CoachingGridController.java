@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -51,7 +50,7 @@ public class CoachingGridController extends BaseController<CoachingGridPageQuery
 	* 平台训练场地表 分页列表
 	*/
 	@ApiOperation("平台训练场地表分页列表")
-	@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:query')")
+	//@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid CoachingGridPageQueryParam param) {
 		return coachingGridRepository.pageList(param);
@@ -60,7 +59,7 @@ public class CoachingGridController extends BaseController<CoachingGridPageQuery
 	* 平台训练场地表 列表
 	*/
 	@ApiOperation("平台训练场地表列表")
-	@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:query')")
+	//@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid CoachingGridPageQueryParam param) {
 		return coachingGridRepository.findList(param);
@@ -71,7 +70,7 @@ public class CoachingGridController extends BaseController<CoachingGridPageQuery
 	*/
 	@ApiOperation("获取平台训练场地表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:query')")
+	//@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return coachingGridRepository.getById(id);
@@ -82,7 +81,7 @@ public class CoachingGridController extends BaseController<CoachingGridPageQuery
 	*/
 	@ApiOperation("新增平台训练场地表")
 	@ApiImplicitParam(name = "CoachingGridEditParam ", value = "新增平台训练场地表", dataType = "CoachingGridEditParam")
-	@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:add')")
+	//@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:add')")
 	@EventLog(message = "新增平台训练场地表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody CoachingGridInstallParam coachingGridInstallParam) {
@@ -94,7 +93,7 @@ public class CoachingGridController extends BaseController<CoachingGridPageQuery
 	*/
 	@ApiOperation("修改平台训练场地表")
 	@ApiImplicitParam(name = "CoachingGridEditParam ", value = "修改平台训练场地表", dataType = "CoachingGridEditParam")
-	@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:edit')")
+	//@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:edit')")
 	@EventLog(message = "修改平台训练场地表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody CoachingGridEditParam coachingGridEditParam) {
@@ -106,7 +105,7 @@ public class CoachingGridController extends BaseController<CoachingGridPageQuery
 	*/
 	@ApiOperation("删除平台训练场地表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:delete')")
 	@EventLog(message = "删除平台训练场地表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -118,7 +117,7 @@ public class CoachingGridController extends BaseController<CoachingGridPageQuery
 	*/
 	@ApiOperation("通过主键删除平台训练场地表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除平台训练场地表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -129,7 +128,7 @@ public class CoachingGridController extends BaseController<CoachingGridPageQuery
 	* 导出平台训练场地表
 	*/
 	@ApiOperation("导出平台训练场地表")
-	@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:export')")
+	//@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:export')")
 	@SneakyThrows
 	@EventLog(message = "导出平台训练场地表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -142,7 +141,7 @@ public class CoachingGridController extends BaseController<CoachingGridPageQuery
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用平台训练场地表")
-	@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用平台训练场地表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

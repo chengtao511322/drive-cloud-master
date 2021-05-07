@@ -770,7 +770,7 @@ public class ChannelManagerActivityRepositoryImpl implements ChannelManagerActiv
 
             // 判断活动是否独享
             ActivityInfoEntity activityInfo = activityInfoService.getById(activityId);
-            if (activityInfo != null && activityInfo.getIsExclusive() == Integer.valueOf(ExclusiveEnum.NOTExclusive.getCode())){
+            if (activityInfo != null && activityInfo.getIsExclusive() != Integer.valueOf(ExclusiveEnum.Exclusive.getCode())){
                 // 设置推广商权限
                 // 设置渠道经理ID
                 ResObject recommendUserRes =  remoteRecommendUserFeignService.getRecommendUserByChannelManagerId(channelManagerActivityEditParam.getChannelManagerId());
@@ -870,7 +870,7 @@ public class ChannelManagerActivityRepositoryImpl implements ChannelManagerActiv
         // 判断活动是否独享
         ActivityInfoEntity activityInfo = activityInfoService.getById(activityId);
         // 非独享
-        if (activityInfo != null && activityInfo.getIsExclusive() == Integer.valueOf(ExclusiveEnum.NOTExclusive.getCode())){
+        if (activityInfo != null && activityInfo.getIsExclusive() != Integer.valueOf(ExclusiveEnum.Exclusive.getCode())){
             // 循环处理
             channelManagerActivityList.stream().forEach((item) -> {
 

@@ -1,7 +1,6 @@
 package com.drive.admin.repository.impl;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
-import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -13,7 +12,10 @@ import com.drive.admin.pojo.dto.StudentTestEnrollEditParam;
 import com.drive.admin.pojo.dto.StudentTestEnrollPageQueryParam;
 import com.drive.admin.pojo.dto.StudentTrainCarApplyPageQueryParam;
 import com.drive.admin.pojo.entity.*;
-import com.drive.admin.pojo.vo.*;
+import com.drive.admin.pojo.vo.OneFeeSystemCoachStudentVo;
+import com.drive.admin.pojo.vo.StudentStudyEnrollVo;
+import com.drive.admin.pojo.vo.StudentTestEnrollVo;
+import com.drive.admin.pojo.vo.StudentTrainCarApplyVo;
 import com.drive.admin.repository.StudentTestEnrollRepository;
 import com.drive.admin.service.*;
 import com.drive.admin.service.mapstruct.StudentStudyEnrollMapStruct;
@@ -146,10 +148,10 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         queryWrapper.in(studentInfoList.size() > 0,"student_id",studentInfoList.stream().map(StudentInfoEntity::getId).collect(Collectors.toList()));
 
         if (param.getTestHopeTimeArr() .length >0){
-            queryWrapper.between("test_hope_time",param.getTestHopeTimeArr()[0],param.getTestHopeTimeArr()[1]);
+            queryWrapper.between("date_format (test_hope_time,'%Y-%m-%d')",param.getTestHopeTimeArr()[0],param.getTestHopeTimeArr()[1]);
         }
         if (param.getTestActualTimeArr() .length >0){
-            queryWrapper.between("test_actual_time",param.getTestActualTimeArr()[0],param.getTestActualTimeArr()[1]);
+            queryWrapper.between("date_format (test_actual_time,'%Y-%m-%d')",param.getTestActualTimeArr()[0],param.getTestActualTimeArr()[1]);
         }
         // 报名状态
         if (StrUtil.isNotEmpty(param.getEnrollStatusArr())){
@@ -947,7 +949,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         queryWrapper.eq("enroll_status",StudyEnrollEnum.EXAM_PASS.getCode());
 
         // 意向报名时间 testActualTime
-        queryWrapper.apply(StrUtil.isNotBlank(param.getTestHopeTimeSearch()),
+        queryWrapper.apply(StrUtil.isNotEmpty(param.getTestHopeTimeSearch()),
                 "date_format (test_hope_time,'%Y-%m-%d') = date_format('" + param.getTestHopeTimeSearch() + "','%Y-%m-%d')");
         // 报名单号 模糊查询
         //queryWrapper.like(StrUtil.isNotEmpty(param.getVagueStudyEnrollNoSearch()),"study_enroll_no",param.getVagueStudyEnrollNoSearch());

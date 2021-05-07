@@ -29,7 +29,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,7 +67,7 @@ public class ActivityPromotionController extends BaseController<ActivityPromotio
 	*  分页列表
 	*/
 	@ApiOperation("分页列表")
-	@PreAuthorize("hasPermission('/marketing/activityPromotion',  'marketing:activityPromotion:query')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromotion',  'marketing:activityPromotion:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid ActivityPromotionPageQueryParam param) {
 		Page<ActivityPromotionEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
@@ -86,7 +85,7 @@ public class ActivityPromotionController extends BaseController<ActivityPromotio
 	*/
 	@ApiOperation("获取")
 	@ApiImplicitParam(name = "activityId", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/marketing/activityPromotion',  'marketing:activityPromotion:query')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromotion',  'marketing:activityPromotion:query')")
 	@GetMapping("/{activityId}")
 	public ResObject get(@PathVariable String activityId) {
 		ActivityPromotionEntity activityPromotion = activityPromotionService.getById(activityId);
@@ -98,7 +97,7 @@ public class ActivityPromotionController extends BaseController<ActivityPromotio
 	*/
 	@ApiOperation("新增")
 	@ApiImplicitParam(name = "ActivityPromotionEditParam ", value = "新增", dataType = "ActivityPromotionEditParam")
-	@PreAuthorize("hasPermission('/marketing/activityPromotion',  'marketing:activityPromotion:add')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromotion',  'marketing:activityPromotion:add')")
 	@EventLog(message = "新增", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody ActivityPromotionEditParam activityPromotionEditParam) {
@@ -110,7 +109,7 @@ public class ActivityPromotionController extends BaseController<ActivityPromotio
 	*/
 	@ApiOperation("添加推广人员")
 	@ApiImplicitParam(name = "addActivityPromotion ", value = "添加推广人员", dataType = "ActivityPromotionEditParam")
-	@PreAuthorize("hasPermission('/marketing/addActivityPromotion',  'marketing:activityPromotion:add')")
+	//@PreAuthorize("hasPermission('/marketing/addActivityPromotion',  'marketing:activityPromotion:add')")
 	@EventLog(message = "添加推广人员", businessType = EventLogEnum.CREATE)
 	@PostMapping("/addActivityPromotion")
 	public ResObject addActivityPromotion(@RequestBody List<ChannelManagerActivityEditParam> channelManagerActivityEditParamList) {
@@ -126,7 +125,7 @@ public class ActivityPromotionController extends BaseController<ActivityPromotio
 	 */
 	@ApiOperation("批量新增渠道经理 可推广表配置")
 	@ApiImplicitParam(name = "ChannelManagerActivityEditParam ", value = "新增渠道经理 可推广表配置", dataType = "ChannelManagerActivityEditParam")
-	@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:add')")
+	//@PreAuthorize("hasPermission('/marketing/channelManagerActivity',  'marketing:channelManagerActivity:add')")
 	@EventLog(message = "批量新增渠道经理 可推广表配置", businessType = EventLogEnum.CREATE)
 	@PostMapping("saveBatch")
 	@Transactional
@@ -153,7 +152,7 @@ public class ActivityPromotionController extends BaseController<ActivityPromotio
 	*/
 	@ApiOperation("修改")
 	@ApiImplicitParam(name = "ActivityPromotionEditParam ", value = "修改", dataType = "ActivityPromotionEditParam")
-	@PreAuthorize("hasPermission('/marketing/activityPromotion',  'marketing:activityPromotion:edit')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromotion',  'marketing:activityPromotion:edit')")
 	@EventLog(message = "修改", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody ActivityPromotionEditParam activityPromotionEditParam) {
@@ -166,7 +165,7 @@ public class ActivityPromotionController extends BaseController<ActivityPromotio
 	*/
 	@ApiOperation("删除")
 	@ApiImplicitParam(name = "ids", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/marketing/activityPromotion',  'marketing:activityPromotion:delete')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromotion',  'marketing:activityPromotion:delete')")
 	@EventLog(message = "删除", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -177,7 +176,7 @@ public class ActivityPromotionController extends BaseController<ActivityPromotio
 	* 导出
 	*/
 	@ApiOperation("导出")
-	@PreAuthorize("hasPermission('/marketing/activityPromotion',  'marketing:activityPromotion:export')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromotion',  'marketing:activityPromotion:export')")
 	@SneakyThrows
 	@EventLog(message = "导出", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -193,7 +192,7 @@ public class ActivityPromotionController extends BaseController<ActivityPromotio
 	 */
 	@ApiOperation("删除推广配置")
 	@ApiImplicitParam(name = "channelManagerId", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/marketing/promotionActivity',  'marketing:channelManagerActivity:delete')")
+	//@PreAuthorize("hasPermission('/marketing/promotionActivity',  'marketing:channelManagerActivity:delete')")
 	@EventLog(message = "删除渠道经理 可推广表配置", businessType = EventLogEnum.DELETE)
 	@PostMapping("/deleteByQueryWrapper")
 	public ResObject deleteByQueryWrapper(@RequestBody ActivityPromotionEditParam param) {

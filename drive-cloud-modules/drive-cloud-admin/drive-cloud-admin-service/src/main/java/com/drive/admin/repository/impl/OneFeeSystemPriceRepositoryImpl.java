@@ -195,6 +195,7 @@ public class  OneFeeSystemPriceRepositoryImpl extends BaseController<OneFeeSyste
     /**
      * *修改状态
      **/
+    @Transactional
     @Override
     public ResObject changeStatus(OneFeeSystemPriceEditParam param) {
         log.info(this.getClass() + "changeStatus方法请求参数{}",param);
@@ -208,6 +209,9 @@ public class  OneFeeSystemPriceRepositoryImpl extends BaseController<OneFeeSyste
         Boolean result = oneFeeSystemPriceService.updateById(OneFeeSystemPriceEntity);
         log.info(this.getClass() +"changeStatus方法请求对象参数{}，请求结果{}",OneFeeSystemPriceEntity,result);
         // 判断结果
+        if (param.getStatus().equals(StatusEnum.ENABLE.getCode())){
+            this.updateServicePackage(param);
+        }
         return result ?R.success(result):R.failure(result);
     }
 

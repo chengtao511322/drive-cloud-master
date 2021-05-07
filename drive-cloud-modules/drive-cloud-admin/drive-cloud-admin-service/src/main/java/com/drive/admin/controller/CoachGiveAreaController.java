@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +49,7 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	* 教练授课区域表 分页列表
 	*/
 	@ApiOperation("教练授课区域表分页列表")
-	@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:query')")
+	//@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid CoachGiveAreaPageQueryParam param) {
 		return coachGiveAreaRepository.pageList(param);
@@ -59,7 +58,7 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	* 教练授课区域表 列表
 	*/
 	@ApiOperation("教练授课区域表列表")
-	@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:query')")
+	//@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:query')")
 	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid CoachGiveAreaPageQueryParam param) {
 		return coachGiveAreaRepository.findList(param);
@@ -70,7 +69,7 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	*/
 	@ApiOperation("获取教练授课区域表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:query')")
+	//@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return coachGiveAreaRepository.getById(id);
@@ -81,7 +80,7 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	 */
 	@ApiOperation("条件查询获取教练授课区域表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:query')")
+	//@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:query')")
 	@GetMapping("/getInfo")
 	public ResObject getInfo(@PathVariable CoachGiveAreaPageQueryParam param) {
 		return coachGiveAreaRepository.getInfo(param);
@@ -92,7 +91,7 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	*/
 	@ApiOperation("新增教练授课区域表")
 	@ApiImplicitParam(name = "CoachGiveAreaEditParam ", value = "新增教练授课区域表", dataType = "CoachGiveAreaEditParam")
-	@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:add')")
+	//@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:add')")
 	@EventLog(message = "新增教练授课区域表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody CoachGiveAreaEditParam coachGiveAreaEditParam) {
@@ -104,7 +103,7 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	*/
 	@ApiOperation("修改教练授课区域表")
 	@ApiImplicitParam(name = "CoachGiveAreaEditParam ", value = "修改教练授课区域表", dataType = "CoachGiveAreaEditParam")
-	@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:edit')")
+	//@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:edit')")
 	@EventLog(message = "修改教练授课区域表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody CoachGiveAreaEditParam coachGiveAreaEditParam) {
@@ -116,7 +115,7 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	*/
 	@ApiOperation("删除教练授课区域表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:delete')")
 	@EventLog(message = "删除教练授课区域表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -128,7 +127,7 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	*/
 	@ApiOperation("通过主键删除教练授课区域表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除教练授课区域表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -139,7 +138,7 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	* 导出教练授课区域表
 	*/
 	@ApiOperation("导出教练授课区域表")
-	@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:export')")
+	//@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:export')")
 	@SneakyThrows
 	@EventLog(message = "导出教练授课区域表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -152,7 +151,7 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用教练授课区域表")
-	@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用教练授课区域表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

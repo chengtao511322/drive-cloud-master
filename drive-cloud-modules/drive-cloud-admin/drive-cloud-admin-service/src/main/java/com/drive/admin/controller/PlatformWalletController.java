@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -51,7 +50,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	* 教练钱包表 分页列表
 	*/
 	@ApiOperation("教练钱包表分页列表")
-	@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
+	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid PlatformWalletPageQueryParam param) {
 		return platformWalletRepository.pageList(param);
@@ -60,7 +59,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	* 教练钱包表 列表
 	*/
 	@ApiOperation("教练钱包表列表")
-	@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
+	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
 	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid PlatformWalletPageQueryParam param) {
 		return platformWalletRepository.findList(param);
@@ -71,7 +70,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	*/
 	@ApiOperation("获取教练钱包表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
+	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return platformWalletRepository.getById(id);
@@ -82,7 +81,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	 */
 	@ApiOperation("条件查询获取教练钱包表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
+	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
 	@GetMapping("/getInfo")
 	public ResObject getInfo(@PathVariable PlatformWalletPageQueryParam param) {
 		return platformWalletRepository.getInfo(param);
@@ -93,7 +92,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	*/
 	@ApiOperation("新增教练钱包表")
 	@ApiImplicitParam(name = "PlatformWalletEditParam ", value = "新增教练钱包表", dataType = "PlatformWalletEditParam")
-	@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:add')")
+	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:add')")
 	@EventLog(message = "新增教练钱包表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody PlatformWalletInstallParam platformWalletInstallParam) {
@@ -105,7 +104,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	*/
 	@ApiOperation("修改教练钱包表")
 	@ApiImplicitParam(name = "PlatformWalletEditParam ", value = "修改教练钱包表", dataType = "PlatformWalletEditParam")
-	@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:edit')")
+	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:edit')")
 	@EventLog(message = "修改教练钱包表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody PlatformWalletEditParam platformWalletEditParam) {
@@ -117,7 +116,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	*/
 	@ApiOperation("删除教练钱包表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:delete')")
+	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:delete')")
 	@EventLog(message = "删除教练钱包表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -129,7 +128,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	*/
 	@ApiOperation("通过主键删除教练钱包表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除教练钱包表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -140,7 +139,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	* 导出教练钱包表
 	*/
 	@ApiOperation("导出教练钱包表")
-	@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:export')")
+	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:export')")
 	@SneakyThrows
 	@EventLog(message = "导出教练钱包表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -153,7 +152,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用教练钱包表")
-	@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用教练钱包表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

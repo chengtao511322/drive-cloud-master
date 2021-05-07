@@ -88,7 +88,7 @@ public class MinioController {
     @PostMapping("/uploadImages")
     public ResObject uploadImages(UpdateImagesDto updateImagesDto) throws IOException, MinioException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
         // 文件存储路径  /2020-01-01/43897583617343545473.jpg
-        if (updateImagesDto == null){
+        if (updateImagesDto.getFile() == null){
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
         String filename = updateImagesDto.getFile().getOriginalFilename();

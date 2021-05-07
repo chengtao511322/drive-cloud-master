@@ -108,6 +108,8 @@ public enum  SubResultCode {
     NOT_ORDER_OPERATION("NOT_ORDER_OPERATION","没有订单可操作"),
     ORDER_STATUS_NOT_OPERATION("ORDER_STATUS_NOT_OPERATION","该订单状态下不可操作"),
     OPERATION_ERROR("OPERATION_ERROR","操作错误"),
+
+    UPDATE_BIG("UPDATE_BIG","上传文件过大")
     ;
     /*状态码*/
     private String subCode;

@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +49,7 @@ public class DriveSchoolController extends BaseController<DriveSchoolPageQueryPa
 	* 平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。 分页列表
 	*/
 	@ApiOperation("平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。分页列表")
-	@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:query')")
+	//@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid DriveSchoolPageQueryParam param) {
 		return driveSchoolRepository.pageList(param);
@@ -59,7 +58,7 @@ public class DriveSchoolController extends BaseController<DriveSchoolPageQueryPa
 	* 平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。 列表
 	*/
 	@ApiOperation("平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。列表")
-	@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:query')")
+	//@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid DriveSchoolPageQueryParam param) {
 		return driveSchoolRepository.findList(param);
@@ -70,7 +69,7 @@ public class DriveSchoolController extends BaseController<DriveSchoolPageQueryPa
 	*/
 	@ApiOperation("获取平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:query')")
+	//@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return driveSchoolRepository.getById(id);
@@ -81,7 +80,7 @@ public class DriveSchoolController extends BaseController<DriveSchoolPageQueryPa
 	*/
 	@ApiOperation("新增平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。")
 	@ApiImplicitParam(name = "DriveSchoolEditParam ", value = "新增平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。", dataType = "DriveSchoolEditParam")
-	@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:add')")
+	//@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:add')")
 	@EventLog(message = "新增平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody DriveSchoolEditParam driveSchoolEditParam) {
@@ -93,7 +92,7 @@ public class DriveSchoolController extends BaseController<DriveSchoolPageQueryPa
 	*/
 	@ApiOperation("修改平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。")
 	@ApiImplicitParam(name = "DriveSchoolEditParam ", value = "修改平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。", dataType = "DriveSchoolEditParam")
-	@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:edit')")
+	//@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:edit')")
 	@EventLog(message = "修改平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody DriveSchoolEditParam driveSchoolEditParam) {
@@ -105,7 +104,7 @@ public class DriveSchoolController extends BaseController<DriveSchoolPageQueryPa
 	*/
 	@ApiOperation("删除平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:delete')")
+	//@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:delete')")
 	@EventLog(message = "删除平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -117,7 +116,7 @@ public class DriveSchoolController extends BaseController<DriveSchoolPageQueryPa
 	*/
 	@ApiOperation("通过主键删除平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -128,7 +127,7 @@ public class DriveSchoolController extends BaseController<DriveSchoolPageQueryPa
 	* 导出平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。
 	*/
 	@ApiOperation("导出平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。")
-	@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:export')")
+	//@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:export')")
 	@SneakyThrows
 	@EventLog(message = "导出平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -141,7 +140,7 @@ public class DriveSchoolController extends BaseController<DriveSchoolPageQueryPa
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。")
-	@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

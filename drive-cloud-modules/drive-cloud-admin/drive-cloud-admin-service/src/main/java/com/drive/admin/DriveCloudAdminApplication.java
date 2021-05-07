@@ -25,16 +25,17 @@ public class DriveCloudAdminApplication {
         ApplicationContext applicationContext = SpringApplication.run(DriveCloudAdminApplication.class, args);
         SpringContextUtil.setApplicationContext(applicationContext);
         String jvmName = ManagementFactory.getRuntimeMXBean().getName();
-        log.info("后台服务启动成功   ლ(´ڡ`ლ)ﾞ  \n" +
-                "                \" .-------.       ____     __        \n" +
-                "                \" |  _ _   \\\\      \\\\   \\\\   /  /    \n" +
-                "                \" | ( ' )  |       \\\\  _. /  '       \n" +
-                "                \" |(_ o _) /        _( )_ .'         \n" +
-                "                \" | (_,_).' __  ___(_ o _)'          \n" +
-                "                \" |  |\\\\ \\\\  |  ||   |(_,_)'         \n" +
-                "                \" |  | \\\\ `'   /|   `-'  /           \n" +
-                "                \" |  |  \\\\    /  \\\\      /           \n" +
-                "                \" ''-'   `'-'    `-..-'              ","{}当前项目进程号",jvmName.split("@")[0]);
+        log.info("后台服务启动成功   ლ(´ڡ`ლ)ﾞ " +
+                "                \" .-------.       ____     __       " +
+                "                \" |  _ _      /  /                  " +
+                "                \" | ( ' )  |         _. /  '        " +
+                "                \" |(_ o _) /        _( )_ .'        " +
+                "                \" | (_,_).' __  ___(_ o _)'         " +
+                "                \" |  |  |  ||   |(_,_)'             " +
+                "                \" |  |  `'   /|   `-'  /            " +
+                "                \" |  |     /        /               " +
+                "                \" ''-'   `'-'    `-..-'               ",
+                "{}当前项目进程号",jvmName.split("@")[0]);
 
     }
 }

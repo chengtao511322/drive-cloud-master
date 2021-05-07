@@ -27,7 +27,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -62,7 +61,7 @@ public class ActivityProjectSettingController extends BaseController<ActivityPro
 	* 活动项目设置 分页列表
 	*/
 	@ApiOperation("活动项目设置分页列表")
-	@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:query')")
+	//@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid ActivityProjectSettingPageQueryParam param) {
 
@@ -77,7 +76,7 @@ public class ActivityProjectSettingController extends BaseController<ActivityPro
 		return R.success(activityProjectSettingVoPage);
 	}
 	@ApiOperation("活动项目设置分页列表")
-	@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:query')")
+	//@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid @RequestBody ActivityProjectSettingPageQueryParam param) {
 		QueryWrapper<ActivityProjectSettingEntity> queryWrapper = new QueryWrapper<ActivityProjectSettingEntity>();
@@ -103,7 +102,7 @@ public class ActivityProjectSettingController extends BaseController<ActivityPro
 	*/
 	@ApiOperation("获取活动项目设置")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:query')")
+	//@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable Long id) {
 		ActivityProjectSettingEntity activityProjectSetting = activityProjectSettingService.getById(id);
@@ -115,7 +114,7 @@ public class ActivityProjectSettingController extends BaseController<ActivityPro
 	*/
 	@ApiOperation("新增活动项目设置")
 	@ApiImplicitParam(name = "ActivityProjectSettingEditParam ", value = "新增活动项目设置", dataType = "ActivityProjectSettingEditParam")
-	@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:add')")
+	//@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:add')")
 	@EventLog(message = "新增活动项目设置", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody ActivityProjectSettingEditParam activityProjectSettingEditParam) {
@@ -135,7 +134,7 @@ public class ActivityProjectSettingController extends BaseController<ActivityPro
 	*/
 	@ApiOperation("修改活动项目设置")
 	@ApiImplicitParam(name = "ActivityProjectSettingEditParam ", value = "修改活动项目设置", dataType = "ActivityProjectSettingEditParam")
-	@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:edit')")
+	//@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:edit')")
 	@EventLog(message = "修改活动项目设置", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody ActivityProjectSettingEditParam activityProjectSettingEditParam) {
@@ -148,7 +147,7 @@ public class ActivityProjectSettingController extends BaseController<ActivityPro
 	*/
 	@ApiOperation("删除活动项目设置")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:delete')")
+	//@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:delete')")
 	@EventLog(message = "删除活动项目设置", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -159,7 +158,7 @@ public class ActivityProjectSettingController extends BaseController<ActivityPro
 	* 导出活动项目设置
 	*/
 	@ApiOperation("导出活动项目设置")
-	@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:export')")
+	//@PreAuthorize("hasPermission('/marketing/activityProjectSetting',  'marketing:activityProjectSetting:export')")
 	@SneakyThrows
 	@EventLog(message = "导出活动项目设置", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")

@@ -53,7 +53,7 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 	* 教练发课设置 分页列表
 	*/
 	@ApiOperation("教练发课设置分页列表")
-	@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:query')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid CoachHourSettingPageQueryParam param) {
 		return coachHourSettingRepository.pageList(param);
@@ -62,7 +62,7 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 	* 教练发课设置 列表
 	*/
 	@ApiOperation("教练发课设置列表")
-	@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:query')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:query')")
 	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid CoachHourSettingPageQueryParam param) {
 		return coachHourSettingRepository.findList(param);
@@ -73,7 +73,7 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 	*/
 	@ApiOperation("获取教练发课设置")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:query')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return coachHourSettingRepository.getById(id);
@@ -81,7 +81,7 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 
 	@ApiOperation("通过运营商获取有效时间")
 	@ApiImplicitParam(name = "operatorId", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:query')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:query')")
 	@GetMapping("/getEffectiveDateTime/{operatorId}")
 	public ResObject getEffectiveDateTime(@PathVariable @NotBlank(message = "运营商ID不能为空") String operatorId) {
 		return coachHourSettingRepository.getEffectiveDateTime(operatorId);
@@ -92,7 +92,7 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 	 */
 	@ApiOperation("条件查询获取教练发课设置")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:query')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:query')")
 	@GetMapping("/getInfo")
 	public ResObject getInfo(@PathVariable CoachHourSettingPageQueryParam param) {
 		return coachHourSettingRepository.getInfo(param);
@@ -103,7 +103,7 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 	*/
 	@ApiOperation("新增教练发课设置")
 	@ApiImplicitParam(name = "CoachHourSettingEditParam ", value = "新增教练发课设置", dataType = "CoachHourSettingEditParam")
-	@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:add')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:add')")
 	@EventLog(message = "新增教练发课设置", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody CoachHourSettingEditParam coachHourSettingEditParam) {
@@ -112,7 +112,7 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 
 	@ApiOperation("发布教练发课设置")
 	@ApiImplicitParam(name = "CoachHourSettingEditParam ", value = "新增教练发课设置", dataType = "CoachHourSettingEditParam")
-	@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:add')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:add')")
 	@EventLog(message = "发布教练发课设置", businessType = EventLogEnum.CREATE)
 	@PostMapping("/publish")
 	public ResObject publish(@Valid @RequestBody CoachHourSettingEditParam coachHourSettingEditParam) {
@@ -132,7 +132,7 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 	*/
 	@ApiOperation("修改教练发课设置")
 	@ApiImplicitParam(name = "CoachHourSettingEditParam ", value = "修改教练发课设置", dataType = "CoachHourSettingEditParam")
-	@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:edit')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:edit')")
 	@EventLog(message = "修改教练发课设置", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody CoachHourSettingEditParam coachHourSettingEditParam) {
@@ -144,7 +144,7 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 	*/
 	@ApiOperation("删除教练发课设置")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:delete')")
 	@EventLog(message = "删除教练发课设置", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -156,7 +156,7 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 	*/
 	@ApiOperation("通过主键删除教练发课设置")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除教练发课设置", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -180,7 +180,7 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用教练发课设置")
-	@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用教练发课设置", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

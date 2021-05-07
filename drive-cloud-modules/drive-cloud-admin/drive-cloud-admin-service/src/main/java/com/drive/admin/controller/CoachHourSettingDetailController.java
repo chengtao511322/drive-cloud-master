@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +49,7 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	* 运营商教练课时设置表 分页列表
 	*/
 	@ApiOperation("运营商教练课时设置表分页列表")
-	@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:query')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid CoachHourSettingDetailPageQueryParam param) {
 		return coachHourSettingDetailRepository.pageList(param);
@@ -59,7 +58,7 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	* 运营商教练课时设置表 列表
 	*/
 	@ApiOperation("运营商教练课时设置表列表")
-	@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:query')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:query')")
 	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid CoachHourSettingDetailPageQueryParam param) {
 		return coachHourSettingDetailRepository.findList(param);
@@ -70,7 +69,7 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	*/
 	@ApiOperation("获取运营商教练课时设置表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:query')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return coachHourSettingDetailRepository.getById(id);
@@ -81,7 +80,7 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	 */
 	@ApiOperation("条件查询获取运营商教练课时设置表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:query')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:query')")
 	@GetMapping("/getInfo")
 	public ResObject getInfo(@PathVariable CoachHourSettingDetailPageQueryParam param) {
 		return coachHourSettingDetailRepository.getInfo(param);
@@ -92,7 +91,7 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	*/
 	@ApiOperation("新增运营商教练课时设置表")
 	@ApiImplicitParam(name = "CoachHourSettingDetailEditParam ", value = "新增运营商教练课时设置表", dataType = "CoachHourSettingDetailEditParam")
-	@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:add')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:add')")
 	@EventLog(message = "新增运营商教练课时设置表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody CoachHourSettingDetailEditParam coachHourSettingDetailEditParam) {
@@ -104,7 +103,7 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	*/
 	@ApiOperation("修改运营商教练课时设置表")
 	@ApiImplicitParam(name = "CoachHourSettingDetailEditParam ", value = "修改运营商教练课时设置表", dataType = "CoachHourSettingDetailEditParam")
-	@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:edit')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:edit')")
 	@EventLog(message = "修改运营商教练课时设置表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody CoachHourSettingDetailEditParam coachHourSettingDetailEditParam) {
@@ -116,7 +115,7 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	*/
 	@ApiOperation("删除运营商教练课时设置表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:delete')")
 	@EventLog(message = "删除运营商教练课时设置表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -128,7 +127,7 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	*/
 	@ApiOperation("通过主键删除运营商教练课时设置表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除运营商教练课时设置表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -139,7 +138,7 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	* 导出运营商教练课时设置表
 	*/
 	@ApiOperation("导出运营商教练课时设置表")
-	@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:export')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:export')")
 	@SneakyThrows
 	@EventLog(message = "导出运营商教练课时设置表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -152,7 +151,7 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用运营商教练课时设置表")
-	@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用运营商教练课时设置表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

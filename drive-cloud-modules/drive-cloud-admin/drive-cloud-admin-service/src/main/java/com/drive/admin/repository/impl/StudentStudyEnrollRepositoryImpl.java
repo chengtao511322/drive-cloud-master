@@ -1,7 +1,6 @@
 package com.drive.admin.repository.impl;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
-import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -31,7 +30,6 @@ import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.core.utils.DateUtils;
 import com.drive.common.data.utils.ExcelUtils;
-import com.drive.common.security.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,6 +132,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         if (StrUtil.isNotEmpty(param.getStudentOrderNo())){
             orderQueryWrapper.like("order_no",param.getStudentOrderNo());
             studentOrderList  = studentOrderService.list(orderQueryWrapper);
+            if (studentOrderList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentOrderList);
         }
 
         QueryWrapper<StudentStudyEnrollEntity> queryWrapper = this.getQueryWrapper(studentStudyEnrollMapStruct, param);
@@ -168,18 +167,40 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
                 });
             });
         }
-
+        // 下次回访时间搜索搜索
         if (StrUtil.isNotEmpty(param.getNextReturnVisitTimeSearch())){
             queryWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id AND t_service_return_visit_history.order_detail_no = t_student_study_enroll.study_enroll_no AND date_format(t_service_return_visit_history.next_return_visit_time,'%Y-%m-%d')= DATE_FORMAT('"+param.getNextReturnVisitTimeSearch()+"','%Y-%m-%d'))",0);
         }
+        // 是否有意向搜索
+        if (param.getIsIntentionSearch() != null){
+            queryWrapper.gt("(SELECT COUNT(1) FROM t_service_return_visit_history WHERE t_service_return_visit_history.student_id = t_student_study_enroll.student_id AND t_service_return_visit_history.order_detail_no = t_student_study_enroll.study_enroll_no AND is_intention="+param.getIsIntentionSearch()+")",0);
+        }
+        // 客服名称搜索
         if (StrUtil.isNotEmpty(param.getVagueServiceNameSearch())){
             List<ServiceInfoEntity> serviceInfoList = null;
             QueryWrapper serviceQueryWrapper = new QueryWrapper();
             serviceQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueServiceNameSearch()),"real_name",param.getVagueServiceNameSearch());
+            serviceInfoList  = serviceInfoService.list(serviceQueryWrapper);
+            if (serviceInfoList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
+            queryWrapper.in("user_id",serviceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
+        }
+        // 线上客服名称搜索
+        if (StrUtil.isNotEmpty(param.getVagueOnlineServiceNameSearch())){
+            List<ServiceInfoEntity> serviceInfoList = null;
+            QueryWrapper serviceQueryWrapper = new QueryWrapper();
+            serviceQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueOnlineServiceNameSearch()),"real_name",param.getVagueOnlineServiceNameSearch());
+            serviceInfoList  = serviceInfoService.list(serviceQueryWrapper);
+            if (serviceInfoList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
+            queryWrapper.in("user_id",serviceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
+        }
+        //售前客服搜索
+        if (StrUtil.isNotEmpty(param.getVaguePreSalesServiceNameSearch())){
+            List<ServiceInfoEntity> serviceInfoList = null;
+            QueryWrapper serviceQueryWrapper = new QueryWrapper();
             serviceQueryWrapper.like(StrUtil.isNotEmpty(param.getVaguePreSalesServiceNameSearch()),"real_name",param.getVaguePreSalesServiceNameSearch());
             serviceInfoList  = serviceInfoService.list(serviceQueryWrapper);
-            if (serviceInfoList.size() <= 0)R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
-            queryWrapper.in("user_id",serviceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
+            if (serviceInfoList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
+            queryWrapper.in("pre_sales_service_id",serviceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
         }
         // 预约见面时间
         queryWrapper.apply(StrUtil.isNotBlank(param.getBeSpeakMeetTimeSearch()),
@@ -196,20 +217,20 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             queryWrapper.in("enroll_status",param.getEnrollStatusArr().split(","));
         }
 
-       /* if (param.getHasPreOnlineServicer() !=null && param.getHasPreOnlineServicer().equals(0)){
+        if (param.getHasPreOnlineServicer() !=null && param.getHasPreOnlineServicer().equals(0)){
             queryWrapper.isNull("pre_sales_service_id");
         }
         if (param.getHasPreOnlineServicer() !=null && param.getHasPreOnlineServicer().equals(1)){
             queryWrapper.isNotNull("pre_sales_service_id");
-        }*/
+        }
 
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
-            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
+            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"date_format (create_time,'%Y-%m-%d')",param.getBeginTime(),param.getEndTime());
         }
         if (StrUtil.isNotEmpty(param.getCreateTimeSearch())){
             String[] arr = param.getCreateTimeSearch().split(",");
-            queryWrapper.between("create_time",arr[0],arr[1]);
+            queryWrapper.between("date_format (create_time,'%Y-%m-%d')",arr[0],arr[1]);
         }
 
         IPage<StudentStudyEnrollEntity> pageList = studentStudyEnrollService.page(page, queryWrapper);
@@ -564,6 +585,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         if (StrUtil.isNotEmpty(param.getStudentOrderNo())){
             orderQueryWrapper.like("order_no",param.getStudentOrderNo());
             studentOrderList  = studentOrderService.list(orderQueryWrapper);
+            if (studentOrderList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentOrderList);
         }
 
         QueryWrapper queryWrapper = this.getQueryWrapper(studentStudyEnrollMapStruct, param);
@@ -577,7 +599,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         // 意向报名时间
         queryWrapper.apply(StrUtil.isNotBlank(param.getIntentEnrollTimeSearch()),
                 "date_format (intent_enroll_time,'%Y-%m-%d') = date_format('" + param.getIntentEnrollTimeSearch() + "','%Y-%m-%d')");
-
+        // 订单查询
         if (studentOrderList != null && studentOrderList.size() > 0){
             queryWrapper.in("study_enroll_no",studentOrderList.stream().map(StudentOrderEntity::getStudyEnrollNo).collect(Collectors.toList()));
         }
@@ -739,6 +761,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         if (serviceInfoList != null && serviceInfoList.size() > 0){
             queryWrapper.in("t2.pre_sales_service_id",serviceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
         }
+        // 线上客服搜索
         List<ServiceInfoEntity> onlineServiceInfoList = null;
         QueryWrapper onlineServiceQueryWrapper = new QueryWrapper();
         if (StrUtil.isNotEmpty(param.getVagueOnlineServiceNameSearch())){
@@ -748,6 +771,15 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         }
         if (onlineServiceInfoList != null && onlineServiceInfoList.size() > 0){
             queryWrapper.in("t2.user_id",onlineServiceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
+        }
+        // 线上客服搜索
+        if (StrUtil.isNotEmpty(param.getVagueServiceNameSearch())){
+            List<ServiceInfoEntity> serviceLineInfoList = null;
+            QueryWrapper serviceNameQueryWrapper = new QueryWrapper();
+            serviceNameQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueServiceNameSearch()),"real_name",param.getVagueServiceNameSearch());
+            serviceLineInfoList  = serviceInfoService.list(serviceNameQueryWrapper);
+            if (serviceLineInfoList.size()<=0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
+            queryWrapper.in("t2.user_id",serviceLineInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
         }
 
         queryWrapper.eq(StrUtil.isNotEmpty(param.getOrderStatusSearch()),"t1.status",param.getOrderStatusSearch());

@@ -1,7 +1,7 @@
 package com.drive.oss.exception;
 
 /**
- * @author DreamChan
+ * @author xiaoguo
  */
 public class MinioException extends Exception {
     public MinioException(String message, Throwable cause) {

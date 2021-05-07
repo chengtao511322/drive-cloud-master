@@ -12,13 +12,11 @@ import com.drive.admin.pojo.vo.StudentStudyEnrollVo;
 import com.drive.admin.pojo.vo.StudyCarScheduleVo;
 import com.drive.admin.service.StudentStudyEnrollService;
 import com.drive.common.core.base.BaseService;
-import com.drive.common.core.enums.DataScopeEnum;
 import com.drive.common.datascope.annotation.DataScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 学员学车报名单 服务实现类

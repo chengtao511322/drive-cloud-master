@@ -20,7 +20,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -53,13 +52,13 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	* 学员教练评价明细表 分页列表
 	*/
 	@ApiOperation("学员教练评价明细表分页列表")
-	@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:query')")
+	//@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid EvaluateTagAppraisePageQueryParam param) {
 		return evaluateTagAppraiseRepository.pageList(param);
 	}
 	@ApiOperation("通过评论ID获取学员教练评价明细表列表")
-	@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:query')")
+	//@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:query')")
 	@GetMapping(value = "/findEvaluateTagAById/{commentId}")
 	public ResObject findEvaluateTagAById(@PathVariable String commentId) {
 		if (StrUtil.isEmpty(commentId)){
@@ -73,7 +72,7 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	* 学员教练评价明细表 列表
 	*/
 	@ApiOperation("学员教练评价明细表列表")
-	@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:query')")
+	//@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:query')")
 	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid EvaluateTagAppraisePageQueryParam param) {
 		return evaluateTagAppraiseRepository.findList(param);
@@ -84,7 +83,7 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	*/
 	@ApiOperation("获取学员教练评价明细表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:query')")
+	//@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return evaluateTagAppraiseRepository.getById(id);
@@ -95,7 +94,7 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	 */
 	@ApiOperation("条件查询获取学员教练评价明细表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:query')")
+	//@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:query')")
 	@GetMapping("/getInfo")
 	public ResObject getInfo(@PathVariable EvaluateTagAppraisePageQueryParam param) {
 		return evaluateTagAppraiseRepository.getInfo(param);
@@ -106,7 +105,7 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	*/
 	@ApiOperation("新增学员教练评价明细表")
 	@ApiImplicitParam(name = "EvaluateTagAppraiseEditParam ", value = "新增学员教练评价明细表", dataType = "EvaluateTagAppraiseEditParam")
-	@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:add')")
+	//@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:add')")
 	@EventLog(message = "新增学员教练评价明细表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody EvaluateTagAppraiseInstallParam evaluateTagAppraiseInstallParam) {
@@ -118,7 +117,7 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	*/
 	@ApiOperation("修改学员教练评价明细表")
 	@ApiImplicitParam(name = "EvaluateTagAppraiseEditParam ", value = "修改学员教练评价明细表", dataType = "EvaluateTagAppraiseEditParam")
-	@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:edit')")
+	//@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:edit')")
 	@EventLog(message = "修改学员教练评价明细表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody EvaluateTagAppraiseEditParam evaluateTagAppraiseEditParam) {
@@ -130,7 +129,7 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	*/
 	@ApiOperation("删除学员教练评价明细表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:delete')")
+	//@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:delete')")
 	@EventLog(message = "删除学员教练评价明细表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable String[] ids) {
@@ -142,7 +141,7 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	*/
 	@ApiOperation("通过主键删除学员教练评价明细表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除学员教练评价明细表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -153,7 +152,7 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	* 导出学员教练评价明细表
 	*/
 	@ApiOperation("导出学员教练评价明细表")
-	@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:export')")
+	//@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:export')")
 	@SneakyThrows
 	@EventLog(message = "导出学员教练评价明细表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -166,7 +165,7 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用学员教练评价明细表")
-	@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用学员教练评价明细表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * 日志模块
- * @author DreamChan
+ * @author xiaoguo
  */
 @EnableFeignClients(basePackages = "com.drive")
 @SpringCloudApplication

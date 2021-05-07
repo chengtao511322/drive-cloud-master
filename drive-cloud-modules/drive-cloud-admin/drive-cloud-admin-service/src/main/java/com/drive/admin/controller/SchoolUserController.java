@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -51,7 +50,7 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	* 合作驾校用户 分页列表
 	*/
 	@ApiOperation("合作驾校用户分页列表")
-	@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:query')")
+	//@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid SchoolUserPageQueryParam param) {
 		return schoolUserRepository.pageList(param);
@@ -60,7 +59,7 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	* 合作驾校用户 列表
 	*/
 	@ApiOperation("合作驾校用户列表")
-	@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:query')")
+	//@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:query')")
 	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid SchoolUserPageQueryParam param) {
 		return schoolUserRepository.findList(param);
@@ -71,7 +70,7 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	*/
 	@ApiOperation("获取合作驾校用户")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:query')")
+	//@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return schoolUserRepository.getById(id);
@@ -82,7 +81,7 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	 */
 	@ApiOperation("条件查询获取合作驾校用户")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:query')")
+	//@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:query')")
 	@GetMapping("/getInfo")
 	public ResObject getInfo(@PathVariable SchoolUserPageQueryParam param) {
 		return schoolUserRepository.getInfo(param);
@@ -93,7 +92,7 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	*/
 	@ApiOperation("新增合作驾校用户")
 	@ApiImplicitParam(name = "SchoolUserEditParam ", value = "新增合作驾校用户", dataType = "SchoolUserEditParam")
-	@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:add')")
+	//@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:add')")
 	@EventLog(message = "新增合作驾校用户", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody SchoolUserInstallParam schoolUserInstallParam) {
@@ -105,7 +104,7 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	*/
 	@ApiOperation("修改合作驾校用户")
 	@ApiImplicitParam(name = "SchoolUserEditParam ", value = "修改合作驾校用户", dataType = "SchoolUserEditParam")
-	@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:edit')")
+	//@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:edit')")
 	@EventLog(message = "修改合作驾校用户", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody SchoolUserEditParam schoolUserEditParam) {
@@ -117,7 +116,7 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	*/
 	@ApiOperation("删除合作驾校用户")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:delete')")
+	//@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:delete')")
 	@EventLog(message = "删除合作驾校用户", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -129,7 +128,7 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	*/
 	@ApiOperation("通过主键删除合作驾校用户")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除合作驾校用户", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -140,7 +139,7 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	* 导出合作驾校用户
 	*/
 	@ApiOperation("导出合作驾校用户")
-	@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:export')")
+	//@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:export')")
 	@SneakyThrows
 	@EventLog(message = "导出合作驾校用户", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -153,7 +152,7 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用合作驾校用户")
-	@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用合作驾校用户", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

@@ -1,7 +1,7 @@
 package com.drive.oss.exception;
 
 /**
- * @author DreamChan
+ * @author xiaoguo
  */
 public class MinioFetchException extends RuntimeException {
     public MinioFetchException(String message, Throwable cause) {

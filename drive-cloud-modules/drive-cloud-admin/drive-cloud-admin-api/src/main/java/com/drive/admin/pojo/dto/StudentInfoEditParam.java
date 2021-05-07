@@ -79,12 +79,12 @@ public class StudentInfoEditParam {
     // 使用状态1：正常；2：停用
     private String status;
 
-    // 登录时间
+   /* // 登录时间
     private LocalDateTime loginTime;
 
     // 创建时间
     private LocalDateTime createTime;
-
+*/
     // 更新时间
     private LocalDateTime updateTime;
 
@@ -126,5 +126,5 @@ public class StudentInfoEditParam {
     // 创建者
     private String operationUser;
     // 操作时间
-    private LocalDateTime operationTime;
+    //private LocalDateTime operationTime;
 }

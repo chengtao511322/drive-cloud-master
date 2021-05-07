@@ -1,7 +1,5 @@
 package com.drive.admin.future;
 
-import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.drive.admin.pojo.vo.StatisticsTaskDataVo;
 import com.drive.admin.service.StudentInfoService;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -9,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.*;
 
 /**

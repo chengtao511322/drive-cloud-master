@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +49,7 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	* 一费制vip教练 分页列表
 	*/
 	@ApiOperation("一费制vip教练分页列表")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:query')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid OneFeeSystemVipCoachPageQueryParam param) {
 		return oneFeeSystemVipCoachRepository.pageList(param);
@@ -59,7 +58,7 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	* 一费制vip教练 列表
 	*/
 	@ApiOperation("一费制vip教练列表")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:query')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:query')")
 	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid OneFeeSystemVipCoachPageQueryParam param) {
 		return oneFeeSystemVipCoachRepository.findList(param);
@@ -70,7 +69,7 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	*/
 	@ApiOperation("获取一费制vip教练")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:query')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return oneFeeSystemVipCoachRepository.getById(id);
@@ -81,7 +80,7 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	 */
 	@ApiOperation("条件查询获取一费制vip教练")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:query')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:query')")
 	@GetMapping("/getInfo")
 	public ResObject getInfo(@PathVariable OneFeeSystemVipCoachPageQueryParam param) {
 		return oneFeeSystemVipCoachRepository.getInfo(param);
@@ -92,7 +91,7 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	*/
 	@ApiOperation("新增一费制vip教练")
 	@ApiImplicitParam(name = "OneFeeSystemVipCoachEditParam ", value = "新增一费制vip教练", dataType = "OneFeeSystemVipCoachEditParam")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:add')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:add')")
 	@EventLog(message = "新增一费制vip教练", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody OneFeeSystemVipCoachInstallParam oneFeeSystemVipCoachInstallParam) {
@@ -104,7 +103,7 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	*/
 	@ApiOperation("修改一费制vip教练")
 	@ApiImplicitParam(name = "OneFeeSystemVipCoachEditParam ", value = "修改一费制vip教练", dataType = "OneFeeSystemVipCoachEditParam")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:edit')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:edit')")
 	@EventLog(message = "修改一费制vip教练", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody OneFeeSystemVipCoachEditParam oneFeeSystemVipCoachEditParam) {
@@ -116,7 +115,7 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	*/
 	@ApiOperation("删除一费制vip教练")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:delete')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:delete')")
 	@EventLog(message = "删除一费制vip教练", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -128,7 +127,7 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	*/
 	@ApiOperation("通过主键删除一费制vip教练")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除一费制vip教练", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -139,7 +138,7 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	* 导出一费制vip教练
 	*/
 	@ApiOperation("导出一费制vip教练")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:export')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:export')")
 	@SneakyThrows
 	@EventLog(message = "导出一费制vip教练", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -152,7 +151,7 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用一费制vip教练")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用一费制vip教练", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

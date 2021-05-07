@@ -2,6 +2,7 @@ package com.drive.admin.controller;
 
 import com.drive.admin.pojo.dto.CoachInfoDataEditParam;
 import com.drive.admin.pojo.dto.CoachInfoEditParam;
+import com.drive.admin.pojo.dto.CoachInfoInstallParam;
 import com.drive.admin.pojo.dto.CoachInfoPageQueryParam;
 import com.drive.admin.pojo.entity.CoachInfoEntity;
 import com.drive.admin.repository.CoachInfoRepository;
@@ -18,7 +19,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +48,7 @@ public class CoachInfoController extends BaseController<CoachInfoPageQueryParam,
 	* 教练信息表 分页列表
 	*/
 	@ApiOperation("教练信息表分页列表")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:query')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid CoachInfoPageQueryParam param) {
 		return coachInfoRepository.pageList(param);
@@ -59,7 +59,7 @@ public class CoachInfoController extends BaseController<CoachInfoPageQueryParam,
 	*/
 	@ApiOperation("获取教练信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:query')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return coachInfoRepository.getById(id);
@@ -70,7 +70,7 @@ public class CoachInfoController extends BaseController<CoachInfoPageQueryParam,
 	*/
 	@ApiOperation("新增教练信息表")
 	@ApiImplicitParam(name = "CoachInfoEditParam ", value = "新增教练信息表", dataType = "CoachInfoEditParam")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:add')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:add')")
 	@EventLog(message = "新增教练信息表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody CoachInfoEditParam coachInfoEditParam) {
@@ -82,7 +82,7 @@ public class CoachInfoController extends BaseController<CoachInfoPageQueryParam,
 	*/
 	@ApiOperation("修改教练信息表")
 	@ApiImplicitParam(name = "CoachInfoEditParam ", value = "修改教练信息表", dataType = "CoachInfoEditParam")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:edit')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:edit')")
 	@EventLog(message = "修改教练信息表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody CoachInfoEditParam coachInfoEditParam) {
@@ -93,11 +93,19 @@ public class CoachInfoController extends BaseController<CoachInfoPageQueryParam,
 	*/
 	@ApiOperation("修改教练信息表")
 	@ApiImplicitParam(name = "CoachInfoDataEditParam ", value = "修改教练信息表 并且修改教练授课区域", dataType = "CoachInfoDataEditParam")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:updateCoachInfo')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:updateCoachInfo')")
 	@EventLog(message = "修改教练信息表 并且修改教练授课区域", businessType = EventLogEnum.UPDATE)
 	@PutMapping("/updateCoachInfo")
 	public ResObject updateCoachInfo(@Valid @RequestBody CoachInfoDataEditParam coachInfoEditParam) {
 		return coachInfoRepository.updateCoachInfo(coachInfoEditParam);
+	}
+	@ApiOperation("驳回教练信息表")
+	@ApiImplicitParam(name = "CoachInfoDataEditParam ", value = "驳回教练信息表", dataType = "CoachInfoDataEditParam")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:updateCoachInfo')")
+	@EventLog(message = "驳回教练信息表", businessType = EventLogEnum.UPDATE)
+	@PostMapping("/rejectCoach")
+	public ResObject rejectCoachInfo(@Valid @RequestBody CoachInfoInstallParam coachInfoEditParam) {
+		return coachInfoRepository.rejectCoach(coachInfoEditParam);
 	}
 
 	/**
@@ -105,7 +113,7 @@ public class CoachInfoController extends BaseController<CoachInfoPageQueryParam,
 	*/
 	@ApiOperation("删除教练信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "删除教练信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -117,7 +125,7 @@ public class CoachInfoController extends BaseController<CoachInfoPageQueryParam,
 	*/
 	@ApiOperation("删除教练信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "删除教练信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -128,7 +136,7 @@ public class CoachInfoController extends BaseController<CoachInfoPageQueryParam,
 	* 导出教练信息表
 	*/
 	@ApiOperation("导出教练信息表")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:export')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:export')")
 	@SneakyThrows
 	@EventLog(message = "导出教练信息表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")

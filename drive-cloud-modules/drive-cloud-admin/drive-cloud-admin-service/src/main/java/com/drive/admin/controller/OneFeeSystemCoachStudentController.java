@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +46,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	* 一费制学员教练关联表 分页列表
 	*/
 	@ApiOperation("一费制学员教练关联表分页列表")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:query')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid OneFeeSystemCoachStudentPageQueryParam param) {
 		return oneFeeSystemCoachStudentRepository.pageList(param);
@@ -56,7 +55,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	* 一费制学员教练关联表 列表
 	*/
 	@ApiOperation("一费制学员教练关联表列表")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:query')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid OneFeeSystemCoachStudentPageQueryParam param) {
 		return oneFeeSystemCoachStudentRepository.findList(param);
@@ -67,7 +66,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	*/
 	@ApiOperation("获取一费制学员教练关联表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:query')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return oneFeeSystemCoachStudentRepository.getById(id);
@@ -81,7 +80,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	 */
 	@ApiOperation("获取一费制学员教练关联表")
 	@ApiImplicitParam(name = "orderNo", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:query')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:query')")
 	@GetMapping("/getCoachStudentByOrderNo/{orderNo}")
 	ResObject getCoachStudentByOrderNo(@PathVariable String orderNo){
 		return oneFeeSystemCoachStudentRepository.getCoachStudentByOrderNo(orderNo);
@@ -91,7 +90,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	*/
 	@ApiOperation("新增一费制学员教练关联表")
 	@ApiImplicitParam(name = "OneFeeSystemCoachStudentEditParam ", value = "新增一费制学员教练关联表", dataType = "OneFeeSystemCoachStudentEditParam")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:add')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:add')")
 	@EventLog(message = "新增一费制学员教练关联表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody OneFeeSystemCoachStudentEditParam oneFeeSystemCoachStudentEditParam) {
@@ -100,7 +99,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 
 	@ApiOperation("绑定一费制学员教练关联表")
 	@ApiImplicitParam(name = "OneFeeSystemCoachStudentEditParam ", value = "新增一费制学员教练关联表", dataType = "OneFeeSystemCoachStudentEditParam")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:add')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:add')")
 	@EventLog(message = "绑定一费制学员教练关联表", businessType = EventLogEnum.CREATE)
 	@PostMapping("/bindingCoach")
 	public ResObject bindingCoach(@Valid @RequestBody OneFeeSystemCoachStudentEditParam oneFeeSystemCoachStudentEditParam) {
@@ -112,7 +111,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	*/
 	@ApiOperation("修改一费制学员教练关联表")
 	@ApiImplicitParam(name = "OneFeeSystemCoachStudentEditParam ", value = "修改一费制学员教练关联表", dataType = "OneFeeSystemCoachStudentEditParam")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:edit')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:edit')")
 	@EventLog(message = "修改一费制学员教练关联表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody OneFeeSystemCoachStudentEditParam oneFeeSystemCoachStudentEditParam) {
@@ -124,7 +123,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	*/
 	@ApiOperation("删除一费制学员教练关联表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:delete')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:delete')")
 	@EventLog(message = "删除一费制学员教练关联表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -136,7 +135,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	*/
 	@ApiOperation("通过主键删除一费制学员教练关联表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除一费制学员教练关联表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -147,7 +146,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	* 导出一费制学员教练关联表
 	*/
 	@ApiOperation("导出一费制学员教练关联表")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:export')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:export')")
 	@SneakyThrows
 	@EventLog(message = "导出一费制学员教练关联表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -160,7 +159,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用一费制学员教练关联表")
-	@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用一费制学员教练关联表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

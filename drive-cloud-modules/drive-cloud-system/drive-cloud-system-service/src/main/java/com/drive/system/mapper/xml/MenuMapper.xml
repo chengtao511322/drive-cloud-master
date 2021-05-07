@@ -117,7 +117,7 @@
         order by parent_id, order_num
     </select>
 
-    <select id="selectMenuListByUserId"  resultMap="BaseResultMap">
+    <select id="selectMenuListByUserId"  resultMap="BaseResultMap" parameterType="com.drive.system.pojo.vo.MenuVo">
         select
             distinct m.menu_id,
             m.parent_id,
@@ -137,7 +137,7 @@
         left join sys_user_role ur on rm.role_id = ur.role_id
         left join sys_role ro on ur.role_id = ro.role_id
         where
-            ur.user_id = #{params.userId}
+            ur.user_id = #{userId}
         <if test="menuName != null and menuName != ''">
             AND menu_name like concat('%', #{menuName}, '%')
         </if>

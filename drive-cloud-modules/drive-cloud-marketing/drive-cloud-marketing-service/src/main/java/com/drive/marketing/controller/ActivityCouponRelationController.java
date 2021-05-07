@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -38,7 +37,7 @@ public class ActivityCouponRelationController extends BaseController<ActivityCou
      */
     @ApiOperation("新增")
     @ApiImplicitParam(name = "CouponEditParam ", value = "新增", dataType = "CouponEditParam")
-    @PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:add')")
+    //@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:add')")
     @EventLog(message = "新增", businessType = EventLogEnum.CREATE)
     @PostMapping("addActivityCoupon")
     public ResObject addActivityCoupon(@Valid @RequestBody ActivityCouponRelationEditParam activityCouponRelationEditParam) {
@@ -65,7 +64,7 @@ public class ActivityCouponRelationController extends BaseController<ActivityCou
      */
     @ApiOperation("修改")
     @ApiImplicitParam(name = "CouponEditParam ", value = "修改", dataType = "CouponEditParam")
-    @PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:edit')")
+   // @PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:edit')")
     @EventLog(message = "修改", businessType = EventLogEnum.UPDATE)
     @PostMapping("updateActivityCoupon")
     public ResObject updateActivityCoupon(@Valid @RequestBody ActivityCouponRelationEditParam activityCouponRelationEditParam) {
@@ -84,7 +83,7 @@ public class ActivityCouponRelationController extends BaseController<ActivityCou
      */
     @ApiOperation("删除")
     @ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-    @PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:delete')")
+    //@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:delete')")
     @EventLog(message = "删除", businessType = EventLogEnum.DELETE)
     @PostMapping("/deleteActivityCoupon/{id}")
     public ResObject deleteActivityCoupon(@PathVariable("id") String id) {

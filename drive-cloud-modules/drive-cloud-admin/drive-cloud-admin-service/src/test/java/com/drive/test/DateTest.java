@@ -1,23 +1,12 @@
 package com.drive.test;
 
-import cn.hutool.cache.Cache;
-import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.db.nosql.redis.RedisDS;
-import cn.hutool.json.JSON;
-import cn.hutool.json.JSONUtil;
-import com.drive.common.core.utils.DateUtils;
-import redis.clients.jedis.Jedis;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class DateTest {
 

@@ -4,10 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.drive.admin.pojo.dto.CoachGiveAreaEditParam;
-import com.drive.admin.pojo.dto.CoachInfoDataEditParam;
-import com.drive.admin.pojo.dto.CoachInfoEditParam;
-import com.drive.admin.pojo.dto.CoachInfoPageQueryParam;
+import com.drive.admin.enums.StatusEnum;
+import com.drive.admin.pojo.dto.*;
 import com.drive.admin.pojo.entity.CoachGiveAreaEntity;
 import com.drive.admin.pojo.entity.CoachInfoEntity;
 import com.drive.admin.pojo.vo.CoachInfoVo;
@@ -233,6 +231,19 @@ public class  CoachInfoRepositoryImpl extends BaseController<CoachInfoPageQueryP
                 return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
             }
         }
+        return R.success();
+    }
+
+    @Override
+    public ResObject rejectCoach(CoachInfoInstallParam updateParam) {
+        if (StrUtil.isEmpty(updateParam.getId())){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 驳回教练
+        CoachInfoEntity coachInfo = BeanConvertUtils.copy(updateParam,CoachInfoEntity.class);
+        coachInfo.setStatus(StatusEnum.ELETE.getCode());
+        Boolean res = coachInfoService.updateById(coachInfo);
+        if (!res)return R.failure();
         return R.success();
     }
 }

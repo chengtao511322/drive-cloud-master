@@ -1,8 +1,6 @@
 package com.drive.common.datascope.aspect;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.db.nosql.redis.RedisDS;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.drive.common.core.constant.CacheConstants;
@@ -11,13 +9,9 @@ import com.drive.common.core.enums.DataScopeEnum;
 import com.drive.common.core.utils.StringUtils;
 import com.drive.common.datascope.annotation.DataScope;
 import com.drive.common.redis.service.RedisService;
-import com.drive.common.redis.util.CacheUtils;
 import com.drive.common.security.utils.SecurityUtils;
-import com.drive.system.api.RemoteUserRoleFeignService;
-import com.drive.system.api.RemoteUserService;
 import com.drive.system.pojo.UserInfo;
 import com.drive.system.pojo.entity.RoleEntity;
-import com.drive.system.pojo.vo.DeptVo;
 import com.drive.system.pojo.vo.UserVo;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -26,10 +20,8 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.Jedis;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

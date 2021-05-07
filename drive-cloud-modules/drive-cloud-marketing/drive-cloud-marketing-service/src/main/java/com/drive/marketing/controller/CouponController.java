@@ -34,7 +34,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -79,7 +78,7 @@ public class CouponController extends BaseController<CouponPageQueryParam, Coupo
 	*  分页列表
 	*/
 	@ApiOperation("分页列表")
-	@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:query')")
+	//@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid CouponPageQueryParam param) {
 		String searchName = param.getName();
@@ -98,7 +97,7 @@ public class CouponController extends BaseController<CouponPageQueryParam, Coupo
 	*/
 	@ApiOperation("获取")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:query')")
+	//@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		CouponEntity coupon = couponService.getById(id);
@@ -118,7 +117,7 @@ public class CouponController extends BaseController<CouponPageQueryParam, Coupo
 	*/
 	@ApiOperation("新增")
 	@ApiImplicitParam(name = "CouponEditParam ", value = "新增", dataType = "CouponEditParam")
-	@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:add')")
+	//@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:add')")
 	@EventLog(message = "新增", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody CouponEditParam couponEditParam) {
@@ -134,7 +133,7 @@ public class CouponController extends BaseController<CouponPageQueryParam, Coupo
 	*/
 	@ApiOperation("修改")
 	@ApiImplicitParam(name = "CouponEditParam ", value = "修改", dataType = "CouponEditParam")
-	@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:edit')")
+	//@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:edit')")
 	@EventLog(message = "修改", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody CouponEditParam couponEditParam) {
@@ -147,7 +146,7 @@ public class CouponController extends BaseController<CouponPageQueryParam, Coupo
 	*/
 	@ApiOperation("删除")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:delete')")
+	//@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:delete')")
 	@EventLog(message = "删除", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -158,7 +157,7 @@ public class CouponController extends BaseController<CouponPageQueryParam, Coupo
 	* 导出
 	*/
 	@ApiOperation("导出")
-	@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:export')")
+	//@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:export')")
 	@SneakyThrows
 	@EventLog(message = "导出", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")

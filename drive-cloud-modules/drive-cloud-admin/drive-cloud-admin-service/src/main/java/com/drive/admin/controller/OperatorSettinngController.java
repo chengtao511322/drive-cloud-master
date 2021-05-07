@@ -51,7 +51,7 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	* 运营商参数设置表 分页列表
 	*/
 	@ApiOperation("运营商参数设置表分页列表")
-	@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
+	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid OperatorSettinngPageQueryParam param) {
 		return operatorSettinngRepository.pageList(param);
@@ -60,7 +60,7 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	* 运营商参数设置表 列表
 	*/
 	@ApiOperation("运营商参数设置表列表")
-	@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
+	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
 	@GetMapping(value = "/findList")
 	public ResObject findList(@Valid OperatorSettinngPageQueryParam param) {
 		return operatorSettinngRepository.findList(param);
@@ -71,7 +71,7 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	*/
 	@ApiOperation("获取运营商参数设置表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
+	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return operatorSettinngRepository.getById(id);
@@ -81,14 +81,14 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	 * 条件查询获取运营商参数设置表
 	 */
 	@ApiOperation("条件查询获取运营商参数设置表")
-	@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
+	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
 	@GetMapping("/getInfo")
 	public ResObject getInfo(@PathVariable OperatorSettinngPageQueryParam param) {
 		return operatorSettinngRepository.getInfo(param);
 	}
 
 	@ApiOperation("通过运营商ID查询获取对应的运营商参数设置表")
-	@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
+	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
 	@GetMapping("/getInfoByOperator/{operatorId}")
 	public ResObject getInfoByOperator(@PathVariable  @NotBlank(message = "运营商ID不能为空") String operatorId) {
 		OperatorSettinngPageQueryParam operatorSettinngPageQueryParam = new OperatorSettinngPageQueryParam();
@@ -102,7 +102,7 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	*/
 	@ApiOperation("新增运营商参数设置表")
 	@ApiImplicitParam(name = "OperatorSettinngEditParam ", value = "新增运营商参数设置表", dataType = "OperatorSettinngEditParam")
-	@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:add')")
+	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:add')")
 	@EventLog(message = "新增运营商参数设置表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody OperatorSettinngEditParam operatorSettinngEditParam) {
@@ -114,7 +114,7 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	*/
 	@ApiOperation("修改运营商参数设置表")
 	@ApiImplicitParam(name = "OperatorSettinngEditParam ", value = "修改运营商参数设置表", dataType = "OperatorSettinngEditParam")
-	@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:edit')")
+	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:edit')")
 	@EventLog(message = "修改运营商参数设置表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody OperatorSettinngEditParam operatorSettinngEditParam) {
@@ -126,7 +126,7 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	*/
 	@ApiOperation("删除运营商参数设置表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:delete')")
+	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:delete')")
 	@EventLog(message = "删除运营商参数设置表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -138,7 +138,7 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	*/
 	@ApiOperation("通过主键删除运营商参数设置表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除运营商参数设置表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -162,7 +162,7 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用运营商参数设置表")
-	@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用运营商参数设置表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

@@ -1,7 +1,5 @@
 package com.drive.system.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.drive.common.core.base.BaseService;
 import com.drive.common.core.constant.CacheConstants;
@@ -10,15 +8,12 @@ import com.drive.common.core.enums.StatusEnum;
 import com.drive.common.core.exception.CustomException;
 import com.drive.common.core.tree.TreeSelect;
 import com.drive.common.core.utils.BeanConvertUtils;
-import com.drive.common.core.utils.StringUtils;
 import com.drive.common.core.utils.TreeUtil;
 import com.drive.common.redis.service.RedisService;
 import com.drive.system.mapper.DeptMapper;
 import com.drive.system.pojo.entity.DeptEntity;
 import com.drive.system.pojo.vo.DeptVo;
 import com.drive.system.service.DeptService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;

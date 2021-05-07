@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +46,7 @@ public class ActivityApplyController extends BaseController<ActivityApplyPageQue
 	* 活动参加记录表 分页列表
 	*/
 	@ApiOperation("活动参加记录表分页列表")
-	@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:query')")
+	//@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid ActivityApplyPageQueryParam param) {
 		return activityApplyRepository.pageList(param);
@@ -56,7 +55,7 @@ public class ActivityApplyController extends BaseController<ActivityApplyPageQue
 	* 活动参加记录表 分页列表
 	*/
 	@ApiOperation("活动参加记录表列表")
-	@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:query')")
+	//@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid ActivityApplyPageQueryParam param) {
 		return activityApplyRepository.findList(param);
@@ -67,7 +66,7 @@ public class ActivityApplyController extends BaseController<ActivityApplyPageQue
 	*/
 	@ApiOperation("获取活动参加记录表")
 	@ApiImplicitParam(name = "${pkColumn.propertyName}", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:query')")
+	//@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return activityApplyRepository.getById(id);
@@ -78,7 +77,7 @@ public class ActivityApplyController extends BaseController<ActivityApplyPageQue
 	*/
 	@ApiOperation("新增活动参加记录表")
 	@ApiImplicitParam(name = "ActivityApplyEditParam ", value = "新增活动参加记录表", dataType = "ActivityApplyEditParam")
-	@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:add')")
+	//@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:add')")
 	@EventLog(message = "新增活动参加记录表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody ActivityApplyEditParam activityApplyEditParam) {
@@ -90,7 +89,7 @@ public class ActivityApplyController extends BaseController<ActivityApplyPageQue
 	*/
 	@ApiOperation("修改活动参加记录表")
 	@ApiImplicitParam(name = "ActivityApplyEditParam ", value = "修改活动参加记录表", dataType = "ActivityApplyEditParam")
-	@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:edit')")
+	//@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:edit')")
 	@EventLog(message = "修改活动参加记录表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody ActivityApplyEditParam activityApplyEditParam) {
@@ -102,7 +101,7 @@ public class ActivityApplyController extends BaseController<ActivityApplyPageQue
 	*/
 	@ApiOperation("删除活动参加记录表")
 	@ApiImplicitParam(name = "${ids}", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:delete')")
+	//@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:delete')")
 	@EventLog(message = "删除活动参加记录表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable String[] ids) {
@@ -114,7 +113,7 @@ public class ActivityApplyController extends BaseController<ActivityApplyPageQue
 	*/
 	@ApiOperation("删除教练信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/marketing/delById',  'admin:marketing:delById')")
+	//@PreAuthorize("hasPermission('/marketing/delById',  'admin:marketing:delById')")
 	@EventLog(message = "删除教练信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -125,7 +124,7 @@ public class ActivityApplyController extends BaseController<ActivityApplyPageQue
 	* 导出活动参加记录表
 	*/
 	@ApiOperation("导出活动参加记录表")
-	@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:export')")
+	//@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:export')")
 	@SneakyThrows
 	@EventLog(message = "导出活动参加记录表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -138,7 +137,7 @@ public class ActivityApplyController extends BaseController<ActivityApplyPageQue
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用活动参加记录表")
-	@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:changeStatus')")
+	//@PreAuthorize("hasPermission('/marketing/activityApply',  'marketing:activityApply:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用活动参加记录表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

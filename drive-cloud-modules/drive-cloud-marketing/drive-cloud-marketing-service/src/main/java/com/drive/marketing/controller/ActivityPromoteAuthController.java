@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +46,7 @@ public class ActivityPromoteAuthController extends BaseController<ActivityPromot
 	* 活动推广权限配置 分页列表
 	*/
 	@ApiOperation("活动推广权限配置分页列表")
-	@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:query')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid ActivityPromoteAuthPageQueryParam param) {
 		return activityPromoteAuthRepository.pageList(param);
@@ -56,7 +55,7 @@ public class ActivityPromoteAuthController extends BaseController<ActivityPromot
 	* 活动推广权限配置 分页列表
 	*/
 	@ApiOperation("活动推广权限配置列表")
-	@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:query')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid ActivityPromoteAuthPageQueryParam param) {
 		return activityPromoteAuthRepository.findList(param);
@@ -67,7 +66,7 @@ public class ActivityPromoteAuthController extends BaseController<ActivityPromot
 	*/
 	@ApiOperation("获取活动推广权限配置")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:query')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return activityPromoteAuthRepository.getById(id);
@@ -78,7 +77,7 @@ public class ActivityPromoteAuthController extends BaseController<ActivityPromot
 	*/
 	@ApiOperation("新增活动推广权限配置")
 	@ApiImplicitParam(name = "ActivityPromoteAuthEditParam ", value = "新增活动推广权限配置", dataType = "ActivityPromoteAuthEditParam")
-	@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:add')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:add')")
 	@EventLog(message = "新增活动推广权限配置", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody ActivityPromoteAuthEditParam activityPromoteAuthEditParam) {
@@ -90,7 +89,7 @@ public class ActivityPromoteAuthController extends BaseController<ActivityPromot
 	*/
 	@ApiOperation("修改活动推广权限配置")
 	@ApiImplicitParam(name = "ActivityPromoteAuthEditParam ", value = "修改活动推广权限配置", dataType = "ActivityPromoteAuthEditParam")
-	@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:edit')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:edit')")
 	@EventLog(message = "修改活动推广权限配置", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody ActivityPromoteAuthEditParam activityPromoteAuthEditParam) {
@@ -102,7 +101,7 @@ public class ActivityPromoteAuthController extends BaseController<ActivityPromot
 	*/
 	@ApiOperation("删除活动推广权限配置")
 	@ApiImplicitParam(name = "ids", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:delete')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:delete')")
 	@EventLog(message = "删除活动推广权限配置", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable String[] ids) {
@@ -114,7 +113,7 @@ public class ActivityPromoteAuthController extends BaseController<ActivityPromot
 	*/
 	@ApiOperation("删除教练信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "删除教练信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -125,7 +124,7 @@ public class ActivityPromoteAuthController extends BaseController<ActivityPromot
 	* 导出活动推广权限配置
 	*/
 	@ApiOperation("导出活动推广权限配置")
-	@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:export')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:export')")
 	@SneakyThrows
 	@EventLog(message = "导出活动推广权限配置", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -138,7 +137,7 @@ public class ActivityPromoteAuthController extends BaseController<ActivityPromot
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用活动推广权限配置")
-	@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:changeStatus')")
+	//@PreAuthorize("hasPermission('/marketing/activityPromoteAuth',  'marketing:activityPromoteAuth:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用活动推广权限配置", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

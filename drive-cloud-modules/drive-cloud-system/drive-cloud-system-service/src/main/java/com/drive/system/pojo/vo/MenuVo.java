@@ -39,6 +39,8 @@ public class MenuVo implements TreeVoFeature<MenuVo> {
 	// 父菜单ID
 	private Long parentId;
 
+	private String userId;
+
 	// 组件路径
 	@Excel(name = "组件路径", width = 20)
 	private String component;

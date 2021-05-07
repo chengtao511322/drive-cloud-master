@@ -213,5 +213,7 @@ public class StudentStudyEnrollPageQueryParam extends BasePageQueryParam {
 
 	// 0 否 1 是 是否有客服
 	private Integer hasPreOnlineServicer;
+	// 是否有意向
+	private Integer isIntentionSearch;
 
 }
