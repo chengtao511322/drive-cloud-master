@@ -80,5 +80,7 @@ public class OneFeeSystemVipCoachPageQueryParam extends BasePageQueryParam {
 	//private String vagueNameSearch
 
 	private String vagueCoachName;
+	// 教练手机号模糊
+	private String vagueCoachPhone;
 
 }

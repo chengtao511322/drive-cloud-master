@@ -70,11 +70,13 @@ public class  OneFeeSystemVipCoachRepositoryImpl extends BaseController<OneFeeSy
         // 条件查询
         QueryWrapper queryWrapper = this.getQueryWrapper(oneFeeSystemVipCoachMapStruct, param);
         List<CoachInfoEntity> coachInfoList = new ArrayList<>();
-        if (StrUtil.isNotEmpty(param.getVagueCoachName())){
+        if (StrUtil.isNotEmpty(param.getVagueCoachName()) || StrUtil.isNotEmpty(param.getVagueCoachPhone())){
             //  模糊查询
             QueryWrapper coachQueryWrapper = new QueryWrapper();
-            coachQueryWrapper.like("real_name",param.getVagueCoachName());
+            coachQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueCoachName()),"real_name",param.getVagueCoachName());
+            coachQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueCoachPhone()),"phone",param.getVagueCoachPhone());
             coachInfoList = coachInfoService.list(coachQueryWrapper);
+            if (coachInfoList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),new Page<>());
         }
 
         //  开始时间 结束时间都有才进入

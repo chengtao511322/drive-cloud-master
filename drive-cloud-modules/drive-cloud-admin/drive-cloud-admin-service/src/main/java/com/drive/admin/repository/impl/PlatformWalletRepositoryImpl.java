@@ -4,6 +4,7 @@ import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.enums.StudyEnrollEnum;
@@ -336,6 +337,8 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
                 platformWalletDetail.setAccountDetailId(item.getId());
                 platformWalletDetail.setBalance(platformWallet.getWalletAmount()); //余额
                 platformWalletDetail.setOperatorId(platformWallet.getOperatorId()); // 运营商id
+                //
+                platformWalletDetail.setDataMsValue(idWorker.nextId());
                 Boolean platformWalletDetailResult = platformWalletDetailService.save(platformWalletDetail);
                 if (!platformWalletResult) throw new BizException(500,SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
             }
@@ -417,6 +420,8 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
         // 余额(进账，处长之前的余额)
         platformWalletDetail.setBalance(platformWallet.getWalletAmount()); //账户余额
         platformWalletDetail.setOperatorId(platformWallet.getOperatorId());  // 运营商
+        // 数据插入ID
+        platformWalletDetail.setDataMsValue(idWorker.nextId());
         Boolean platformWalletDetailRes = platformWalletDetailService.save(platformWalletDetail);
         if (!platformWalletDetailRes){
             throw new BizException(500,SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());

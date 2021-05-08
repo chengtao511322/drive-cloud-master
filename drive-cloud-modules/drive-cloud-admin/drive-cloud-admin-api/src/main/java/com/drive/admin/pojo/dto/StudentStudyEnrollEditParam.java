@@ -129,10 +129,8 @@ public class StudentStudyEnrollEditParam {
     private String intentEnrollSchoolId;
 
     // 线上报名时间
-    private LocalDateTime createTime;
+    //private LocalDateTime createTime;
 
-    // 更新时间
-    private LocalDateTime updateTime;
 
     // 是否选择接送
     private String isMeetGive;

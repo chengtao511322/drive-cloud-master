@@ -64,13 +64,13 @@ public class StudentTestEnrollEntity extends BaseEntity {
 	// 实际预约考试场地ID
 	private String testActualCoachingGridId;
 
-	// 创建时间
+/*	// 创建时间
 	@TableField(fill = FieldFill.INSERT)
 	private LocalDateTime createTime;
 
 	// 更新时间
 	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private LocalDateTime updateTime;
+	private LocalDateTime updateTime;*/
 
 	// 客服ID（系统用户ID）
 	private String userId;

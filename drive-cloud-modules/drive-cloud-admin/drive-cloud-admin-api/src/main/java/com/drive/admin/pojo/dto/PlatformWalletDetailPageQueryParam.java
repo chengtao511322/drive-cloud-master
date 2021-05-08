@@ -84,4 +84,7 @@ public class PlatformWalletDetailPageQueryParam extends BasePageQueryParam {
 	// 模糊查询字段
 	//private String vagueNameSearch
 
+	// 数据插入毫秒值
+	private Long dataMsValue;
+
 }

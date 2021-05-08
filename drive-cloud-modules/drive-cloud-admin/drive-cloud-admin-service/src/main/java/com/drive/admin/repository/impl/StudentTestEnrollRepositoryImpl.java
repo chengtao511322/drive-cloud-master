@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -148,10 +149,10 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         queryWrapper.in(studentInfoList.size() > 0,"student_id",studentInfoList.stream().map(StudentInfoEntity::getId).collect(Collectors.toList()));
 
         if (param.getTestHopeTimeArr() .length >0){
-            queryWrapper.between("date_format (test_hope_time,'%Y-%m-%d')",param.getTestHopeTimeArr()[0],param.getTestHopeTimeArr()[1]);
+            queryWrapper.between("test_hope_time",param.getTestHopeTimeArr()[0],param.getTestHopeTimeArr()[1]);
         }
         if (param.getTestActualTimeArr() .length >0){
-            queryWrapper.between("date_format (test_actual_time,'%Y-%m-%d')",param.getTestActualTimeArr()[0],param.getTestActualTimeArr()[1]);
+            queryWrapper.between("test_actual_time",param.getTestActualTimeArr()[0],param.getTestActualTimeArr()[1]);
         }
         // 报名状态
         if (StrUtil.isNotEmpty(param.getEnrollStatusArr())){
@@ -373,6 +374,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
         StudentTestEnrollEntity studentTestEnroll = BeanConvertUtils.copy(updateParam,StudentTestEnrollEntity.class);
+        studentTestEnroll.setUpdateTime(LocalDateTime.now());
         Boolean result = studentTestEnrollService.updateById(studentTestEnroll);
         log.info(this.getClass() + "update-方法请求结果{}",result);
         // 判断结果
@@ -958,7 +960,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
         if (param.getExamPassTimeArr() != null && param.getExamPassTimeArr().length > 0){
-            queryWrapper.between("date_format (test_actual_time,'%Y-%m-%d')",param.getExamPassTimeArr()[0],param.getExamPassTimeArr()[1]);
+            queryWrapper.between("test_actual_time",param.getExamPassTimeArr()[0],param.getExamPassTimeArr()[1]);
         }
         IPage<StudentTestEnrollEntity> pageList = studentTestEnrollService.page(page, queryWrapper);
         if (pageList.getRecords().size() <= 0){

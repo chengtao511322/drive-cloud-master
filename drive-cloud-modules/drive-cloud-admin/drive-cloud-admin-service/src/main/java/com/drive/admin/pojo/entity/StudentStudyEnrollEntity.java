@@ -135,13 +135,13 @@ public class StudentStudyEnrollEntity extends BaseEntity {
 	// 意向报名驾校id
 	private String intentEnrollSchoolId;
 
-	// 线上报名时间
+	/*// 线上报名时间
 	@TableField(fill = FieldFill.INSERT)
 	private LocalDateTime createTime;
 
 	// 更新时间
 	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private LocalDateTime updateTime;
+	private LocalDateTime updateTime;*/
 
 	// 是否选择接送
 	private String isMeetGive;

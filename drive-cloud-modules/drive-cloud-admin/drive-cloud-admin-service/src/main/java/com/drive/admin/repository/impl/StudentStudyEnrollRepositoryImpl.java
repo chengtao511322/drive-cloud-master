@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -226,11 +227,11 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
 
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
-            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"date_format (create_time,'%Y-%m-%d')",param.getBeginTime(),param.getEndTime());
+            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
         if (StrUtil.isNotEmpty(param.getCreateTimeSearch())){
             String[] arr = param.getCreateTimeSearch().split(",");
-            queryWrapper.between("date_format (create_time,'%Y-%m-%d')",arr[0],arr[1]);
+            queryWrapper.between("create_time",arr[0],arr[1]);
         }
 
         IPage<StudentStudyEnrollEntity> pageList = studentStudyEnrollService.page(page, queryWrapper);
@@ -487,6 +488,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
         StudentStudyEnrollEntity studentStudyEnroll = BeanConvertUtils.copy(updateParam, StudentStudyEnrollEntity.class);
+        studentStudyEnroll.setUpdateTime(LocalDateTime.now());
         Boolean result = studentStudyEnrollService.updateById(studentStudyEnroll);
         log.info(this.getClass() + "update-方法请求结果{}",result);
         // 判断结果
@@ -756,7 +758,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         if (StrUtil.isNotEmpty(param.getVaguePreSalesServiceNameSearch())){
             serviceQueryWrapper.like("real_name",param.getVaguePreSalesServiceNameSearch());
             serviceInfoList  = serviceInfoService.list(serviceQueryWrapper);
-            if (serviceInfoList.size()<=0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
+            if (serviceInfoList.size()<=0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),new Page<>());
         }
         if (serviceInfoList != null && serviceInfoList.size() > 0){
             queryWrapper.in("t2.pre_sales_service_id",serviceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
@@ -767,7 +769,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         if (StrUtil.isNotEmpty(param.getVagueOnlineServiceNameSearch())){
             onlineServiceQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueOnlineServiceNameSearch()),"real_name",param.getVagueOnlineServiceNameSearch());
             onlineServiceInfoList  = serviceInfoService.list(onlineServiceQueryWrapper);
-            if (onlineServiceInfoList.size()<=0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
+            if (onlineServiceInfoList.size()<=0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),new Page<>());
         }
         if (onlineServiceInfoList != null && onlineServiceInfoList.size() > 0){
             queryWrapper.in("t2.user_id",onlineServiceInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
@@ -778,7 +780,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
             QueryWrapper serviceNameQueryWrapper = new QueryWrapper();
             serviceNameQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueServiceNameSearch()),"real_name",param.getVagueServiceNameSearch());
             serviceLineInfoList  = serviceInfoService.list(serviceNameQueryWrapper);
-            if (serviceLineInfoList.size()<=0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),serviceInfoList);
+            if (serviceLineInfoList.size()<=0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),new Page<>());
             queryWrapper.in("t2.user_id",serviceLineInfoList.stream().map(ServiceInfoEntity::getId).collect(Collectors.toList()));
         }
 
@@ -811,7 +813,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
 
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
-            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
+            queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"t1.create_time",param.getBeginTime(),param.getEndTime());
         }
         if (StrUtil.isNotEmpty(param.getPayTimeSearch())){
             String[] arr = param.getPayTimeSearch().split(",");

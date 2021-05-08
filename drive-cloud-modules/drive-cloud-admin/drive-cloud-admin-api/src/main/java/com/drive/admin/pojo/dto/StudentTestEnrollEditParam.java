@@ -57,11 +57,11 @@ public class StudentTestEnrollEditParam {
     // 实际预约考试场地ID
     private String testActualCoachingGridId;
 
-    // 创建时间
+  /*  // 创建时间
     private LocalDateTime createTime;
 
     // 更新时间
-    private LocalDateTime updateTime;
+    private LocalDateTime updateTime;*/
 
     // 客服ID（系统用户ID）
     private String userId;

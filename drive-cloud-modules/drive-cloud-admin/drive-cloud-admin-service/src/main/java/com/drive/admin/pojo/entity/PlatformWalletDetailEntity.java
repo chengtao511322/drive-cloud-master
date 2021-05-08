@@ -63,5 +63,7 @@ public class PlatformWalletDetailEntity extends BaseEntity {
 
 	// 数据创建时间
 	private LocalDateTime setUpDate;
+	// 数据插入毫秒值
+	private Long dataMsValue;
 
 }
