@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 /**
  * 数据过滤处理
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Component
 @Order(6)
@@ -96,7 +96,7 @@ public class DataScopeAspect {
         String dataScopePermission = null;
         for (RoleEntity role : user.getRoles()) {
             String dataScope = role.getDataScope();
-            // 判断
+            // 判断  针对ADMIN模块单独处理
             if (DataScopeEnum.ADMIN_MODULE.getCode().equals(module)){
                 if (DataScopeEnum.ALL.getCode().equals(dataScope)) {
                     sqlString = new StringBuilder();

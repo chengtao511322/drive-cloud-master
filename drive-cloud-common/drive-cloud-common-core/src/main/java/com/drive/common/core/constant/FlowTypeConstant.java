@@ -3,6 +3,9 @@ package com.drive.common.core.constant;
 import java.util.Map;
 
 
+/**
+ * 流水常量
+ */
 public enum FlowTypeConstant {
 	
 	// 报名收益

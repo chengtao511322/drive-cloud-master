@@ -8,7 +8,7 @@ import java.time.Duration;
 
 /**
  * minio 配置属性
- * @author DreamChan
+ * @author xiaoguo
  */
 @RefreshScope
 @Data

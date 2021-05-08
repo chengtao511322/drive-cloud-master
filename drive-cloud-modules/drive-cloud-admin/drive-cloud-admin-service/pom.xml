@@ -112,6 +112,12 @@
             <artifactId>drive-cloud-system-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.drive</groupId>
+            <artifactId>drive-cloud-marketing-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
 
     </dependencies>
 

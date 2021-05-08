@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 /**
  * 服务降级处理
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Component
 @Slf4j

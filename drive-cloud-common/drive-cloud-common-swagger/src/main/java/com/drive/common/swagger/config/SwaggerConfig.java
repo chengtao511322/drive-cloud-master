@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * swagger实现
- * @author DreamChan
+ * @author xiaoguo
  */
 @Configuration
 @EnableSwagger2

@@ -10,6 +10,8 @@ import java.io.IOException;
  * @param <P>
  * @param <EDIT>
  * @param <Install>
+ *
+ *     xiaoguo
  */
 public interface BasicsRepository<P,EDIT,Install> {
 

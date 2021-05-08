@@ -8,7 +8,7 @@ import lombok.SneakyThrows;
 /**
  *  自定义JSON 类型转换
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public class CustomLongConverter extends StdSerializer<Long> {
 	public CustomLongConverter() {

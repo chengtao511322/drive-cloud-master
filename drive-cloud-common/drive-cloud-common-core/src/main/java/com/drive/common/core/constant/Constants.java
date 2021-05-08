@@ -85,7 +85,6 @@ public interface Constants {
 
     // 部门
     String OPERATOR_DEPT_KEY = "operator_dept:";
-    String AREA_KEY = "AREA_KEY:";
 
 
 

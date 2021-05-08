@@ -5,6 +5,11 @@ import com.drive.common.core.biz.ResObject;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * xiaoguo  基准类
+ * @param <P>
+ * @param <EDIT>
+ */
 public interface BaseRepository<P,EDIT> {
 
     /**

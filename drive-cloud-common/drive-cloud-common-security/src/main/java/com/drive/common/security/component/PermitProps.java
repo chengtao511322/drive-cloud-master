@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 资源服务器对外直接暴露URL,如果设置contex-path 要特殊处理
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Configuration
 @ConfigurationProperties(prefix = "security.oauth2")

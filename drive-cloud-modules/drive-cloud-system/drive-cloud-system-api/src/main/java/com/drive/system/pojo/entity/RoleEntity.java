@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 角色信息
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

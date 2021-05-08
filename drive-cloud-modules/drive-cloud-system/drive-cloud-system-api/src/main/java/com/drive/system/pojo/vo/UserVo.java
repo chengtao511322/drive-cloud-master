@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 用户信息
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Data
 public class UserVo implements java.io.Serializable{

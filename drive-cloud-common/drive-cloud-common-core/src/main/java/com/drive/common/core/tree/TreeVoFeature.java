@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * 树状结构
- * @author DreamChan
+ * @author xiaoguo
  */
 public interface TreeVoFeature<T extends TreeVoFeature> {
     /**

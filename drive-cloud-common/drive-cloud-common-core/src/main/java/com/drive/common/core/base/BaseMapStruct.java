@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * MapStruct 基类
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public interface BaseMapStruct<V, E, P, Q> {
 

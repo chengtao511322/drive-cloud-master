@@ -3,7 +3,7 @@ package com.drive.common.core.enums;
 /**
  * 操作日志类型
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public enum EventLogEnum {
 	QUERY(1, "查询"),

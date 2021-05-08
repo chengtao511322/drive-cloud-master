@@ -6,7 +6,7 @@ import com.google.common.base.CaseFormat;
 /**
  * 字符串工具类
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public class StringUtils {
 

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Primary;
 
 */
 /**
- *  @author: haodongdong
+ *  @author: xiaoguo
  *  @Date: 2020/7/22 17:25
  *  @Description:  数据源代理
  *//*

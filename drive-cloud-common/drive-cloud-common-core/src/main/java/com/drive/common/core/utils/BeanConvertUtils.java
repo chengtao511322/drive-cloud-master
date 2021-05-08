@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
- * @author liuyadu
+ * @author xiaoguo
  */
 public class BeanConvertUtils {
     /**

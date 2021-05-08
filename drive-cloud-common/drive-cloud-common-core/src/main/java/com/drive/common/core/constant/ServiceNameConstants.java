@@ -2,7 +2,7 @@ package com.drive.common.core.constant;
 
 /**
  * 服务名称
- * @author DreamChan
+ * @author xiaoguo
  */
 public interface ServiceNameConstants {
 

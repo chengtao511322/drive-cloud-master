@@ -5,7 +5,7 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 /**
- * Created by Mark on 2018/4/20.
+ * Created by xiaoguo on 2018/4/20.
  * Redis连接池：JedisPool
  */
 

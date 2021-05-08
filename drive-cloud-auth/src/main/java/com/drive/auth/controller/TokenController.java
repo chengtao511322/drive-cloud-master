@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * token 管理
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @RestController
 @RequestMapping("/token")

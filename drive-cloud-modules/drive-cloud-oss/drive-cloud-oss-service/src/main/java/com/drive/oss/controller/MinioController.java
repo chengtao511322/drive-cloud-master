@@ -36,7 +36,7 @@ import java.util.Map;
 /**
  * Minio 对象存储
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Api(tags = "Minio对象存储管理")
 @Slf4j

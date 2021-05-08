@@ -3,7 +3,7 @@ package com.drive.common.core.enums;
 /**
  * 外链
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public enum LinkEnum {
 

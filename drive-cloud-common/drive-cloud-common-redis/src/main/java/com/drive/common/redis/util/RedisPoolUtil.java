@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.Jedis;
 
 /**
- * Created by Mark on 2018/4/21.
+ * Created by xiaoguo on 2018/4/21.
  * RedisPool封装的API
  */
 

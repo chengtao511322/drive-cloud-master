@@ -4,7 +4,7 @@ package com.drive.common.core.biz;
 /**
  * 自定义错误类型
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public enum ResCodeEnum {
 

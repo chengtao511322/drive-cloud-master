@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * 获取验证码
- * @author DreamChan
+ * @author xiaoguo
  */
 @RestController
 @RequestMapping("/captcha")

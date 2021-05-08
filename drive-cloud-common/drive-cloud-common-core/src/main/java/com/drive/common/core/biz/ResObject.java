@@ -8,7 +8,7 @@ import java.util.Calendar;
 /**
  * 返回通用Json数据 封装
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Data
 public class ResObject<T> implements java.io.Serializable{

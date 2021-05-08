@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Treeselect 树结构实体类
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Data
 public class TreeSelect implements Serializable {

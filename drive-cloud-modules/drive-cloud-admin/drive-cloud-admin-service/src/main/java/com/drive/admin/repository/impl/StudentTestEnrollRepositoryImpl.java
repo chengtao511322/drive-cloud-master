@@ -126,7 +126,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         }
         if (StrUtil.isNotEmpty(param.getExamStatus()) && param.getExamStatus().equals(ExamEnrollEnum.EXAM_LOADING.getCode())){
             queryWrapper.eq("enroll_status",ExamEnrollEnum.BOOK_SUCCESS.getCode());
-            queryWrapper.apply("date_format (test_actual_time,'%Y-%m-%d') <= date_format(now(),'%Y-%m-%d')");
+            queryWrapper.apply("date_format(test_actual_time,'%Y-%m-%d') <= date_format(now(),'%Y-%m-%d')");
         }
 
         // 预约见面时间
@@ -174,8 +174,6 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             }
             //if (StrUtil.isNotEmpty(item.getUserId()))item.setOnlineServiceName(serviceInfoService.getById(item.getUserId()).getRealName());
             //if (StrUtil.isNotEmpty(item.getLineUnderUserId()))item.setLineServiceName(serviceInfoService.getById(item.getLineUnderUserId()).getRealName());
-
-
             // 平台训练场地
             if (StrUtil.isNotEmpty(item.getTestActualCoachingGridId())){
                 CoachingGridEntity coachingGridEntity =coachingGridService.getById(item.getTestActualCoachingGridId());

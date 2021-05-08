@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @Description swagger 配置
- * @Author DreamChan
+ * @Author xiaoguo
  */
 @Data
 @RefreshScope

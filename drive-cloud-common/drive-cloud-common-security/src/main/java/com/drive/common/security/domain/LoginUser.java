@@ -8,7 +8,7 @@ import java.util.Collection;
 /**
  * 登录用户身份权限
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public class LoginUser extends User {
 
@@ -18,7 +18,7 @@ public class LoginUser extends User {
      * 用户ID
      */
     private Long userId;
-    // 操作ID
+    // 操作ID 用于记录用户操作ID
     private String operationId;
     // 租户ID
     private String tenantId;

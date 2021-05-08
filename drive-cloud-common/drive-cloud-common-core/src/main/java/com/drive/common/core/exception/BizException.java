@@ -7,7 +7,7 @@ import com.drive.common.core.biz.BaseExceptionCode;
  * 业务异常
  * 用于在处理业务逻辑时，进行抛出的异常。
  *
- * @author zuihou
+ * @author xiaoguo
  * @version 1.0,
  * @see Exception
  */

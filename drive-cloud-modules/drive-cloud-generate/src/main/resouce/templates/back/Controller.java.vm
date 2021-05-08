@@ -94,8 +94,8 @@ public class ${entity}Controller extends BaseController<${entity}PageQueryParam,
 	@ApiOperation("条件查询获取${table.comment}")
 	@ApiImplicitParam(name = "${pkColumn.propertyName}", required = true, dataType = "String", paramType = "path")
 	@PreAuthorize("hasPermission('/${cfg.moduleName}/${className}',  '${cfg.moduleName}:${className}:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable ${entity}PageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@PathVariable @RequestBody ${entity}PageQueryParam param) {
 		return ${className}Repository.getInfo(param);
 	}
 

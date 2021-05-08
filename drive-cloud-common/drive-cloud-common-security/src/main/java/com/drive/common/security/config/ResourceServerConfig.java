@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * 资源服务配置
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Configuration
 @EnableResourceServer

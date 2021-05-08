@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * 根据checktoken 的结果转化用户信息
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public class CommonUserConverter implements UserAuthenticationConverter {
 

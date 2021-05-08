@@ -3,7 +3,7 @@ package com.drive.common.core.exception;
 /**
  * 异常接口类
  *
- * @author zuihou
+ * @author xiaoguo
  * @version 1.0,
  */
 public interface BaseException {

@@ -34,7 +34,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * java 8 时间默认序列化
  * 
- * @author DreamChan
+ * @author xiaoguo
  */
 public class RestJavaTimeModule extends SimpleModule {
 

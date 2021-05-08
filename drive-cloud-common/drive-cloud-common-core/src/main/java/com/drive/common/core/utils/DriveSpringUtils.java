@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @ClassName SpringUtils
- * @Description TODO：使用 beanid 获取spring容器中的对下午那个
+ * @Description TODO：使用 beanid 获取spring容器中的上下文
  * @Author @{用户} 小郭
  * @Date @{时间} 2019/11/4 10:38
  * @Version 1.0

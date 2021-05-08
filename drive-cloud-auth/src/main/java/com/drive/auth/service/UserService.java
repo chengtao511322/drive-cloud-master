@@ -11,7 +11,7 @@ import java.util.Set;
  *
  * 用户信息 服务类
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public interface UserService extends IService<UserEntity> {
 

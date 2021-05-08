@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * 自定义 生成令牌
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Component
 public class CustomTokenEnhancer implements TokenEnhancer {

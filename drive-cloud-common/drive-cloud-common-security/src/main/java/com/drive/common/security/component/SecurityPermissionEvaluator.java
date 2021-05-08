@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * 自定义的权限处理模块
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Component
 public class SecurityPermissionEvaluator implements PermissionEvaluator {

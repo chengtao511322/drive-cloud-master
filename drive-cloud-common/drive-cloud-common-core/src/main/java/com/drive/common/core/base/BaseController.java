@@ -2,6 +2,7 @@ package com.drive.common.core.base;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.drive.common.core.utils.IdWorker;
 import com.drive.common.core.utils.StringUtils;
 
 import java.io.Serializable;
@@ -12,6 +13,8 @@ import java.io.Serializable;
  * @author xiaoguo
  */
 public class BaseController<Q extends BasePageQueryParam, E extends Serializable> {
+
+    protected final IdWorker idWorker = new IdWorker(31,31);
 
 
     /**

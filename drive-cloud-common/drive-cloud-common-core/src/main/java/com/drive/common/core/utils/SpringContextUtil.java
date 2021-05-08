@@ -3,7 +3,7 @@ package com.drive.common.core.utils;
 import org.springframework.context.ApplicationContext;
 /**
  * 上下文获取工具类
- * @author mengfeiyang
+ * @author xiaoguo
  *
  */
 public class SpringContextUtil {

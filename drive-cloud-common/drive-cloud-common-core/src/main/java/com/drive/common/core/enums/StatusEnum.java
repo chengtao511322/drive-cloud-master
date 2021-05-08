@@ -3,7 +3,7 @@ package com.drive.common.core.enums;
 /**
  * 状态
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public enum StatusEnum {
     ENABLE("0", "正常"),

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 用户信息 Mapper 接口
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public interface UserMapper extends BaseMapper<UserEntity> {
 

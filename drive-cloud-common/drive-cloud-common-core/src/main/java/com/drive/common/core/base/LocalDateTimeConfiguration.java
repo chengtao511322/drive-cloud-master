@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
  
 /**
- * @author lux sun
+ * @author xiaoguo
  */
 @Configuration
 public class LocalDateTimeConfiguration {

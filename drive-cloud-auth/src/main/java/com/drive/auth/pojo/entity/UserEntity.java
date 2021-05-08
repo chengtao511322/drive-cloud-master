@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 /**
  * 用户信息
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

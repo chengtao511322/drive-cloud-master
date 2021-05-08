@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * 用户服务
- * @author DreamChan
+ * @author xiaoguo
  */
 @FeignClient(contextId = "remoteUserService", value = ServiceNameConstants.SYSTEM_SERVICE, fallbackFactory = UserFallbackFactory.class)
 public interface RemoteUserService {

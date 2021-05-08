@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * web 配置
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {

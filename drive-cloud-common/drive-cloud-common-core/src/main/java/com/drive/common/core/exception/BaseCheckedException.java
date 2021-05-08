@@ -3,7 +3,8 @@ package com.drive.common.core.exception;
 /**
  * 运行期异常基类
  *
- * @author zuihou
+ * @author xiaoguo
+ * 15116101123
  * @version 1.0
  * @see Exception
  */

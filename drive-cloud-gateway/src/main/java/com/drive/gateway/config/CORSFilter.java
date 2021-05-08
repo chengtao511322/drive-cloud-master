@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @ClassName CORSFilter
+ * @ClassName CORSFilter  跨域解决
  * @Description TODO：
  * @Author @{用户} 小郭
  * @Date @{时间} 2019/10/21 14:48

@@ -3,7 +3,7 @@ package com.drive.common.core.exception;
 /**
  * 自定义异常
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 public class CustomException extends RuntimeException {
     private static final long serialVersionUID = 1L;

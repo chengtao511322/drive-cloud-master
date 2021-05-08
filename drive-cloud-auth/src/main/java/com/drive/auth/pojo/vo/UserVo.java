@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 /**
  * 用户信息
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Data
 public class UserVo {

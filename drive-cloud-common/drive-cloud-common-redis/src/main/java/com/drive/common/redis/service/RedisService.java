@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * redis 工具类
  *
- * @author DreamChan
+ * @author xiaoguo
  **/
 @Component
 public class RedisService {
@@ -130,6 +130,7 @@ public class RedisService {
 
     /**
      * 功能描述: 使用pipelined批量存储
+     * 带过期时间
      *
      * @param: [map, seconds]
      * @return: void
