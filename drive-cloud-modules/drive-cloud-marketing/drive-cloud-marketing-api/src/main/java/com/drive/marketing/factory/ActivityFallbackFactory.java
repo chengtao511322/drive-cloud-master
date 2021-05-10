@@ -1,6 +1,10 @@
 package com.drive.marketing.factory;
 
+import com.drive.common.core.biz.R;
+import com.drive.common.core.biz.ResObject;
+import com.drive.common.core.biz.SubResultCode;
 import com.drive.marketing.api.RemoteActivityService;
+import com.drive.marketing.pojo.dto.CouponAcquirePageQueryParam;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,7 +22,10 @@ public class ActivityFallbackFactory implements FallbackFactory<RemoteActivitySe
     @Override
     public RemoteActivityService create(Throwable throwable) {
         return new RemoteActivityService() {
-
+            @Override
+            public ResObject getCoupon(CouponAcquirePageQueryParam couponPageQueryParam) {
+                return R.failure();
+            }
         };
     }
 }

@@ -26,9 +26,9 @@ import java.util.Map;
  */
 public class GeneratorMain {
 
-    //生成文件所在项目路径
-    private static String baseProjectPath = "D:\\git\\drive-cloud-master\\drive-cloud-modules\\drive-cloud-admin\\drive-cloud-admin-service\\";
-    private static String baseProjectApiPath = "D:\\git\\drive-cloud-master\\drive-cloud-modules\\drive-cloud-admin\\drive-cloud-admin-api\\";
+    //生成文件所在项目路径  E:\Project\gitWork\drive-cloud-master
+    private static String baseProjectPath = "E:\\Project\\gitWork\\drive-cloud-master\\drive-cloud-modules\\drive-cloud-admin\\drive-cloud-admin-service\\";
+    private static String baseProjectApiPath = "E:\\Project\\gitWork\\drive-cloud-master\\drive-cloud-modules\\drive-cloud-admin\\drive-cloud-admin-api\\";
 
 
     //文件存放路径
@@ -58,7 +58,7 @@ public class GeneratorMain {
 
     //要生成的表名templatestemplates
     private static String[] tables = {
-            "t_student_study_progress_history",
+            "t_test_train_price",
     };
 
 

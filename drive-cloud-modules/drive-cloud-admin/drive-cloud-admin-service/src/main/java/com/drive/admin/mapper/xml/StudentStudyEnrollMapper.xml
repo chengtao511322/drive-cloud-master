@@ -201,8 +201,8 @@
             t3.recommend_user_id as referrerId,
             t3.operator_id as operatorId
         FROM
-            t_student_study_enroll t1
-            LEFT JOIN t_student_info t3 on t3.id=t1.student_id
+             t_student_info t3
+            LEFT JOIN t_student_study_enroll t1 on t3.id=t1.student_id
             ${ew.customSqlSegment}
     </select>
 

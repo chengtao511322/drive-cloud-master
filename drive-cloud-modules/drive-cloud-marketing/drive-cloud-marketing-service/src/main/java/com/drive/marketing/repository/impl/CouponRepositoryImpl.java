@@ -1,30 +1,37 @@
 package com.drive.marketing.repository.impl;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.enums.StatusEnum;
+import com.drive.common.core.exception.BizException;
+import com.drive.common.core.utils.BeanConvertUtils;
+import com.drive.common.core.utils.DateUtils;
 import com.drive.common.core.utils.Redeem;
 import com.drive.common.security.utils.SecurityUtils;
+import com.drive.marketing.pojo.dto.CouponAcquirePageQueryParam;
 import com.drive.marketing.pojo.dto.CouponEditParam;
-import com.drive.marketing.pojo.entity.CouponEntity;
-import com.drive.marketing.pojo.entity.CouponGetEntity;
-import com.drive.marketing.pojo.entity.CouponProductRelationEntity;
+import com.drive.marketing.pojo.dto.CouponPageQueryParam;
+import com.drive.marketing.pojo.entity.*;
+import com.drive.marketing.pojo.vo.CouponGetVo;
 import com.drive.marketing.repository.CouponRepository;
-import com.drive.marketing.service.CouponGetService;
-import com.drive.marketing.service.CouponProductRelationService;
-import com.drive.marketing.service.CouponService;
+import com.drive.marketing.service.*;
 import com.drive.marketing.service.mapstruct.CouponMapStruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -41,6 +48,12 @@ public class CouponRepositoryImpl implements CouponRepository {
 
     @Autowired
     private CouponGetService couponGetService;
+
+    @Autowired
+    private ChannelManagerActivityService channelManagerActivityService;
+
+    @Autowired
+    private ActivityProjectSettingService activityProjectSettingService;
 
     @Override
     @Transactional
@@ -113,5 +126,67 @@ public class CouponRepositoryImpl implements CouponRepository {
             log.info("插入结果{}",installCoupon);
         }
         return R.toRes(result);
+    }
+
+    @Override
+    public ResObject<CouponGetVo> getCoupon(CouponAcquirePageQueryParam couponPageQueryParam) {
+        log.info(this.getClass()+"getCoupon-请求参数{}",couponPageQueryParam);
+        // 查询优惠券领取信息 通过优惠券领取表Id
+        CouponGetEntity couponGet = couponGetService.getById(couponPageQueryParam.getCouponAcquireId());
+        if (couponGet == null){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 时间判断(当前时间) 是否过期
+        long betweenDay = DateUtil.between(new Date(), DateUtils.asDate(couponGet.getPeriodTimeStart()), DateUnit.DAY);
+        if (betweenDay >=1) {
+            //couponOutDtoList.remove(item);
+            //total =total - 1;
+            log.info("该优惠{},{},过期，不可使用",couponGet.getCouponId());
+            //subMsg = "该优惠券已经过期";
+            return R.failure(SubResultCode.DATA_NULL.subCode(),"该优惠券已经过期");
+            //return setProfessionalResultSuccess(SubResultCode.COUPON_EXPIRATION_TIME.subCode(),SubResultCode.COUPON_EXPIRATION_TIME.subMsg());
+        }
+        // do 转化
+        CouponGetVo couponGetVo = BeanConvertUtils.copy(couponGet, CouponGetVo.class);
+        // 查询条件
+        QueryWrapper<ChannelManagerActivityEntity> wrapper = new QueryWrapper<ChannelManagerActivityEntity>();
+        if (StrUtil.isNotEmpty(couponGet.getPromoteUserId())){
+            // 查询优惠券金额
+            BigDecimal couponAmount = Optional.ofNullable(couponService.getById(couponGetVo.getCouponId()))
+                    .map(u-> u.getAmount())
+                    .orElseThrow(()->new BizException("优惠券获取数据空"));
+            // 设置优惠券金额
+            couponGetVo.setCouponAmount(couponAmount);
+            wrapper.eq("activity_id",couponGet.getSource());
+            wrapper.eq("promotion_user_id",couponGet.getPromoteUserId());
+            // 班型ID
+            //wrapper.eq(StrUtil.isNotEmpty(couponGetInputDto.getProjectId()),"project_id",couponGetInputDto.getProjectId());
+            int activityPromotionCount = channelManagerActivityService.count(wrapper);
+            if (activityPromotionCount <= 0){
+                return R.failure(SubResultCode.CHANNEL_MARAGER_NOT_ACTIVITY.subCode(),"该推广商没有配置过活动");
+            }
+            // 查询版型价格
+            QueryWrapper activityProjectSettingWrapper = new QueryWrapper();
+            // 活动ID
+            activityProjectSettingWrapper.eq("activity_id",couponGet.getSource());
+            // 版型ID
+            activityProjectSettingWrapper.eq("project_id",couponPageQueryParam.getProjectId());
+            ActivityProjectSettingEntity activityProjectSetting = activityProjectSettingService.getOne(activityProjectSettingWrapper);
+            log.info("activityProjectSetting{}",activityProjectSetting);
+            // 设置百分比
+            if (activityProjectSetting != null){
+                // 活动总佣金
+                couponGetVo.setDeductAmount(activityProjectSetting.getDeductAmount());
+                // 推广商佣金
+                couponGetVo.setPromotionAmount(activityProjectSetting.getPromotionAmount());
+                // 渠道经理佣金
+                couponGetVo.setChannelManagerAmount(activityProjectSetting.getChannelManagerAmount());
+                // 渠道经理ID
+                //couponGetEntityDO.setChannelManagerId(activityPromotionEntity.getChannelManagerId());
+
+            }
+        }
+        //couponGetEntityDO.setCouponEntity(couponEntity);
+        return R.success(couponGetVo);
     }
 }

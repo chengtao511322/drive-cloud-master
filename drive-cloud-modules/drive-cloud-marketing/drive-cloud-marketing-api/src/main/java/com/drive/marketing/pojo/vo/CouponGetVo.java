@@ -87,6 +87,7 @@ public class CouponGetVo implements java.io.Serializable{
 	private String promoteUserPhone;
 
 	private String couponName;
+
 	// 优惠券金额
 	private BigDecimal couponAmount;
 

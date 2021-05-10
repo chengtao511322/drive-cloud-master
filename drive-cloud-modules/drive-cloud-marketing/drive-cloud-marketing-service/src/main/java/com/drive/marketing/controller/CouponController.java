@@ -15,6 +15,7 @@ import com.drive.common.core.utils.Redeem;
 import com.drive.common.data.utils.ExcelUtils;
 import com.drive.common.log.annotation.EventLog;
 import com.drive.common.security.utils.SecurityUtils;
+import com.drive.marketing.pojo.dto.CouponAcquirePageQueryParam;
 import com.drive.marketing.pojo.dto.CouponEditParam;
 import com.drive.marketing.pojo.dto.CouponPageQueryParam;
 import com.drive.marketing.pojo.entity.CouponEntity;
@@ -110,6 +111,11 @@ public class CouponController extends BaseController<CouponPageQueryParam, Coupo
 		}
 
 		return R.success(couponVo);
+	}
+	@ApiOperation("条件获取优惠券信息")
+	@GetMapping("/getCoupon")
+	public ResObject getCoupon(@PathVariable @RequestBody CouponAcquirePageQueryParam couponPageQueryParam) {
+		return couponRepository.getCoupon(couponPageQueryParam);
 	}
 
 	/**

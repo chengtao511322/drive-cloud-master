@@ -21,10 +21,10 @@ spring:
     nacos:
       discovery:
         # 服务注册地址 172.24.86.62
-        server-addr: ${nacos_host:172.24.86.62}:${nacos_port:6688}
+        server-addr: ${nacos_host:125.0.8.191}:${nacos_port:6648}
       config:
         # 配置中心地址
-        server-addr: ${nacos_host:172.24.86.62}:${nacos_port:6688}
+        server-addr: ${nacos_host:125.0.8.191}:${nacos_port:6648}
         # 配置文件格式
         file-extension: yml
         # 共享配置

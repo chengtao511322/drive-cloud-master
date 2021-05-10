@@ -48,7 +48,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	@ApiOperation("推广渠道经理分页列表")
 	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid RecommendManagerPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody RecommendManagerPageQueryParam param) {
 		return recommendManagerRepository.pageList(param);
 	}
 	/**
@@ -57,7 +57,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	@ApiOperation("推广渠道经理列表")
 	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid RecommendManagerPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody RecommendManagerPageQueryParam param) {
 		return recommendManagerRepository.findList(param);
 	}
 

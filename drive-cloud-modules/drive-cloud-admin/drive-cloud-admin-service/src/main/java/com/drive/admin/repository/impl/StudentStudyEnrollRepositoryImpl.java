@@ -1028,11 +1028,13 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
                     EnrollStatusEnum.UPGRADE.getCode(),
                     EnrollStatusEnum.UPGRADE_WAIT_PAY.getCode(),
             };
-            int isIndex = item.getEnrollStatus().indexOf(StringUtils.join(arr, ","));
-            if (studentOrder != null && isIndex== -1){
-                item.setStudentType("学员");
-            }else{
-                item.setStudentType("待支付");
+            if (StrUtil.isNotEmpty(item.getEnrollStatus())){
+                int isIndex = item.getEnrollStatus().indexOf(StringUtils.join(arr, ","));
+                if (studentOrder != null && isIndex== -1){
+                    item.setStudentType("学员");
+                }else{
+                    item.setStudentType("待支付");
+                }
             }
 
         });

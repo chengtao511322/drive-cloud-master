@@ -12,6 +12,7 @@ import com.drive.admin.repository.PlatformWalletRepository;
 import com.drive.admin.service.*;
 import com.drive.admin.strategy.StudyEnrollStrategy;
 import com.drive.common.core.biz.R;
+import com.drive.common.core.biz.ResCodeEnum;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.constant.FlowTypeConstant;
@@ -20,6 +21,9 @@ import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.ArithUtil;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.core.utils.MathMoney;
+import com.drive.marketing.api.RemoteActivityService;
+import com.drive.marketing.pojo.dto.CouponAcquirePageQueryParam;
+import com.drive.marketing.pojo.vo.CouponGetVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,6 +75,9 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
 
     @Autowired
     private PlatformWalletRepository platformWalletRepository;
+
+    @Autowired
+    private RemoteActivityService remoteActivityService;
 
     @Transactional
     @Override
@@ -303,9 +310,20 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
             Boolean accountFlowDetailResult = accountFlowDetailService.save(tAccountFlowDetail);
             // 执行失败
             if (!accountFlowDetailResult) throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
-            /*GetCoupon getCoupon = tCouponService.selectMicroserviceGetCoupon(tStudentOrder.getCouponUseId());
-            if(getCoupon != null && WebConstant.ACTIVITY_TYPE_CLASS_PACKAGE.equals(getCoupon.getType())){
-
+            //GetCoupon getCoupon = tCouponService.selectMicroserviceGetCoupon(tStudentOrder.getCouponUseId());
+            // 创建查询对象
+            CouponAcquirePageQueryParam couponAcquire = new CouponAcquirePageQueryParam();
+            // 优惠券使用ID
+            couponAcquire.setCouponAcquireId(tStudentOrder.getCouponUseId());
+            ResObject<CouponGetVo> couponGetRes =remoteActivityService.getCoupon(couponAcquire);
+            log.info("请求优惠券接口数据{}",couponGetRes);
+            if (couponGetRes.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && couponGetRes.getData() != null){
+                CouponGetVo getCoupon = couponGetRes.getData();
+                /**
+                 *  补贴金额  = 优惠卷金额  * 活动打折百分比
+                 */
+                BigDecimal subsidyAmount = ArithUtil.mulDown(getCoupon.getCouponAmount(), getCoupon.getApplyPre(), 2);
+                //if(getCoupon != null && WebConstant.ACTIVITY_TYPE_CLASS_PACKAGE.equals(getCoupon.getType())){
                 AccountFlowDetailEntity accountFlowDetail = new AccountFlowDetailEntity();
                 accountFlowDetail.setId(IdWorker.getIdStr());
                 accountFlowDetail.setOrderNo(tStudentOrder.getOrderNo());  //订单号
@@ -315,10 +333,10 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
                 accountFlowDetail.setPayType(tAccountFlow.getPayType()); // 支付类型
                 accountFlowDetail.setItemType(StudyEnrollEnum.AFD_SYSTEM_COUPON_PAY.getCode());
                 accountFlowDetail.setItemName("优惠卷补贴收益"); //项目名称
-                accountFlowDetail.setItemAmount(getCoupon.getSubsidyAmount().floatValue()); //补贴金额
+                accountFlowDetail.setItemAmount(subsidyAmount); //补贴金额
                 accountFlowDetail.setTradeSubject(FlowTypeConstant.EXTENSION_INCOME.getCode());  // 市场推广收入
                 accountFlowDetail.setTradeSubjectItems(FlowTypeConstant.EXTENSION_INCOME.getItemsMap("EXTENSION_NEW_COUPON_SUBSIDY")); // 平台补贴运营商优惠卷支出
-                accountFlowDetail.setIncomeUserType(WebConstant.INCOME_USER_TYPE_TOPERATOR); //收益人类型 == 运营商id
+                accountFlowDetail.setIncomeUserType(OperatorEnum.INCOME_USER_TYPE_TOPERATOR.getCode()); //收益人类型 == 运营商id
                 accountFlowDetail.setIncomeUserId(tStudentOrder.getOperatorId()); //收益人id
                 accountFlowDetail.setOperatorId(tStudentOrder.getOperatorId());
                 // 若是石林运营商，优惠卷补贴给昆明运营商
@@ -338,14 +356,14 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
                 accountFlowDetailTwo.setPayType(tAccountFlow.getPayType()); // 支付类型
                 accountFlowDetailTwo.setItemType(StudyEnrollEnum.AFD_SYSTEM_COUPON_PAY.getCode());
                 accountFlowDetailTwo.setItemName("优惠卷补贴运营商-支出"); //项目名称
-                accountFlowDetailTwo.setItemAmount(new BigDecimal(-getCoupon.getSubsidyAmount().floatValue())); //运营商补贴金额
+                accountFlowDetailTwo.setItemAmount(subsidyAmount.negate()); //运营商补贴金额  变成负数
                 accountFlowDetailTwo.setTradeSubject(FlowTypeConstant.EXTENSION_PAY.getCode());  // 市场推广收入
                 accountFlowDetailTwo.setTradeSubjectItems(FlowTypeConstant.EXTENSION_PAY.getItemsMap("EXTENSION_NEW_COUPON_SUBSIDY_PAY")); // 优惠卷补贴支出
                 accountFlowDetailTwo.setIncomeUserType(StudyEnrollEnum.INCOME_USER_TYPE_TOPERATOR.getCode()); //收益人类型 == 运营商id
-                accountFlowDetailTwo.setIncomeUserId(DRIVERPRINCE_OPERATORID); //收益人id(学车小王子)
-                accountFlowDetailTwo.setOperatorId(DRIVERPRINCE_OPERATORID);  //学车小王子
+                accountFlowDetailTwo.setIncomeUserId(OperatorEnum.DRIVERPRINCE_OPERATORID.getCode()); //收益人id(学车小王子)
+                accountFlowDetailTwo.setOperatorId(OperatorEnum.DRIVERPRINCE_OPERATORID.getCode());  //学车小王子
                 accountFlowDetailService.save(tAccountFlowDetail);
-            }*/
+            }
         }
 
 

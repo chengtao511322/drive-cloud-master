@@ -2,7 +2,7 @@ package ${cfg.modulesPack}.repository;
 
 import ${cfg.modulesPack}.pojo.dto.*;
 import com.drive.common.core.base.BaseRepository;
-
+import com.drive.common.core.base.BasicsRepository;
 /**
  *
  * $!{table.comment} 服务类
