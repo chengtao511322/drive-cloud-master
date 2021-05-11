@@ -52,7 +52,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	@ApiOperation("教练钱包表分页列表")
 	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
 	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid PlatformWalletPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody PlatformWalletPageQueryParam param) {
 		return platformWalletRepository.pageList(param);
 	}
 	/**
@@ -61,7 +61,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	@ApiOperation("教练钱包表列表")
 	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
 	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid PlatformWalletPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody PlatformWalletPageQueryParam param) {
 		return platformWalletRepository.findList(param);
 	}
 
@@ -143,7 +143,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	@SneakyThrows
 	@EventLog(message = "导出教练钱包表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(PlatformWalletPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody PlatformWalletPageQueryParam param, HttpServletResponse response) {
 		platformWalletRepository.exportXls(param,response);
 	}
 

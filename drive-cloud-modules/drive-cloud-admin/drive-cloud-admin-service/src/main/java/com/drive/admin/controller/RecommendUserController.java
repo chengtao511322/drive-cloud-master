@@ -50,7 +50,7 @@ public class RecommendUserController extends BaseController<RecommendUserPageQue
 	@ApiOperation("推广人员信息表分页列表")
 	//@PreAuthorize("hasPermission('/admin/recommendUser',  'admin:recommendUser:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid RecommendUserPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody RecommendUserPageQueryParam param) {
 		return recommendUserRepository.pageList(param);
 	}
 	/**
@@ -59,7 +59,7 @@ public class RecommendUserController extends BaseController<RecommendUserPageQue
 	@ApiOperation("推广人员信息表列表")
 	//@PreAuthorize("hasPermission('/admin/recommendUser',  'admin:recommendUser:query')")
 	@PostMapping(value = "/findList")
-	public<RecommendUserVo> ResObject findList(@Valid RecommendUserPageQueryParam param) {
+	public<RecommendUserVo> ResObject findList(@Valid @RequestBody RecommendUserPageQueryParam param) {
 		return recommendUserRepository.findList(param);
 	}
 	@ApiOperation("通过渠道经理ID获取推广人员信息表列表")
@@ -138,7 +138,7 @@ public class RecommendUserController extends BaseController<RecommendUserPageQue
 	@SneakyThrows
 	@EventLog(message = "导出推广人员信息表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(RecommendUserPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody RecommendUserPageQueryParam param, HttpServletResponse response) {
 		recommendUserRepository.exportXls(param,response);
 	}
 

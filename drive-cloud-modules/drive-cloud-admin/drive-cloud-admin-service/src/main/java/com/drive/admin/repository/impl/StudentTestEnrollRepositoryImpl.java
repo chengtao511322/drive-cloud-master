@@ -217,6 +217,9 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
             StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
             if (studentStudyEnroll != null){
+                if (studentStudyEnroll.getIsInStudy().equals(StatusEnum.ENABLE.getCode())){
+                    return;
+                }
                 item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
             }
             QueryWrapper systemCoachStudentQueryWrapper = new QueryWrapper();
@@ -454,6 +457,8 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         //3. 考试挂科满10天
         // 条件查询
         QueryWrapper<StudentStudyEnrollEntity> queryWrapper = new QueryWrapper();
+        // 是否还在平台学习（0-否，1-是）
+        queryWrapper.eq("is_in_study",StatusEnum.ENABLE.getCode());
         List<StudentInfoEntity> studentInfoList = new ArrayList<>();
         if (StrUtil.isNotEmpty(studentTestEnrollPageQueryParam.getVagueRealNameSearch()) || StrUtil.isNotEmpty(studentTestEnrollPageQueryParam.getVaguePhoneSearch())){
             QueryWrapper studentQueryWrapper = new QueryWrapper();
@@ -660,6 +665,8 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         //3. 考试状态是取消
         // 条件查询
         QueryWrapper<StudentStudyEnrollEntity> queryWrapper = new QueryWrapper();
+        // 是否还在平台学习（0-否，1-是）
+        queryWrapper.eq("is_in_study",StatusEnum.ENABLE.getCode());
         List<StudentInfoEntity> studentInfoList = new ArrayList<>();
         if (StrUtil.isNotEmpty(studentTestEnrollPageQueryParam.getVagueRealNameSearch()) || StrUtil.isNotEmpty(studentTestEnrollPageQueryParam.getVaguePhoneSearch())){
             QueryWrapper studentQueryWrapper = new QueryWrapper();
@@ -793,6 +800,8 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         // 科目三考试不通过满10
         //科目三考试取消的
         QueryWrapper<StudentStudyEnrollEntity> queryWrapper = new QueryWrapper();
+        // 是否还在平台学习（0-否，1-是）
+        queryWrapper.eq("is_in_study",StatusEnum.ENABLE.getCode());
         List<StudentInfoEntity> studentInfoList = new ArrayList<>();
         if (StrUtil.isNotEmpty(studentTestEnrollPageQueryParam.getVagueRealNameSearch()) || StrUtil.isNotEmpty(studentTestEnrollPageQueryParam.getVaguePhoneSearch())){
             QueryWrapper studentQueryWrapper = new QueryWrapper();
@@ -1061,6 +1070,8 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
         //3.科目三考试通过
         // 条件查询
         QueryWrapper queryWrapper = new QueryWrapper();
+        // 是否还在平台学习（0-否，1-是）
+        queryWrapper.eq("is_in_study",StatusEnum.ENABLE.getCode());
         List<StudentInfoEntity> studentInfoList = new ArrayList<>();
         if (StrUtil.isNotEmpty(studentTestEnrollPageQueryParam.getVagueRealNameSearch()) || StrUtil.isNotEmpty(studentTestEnrollPageQueryParam.getVaguePhoneSearch())){
             QueryWrapper studentQueryWrapper = new QueryWrapper();

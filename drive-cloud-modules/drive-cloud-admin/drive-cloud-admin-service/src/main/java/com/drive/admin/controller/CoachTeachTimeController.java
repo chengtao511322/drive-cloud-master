@@ -83,7 +83,7 @@ public class CoachTeachTimeController extends BaseController<CoachTeachTimePageQ
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:query')")
 	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable CoachTeachTimePageQueryParam param) {
+	public ResObject getInfo(@PathVariable @RequestBody CoachTeachTimePageQueryParam param) {
 		return coachTeachTimeRepository.getInfo(param);
 	}
 
@@ -119,7 +119,7 @@ public class CoachTeachTimeController extends BaseController<CoachTeachTimePageQ
 	//@PreAuthorize("hasPermission('/admin/coachTeachTime',  'admin:coachTeachTime:delete')")
 	@EventLog(message = "删除教练课程时间表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable @RequestBody Long[] ids) {
 		return R.toRes(coachTeachTimeService.removeByIds(Arrays.asList(ids)));
 	}
 
