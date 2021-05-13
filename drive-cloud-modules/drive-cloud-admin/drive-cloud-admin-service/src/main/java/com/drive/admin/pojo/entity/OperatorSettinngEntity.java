@@ -1,19 +1,41 @@
 package com.drive.admin.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableField;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import com.drive.common.core.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
-
 
 /**
  * 运营商参数设置表
- *   主键ID 需要加入这个@TableId(type= IdType.ID_WORKER)
+ *   主键ID 需要加入这个
+ *   @TableId(type= IdType.ID_WORKER)
+ *   @TableLogic
+ *  @TableField(value="is_delete")
  * @author xiaoguo
  */
 @EqualsAndHashCode(callSuper = false)
@@ -41,8 +63,6 @@ public class OperatorSettinngEntity extends BaseEntity {
 	private String status;
 
 	// 是否删除（0-否，1-是）
-	@TableLogic
-	@TableField(fill = FieldFill.INSERT)
 	private String isDelete;
 
 	// 创建时间

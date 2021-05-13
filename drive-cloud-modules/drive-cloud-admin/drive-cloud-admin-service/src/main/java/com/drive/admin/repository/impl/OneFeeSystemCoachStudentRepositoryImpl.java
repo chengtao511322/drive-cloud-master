@@ -8,7 +8,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.enums.StudyEnrollEnum;
 import com.drive.admin.pojo.dto.OneFeeSystemCoachStudentEditParam;
 import com.drive.admin.pojo.dto.OneFeeSystemCoachStudentPageQueryParam;
+import com.drive.admin.pojo.entity.CoachInfoEntity;
 import com.drive.admin.pojo.entity.OneFeeSystemCoachStudentEntity;
+import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.entity.StudentOrderEntity;
 import com.drive.admin.pojo.vo.OneFeeSystemCoachStudentVo;
 import com.drive.admin.repository.OneFeeSystemCoachStudentRepository;
@@ -30,10 +32,12 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-                                                                                                                                        
+
 /**
  *
  * 一费制学员教练关联表 服务类
@@ -70,8 +74,42 @@ public class  OneFeeSystemCoachStudentRepositoryImpl extends BaseController<OneF
     public ResObject pageList(OneFeeSystemCoachStudentPageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
         Page<OneFeeSystemCoachStudentEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<OneFeeSystemCoachStudentEntity> pageList = oneFeeSystemCoachStudentService.page(page, this.getQueryWrapper(oneFeeSystemCoachStudentMapStruct, param));
+        QueryWrapper queryWrapper = this.getQueryWrapper(oneFeeSystemCoachStudentMapStruct, param);
+
+        // 用户手机号查询
+        if (StrUtil.isNotEmpty(param.getVagueRealNameSearch()) || StrUtil.isNotEmpty(param.getVaguePhoneSearch())){
+            List<StudentInfoEntity> studentInfoList = new ArrayList<>();
+            QueryWrapper studentQueryWrapper = new QueryWrapper();
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"real_name",param.getVagueRealNameSearch());
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"phone",param.getVaguePhoneSearch());
+            studentInfoList = studentInfoService.list(studentQueryWrapper);
+            if(studentInfoList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentInfoList);
+            queryWrapper.in("student_id",studentInfoList.stream().map(StudentInfoEntity::getId).collect(Collectors.toList()));
+        }
+
+
+        // 教练用户手机号查询
+        if (StrUtil.isNotEmpty(param.getVagueCoachNameSearch()) || StrUtil.isNotEmpty(param.getVagueCoachPhoneSearch())){
+            List<CoachInfoEntity> coachInfoList = new ArrayList<>();
+            QueryWrapper studentQueryWrapper = new QueryWrapper();
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueCoachNameSearch()),"real_name",param.getVagueCoachNameSearch());
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueCoachPhoneSearch()),"phone",param.getVagueCoachPhoneSearch());
+            coachInfoList = coachInfoService.list(studentQueryWrapper);
+            if(coachInfoList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),coachInfoList);
+            queryWrapper.in("coach_id",coachInfoList.stream().map(CoachInfoEntity::getId).collect(Collectors.toList()));
+        }
+        IPage<OneFeeSystemCoachStudentEntity> pageList = oneFeeSystemCoachStudentService.page(page,queryWrapper);
+        if (pageList.getRecords().size() <= 0){
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg());
+        }
         Page<OneFeeSystemCoachStudentVo> oneFeeSystemCoachStudentVoPage = oneFeeSystemCoachStudentMapStruct.toVoList(pageList);
+        oneFeeSystemCoachStudentVoPage.getRecords().stream().forEach((item) ->{
+            // 学员
+            if (StrUtil.isNotEmpty(item.getStudentId())){
+                StudentInfoEntity studentInfo = studentInfoService.getById(item.getStudentId());
+                if (studentInfo != null)item.setStudentName(studentInfo.getRealName());
+            }
+        });
         log.info(this.getClass() + "pageList-方法请求结果{}",oneFeeSystemCoachStudentVoPage);
         return R.success(oneFeeSystemCoachStudentVoPage);
     }

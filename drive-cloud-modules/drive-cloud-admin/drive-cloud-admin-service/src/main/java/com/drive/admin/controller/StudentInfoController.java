@@ -50,8 +50,8 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	 */
 	@ApiOperation("新用户列表分页")
 	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
-	@GetMapping(value = "/newStudentPageList")
-	public ResObject newStudentPageList(@Valid StudentInfoPageQueryParam param) {
+	@PostMapping(value = "/newStudentPageList")
+	public ResObject newStudentPageList(@Valid @RequestBody StudentInfoPageQueryParam param) {
 		return studentInfoRepository.newStudentPageList(param);
 	}
 
@@ -92,7 +92,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	@ApiOperation("学员信息表列表")
 	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid StudentInfoPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody StudentInfoPageQueryParam param) {
 		return studentInfoRepository.findList(param);
 	}
 
@@ -173,7 +173,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	@SneakyThrows
 	@EventLog(message = "导出学员信息表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(StudentInfoPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody StudentInfoPageQueryParam param, HttpServletResponse response) {
 			studentInfoRepository.exportXls(param,response);
 	}
 

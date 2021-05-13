@@ -119,6 +119,7 @@ public class  TestTrainPriceRepositoryImpl extends BaseController<TestTrainPrice
             log.error("数据空");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),testTrainPrice);
         }
+        queryWrapper.last("limit 1");
         TestTrainPriceVo testTrainPriceVo = BeanConvertUtils.copy(testTrainPrice, TestTrainPriceVo.class);
         log.info(this.getClass() + "getInfo-方法请求结果{}",testTrainPriceVo);
         return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),testTrainPriceVo);

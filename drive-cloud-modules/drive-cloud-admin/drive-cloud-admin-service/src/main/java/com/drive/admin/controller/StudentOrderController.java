@@ -51,7 +51,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	@ApiOperation("学员订单表分页列表")
 	//@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid StudentOrderPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody StudentOrderPageQueryParam param) {
 		return studentOrderRepository.pageList(param);
 	}
 	/**
@@ -60,7 +60,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	@ApiOperation("学员订单表列表")
 	//@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid StudentOrderPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody StudentOrderPageQueryParam param) {
 		return studentOrderRepository.findList(param);
 	}
 
@@ -139,7 +139,7 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 	@SneakyThrows
 	@EventLog(message = "导出学员订单表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(StudentOrderPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody StudentOrderPageQueryParam param, HttpServletResponse response) {
 		studentOrderRepository.exportXls(param,response);
 	}
 

@@ -5,12 +5,14 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.drive.admin.pojo.dto.OperatorEditParam;
-import com.drive.admin.pojo.dto.OperatorInstallParam;
-import com.drive.admin.pojo.dto.OperatorPageQueryParam;
+import com.drive.admin.enums.StatusEnum;
+import com.drive.admin.pojo.dto.*;
+import com.drive.admin.pojo.entity.OperatorAreaEntity;
 import com.drive.admin.pojo.entity.OperatorEntity;
+import com.drive.admin.pojo.vo.OperatorAreaVo;
 import com.drive.admin.pojo.vo.OperatorVo;
 import com.drive.admin.repository.OperatorRepository;
+import com.drive.admin.service.OperatorAreaService;
 import com.drive.admin.service.OperatorService;
 import com.drive.admin.service.mapstruct.OperatorMapStruct;
 import com.drive.common.core.base.BaseController;
@@ -46,6 +48,9 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
     @Autowired
     private OperatorMapStruct operatorMapStruct;
 
+    @Autowired
+    private OperatorAreaService operatorAreaService;
+
     /*
      *
      *功能描述
@@ -63,10 +68,14 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
         QueryWrapper queryWrapper = this.getQueryWrapper(operatorMapStruct, param);
 
         //  模糊查询
-        //queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
+        }
+
+        if (param.getCreateDateTimeSearchArr() != null && param.getCreateDateTimeSearchArr().length > 0 ){
+            queryWrapper.between("create_time",param.getCreateDateTimeSearchArr()[0],param.getCreateDateTimeSearchArr()[1]);
         }
         IPage<OperatorEntity> pageList = operatorService.page(page, queryWrapper);
         if (pageList.getRecords().size() <= 0){
@@ -267,5 +276,76 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
         return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_STATUS_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_STATUS_FAILL.subCode(),SubResultCode.DATA_STATUS_FAILL.subMsg());
     }
 
+    @Override
+    public ResObject installOperator(OperatorInstallParam operatorEditParam) {
+        log.info(this.getClass() + "installOperator-方法请求参数{}",operatorEditParam);
+        log.info(this.getClass() + "save方法请求参数{}",operatorEditParam);
+        if (operatorEditParam == null){
+            log.error("数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        OperatorEntity operator = BeanConvertUtils.copy(operatorEditParam, OperatorEntity.class);
+        operator.setStatus(StatusEnum.ENABLE.getCode());
+        Boolean result = operatorService.save(operator);
+        log.info(this.getClass() + "save-方法请求结果{}",result);
+
+        // 区域处理
+        List<OperatorAreaInstallParam> operatorAreaInstallParams = operatorEditParam.getOperatorAreaInstallParams();
+        if (operatorAreaInstallParams.size() > 0){
+            // 添加区域
+            List<OperatorAreaEntity> operatorArea = BeanConvertUtils.copyList(operatorAreaInstallParams, OperatorAreaEntity.class);
+            operatorArea.stream().forEach((item) ->{
+                item.setOperatorId(operator.getId());
+            });
+            Boolean res = operatorAreaService.saveOrUpdateBatch(operatorArea);
+            if (!res)return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+        }
+        return R.success();
+    }
+
+    @Override
+    public ResObject updateOperator(OperatorEditParam operatorEditParam) {
+        if (StrUtil.isEmpty(operatorEditParam.getId())){
+            return R.failure();
+        }
+        log.info(this.getClass() + "update方法请求参数{}",operatorEditParam);
+        if (operatorEditParam == null){
+            log.error("数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        OperatorEntity operator = BeanConvertUtils.copy(operatorEditParam, OperatorEntity.class);
+        Boolean result = operatorService.updateById(operator);
+        log.info(this.getClass() + "update-方法请求结果{}",result);
+        // 区域处理
+        List<OperatorAreaInstallParam> operatorAreaInstallParams = operatorEditParam.getOperatorAreaInstallParams();
+        if (operatorAreaInstallParams.size() > 0){
+            // 删除数据
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("operator_id",operatorEditParam.getId());
+            operatorAreaService.remove(queryWrapper);
+            // 添加区域
+            List<OperatorAreaEntity> operatorArea = BeanConvertUtils.copyList(operatorAreaInstallParams, OperatorAreaEntity.class);
+            operatorArea.stream().forEach((item) ->{
+                item.setOperatorId(operator.getId());
+            });
+            Boolean res = operatorAreaService.saveOrUpdateBatch(operatorArea);
+            if (!res)return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+        }
+        return R.success();
+    }
+
+    @Override
+    public ResObject getOperatingArea(String operatorId) {
+        if (StrUtil.isEmpty(operatorId)){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("operator_id",operatorId);
+        List<OperatorAreaEntity> operatorAreaList = operatorAreaService.list(queryWrapper);
+        if (operatorAreaList.size() <= 0){
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),operatorAreaList);
+        }
+        return R.success(BeanConvertUtils.copyList(operatorAreaList, OperatorAreaVo.class));
+    }
 }
 

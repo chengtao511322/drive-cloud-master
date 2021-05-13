@@ -4,6 +4,7 @@ import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.constant.ServiceNameConstants;
 import com.drive.marketing.factory.ActivityFallbackFactory;
 import com.drive.marketing.pojo.dto.CouponAcquirePageQueryParam;
+import com.drive.marketing.pojo.dto.CouponEditParam;
 import com.drive.marketing.pojo.vo.CouponGetVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,4 +23,12 @@ public interface RemoteActivityService {
      */
     @PostMapping("/coupon/getCoupon")
     ResObject<CouponGetVo> getCoupon(@RequestBody CouponAcquirePageQueryParam couponPageQueryParam);
+
+    /**
+     * 保存优惠券
+     * @param couponEditParam
+     * @return
+     */
+    @PostMapping("/coupon")
+    ResObject saveCoupon(@RequestBody CouponEditParam couponEditParam);
 }

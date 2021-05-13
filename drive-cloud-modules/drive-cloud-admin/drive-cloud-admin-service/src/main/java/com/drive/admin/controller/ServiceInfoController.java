@@ -48,7 +48,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	@ApiOperation("客服人员信息表分页列表")
 	//@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid ServiceInfoPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody ServiceInfoPageQueryParam param) {
 		return serviceInfoRepository.pageList(param);
 	}
 	/**
@@ -57,7 +57,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	@ApiOperation("客服人员信息表列表")
 	//@PreAuthorize("hasPermission('/admin/serviceInfo',  'admin:serviceInfo:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid ServiceInfoPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody ServiceInfoPageQueryParam param) {
 		return serviceInfoRepository.findList(param);
 	}
 
@@ -128,7 +128,7 @@ public class ServiceInfoController extends BaseController<ServiceInfoPageQueryPa
 	@SneakyThrows
 	@EventLog(message = "导出客服人员信息表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(ServiceInfoPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody ServiceInfoPageQueryParam param, HttpServletResponse response) {
 		serviceInfoRepository.exportXls(param,response);
 	}
 

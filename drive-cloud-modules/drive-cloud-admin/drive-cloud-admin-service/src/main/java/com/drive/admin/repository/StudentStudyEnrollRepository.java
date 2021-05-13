@@ -76,5 +76,12 @@ public interface StudentStudyEnrollRepository extends BaseRepository<StudentStud
      * @return
      */
     ResObject updateBatchById(List<StudentStudyEnrollEditParam> updateParam);
+
+    /**
+     * 移除学员
+     * @param updateParam
+     * @return
+     */
+    ResObject operationStudent(StudentStudyEnrollEditParam studyEnrollEditParam);
 }
 

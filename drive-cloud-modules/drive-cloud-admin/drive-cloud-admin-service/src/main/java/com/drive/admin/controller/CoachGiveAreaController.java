@@ -50,8 +50,8 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	*/
 	@ApiOperation("教练授课区域表分页列表")
 	//@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid CoachGiveAreaPageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody CoachGiveAreaPageQueryParam param) {
 		return coachGiveAreaRepository.pageList(param);
 	}
 	/**
@@ -59,8 +59,8 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	*/
 	@ApiOperation("教练授课区域表列表")
 	//@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid CoachGiveAreaPageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody CoachGiveAreaPageQueryParam param) {
 		return coachGiveAreaRepository.findList(param);
 	}
 
@@ -81,8 +81,8 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	@ApiOperation("条件查询获取教练授课区域表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable CoachGiveAreaPageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@PathVariable @RequestBody CoachGiveAreaPageQueryParam param) {
 		return coachGiveAreaRepository.getInfo(param);
 	}
 
@@ -118,7 +118,7 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	//@PreAuthorize("hasPermission('/admin/coachGiveArea',  'admin:coachGiveArea:delete')")
 	@EventLog(message = "删除教练授课区域表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(coachGiveAreaService.removeByIds(Arrays.asList(ids)));
 	}
 
@@ -142,7 +142,7 @@ public class CoachGiveAreaController extends BaseController<CoachGiveAreaPageQue
 	@SneakyThrows
 	@EventLog(message = "导出教练授课区域表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(CoachGiveAreaPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody CoachGiveAreaPageQueryParam param, HttpServletResponse response) {
 		coachGiveAreaRepository.exportXls(param,response);
 	}
 

@@ -51,18 +51,18 @@ public class ChannelAuthController extends BaseController<ChannelAuthPageQueryPa
 	* 菜单 按钮 用户拥有权限管理 分页列表
 	*/
 	@ApiOperation("菜单 按钮 用户拥有权限管理分页列表")
-	@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid ChannelAuthPageQueryParam param) {
+	//@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:query')")
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody ChannelAuthPageQueryParam param) {
 		return channelAuthRepository.pageList(param);
 	}
 	/**
 	* 菜单 按钮 用户拥有权限管理 列表
 	*/
 	@ApiOperation("菜单 按钮 用户拥有权限管理列表")
-	@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid ChannelAuthPageQueryParam param) {
+	//@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:query')")
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody ChannelAuthPageQueryParam param) {
 		return channelAuthRepository.findList(param);
 	}
 
@@ -71,7 +71,7 @@ public class ChannelAuthController extends BaseController<ChannelAuthPageQueryPa
 	*/
 	@ApiOperation("获取菜单 按钮 用户拥有权限管理")
 	@ApiImplicitParam(name = "channelId", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:query')")
+	//@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return channelAuthRepository.getById(id);
@@ -82,15 +82,15 @@ public class ChannelAuthController extends BaseController<ChannelAuthPageQueryPa
 	 */
 	@ApiOperation("条件查询获取菜单 按钮 用户拥有权限管理")
 	@ApiImplicitParam(name = "channelId", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable ChannelAuthPageQueryParam param) {
+	//@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:query')")
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@PathVariable @RequestBody ChannelAuthPageQueryParam param) {
 		return channelAuthRepository.getInfo(param);
 	}
 
 	@ApiOperation("复制用户权限")
 	@ApiImplicitParam(name = "channelId", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:copyChannelAuth')")
+	//@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:copyChannelAuth')")
 	@PostMapping("/copyChannelAuth")
 	ResObject copyChannelAuth(@RequestBody ChannelAuthEditParam channelAuthEditParam){
 		return channelAuthRepository.copyChannelAuth(channelAuthEditParam);
@@ -101,7 +101,7 @@ public class ChannelAuthController extends BaseController<ChannelAuthPageQueryPa
 	*/
 	@ApiOperation("新增菜单 按钮 用户拥有权限管理")
 	@ApiImplicitParam(name = "ChannelAuthEditParam ", value = "新增菜单 按钮 用户拥有权限管理", dataType = "ChannelAuthEditParam")
-	@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:add')")
+	//@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:add')")
 	@EventLog(message = "新增菜单 按钮 用户拥有权限管理", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody ChannelAuthInstallParam channelAuthInstallParam) {
@@ -113,7 +113,7 @@ public class ChannelAuthController extends BaseController<ChannelAuthPageQueryPa
 	*/
 	@ApiOperation("修改菜单 按钮 用户拥有权限管理")
 	@ApiImplicitParam(name = "ChannelAuthEditParam ", value = "修改菜单 按钮 用户拥有权限管理", dataType = "ChannelAuthEditParam")
-	@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:edit')")
+	//@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:edit')")
 	@EventLog(message = "修改菜单 按钮 用户拥有权限管理", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody ChannelAuthEditParam channelAuthEditParam) {
@@ -123,7 +123,7 @@ public class ChannelAuthController extends BaseController<ChannelAuthPageQueryPa
 
 	@ApiOperation("修改菜单按钮用户拥有权限管理")
 	@ApiImplicitParam(name = "ChannelAuthEditParam ", value = "修改菜单 按钮 用户拥有权限管理", dataType = "ChannelAuthEditParam")
-	@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:updateChannelAuth')")
+	//@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:updateChannelAuth')")
 	@EventLog(message = "修改菜单 按钮 用户拥有权限管理", businessType = EventLogEnum.UPDATE)
 	@PutMapping("updateChannelAuth")
 	public ResObject updateChannelAuth(@Valid @RequestBody ChannelAuthEditParam channelAuthEditParam) {
@@ -135,7 +135,7 @@ public class ChannelAuthController extends BaseController<ChannelAuthPageQueryPa
 	*/
 	@ApiOperation("删除菜单 按钮 用户拥有权限管理")
 	@ApiImplicitParam(name = "channelId", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:delete')")
+	//@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:delete')")
 	@EventLog(message = "删除菜单 按钮 用户拥有权限管理", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{channelIds}")
 	public ResObject delete(@PathVariable Long[] channelIds) {
@@ -147,7 +147,7 @@ public class ChannelAuthController extends BaseController<ChannelAuthPageQueryPa
 	*/
 	@ApiOperation("通过主键删除菜单 按钮 用户拥有权限管理")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除菜单 按钮 用户拥有权限管理", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -158,11 +158,11 @@ public class ChannelAuthController extends BaseController<ChannelAuthPageQueryPa
 	* 导出菜单 按钮 用户拥有权限管理
 	*/
 	@ApiOperation("导出菜单 按钮 用户拥有权限管理")
-	@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:export')")
+	//@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:export')")
 	@SneakyThrows
 	@EventLog(message = "导出菜单 按钮 用户拥有权限管理", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(ChannelAuthPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody ChannelAuthPageQueryParam param, HttpServletResponse response) {
 		channelAuthRepository.exportXls(param,response);
 	}
 
@@ -171,7 +171,7 @@ public class ChannelAuthController extends BaseController<ChannelAuthPageQueryPa
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用菜单 按钮 用户拥有权限管理")
-	@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:changeStatus')")
+	//@PreAuthorize("hasPermission('/basics/channelAuth',  'basics:channelAuth:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用菜单 按钮 用户拥有权限管理", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

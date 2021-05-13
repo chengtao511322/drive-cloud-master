@@ -52,7 +52,7 @@ public class CoachingGridController extends BaseController<CoachingGridPageQuery
 	@ApiOperation("平台训练场地表分页列表")
 	//@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid CoachingGridPageQueryParam param) {
+	public ResObject pageList(@RequestBody @Valid CoachingGridPageQueryParam param) {
 		return coachingGridRepository.pageList(param);
 	}
 	/**
@@ -61,7 +61,7 @@ public class CoachingGridController extends BaseController<CoachingGridPageQuery
 	@ApiOperation("平台训练场地表列表")
 	//@PreAuthorize("hasPermission('/admin/coachingGrid',  'admin:coachingGrid:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid CoachingGridPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody CoachingGridPageQueryParam param) {
 		return coachingGridRepository.findList(param);
 	}
 
@@ -132,7 +132,7 @@ public class CoachingGridController extends BaseController<CoachingGridPageQuery
 	@SneakyThrows
 	@EventLog(message = "导出平台训练场地表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(CoachingGridPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody CoachingGridPageQueryParam param, HttpServletResponse response) {
 		coachingGridRepository.exportXls(param,response);
 	}
 

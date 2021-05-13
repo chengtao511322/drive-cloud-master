@@ -1,12 +1,11 @@
 package com.drive.admin.pojo.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import java.time.LocalDateTime;
 import lombok.Data;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 
 /**
@@ -19,22 +18,18 @@ public class TestTrainPriceInstallParam {
 
 
     // 主键
-    @NotBlank(message = "主键不能为空")
     @ApiModelProperty(value = "主键")
     private String id;
 
     // 省
-    @NotBlank(message = "省不能为空")
     @ApiModelProperty(value = "省")
     private String provinceId;
 
     // 市
-    @NotBlank(message = "市不能为空")
     @ApiModelProperty(value = "市")
     private String cityId;
 
     // 区
-    @NotBlank(message = "区不能为空")
     @ApiModelProperty(value = "区")
     private String areaId;
 
@@ -54,32 +49,26 @@ public class TestTrainPriceInstallParam {
     private String priceType;
 
     // 单价
-    @NotBlank(message = "单价不能为空")
     @ApiModelProperty(value = "单价")
     private BigDecimal price;
 
     // 详情（报名所需的费用明细介绍）
-    @NotBlank(message = "详情（报名所需的费用明细介绍）不能为空")
     @ApiModelProperty(value = "详情（报名所需的费用明细介绍）")
     private String remarks;
 
     // 创建者
-    @NotBlank(message = "创建者不能为空")
     @ApiModelProperty(value = "创建者")
     private String createUser;
 
     // 创建时间
-    @NotBlank(message = "创建时间不能为空")
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 
     // 更新者
-    @NotBlank(message = "更新者不能为空")
     @ApiModelProperty(value = "更新者")
     private String updateUser;
 
     // 更新时间
-    @NotBlank(message = "更新时间不能为空")
     @ApiModelProperty(value = "更新时间")
     private LocalDateTime updateTime;
 

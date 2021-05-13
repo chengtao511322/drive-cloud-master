@@ -51,7 +51,7 @@ public class DriveSchoolController extends BaseController<DriveSchoolPageQueryPa
 	@ApiOperation("平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。分页列表")
 	//@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid DriveSchoolPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody DriveSchoolPageQueryParam param) {
 		return driveSchoolRepository.pageList(param);
 	}
 	/**
@@ -60,7 +60,7 @@ public class DriveSchoolController extends BaseController<DriveSchoolPageQueryPa
 	@ApiOperation("平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。列表")
 	//@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid DriveSchoolPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody DriveSchoolPageQueryParam param) {
 		return driveSchoolRepository.findList(param);
 	}
 
@@ -131,7 +131,7 @@ public class DriveSchoolController extends BaseController<DriveSchoolPageQueryPa
 	@SneakyThrows
 	@EventLog(message = "导出平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(DriveSchoolPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody DriveSchoolPageQueryParam param, HttpServletResponse response) {
 		driveSchoolRepository.exportXls(param,response);
 	}
 

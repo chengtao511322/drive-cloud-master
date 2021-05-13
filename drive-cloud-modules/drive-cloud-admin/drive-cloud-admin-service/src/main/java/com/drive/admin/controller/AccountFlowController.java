@@ -52,8 +52,8 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	*/
 	@ApiOperation("平台账务流水分页列表")
 	@PreAuthorize("hasPermission('/admin/accountFlow',  'admin:accountFlow:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid AccountFlowPageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody AccountFlowPageQueryParam param) {
 		return accountFlowRepository.pageList(param);
 	}
 	/**
@@ -61,8 +61,8 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	*/
 	@ApiOperation("平台账务流水列表")
 	@PreAuthorize("hasPermission('/admin/accountFlow',  'admin:accountFlow:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid AccountFlowPageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody AccountFlowPageQueryParam param) {
 		return accountFlowRepository.findList(param);
 	}
 
@@ -83,8 +83,8 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	@ApiOperation("条件查询获取平台账务流水")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	@PreAuthorize("hasPermission('/admin/accountFlow',  'admin:accountFlow:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable AccountFlowPageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@RequestBody AccountFlowPageQueryParam param) {
 		return accountFlowRepository.getInfo(param);
 	}
 
@@ -144,7 +144,7 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	@SneakyThrows
 	@EventLog(message = "导出平台账务流水", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(AccountFlowPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody AccountFlowPageQueryParam param, HttpServletResponse response) {
 		accountFlowRepository.exportXls(param,response);
 	}
 

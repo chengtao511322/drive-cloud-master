@@ -23,6 +23,7 @@ import com.drive.admin.service.mapstruct.StudentTestEnrollMapStruct;
 import com.drive.admin.strategy.StudyEnrollStrategy;
 import com.drive.admin.strategy.context.SpringContextUtil;
 import com.drive.admin.util.AdminCacheUtil;
+import com.drive.admin.util.MyDateUtil;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
@@ -165,6 +166,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<StudentTestEnrollVo> studentTestEnrollVoPage = studentTestEnrollMapStruct.toVoList(pageList);
+        List<StudentTestEnrollVo> newStudentTestEnrollVoList = new ArrayList<>();
         // 循环数据
         studentTestEnrollVoPage.getRecords().stream().forEach((item) ->{
             if (StrUtil.isNotEmpty(item.getStudentId())){
@@ -211,17 +213,7 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             int examNumber = studentTestEnrollService.count(testQueryWrapper);
             item.setExamNumber(examNumber);
 
-            // 查询报名单号
-            QueryWrapper studyQueryWrapper = new QueryWrapper();
-            studyQueryWrapper.eq("student_id",item.getStudentId());
-            studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
-            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
-            if (studentStudyEnroll != null){
-                if (studentStudyEnroll.getIsInStudy().equals(StatusEnum.ENABLE.getCode())){
-                    return;
-                }
-                item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
-            }
+
             QueryWrapper systemCoachStudentQueryWrapper = new QueryWrapper();
             // 学员ID
             systemCoachStudentQueryWrapper.eq("student_id",item.getStudentId());
@@ -262,21 +254,47 @@ public class  StudentTestEnrollRepositoryImpl extends BaseController<StudentTest
             // 预约成功 考虑把 实际时间为明天的预警
             if (isBookSuccess){
                 // examine
-                long examineDay= DateUtil.betweenDay(new Date(),DateUtils.asDate(item.getTestActualTime()),true);//两个时间间隔几
-                if ((examineDay) == 1) {
+                //long examineDay= DateUtil.betweenDay(new Date(),DateUtils.asDate(item.getTestActualTime()),true);//两个时间间隔几
+                long time = System.currentTimeMillis() - DateUtils.asDate(item.getTestActualTime()).getTime();
+                //int examineDay = (int) (time / (1000 * 60 * 60 * 24));
+                Date date1 = new Date();
+                Date date2 = DateUtils.asDate(item.getTestActualTime());
+                long examineDay = (date2.getTime() - date1.getTime()) / (1000L*3600L*12L);
+                if ((examineDay) == 0) {
                     item.setExamine(true);
                 }
             }
             // 已支付待申请 考虑把 期望时间为明天的预警
             if (isPaySuccess){
                 // examine
-                long examineDay= DateUtil.betweenDay(new Date(), DateUtils.asDate(item.getTestHopeTime()), true);//两个时间间隔几
-                if ((examineDay) == 1) {
+                //long examineDay= DateUtil.betweenDay(new Date(), DateUtils.asDate(item.getTestHopeTime()), true);//两个时间间隔几
+                // 获取日期
+                Date date1 = new Date();
+                Date date2 = DateUtils.asDate(item.getTestHopeTime());
+
+                long examineDay = (date2.getTime() - date1.getTime()) / (1000L*3600L*12L);
+                if ((examineDay) == 0) {
                     item.setExamine(true);
                 }
             }
+
+            // 查询报名单号
+            QueryWrapper studyQueryWrapper = new QueryWrapper();
+            studyQueryWrapper.eq("student_id",item.getStudentId());
+            studyQueryWrapper.eq("enroll_status",StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
+            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studyQueryWrapper);
+            if (studentStudyEnroll != null){
+                item.setStudentStudyEnrollVo(BeanConvertUtils.copy(studentStudyEnroll,StudentStudyEnrollVo.class));
+                if (studentStudyEnroll.getIsInStudy().equals(StatusEnum.NOTDELETE.getCode())){
+                    return;
+                }
+            }
+            newStudentTestEnrollVoList.add(item);
         });
-        log.info(this.getClass() + "pageList-方法请求结果{}",studentTestEnrollVoPage);
+        if (newStudentTestEnrollVoList.size() <= 0){
+            studentTestEnrollVoPage.setTotal(0);
+        }
+        log.info(this.getClass() + "pageList-方法请求结果{}",studentTestEnrollVoPage.setRecords(newStudentTestEnrollVoList));
         return R.success(studentTestEnrollVoPage);
     }
 

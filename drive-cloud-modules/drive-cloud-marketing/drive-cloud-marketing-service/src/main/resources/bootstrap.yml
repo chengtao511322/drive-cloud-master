@@ -8,7 +8,6 @@ server:
     worker-threads: 256
   use-forward-headers: true
 
-
 # Spring
 spring: 
   application:
@@ -22,10 +21,10 @@ spring:
     nacos:
       discovery:
         # 服务注册地址 172.24.86.62
-        server-addr: ${nacos_host:125.0.8.191}:${nacos_port:6648}
+        server-addr: ${nacos_host:127.0.0.1}:${nacos_port:8848}
       config:
         # 配置中心地址
-        server-addr: ${nacos_host:125.0.8.191}:${nacos_port:6648}
+        server-addr: ${nacos_host:127.0.0.1}:${nacos_port:8848}
         # 配置文件格式
         file-extension: yml
         # 共享配置
@@ -37,3 +36,30 @@ hystrix:
       coreSize: 8
       maxQueueSize: 1000
       queueSizeRejectionThreshold: 800
+
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: my_test_tx_group
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+  config:
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:8848
+      group: SEATA_GROUP
+      username: nacos
+      password: nacos
+      namespace: 36f88435-af16-4cee-a055-52255827f15f
+  service:
+    vgroup-mapping:
+      my_test_tx_group: default
+    disable-global-transaction: false
+  client:
+    rm:
+      report-success-enable: false

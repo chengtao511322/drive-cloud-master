@@ -29,12 +29,14 @@ import com.drive.marketing.service.CouponGetService;
 import com.drive.marketing.service.CouponProductRelationService;
 import com.drive.marketing.service.CouponService;
 import com.drive.marketing.service.mapstruct.CouponMapStruct;
+import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -125,6 +127,7 @@ public class CouponController extends BaseController<CouponPageQueryParam, Coupo
 	@ApiImplicitParam(name = "CouponEditParam ", value = "新增", dataType = "CouponEditParam")
 	//@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:add')")
 	@EventLog(message = "新增", businessType = EventLogEnum.CREATE)
+	@GlobalTransactional
 	@PostMapping
 	public ResObject save(@Valid @RequestBody CouponEditParam couponEditParam) {
 		Long userId = SecurityUtils.getLoginUser().getUserId();

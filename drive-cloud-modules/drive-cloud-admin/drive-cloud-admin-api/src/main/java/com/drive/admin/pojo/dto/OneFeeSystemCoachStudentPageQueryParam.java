@@ -1,6 +1,7 @@
 package com.drive.admin.pojo.dto;
 
 import com.drive.common.core.base.BasePageQueryParam;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -115,5 +116,12 @@ public class OneFeeSystemCoachStudentPageQueryParam extends BasePageQueryParam {
 
 	// 平台提成金额（所有上级运营商提成金）
 	private BigDecimal serviceChangeMoney;
+
+
+	// 教练名称搜索
+	@ApiModelProperty(value = "教练名称搜索")
+	private String vagueCoachNameSearch;
+	@ApiModelProperty(value = "教练手机搜索")
+	private String vagueCoachPhoneSearch;
 
 }

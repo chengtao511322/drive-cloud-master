@@ -83,7 +83,7 @@ public class StudentTrainCarApplyController extends BaseController<StudentTrainC
 	@ApiImplicitParam(name = "trainApplyNo", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/studentTrainCarApply',  'admin:studentTrainCarApply:query')")
 	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable StudentTrainCarApplyPageQueryParam param) {
+	public ResObject getInfo(@PathVariable @RequestBody StudentTrainCarApplyPageQueryParam param) {
 		return studentTrainCarApplyRepository.getInfo(param);
 	}
 
@@ -143,7 +143,7 @@ public class StudentTrainCarApplyController extends BaseController<StudentTrainC
 	@SneakyThrows
 	@EventLog(message = "导出学员学车预约表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(StudentTrainCarApplyPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody StudentTrainCarApplyPageQueryParam param, HttpServletResponse response) {
 		studentTrainCarApplyRepository.exportXls(param,response);
 	}
 

@@ -54,7 +54,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	@ApiOperation("学员学车报名单分页列表")
 	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid StudentStudyEnrollPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
 		return studentStudyEnrollRepository.pageList(param);
 	}
 
@@ -83,6 +83,12 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	public ResObject drillStudentDataPageList(@Valid @RequestBody StudentOrderPageQueryParam param) {
 		return studentStudyEnrollRepository.drillStudentDataPageList(param);
 	}
+	@ApiOperation("操作学员报名信息")
+	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
+	@PostMapping(value = "/operationStudent")
+	public ResObject operationStudent(@Valid @RequestBody StudentStudyEnrollEditParam param) {
+		return studentStudyEnrollRepository.operationStudent(param);
+	}
 
 
 	@ApiOperation("待支付转化分页列表")
@@ -106,7 +112,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	@ApiOperation("学员学车报名单列表")
 	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid StudentStudyEnrollPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
 		return studentStudyEnrollRepository.findList(param);
 	}
 
@@ -144,8 +150,8 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	@ApiOperation("获取学员学车报名单（条件查询一条数据）")
 	@ApiImplicitParam(name = "studyEnrollNo", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/studentStudyEnroll',  'admin:studentStudyEnroll:query')")
-	@GetMapping("/getStudentStudyEnrollInfo")
-	public ResObject getStudentStudyEnrollInfo(@Valid StudentStudyEnrollPageQueryParam studentStudyEnrollPageQueryParam) {
+	@PostMapping("/getStudentStudyEnrollInfo")
+	public ResObject getStudentStudyEnrollInfo(@Valid @RequestBody StudentStudyEnrollPageQueryParam studentStudyEnrollPageQueryParam) {
 		return studentStudyEnrollRepository.getStudentStudyEnrollInfo(studentStudyEnrollPageQueryParam);
 	}
 
@@ -199,7 +205,7 @@ public class StudentStudyEnrollController extends BaseController<StudentStudyEnr
 	@SneakyThrows
 	@EventLog(message = "导出学员学车报名单", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(StudentStudyEnrollPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody StudentStudyEnrollPageQueryParam param, HttpServletResponse response) {
 		studentStudyEnrollRepository.exportXls(param,response);
 	}
 

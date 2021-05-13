@@ -53,8 +53,8 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	*/
 	@ApiOperation("学员教练评价明细表分页列表")
 	//@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid EvaluateTagAppraisePageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody EvaluateTagAppraisePageQueryParam param) {
 		return evaluateTagAppraiseRepository.pageList(param);
 	}
 	@ApiOperation("通过评论ID获取学员教练评价明细表列表")
@@ -73,8 +73,8 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	*/
 	@ApiOperation("学员教练评价明细表列表")
 	//@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid EvaluateTagAppraisePageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody EvaluateTagAppraisePageQueryParam param) {
 		return evaluateTagAppraiseRepository.findList(param);
 	}
 
@@ -95,8 +95,8 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	@ApiOperation("条件查询获取学员教练评价明细表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/evaluateTagAppraise',  'admin:evaluateTagAppraise:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable EvaluateTagAppraisePageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@PathVariable @RequestBody EvaluateTagAppraisePageQueryParam param) {
 		return evaluateTagAppraiseRepository.getInfo(param);
 	}
 
@@ -156,7 +156,7 @@ public class EvaluateTagAppraiseController extends BaseController<EvaluateTagApp
 	@SneakyThrows
 	@EventLog(message = "导出学员教练评价明细表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(EvaluateTagAppraisePageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody EvaluateTagAppraisePageQueryParam param, HttpServletResponse response) {
 		evaluateTagAppraiseRepository.exportXls(param,response);
 	}
 

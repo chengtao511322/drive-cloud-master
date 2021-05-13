@@ -50,8 +50,8 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	*/
 	@ApiOperation("运营商教练课时设置表分页列表")
 	//@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid CoachHourSettingDetailPageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody CoachHourSettingDetailPageQueryParam param) {
 		return coachHourSettingDetailRepository.pageList(param);
 	}
 	/**
@@ -59,8 +59,8 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	*/
 	@ApiOperation("运营商教练课时设置表列表")
 	//@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid CoachHourSettingDetailPageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody CoachHourSettingDetailPageQueryParam param) {
 		return coachHourSettingDetailRepository.findList(param);
 	}
 
@@ -81,8 +81,8 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	@ApiOperation("条件查询获取运营商教练课时设置表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/coachHourSettingDetail',  'admin:coachHourSettingDetail:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable CoachHourSettingDetailPageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@RequestBody CoachHourSettingDetailPageQueryParam param) {
 		return coachHourSettingDetailRepository.getInfo(param);
 	}
 
@@ -142,7 +142,7 @@ public class CoachHourSettingDetailController extends BaseController<CoachHourSe
 	@SneakyThrows
 	@EventLog(message = "导出运营商教练课时设置表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(CoachHourSettingDetailPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody CoachHourSettingDetailPageQueryParam param, HttpServletResponse response) {
 		coachHourSettingDetailRepository.exportXls(param,response);
 	}
 

@@ -1,3 +1,4 @@
+/*
 package com.drive.pay.config;
 
 import com.alipay.api.AlipayClient;
@@ -76,4 +77,4 @@ public class AliConfig {
         return content;
     }
  
-}
+}*/

@@ -49,7 +49,7 @@ public class ChannelController extends BaseController<ChannelPageQueryParam, Cha
 	@ApiOperation("栏目分页列表")
 	@PreAuthorize("hasPermission('/basics/channel',  'basics:channel:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid ChannelPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody ChannelPageQueryParam param) {
 		return channelRepository.pageList(param);
 	}
 	/**
@@ -58,7 +58,7 @@ public class ChannelController extends BaseController<ChannelPageQueryParam, Cha
 	@ApiOperation("栏目列表")
 	@PreAuthorize("hasPermission('/basics/channel',  'basics:channel:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid ChannelPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody ChannelPageQueryParam param) {
 		return channelRepository.findList(param);
 	}
 
@@ -134,7 +134,7 @@ public class ChannelController extends BaseController<ChannelPageQueryParam, Cha
 	*/
 	@ApiOperation("删除栏目")
 	@ApiImplicitParam(name = "ids", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/channel',  'basics:channel:delete')")
+	//@PreAuthorize("hasPermission('/basics/channel',  'basics:channel:delete')")
 	@EventLog(message = "删除栏目", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable String[] ids) {
@@ -146,7 +146,7 @@ public class ChannelController extends BaseController<ChannelPageQueryParam, Cha
 	*/
 	@ApiOperation("删除教练信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "删除教练信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -157,11 +157,11 @@ public class ChannelController extends BaseController<ChannelPageQueryParam, Cha
 	* 导出栏目
 	*/
 	@ApiOperation("导出栏目")
-	@PreAuthorize("hasPermission('/basics/channel',  'basics:channel:export')")
+	//@PreAuthorize("hasPermission('/basics/channel',  'basics:channel:export')")
 	@SneakyThrows
 	@EventLog(message = "导出栏目", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(ChannelPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody ChannelPageQueryParam param, HttpServletResponse response) {
 			channelRepository.exportXls(param,response);
 	}
 
@@ -170,7 +170,7 @@ public class ChannelController extends BaseController<ChannelPageQueryParam, Cha
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用栏目")
-	@PreAuthorize("hasPermission('/basics/channel',  'basics:channel:changeStatus')")
+	//@PreAuthorize("hasPermission('/basics/channel',  'basics:channel:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用栏目", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")
@@ -183,15 +183,15 @@ public class ChannelController extends BaseController<ChannelPageQueryParam, Cha
 	 * 部门列表
 	 */
 	@ApiOperation("运营商列表")
-	@PreAuthorize("hasPermission('/operator',  'basics:operator:allList')")
-	@GetMapping(value = "/allList")
-	public ResObject allList(ChannelEditParam channelEditParam) {
+	//@PreAuthorize("hasPermission('/operator',  'basics:operator:allList')")
+	@PostMapping(value = "/allList")
+	public ResObject allList(@RequestBody ChannelEditParam channelEditParam) {
 		return channelRepository.allList(channelEditParam);
 	}
 
 
 	@ApiOperation("活动父项目")
-	@PreAuthorize("hasPermission('/operator',  'basics:operator:allList')")
+	//@PreAuthorize("hasPermission('/operator',  'basics:operator:allList')")
 	@GetMapping(value = "/getParentList")
 	public ResObject getParentList() {
 		return channelRepository.getParentList();

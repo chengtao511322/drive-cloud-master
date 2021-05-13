@@ -1,6 +1,8 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.hutool.core.util.StrUtil;
+import com.drive.admin.util.AdminCacheUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -156,12 +158,12 @@ public class OneFeeSystemCoachStudentVo {
 	@Excel(name = "平台提成金额（所有上级运营商提成金）", width = 20)
 	private BigDecimal serviceChangeMoney;
 
+
+
 	public void setCoachId(String coachId) {
 		this.coachId = coachId;
-		/*String coach = jedis.get(CacheConstants.REDIS_CACHE_COACH_KEY+coachId);
-		if(StrUtil.isNotEmpty(coach)){
-			JSONObject coachInfo = JSONObject.parseObject(coach);
-			this.coachName = coachInfo.getString("realName");
-		}*/
+		if (StrUtil.isNotEmpty(coachId)){
+			this.coachName = AdminCacheUtil.getCoachName(coachId);
+		}
 	}
 }

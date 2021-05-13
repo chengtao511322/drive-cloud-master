@@ -47,18 +47,18 @@ public class BannerController extends BaseController<BannerPageQueryParam, Banne
 	* banner 轮播图 分页列表
 	*/
 	@ApiOperation("banner 轮播图分页列表")
-	@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:query')")
+	//@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid BannerPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody BannerPageQueryParam param) {
 		return bannerRepository.pageList(param);
 	}
 	/**
 	* banner 轮播图 分页列表
 	*/
 	@ApiOperation("banner 轮播图列表")
-	@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:query')")
+	//@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid BannerPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody BannerPageQueryParam param) {
 		return bannerRepository.findList(param);
 	}
 
@@ -67,7 +67,7 @@ public class BannerController extends BaseController<BannerPageQueryParam, Banne
 	*/
 	@ApiOperation("获取banner 轮播图")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:query')")
+	//@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return bannerRepository.getById(id);
@@ -78,7 +78,7 @@ public class BannerController extends BaseController<BannerPageQueryParam, Banne
 	*/
 	@ApiOperation("新增banner 轮播图")
 	@ApiImplicitParam(name = "BannerEditParam ", value = "新增banner 轮播图", dataType = "BannerEditParam")
-	@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:add')")
+	//@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:add')")
 	@EventLog(message = "新增banner 轮播图", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody BannerEditParam bannerEditParam) {
@@ -90,7 +90,7 @@ public class BannerController extends BaseController<BannerPageQueryParam, Banne
 	*/
 	@ApiOperation("修改banner 轮播图")
 	@ApiImplicitParam(name = "BannerEditParam ", value = "修改banner 轮播图", dataType = "BannerEditParam")
-	@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:edit')")
+	//@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:edit')")
 	@EventLog(message = "修改banner 轮播图", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody BannerEditParam bannerEditParam) {
@@ -102,7 +102,7 @@ public class BannerController extends BaseController<BannerPageQueryParam, Banne
 	*/
 	@ApiOperation("删除banner 轮播图")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:delete')")
+	//@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:delete')")
 	@EventLog(message = "删除banner 轮播图", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -114,7 +114,7 @@ public class BannerController extends BaseController<BannerPageQueryParam, Banne
 	*/
 	@ApiOperation("通过主键删除banner 轮播图")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除banner 轮播图", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -125,11 +125,11 @@ public class BannerController extends BaseController<BannerPageQueryParam, Banne
 	* 导出banner 轮播图
 	*/
 	@ApiOperation("导出banner 轮播图")
-	@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:export')")
+	//@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:export')")
 	@SneakyThrows
 	@EventLog(message = "导出banner 轮播图", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(BannerPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody BannerPageQueryParam param, HttpServletResponse response) {
 		bannerRepository.exportXls(param,response);
 	}
 
@@ -138,7 +138,7 @@ public class BannerController extends BaseController<BannerPageQueryParam, Banne
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用banner 轮播图")
-	@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:changeStatus')")
+	//@PreAuthorize("hasPermission('/basics/banner',  'basics:banner:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用banner 轮播图", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

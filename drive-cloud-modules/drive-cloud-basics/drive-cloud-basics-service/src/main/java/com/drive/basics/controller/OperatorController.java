@@ -50,9 +50,9 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	* 运营商基础信息 分页列表
 	*/
 	@ApiOperation("运营商基础信息分页列表")
-	@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid OperatorPageQueryParam param) {
+	//@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:query')")
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody OperatorPageQueryParam param) {
 
 		Page<OperatorEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
 		IPage<OperatorEntity> pageList = operatorService.page(page, this.getQueryWrapper(operatorMapStruct, param));
@@ -73,7 +73,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	}
 
 	@ApiOperation("运营商列表")
-	@PreAuthorize("hasPermission('/operator',  'basics:operator:findAllList')")
+	//@PreAuthorize("hasPermission('/operator',  'basics:operator:findAllList')")
 	@GetMapping(value = "/findAllList")
 	public ResObject findAllList() {
 		return R.success(operatorService.findAllList());
@@ -84,7 +84,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	*/
 	@ApiOperation("获取运营商基础信息")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:query')")
+	//@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		OperatorEntity operator = operatorService.getById(id);
@@ -96,7 +96,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	*/
 	@ApiOperation("新增运营商基础信息")
 	@ApiImplicitParam(name = "OperatorEditParam ", value = "新增运营商基础信息", dataType = "OperatorEditParam")
-	@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:add')")
+	//@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:add')")
 	@EventLog(message = "新增运营商基础信息", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody OperatorEditParam operatorEditParam) {
@@ -109,7 +109,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	*/
 	@ApiOperation("修改运营商基础信息")
 	@ApiImplicitParam(name = "OperatorEditParam ", value = "修改运营商基础信息", dataType = "OperatorEditParam")
-	@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:edit')")
+	//@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:edit')")
 	@EventLog(message = "修改运营商基础信息", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody OperatorEditParam operatorEditParam) {
@@ -122,7 +122,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	*/
 	@ApiOperation("删除运营商基础信息")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:delete')")
+	//@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:delete')")
 	@EventLog(message = "删除运营商基础信息", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable Long[] ids) {
@@ -133,11 +133,11 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	* 导出运营商基础信息
 	*/
 	@ApiOperation("导出运营商基础信息")
-	@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:export')")
+	//@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:export')")
 	@SneakyThrows
 	@EventLog(message = "导出运营商基础信息", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(OperatorPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody OperatorPageQueryParam param, HttpServletResponse response) {
 		List<OperatorEntity> list = operatorService.list(this.getQueryWrapper(operatorMapStruct, param));
 		List<OperatorVo> operatorVoList = operatorMapStruct.toVoList(list);
 		ExcelUtils.exportExcel(operatorVoList, OperatorVo.class, "运营商基础信息", new ExportParams(), response);

@@ -51,8 +51,8 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	*/
 	@ApiOperation("运营商基础信息分页列表")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid OperatorPageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody OperatorPageQueryParam param) {
 		return operatorRepository.pageList(param);
 	}
 	/**
@@ -60,8 +60,8 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	*/
 	@ApiOperation("运营商基础信息列表")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid OperatorPageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody OperatorPageQueryParam param) {
 		return operatorRepository.findList(param);
 	}
 
@@ -75,6 +75,16 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	public ResObject get(@PathVariable String id) {
 		return operatorRepository.getById(id);
 	}
+	/**
+	* 获取运营商基础信息
+	*/
+	@ApiOperation("获取运营商基础信息")
+	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
+	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
+	@GetMapping("/getOperatingArea/{operatorId}")
+	public ResObject getOperatingArea(@PathVariable String operatorId) {
+		return operatorRepository.getOperatingArea(operatorId);
+	}
 
 	/**
 	 * 条件查询获取运营商基础信息
@@ -83,7 +93,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
 	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable OperatorPageQueryParam param) {
+	public ResObject getInfo(@RequestBody OperatorPageQueryParam param) {
 		return operatorRepository.getInfo(param);
 	}
 
@@ -112,6 +122,33 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	}
 
 	/**
+	 * 添加运营商
+	 * @return
+	 */
+	@ApiOperation("新增运营商基础信息")
+	@ApiImplicitParam(name = "OperatorEditParam ", value = "新增运营商基础信息", dataType = "OperatorEditParam")
+	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:edit')")
+	@EventLog(message = "新增运营商基础信息", businessType = EventLogEnum.CREATE)
+	@PostMapping("/installOperator")
+	ResObject installOperator(@Valid @RequestBody OperatorInstallParam operatorEditParam){
+		return operatorRepository.installOperator(operatorEditParam);
+	}
+
+	/**
+	 * 修改运营商
+	 * @param operatorEditParam
+	 * @return
+	 */
+	@ApiOperation("修改运营商基础信息")
+	@ApiImplicitParam(name = "OperatorEditParam ", value = "修改运营商基础信息", dataType = "OperatorEditParam")
+	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:add')")
+	@EventLog(message = "修改运营商基础信息", businessType = EventLogEnum.UPDATE)
+	@PutMapping("/updateOperator")
+	ResObject updateOperator(@Valid @RequestBody OperatorEditParam operatorEditParam){
+		return operatorRepository.updateOperator(operatorEditParam);
+	}
+
+	/**
 	* 删除运营商基础信息
 	*/
 	@ApiOperation("删除运营商基础信息")
@@ -119,7 +156,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:delete')")
 	@EventLog(message = "删除运营商基础信息", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(operatorService.removeByIds(Arrays.asList(ids)));
 	}
 
@@ -143,7 +180,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	@SneakyThrows
 	@EventLog(message = "导出运营商基础信息", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(OperatorPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody OperatorPageQueryParam param, HttpServletResponse response) {
 		operatorRepository.exportXls(param,response);
 	}
 

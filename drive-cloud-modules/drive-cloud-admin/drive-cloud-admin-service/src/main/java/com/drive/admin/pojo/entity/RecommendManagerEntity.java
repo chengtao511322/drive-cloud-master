@@ -26,6 +26,7 @@ public class RecommendManagerEntity extends BaseEntity {
 	// 学员id
 	private String studentId;
 
+
 	// 备注
 	private String remarks;
 

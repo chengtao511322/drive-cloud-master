@@ -49,8 +49,8 @@ public class CoachInfoController extends BaseController<CoachInfoPageQueryParam,
 	*/
 	@ApiOperation("教练信息表分页列表")
 	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid CoachInfoPageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody CoachInfoPageQueryParam param) {
 		return coachInfoRepository.pageList(param);
 	}
 
@@ -116,7 +116,7 @@ public class CoachInfoController extends BaseController<CoachInfoPageQueryParam,
 	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "删除教练信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(coachInfoService.removeByIds(Arrays.asList(ids)));
 	}
 
@@ -140,7 +140,7 @@ public class CoachInfoController extends BaseController<CoachInfoPageQueryParam,
 	@SneakyThrows
 	@EventLog(message = "导出教练信息表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(CoachInfoPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody CoachInfoPageQueryParam param, HttpServletResponse response) {
 			coachInfoRepository.exportXls(param,response);
 	}
 

@@ -104,7 +104,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:delete')")
 	@EventLog(message = "删除推广渠道经理", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(recommendManagerService.removeByIds(Arrays.asList(ids)));
 	}
 
@@ -128,7 +128,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	@SneakyThrows
 	@EventLog(message = "导出推广渠道经理", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(RecommendManagerPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody RecommendManagerPageQueryParam param, HttpServletResponse response) {
 			recommendManagerRepository.exportXls(param,response);
 	}
 

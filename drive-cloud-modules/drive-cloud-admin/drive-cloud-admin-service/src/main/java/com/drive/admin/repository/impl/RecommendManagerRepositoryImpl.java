@@ -17,16 +17,20 @@ import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
+import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-                                    
+
 /**
  *
  * 推广渠道经理 服务类
@@ -52,8 +56,36 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
     public ResObject pageList(RecommendManagerPageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
         Page<RecommendManagerEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<RecommendManagerEntity> pageList = recommendManagerService.page(page, this.getQueryWrapper(recommendManagerMapStruct, param));
+        QueryWrapper queryWrapper = this.getQueryWrapper(recommendManagerMapStruct, param);
+        // 模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRemarksSearch()),"remarks",param.getVagueRemarksSearch());
+        // 用户手机号查询
+        if (StrUtil.isNotEmpty(param.getVagueRealNameSearch()) || StrUtil.isNotEmpty(param.getVaguePhoneSearch())){
+            List<StudentInfoEntity> studentInfoList = new ArrayList<>();
+            QueryWrapper studentQueryWrapper = new QueryWrapper();
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"real_name",param.getVagueRealNameSearch());
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"phone",param.getVaguePhoneSearch());
+            studentInfoList = studentInfoService.list(studentQueryWrapper);
+            if(studentInfoList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentInfoList);
+            queryWrapper.in("student_id",studentInfoList.stream().map(StudentInfoEntity::getId).collect(Collectors.toList()));
+        }
+
+        IPage<RecommendManagerEntity> pageList = recommendManagerService.page(page, queryWrapper);
+        if (pageList.getRecords().size() <= 0){
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),"数据空");
+        }
         Page<RecommendManagerVo> recommendManagerVoPage = recommendManagerMapStruct.toVoList(pageList);
+        recommendManagerVoPage.getRecords().stream().forEach((item) ->{
+            // 学员
+            if (StrUtil.isNotEmpty(item.getStudentId())){
+                StudentInfoEntity studentInfo = studentInfoService.getById(item.getStudentId());
+                if (studentInfo != null){
+                    item.setStudentRealName(studentInfo.getRealName());
+                    item.setStudentName(studentInfo.getUsername());
+                    item.setStudentPhone(studentInfo.getPhone());
+                }
+            }
+        });
         log.info(this.getClass() + "pageList-方法请求结果{}",recommendManagerVoPage);
         return R.success(recommendManagerVoPage);
     }
@@ -104,6 +136,14 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
             recommendManagerVo.setPhone(studentInfoEntity.getPhone());
             // 设置姓名
             recommendManagerVo.setRealName(studentInfoEntity.getRealName());
+
+
+            // 设置手机
+            recommendManagerVo.setStudentPhone(studentInfoEntity.getPhone());
+            // 设置姓名
+            recommendManagerVo.setStudentRealName(studentInfoEntity.getRealName());
+
+            recommendManagerVo.setStudentName(studentInfoEntity.getUsername());
         }
         return R.success(recommendManagerVo);
     }

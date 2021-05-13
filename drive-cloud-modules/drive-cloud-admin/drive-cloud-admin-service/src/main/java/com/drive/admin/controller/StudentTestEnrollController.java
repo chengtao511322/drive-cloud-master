@@ -82,7 +82,7 @@ public class StudentTestEnrollController extends BaseController<StudentTestEnrol
 	@ApiOperation("学员考试报名表列表")
 	//@PreAuthorize("hasPermission('/admin/studentTestEnroll',  'admin:studentTestEnroll:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid StudentTestEnrollPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody StudentTestEnrollPageQueryParam param) {
 		return studentTestEnrollRepository.findList(param);
 	}
 
@@ -186,7 +186,7 @@ public class StudentTestEnrollController extends BaseController<StudentTestEnrol
 	@SneakyThrows
 	@EventLog(message = "导出学员考试报名表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(StudentTestEnrollPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody StudentTestEnrollPageQueryParam param, HttpServletResponse response) {
 		studentTestEnrollRepository.exportXls(param,response);
 	}
 

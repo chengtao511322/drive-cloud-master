@@ -48,7 +48,7 @@ public class ServiceItemController extends BaseController<ServiceItemPageQueryPa
 	@ApiOperation("服务项目表分页列表")
 	//@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid ServiceItemPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody ServiceItemPageQueryParam param) {
 		return serviceItemRepository.pageList(param);
 	}
 	/**
@@ -57,7 +57,7 @@ public class ServiceItemController extends BaseController<ServiceItemPageQueryPa
 	@ApiOperation("服务项目表列表")
 	//@PreAuthorize("hasPermission('/admin/serviceItem',  'admin:serviceItem:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid ServiceItemPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody ServiceItemPageQueryParam param) {
 		return serviceItemRepository.findList(param);
 	}
 
@@ -128,7 +128,7 @@ public class ServiceItemController extends BaseController<ServiceItemPageQueryPa
 	@SneakyThrows
 	@EventLog(message = "导出服务项目表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(ServiceItemPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody ServiceItemPageQueryParam param, HttpServletResponse response) {
 			serviceItemRepository.exportXls(param,response);
 	}
 

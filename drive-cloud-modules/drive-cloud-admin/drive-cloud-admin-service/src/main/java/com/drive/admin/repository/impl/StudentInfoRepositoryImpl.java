@@ -114,7 +114,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         if (StrUtil.isNotEmpty(param.getCreateTimeSearch())){
             String[] arr = param.getCreateTimeSearch().split(",");
             // queryWrapper.between("date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[0] + "','%Y-%m-%d')","date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[1] + "','%Y-%m-%d')");
-            queryWrapper.between("date_format(tsi.create_time, '%Y-%m-%d')",arr[0],arr[1]);
+            queryWrapper.between("tsi.create_time",arr[0],arr[1]);
         }
         if (param.getHasPreOnlineServicer() !=null && param.getHasPreOnlineServicer().equals(0)){
             queryWrapper.isNull("tsi.service_id");
@@ -245,7 +245,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         if (StrUtil.isNotEmpty(param.getCreateTimeSearch())){
             String[] arr = param.getCreateTimeSearch().split(",");
             // queryWrapper.between("date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[0] + "','%Y-%m-%d')","date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[1] + "','%Y-%m-%d')");
-            queryWrapper.between("date_format(tsi.create_time, '%Y-%m-%d')",arr[0],arr[1]);
+            queryWrapper.between("tsi.create_time",arr[0],arr[1]);
         }
         // 回访时间范围
         if (param.getDateTimeSearchArr() != null && param.getDateTimeSearchArr().length > 0){
@@ -365,7 +365,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         if (StrUtil.isNotEmpty(param.getCreateTimeSearch())){
             String[] arr = param.getCreateTimeSearch().split(",");
             // queryWrapper.between("date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[0] + "','%Y-%m-%d')","date_format (tsi.create_time,'%Y-%m-%d') = date_format('" + arr[1] + "','%Y-%m-%d')");
-            queryWrapper.between("date_format(tsi.create_time, '%Y-%m-%d')",arr[0],arr[1]);
+            queryWrapper.between("tsi.create_time",arr[0],arr[1]);
         }
         //
         queryWrapper.groupBy("tsi.id");
@@ -483,9 +483,9 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         Page<StudentInfoVo> studentInfoVoPage = studentInfoMapStruct.toVoList(pageList);
         // List<Problem> problemList = problemByExample.stream().filter(problem -> "空调制冷".equals(problem.getProTitle()) || "李一一的难题1".equals(problem.getProTitle())).collect(Collectors.toList());
         studentInfoVoPage.getRecords().stream().forEach(item ->{
-           if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
+          /* if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-           if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
+           if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());*/
             // 查询推广人员
             if (StrUtil.isNotEmpty(item.getRecommendUserId())){
                 StudentInfoEntity studentInfo = studentInfoService.getById(item.getRecommendUserId());

@@ -52,8 +52,8 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	*/
 	@ApiOperation("客服回访记录分页列表")
 	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid ServiceReturnVisitHistoryPageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody ServiceReturnVisitHistoryPageQueryParam param) {
 		return serviceReturnVisitHistoryRepository.pageList(param);
 	}
 	/**
@@ -61,14 +61,14 @@ public class ServiceReturnVisitHistoryController extends BaseController<ServiceR
 	*/
 	@ApiOperation("客服回访记录列表")
 	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid ServiceReturnVisitHistoryPageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody ServiceReturnVisitHistoryPageQueryParam param) {
 		return serviceReturnVisitHistoryRepository.findList(param);
 	}
 	@ApiOperation("记录列表")
 	//@PreAuthorize("hasPermission('/admin/serviceReturnVisitHistory',  'admin:serviceReturnVisitHistory:query')")
-	@GetMapping(value = "/pageListReturnVisitHistory")
-	public ResObject pageListReturnVisitHistory(@Valid StudentStudyEnrollPageQueryParam param) {
+	@PostMapping(value = "/pageListReturnVisitHistory")
+	public ResObject pageListReturnVisitHistory(@Valid @RequestBody StudentStudyEnrollPageQueryParam param) {
 		return serviceReturnVisitHistoryRepository.pageListReturnVisitHistory(param);
 	}
 

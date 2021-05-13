@@ -8,15 +8,20 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.pojo.dto.CoachTeachTimeEditParam;
 import com.drive.admin.pojo.dto.CoachTeachTimeInstallParam;
 import com.drive.admin.pojo.dto.CoachTeachTimePageQueryParam;
+import com.drive.admin.pojo.entity.CoachInfoEntity;
 import com.drive.admin.pojo.entity.CoachTeachTimeEntity;
+import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.vo.CoachTeachTimeVo;
 import com.drive.admin.repository.CoachTeachTimeRepository;
+import com.drive.admin.service.CoachInfoService;
 import com.drive.admin.service.CoachTeachTimeService;
+import com.drive.admin.service.StudentInfoService;
 import com.drive.admin.service.mapstruct.CoachTeachTimeMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
+import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.data.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +30,13 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-                                                                                                                                                        
+
 /**
  *
  * 教练课程时间表 服务类
@@ -46,6 +54,12 @@ public class  CoachTeachTimeRepositoryImpl extends BaseController<CoachTeachTime
     @Autowired
     private CoachTeachTimeMapStruct coachTeachTimeMapStruct;
 
+    @Autowired
+    private StudentInfoService studentInfoService;
+
+    @Autowired
+    private CoachInfoService coachInfoService;
+
     /*
      *
      *功能描述
@@ -62,8 +76,34 @@ public class  CoachTeachTimeRepositoryImpl extends BaseController<CoachTeachTime
         // 条件查询
         QueryWrapper queryWrapper = this.getQueryWrapper(coachTeachTimeMapStruct, param);
 
-        //  模糊查询
-        //queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        //  科目名称模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueClassNameSearch()),"class_name",param.getVagueClassNameSearch());
+        if (param.getDateTimeSearchArr() != null && param.getDateTimeSearchArr().length > 0 ){
+            queryWrapper.between("class_date",param.getDateTimeSearchArr()[0],param.getDateTimeSearchArr()[1]);
+        }
+        // 用户手机号查询
+        if (StrUtil.isNotEmpty(param.getVagueRealNameSearch()) || StrUtil.isNotEmpty(param.getVaguePhoneSearch())){
+            List<StudentInfoEntity> studentInfoList = new ArrayList<>();
+            QueryWrapper studentQueryWrapper = new QueryWrapper();
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"real_name",param.getVagueRealNameSearch());
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"phone",param.getVaguePhoneSearch());
+            studentInfoList = studentInfoService.list(studentQueryWrapper);
+            if(studentInfoList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentInfoList);
+            queryWrapper.in("student_id",studentInfoList.stream().map(StudentInfoEntity::getId).collect(Collectors.toList()));
+        }
+
+
+        // 教练用户手机号查询
+        if (StrUtil.isNotEmpty(param.getVagueCoachNameSearch()) || StrUtil.isNotEmpty(param.getVagueCoachPhoneSearch())){
+            List<CoachInfoEntity> coachInfoList = new ArrayList<>();
+            QueryWrapper studentQueryWrapper = new QueryWrapper();
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueCoachNameSearch()),"real_name",param.getVagueCoachNameSearch());
+            studentQueryWrapper.like(StrUtil.isNotEmpty(param.getVagueCoachPhoneSearch()),"phone",param.getVagueCoachPhoneSearch());
+            coachInfoList = coachInfoService.list(studentQueryWrapper);
+            if(coachInfoList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),coachInfoList);
+            queryWrapper.in("coach_id",coachInfoList.stream().map(CoachInfoEntity::getId).collect(Collectors.toList()));
+        }
+
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
@@ -74,6 +114,16 @@ public class  CoachTeachTimeRepositoryImpl extends BaseController<CoachTeachTime
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<CoachTeachTimeVo> coachTeachTimeVoPage = coachTeachTimeMapStruct.toVoList(pageList);
+        coachTeachTimeVoPage.getRecords().stream().forEach((item) ->{
+            // 学员
+            if (StrUtil.isNotEmpty(item.getStudentId())){
+                StudentInfoEntity studentInfo = studentInfoService.getById(item.getStudentId());
+                if (studentInfo != null)item.setStudentName(studentInfo.getRealName());
+            }
+           /* item.setStudentName(Optional.ofNullable()
+                    .map(u-> u.getRealName())
+                    .orElseThrow(()->new BizException("学员获取数据空")));*/
+        });
         log.info(this.getClass() + "pageList-方法请求结果{}",coachTeachTimeVoPage);
         return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),coachTeachTimeVoPage);
     }

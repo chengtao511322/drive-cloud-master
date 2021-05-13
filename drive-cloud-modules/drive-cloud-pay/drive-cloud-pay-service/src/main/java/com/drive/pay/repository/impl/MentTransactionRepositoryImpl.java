@@ -11,6 +11,8 @@ import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.data.utils.ExcelUtils;
+import com.drive.marketing.api.RemoteActivityService;
+import com.drive.marketing.pojo.dto.CouponEditParam;
 import com.drive.pay.pojo.dto.MentTransactionEditParam;
 import com.drive.pay.pojo.dto.MentTransactionInstallParam;
 import com.drive.pay.pojo.dto.MentTransactionPageQueryParam;
@@ -19,6 +21,7 @@ import com.drive.pay.pojo.vo.MentTransactionVo;
 import com.drive.pay.repository.MentTransactionRepository;
 import com.drive.pay.service.MentTransactionService;
 import com.drive.pay.service.mapstruct.MentTransactionMapStruct;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +48,9 @@ public class  MentTransactionRepositoryImpl extends BaseController<MentTransacti
     //  支付交易流水信息表 DO-DTO转化
     @Autowired
     private MentTransactionMapStruct mentTransactionMapStruct;
+
+    @Autowired
+    private RemoteActivityService remoteActivityService;
 
     /*
      *
@@ -267,5 +273,22 @@ public class  MentTransactionRepositoryImpl extends BaseController<MentTransacti
         return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_STATUS_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_STATUS_FAILL.subCode(),SubResultCode.DATA_STATUS_FAILL.subMsg());
     }
 
+    @GlobalTransactional
+    @Override
+    public ResObject transactionRollback(String id) {
+        log.info(this.getClass() + "transactionRollback-方法请求参数{}",id);
+        MentTransactionEntity MentTransactionEntity = new MentTransactionEntity();
+        MentTransactionEntity.setId("1253894818946355201");
+        MentTransactionEntity.setBody("测试事务");
+        //MentTransactionEntity.setStatus(param.getStatus());
+        //MentTransactionEntity.setUpdateTime()
+        Boolean result = mentTransactionService.updateById(MentTransactionEntity);
+        CouponEditParam couponEditParam = new CouponEditParam();
+        couponEditParam.setName("测试事务问题");
+        ResObject resObject =remoteActivityService.saveCoupon(couponEditParam);
+        log.info("resObject请求结果{}",resObject);
+        int i = 1 / Integer.parseInt(id);
+        return R.success();
+    }
 }
 

@@ -49,7 +49,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	@ApiOperation("服务项目打包明细表分页列表")
 	//@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid ServicePackageDetailPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody ServicePackageDetailPageQueryParam param) {
 		return servicePackageDetailRepository.pageList(param);
 	}
 	/**
@@ -58,7 +58,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	@ApiOperation("服务项目打包明细表列表")
 	//@PreAuthorize("hasPermission('/admin/servicePackageDetail',  'admin:servicePackageDetail:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid ServicePackageDetailPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody ServicePackageDetailPageQueryParam param) {
 		return servicePackageDetailRepository.findList(param);
 	}
 
@@ -138,7 +138,7 @@ public class ServicePackageDetailController extends BaseController<ServicePackag
 	@SneakyThrows
 	@EventLog(message = "导出服务项目打包明细表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(ServicePackageDetailPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody ServicePackageDetailPageQueryParam param, HttpServletResponse response) {
 		servicePackageDetailRepository.exportXls(param,response);
 	}
 

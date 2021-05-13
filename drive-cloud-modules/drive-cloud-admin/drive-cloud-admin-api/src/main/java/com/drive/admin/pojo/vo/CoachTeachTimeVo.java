@@ -1,6 +1,8 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.hutool.core.util.StrUtil;
+import com.drive.admin.util.AdminCacheUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -38,6 +40,8 @@ public class CoachTeachTimeVo {
 	// 学员ID
 	@Excel(name = "学员ID", width = 20)
 	private String studentId;
+	// 学员姓名
+	private String studentName;
 
 	// 驾照类型（c1；c2...）
 	@Excel(name = "驾照类型（c1；c2...）", width = 20)
@@ -54,6 +58,15 @@ public class CoachTeachTimeVo {
 	// 课程日期
 	@Excel(name = "课程日期", width = 20)
 	private LocalDate classDate;
+
+	// 场地名称
+	private String coachingGridName;
+
+
+	// 科目三场地名称
+	private String coachingGridId3Name;
+	// 科目二场地名称
+	private String coachingGridId2Name;
 
 	// 开始时间
 	@Excel(name = "开始时间", width = 20)
@@ -183,4 +196,32 @@ public class CoachTeachTimeVo {
 
 
 	private StudentTestEnrollVo studentTestEnrollVo;
+
+	public void setCoachId(String coachId) {
+		this.coachId = coachId;
+		if (StrUtil.isNotEmpty(coachId)){
+			this.coachName = AdminCacheUtil.getCoachName(coachId);
+		}
+	}
+
+	public void setCoachingGridId(String coachingGridId) {
+		this.coachingGridId = coachingGridId;
+		if (StrUtil.isNotEmpty(coachingGridId)){
+			this.coachingGridName = AdminCacheUtil.getCoachingGridName(coachingGridId);
+		}
+	}
+
+	public void setCoachingGridId2(String coachingGridId2) {
+		this.coachingGridId2 = coachingGridId2;
+		if (StrUtil.isNotEmpty(coachingGridId2)){
+			this.coachingGridId2Name = AdminCacheUtil.getCoachingGridName(coachingGridId2);
+		}
+	}
+
+	public void setCoachingGridId3(String coachingGridId3) {
+		this.coachingGridId3 = coachingGridId3;
+		if (StrUtil.isNotEmpty(coachingGridId3)){
+			this.coachingGridId3Name = AdminCacheUtil.getCoachingGridName(coachingGridId3);
+		}
+	}
 }

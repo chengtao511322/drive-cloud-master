@@ -47,18 +47,18 @@ public class DrivingVideoController extends BaseController<DrivingVideoPageQuery
 	* 学车视频表 分页列表
 	*/
 	@ApiOperation("学车视频表分页列表")
-	@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:query')")
+	//@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid DrivingVideoPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody DrivingVideoPageQueryParam param) {
 		return drivingVideoRepository.pageList(param);
 	}
 	/**
 	* 学车视频表 分页列表
 	*/
 	@ApiOperation("学车视频表列表")
-	@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:query')")
+	//@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid DrivingVideoPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody DrivingVideoPageQueryParam param) {
 		return drivingVideoRepository.findList(param);
 	}
 
@@ -67,7 +67,7 @@ public class DrivingVideoController extends BaseController<DrivingVideoPageQuery
 	*/
 	@ApiOperation("获取学车视频表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:query')")
+	//@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return drivingVideoRepository.getById(id);
@@ -78,7 +78,7 @@ public class DrivingVideoController extends BaseController<DrivingVideoPageQuery
 	*/
 	@ApiOperation("新增学车视频表")
 	@ApiImplicitParam(name = "DrivingVideoEditParam ", value = "新增学车视频表", dataType = "DrivingVideoEditParam")
-	@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:add')")
+	//@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:add')")
 	@EventLog(message = "新增学车视频表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody DrivingVideoEditParam drivingVideoEditParam) {
@@ -90,7 +90,7 @@ public class DrivingVideoController extends BaseController<DrivingVideoPageQuery
 	*/
 	@ApiOperation("修改学车视频表")
 	@ApiImplicitParam(name = "DrivingVideoEditParam ", value = "修改学车视频表", dataType = "DrivingVideoEditParam")
-	@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:edit')")
+	//@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:edit')")
 	@EventLog(message = "修改学车视频表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody DrivingVideoEditParam drivingVideoEditParam) {
@@ -102,10 +102,10 @@ public class DrivingVideoController extends BaseController<DrivingVideoPageQuery
 	*/
 	@ApiOperation("删除学车视频表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:delete')")
+	//@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:delete')")
 	@EventLog(message = "删除学车视频表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(drivingVideoService.removeByIds(Arrays.asList(ids)));
 	}
 
@@ -114,7 +114,7 @@ public class DrivingVideoController extends BaseController<DrivingVideoPageQuery
 	*/
 	@ApiOperation("通过主键删除学车视频表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除学车视频表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -125,11 +125,11 @@ public class DrivingVideoController extends BaseController<DrivingVideoPageQuery
 	* 导出学车视频表
 	*/
 	@ApiOperation("导出学车视频表")
-	@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:export')")
+	//@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:export')")
 	@SneakyThrows
 	@EventLog(message = "导出学车视频表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(DrivingVideoPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody DrivingVideoPageQueryParam param, HttpServletResponse response) {
 		drivingVideoRepository.exportXls(param,response);
 	}
 
@@ -138,7 +138,7 @@ public class DrivingVideoController extends BaseController<DrivingVideoPageQuery
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用学车视频表")
-	@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:changeStatus')")
+	//@PreAuthorize("hasPermission('/basics/drivingVideo',  'basics:drivingVideo:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用学车视频表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

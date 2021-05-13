@@ -22,6 +22,10 @@ public class RecommendManagerVo implements java.io.Serializable{
 	// 学员id
 	@Excel(name = "学员id", width = 20)
 	private String studentId;
+	private String studentName;
+	private String studentRealName;
+	// 学员手机
+	private String studentPhone;
 
 	// 备注
 	@Excel(name = "备注", width = 20)

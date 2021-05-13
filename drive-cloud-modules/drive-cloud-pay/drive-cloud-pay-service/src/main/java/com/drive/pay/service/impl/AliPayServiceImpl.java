@@ -37,8 +37,7 @@ import java.math.BigDecimal;
 @Service
 public class AliPayServiceImpl implements AliPayService {
 
-    @Autowired
-    @Qualifier("alipayClient")
+
     private AlipayClient alipayClient;
     @Override
     public boolean isTradeQuery(AlipayTradeQueryModel model) throws AlipayApiException {

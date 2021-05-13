@@ -51,18 +51,18 @@ public class AreaController extends BaseController<AreaPageQueryParam, AreaEntit
 	*  分页列表
 	*/
 	@ApiOperation("城市区域分页列表")
-	@PreAuthorize("hasPermission('/admin/area',  'admin:area:query')")
+	//@PreAuthorize("hasPermission('/admin/area',  'admin:area:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid AreaPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody AreaPageQueryParam param) {
 		return areaRepository.pageList(param);
 	}
 	/**
 	*  列表
 	*/
 	@ApiOperation("城市区域列表")
-	@PreAuthorize("hasPermission('/admin/area',  'admin:area:query')")
+	//@PreAuthorize("hasPermission('/admin/area',  'admin:area:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid AreaPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody AreaPageQueryParam param) {
 		return areaRepository.findList(param);
 	}
 
@@ -143,7 +143,7 @@ public class AreaController extends BaseController<AreaPageQueryParam, AreaEntit
 	@SneakyThrows
 	@EventLog(message = "导出", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(AreaPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody  AreaPageQueryParam param, HttpServletResponse response) {
 		areaRepository.exportXls(param,response);
 	}
 

@@ -153,8 +153,7 @@ public class CouponRepositoryImpl implements CouponRepository {
         if (StrUtil.isNotEmpty(couponGet.getPromoteUserId())){
             // 查询优惠券金额
             BigDecimal couponAmount = Optional.ofNullable(couponService.getById(couponGetVo.getCouponId()))
-                    .map(u-> u.getAmount())
-                    .orElseThrow(()->new BizException("优惠券获取数据空"));
+                    .map(u-> u.getAmount()).get();
             // 设置优惠券金额
             couponGetVo.setCouponAmount(couponAmount);
             wrapper.eq("activity_id",couponGet.getSource());

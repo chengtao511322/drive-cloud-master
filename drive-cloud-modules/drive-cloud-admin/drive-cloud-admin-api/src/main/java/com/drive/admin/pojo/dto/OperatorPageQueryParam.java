@@ -72,6 +72,8 @@ public class OperatorPageQueryParam extends BasePageQueryParam {
 	@ApiModelProperty(value = "其他benaid")
 	private String channelBeanId;
 	// 模糊查询字段
-	//private String vagueNameSearch
+	private String vagueNameSearch;
+
+	private String[] createDateTimeSearchArr = new String[2];
 
 }

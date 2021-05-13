@@ -21,6 +21,8 @@ public interface CacheConstants {
     String REDIS_CACHE_COACH_KEY = "redisCache::coachItem:coach_";
     // 区划表
     String REDIS_CACHE_AREA_KEY = "redisCache::areaItem:area_";
+    // 场地
+    String REDIS_COACHING_GRID_KEY = "redisCache::coachingGridItem:coachingGrid_";
     // 系统用户信息
     String REDIS_USER_KEY = "redisCache::userItem:user_";
     // 客服信息

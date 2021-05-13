@@ -143,7 +143,7 @@ public class StudentStudyProgressHistoryController extends BaseController<Studen
 	@SneakyThrows
 	@EventLog(message = "导出学员学车报名单", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(StudentStudyProgressHistoryPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody StudentStudyProgressHistoryPageQueryParam param, HttpServletResponse response) {
 		studentStudyProgressHistoryRepository.exportXls(param,response);
 	}
 

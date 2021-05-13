@@ -76,6 +76,10 @@ public class ApiMentTransactionController extends BaseController<MentTransaction
 	public ResObject get(@PathVariable String id) {
 		return mentTransactionRepository.getById(id);
 	}
+	@GetMapping("/transactionRollback/{id}")
+	public ResObject transactionRollback(@PathVariable String id) {
+		return mentTransactionRepository.transactionRollback(id);
+	}
 
 	/**
 	 * 条件查询获取支付交易流水信息表

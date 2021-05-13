@@ -1,11 +1,10 @@
 package com.drive.admin.service.mapstruct;
 
-import com.drive.admin.pojo.dto.OperatorSettinngEditParam;
-import com.drive.admin.pojo.dto.OperatorSettinngPageQueryParam;
-import com.drive.admin.pojo.entity.OperatorSettinngEntity;
-import com.drive.admin.pojo.vo.OperatorSettinngVo;
-import com.drive.common.core.base.BaseMapStruct;
+import com.drive.admin.pojo.entity.*;
+import com.drive.admin.pojo.vo.*;
+import com.drive.admin.pojo.dto.*;
 import org.mapstruct.Mapper;
+import com.drive.common.core.base.BaseMapStruct;
 import org.springframework.stereotype.Component;
 
 

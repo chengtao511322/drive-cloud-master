@@ -1,29 +1,33 @@
 package com.drive.admin.controller;
 
-import com.drive.admin.pojo.dto.OperatorSettinngEditParam;
-import com.drive.admin.pojo.dto.OperatorSettinngPageQueryParam;
-import com.drive.admin.pojo.entity.OperatorSettinngEntity;
-import com.drive.admin.repository.OperatorSettinngRepository;
-import com.drive.admin.service.OperatorSettinngService;
-import com.drive.admin.service.mapstruct.OperatorSettinngMapStruct;
-import com.drive.common.core.base.BaseController;
-import com.drive.common.core.biz.R;
-import com.drive.common.core.biz.ResObject;
-import com.drive.common.core.enums.EventLogEnum;
-import com.drive.common.log.annotation.EventLog;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+import java.util.List;
 import java.util.Arrays;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import com.drive.common.core.biz.R;
+import com.drive.common.core.biz.ResObject;
+import com.drive.common.core.enums.EventLogEnum;
+import com.drive.common.data.utils.ExcelUtils;
+import com.drive.common.log.annotation.EventLog;
+import io.swagger.annotations.Api;
+import com.drive.common.core.base.BaseController;
+import com.drive.admin.pojo.entity.*;
+import com.drive.admin.pojo.vo.*;
+import com.drive.admin.pojo.dto.*;
+import com.drive.admin.service.mapstruct.*;
+import com.drive.admin.service.OperatorSettinngService;
+import com.drive.admin.repository.OperatorSettinngRepository;
 
 
 /**
@@ -52,8 +56,8 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	*/
 	@ApiOperation("运营商参数设置表分页列表")
 	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid OperatorSettinngPageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody OperatorSettinngPageQueryParam param) {
 		return operatorSettinngRepository.pageList(param);
 	}
 	/**
@@ -61,8 +65,8 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	*/
 	@ApiOperation("运营商参数设置表列表")
 	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid OperatorSettinngPageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody OperatorSettinngPageQueryParam param) {
 		return operatorSettinngRepository.findList(param);
 	}
 
@@ -81,20 +85,11 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	 * 条件查询获取运营商参数设置表
 	 */
 	@ApiOperation("条件查询获取运营商参数设置表")
+	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable OperatorSettinngPageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@RequestBody OperatorSettinngPageQueryParam param) {
 		return operatorSettinngRepository.getInfo(param);
-	}
-
-	@ApiOperation("通过运营商ID查询获取对应的运营商参数设置表")
-	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
-	@GetMapping("/getInfoByOperator/{operatorId}")
-	public ResObject getInfoByOperator(@PathVariable  @NotBlank(message = "运营商ID不能为空") String operatorId) {
-		OperatorSettinngPageQueryParam operatorSettinngPageQueryParam = new OperatorSettinngPageQueryParam();
-		operatorSettinngPageQueryParam.setOperatorId(operatorId);
-		operatorSettinngPageQueryParam.setNumber("2");
-		return operatorSettinngRepository.getInfo(operatorSettinngPageQueryParam);
 	}
 
 	/**
@@ -105,8 +100,8 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:add')")
 	@EventLog(message = "新增运营商参数设置表", businessType = EventLogEnum.CREATE)
 	@PostMapping
-	public ResObject save(@Valid @RequestBody OperatorSettinngEditParam operatorSettinngEditParam) {
-		return operatorSettinngRepository.save(operatorSettinngEditParam);
+	public ResObject save(@Valid @RequestBody OperatorSettinngInstallParam operatorSettinngInstallParam) {
+		return operatorSettinngRepository.save(operatorSettinngInstallParam);
 	}
 
 	/**
@@ -129,7 +124,7 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:delete')")
 	@EventLog(message = "删除运营商参数设置表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(operatorSettinngService.removeByIds(Arrays.asList(ids)));
 	}
 
@@ -149,11 +144,11 @@ public class OperatorSettinngController extends BaseController<OperatorSettinngP
 	* 导出运营商参数设置表
 	*/
 	@ApiOperation("导出运营商参数设置表")
-	@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:export')")
+	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:export')")
 	@SneakyThrows
 	@EventLog(message = "导出运营商参数设置表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(OperatorSettinngPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody OperatorSettinngPageQueryParam param, HttpServletResponse response) {
 		operatorSettinngRepository.exportXls(param,response);
 	}
 

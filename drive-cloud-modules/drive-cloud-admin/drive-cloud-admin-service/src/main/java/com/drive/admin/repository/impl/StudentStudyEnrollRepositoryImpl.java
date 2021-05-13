@@ -508,6 +508,31 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         return result ?R.success(result):R.failure(result);
     }
 
+    @Override
+    public ResObject operationStudent(StudentStudyEnrollEditParam studyEnrollEditParam) {
+        if (StrUtil.isEmpty(studyEnrollEditParam.getStudentId())){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        if (StrUtil.isEmpty(studyEnrollEditParam.getIsInStudy())){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+
+        //查询出所有学员报名单
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("student_id",studyEnrollEditParam.getStudentId());
+        List<StudentStudyEnrollEntity> studentStudyEnrollList = studentStudyEnrollService.list(queryWrapper);
+        if (studentStudyEnrollList.size() <= 0){
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg());
+        }
+        studentStudyEnrollList.stream().forEach((item) ->{
+            item.setIsInStudy(studyEnrollEditParam.getIsInStudy());
+        }) ;
+        // 批量 修改数据
+        Boolean result = studentStudyEnrollService.updateBatchById(studentStudyEnrollList);
+        if (!result)return R.failure(SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
+        return R.success(result);
+    }
+
     /**
      * *删除学员学车报名单 信息
      **/

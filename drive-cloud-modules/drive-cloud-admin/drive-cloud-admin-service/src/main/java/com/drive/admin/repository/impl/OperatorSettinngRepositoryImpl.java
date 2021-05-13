@@ -1,31 +1,30 @@
 package com.drive.admin.repository.impl;
 
-import cn.afterturn.easypoi.excel.entity.ExportParams;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.drive.admin.pojo.entity.OperatorSettinngEntity;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import com.drive.common.core.base.BaseController;
+import com.drive.admin.repository.OperatorSettinngRepository;
+import com.drive.admin.pojo.entity.*;
+import com.drive.admin.pojo.vo.*;
+import com.drive.admin.pojo.dto.*;
+import com.drive.admin.service.mapstruct.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.drive.admin.pojo.dto.OperatorSettinngEditParam;
-import com.drive.admin.pojo.dto.OperatorSettinngPageQueryParam;
-import com.drive.admin.pojo.entity.OperatorSettinngEntity;
-import com.drive.admin.pojo.vo.OperatorSettinngVo;
-import com.drive.admin.repository.OperatorSettinngRepository;
-import com.drive.admin.service.OperatorSettinngService;
-import com.drive.admin.service.mapstruct.OperatorSettinngMapStruct;
-import com.drive.common.core.base.BaseController;
+import cn.hutool.core.util.StrUtil;
 import com.drive.common.core.biz.R;
-import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.utils.BeanConvertUtils;
-import com.drive.common.data.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
+import com.drive.common.core.biz.ResObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Arrays;
+import com.drive.admin.service.OperatorSettinngService;
+import com.drive.common.data.utils.ExcelUtils;
 import java.util.List;
+import java.util.Arrays;
+import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Service;
 
                                         
 /**
@@ -62,10 +61,14 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
         QueryWrapper queryWrapper = this.getQueryWrapper(operatorSettinngMapStruct, param);
 
         //  模糊查询
-        //queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNumberDescribeSearch()),"number_describe",param.getVagueNumberDescribeSearch());
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
+        }
+
+        if (param.getCreateDateTimeSearchArr() != null && param.getCreateDateTimeSearchArr().length > 0 ){
+            queryWrapper.between("create_time",param.getCreateDateTimeSearchArr()[0],param.getCreateDateTimeSearchArr()[1]);
         }
         IPage<OperatorSettinngEntity> pageList = operatorSettinngService.page(page, queryWrapper);
         if (pageList.getRecords().size() <= 0){
@@ -74,9 +77,18 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
         }
         Page<OperatorSettinngVo> operatorSettinngVoPage = operatorSettinngMapStruct.toVoList(pageList);
         log.info(this.getClass() + "pageList-方法请求结果{}",operatorSettinngVoPage);
-        return R.success(operatorSettinngVoPage);
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),operatorSettinngVoPage);
     }
 
+    /*
+     *
+     *功能描述
+     * @author xiaoguo
+     * @description 运营商参数设置表 查询列表
+     * @date 2020/2/12 17:09
+     * @param  * @param OperatorSettinngPageQueryParam
+     * @return
+     */
     @Override
     public ResObject findList(OperatorSettinngPageQueryParam param) {
         log.info(this.getClass() + "findList-方法请求参数{}",param);
@@ -90,11 +102,11 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
         }
         List<OperatorSettinngVo> operatorSettinngVoList = operatorSettinngMapStruct.toVoList(operatorSettinngList);
         log.info(this.getClass() + "findList-方法请求结果{}",operatorSettinngVoList);
-        return R.success(operatorSettinngVoList);
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),operatorSettinngVoList);
     }
 
     /**
-    * 条件查询返回单条运营商参数设置表数据
+    * 对象条件查询返回单条运营商参数设置表数据
     * @param param
     * @return
     */
@@ -113,18 +125,25 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
         }
         OperatorSettinngVo operatorSettinngVo = BeanConvertUtils.copy(operatorSettinng, OperatorSettinngVo.class);
         log.info(this.getClass() + "getInfo-方法请求结果{}",operatorSettinngVo);
-        return R.success(operatorSettinngVo);
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),operatorSettinngVo);
     }
 
-    /**
-     * *通过ID获取运营商参数设置表 列表
-     **/
+    /*
+     *
+     *功能描述
+     * @author xiaoguo
+     * @description 通过ID获取 运营商参数设置表 单条数据
+     * @date 2020/2/12 17:09
+     * @param  * @param OperatorSettinngPageQueryParam
+     * @return
+     */
     @Override
     public ResObject getById(String id) {
         log.info(this.getClass() + "getById-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure("数据空");
         }
+        // 通过ID 获取 单条数据
         OperatorSettinngEntity operatorSettinng = operatorSettinngService.getById(id);
         if (operatorSettinng == null){
             log.error("数据空");
@@ -132,14 +151,20 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
         }
         OperatorSettinngVo operatorSettinngVo = BeanConvertUtils.copy(operatorSettinng, OperatorSettinngVo.class);
         log.info(this.getClass() + "getById-方法请求结果{}",operatorSettinngVo);
-        return R.success(operatorSettinngVo);
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),operatorSettinngVo);
     }
 
-    /**
-     * *保存运营商参数设置表 信息
-     **/
+    /*
+     *
+     *功能描述
+     * @author xiaoguo
+     * @description 保存运营商参数设置表 数据
+     * @date 2020/2/12 17:09
+     * @param  * @param OperatorSettinngPageQueryParam
+     * @return
+     */
     @Override
-    public ResObject save(OperatorSettinngEditParam installParam) {
+    public ResObject save(OperatorSettinngInstallParam installParam) {
         log.info(this.getClass() + "save方法请求参数{}",installParam);
         if (installParam == null){
             log.error("数据空");
@@ -149,12 +174,18 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
         Boolean result = operatorSettinngService.save(operatorSettinng);
         log.info(this.getClass() + "save-方法请求结果{}",result);
         // 判断结果
-        return result ?R.success(result):R.failure(result);
+        return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_INSTALL_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
     }
 
-    /**
-     * *修改运营商参数设置表 信息
-     **/
+    /*
+     *
+     *功能描述
+     * @author xiaoguo
+     * @description  修改运营商参数设置表 数据
+     * @date 2020/2/12 17:09
+     * @param  * @param OperatorSettinngPageQueryParam
+     * @return
+     */
     @Override
     public ResObject update(OperatorSettinngEditParam updateParam) {
         log.info(this.getClass() + "update方法请求参数{}",updateParam);
@@ -166,12 +197,18 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
         Boolean result = operatorSettinngService.updateById(operatorSettinng);
         log.info(this.getClass() + "update-方法请求结果{}",result);
         // 判断结果
-        return result ?R.success(result):R.failure(result);
+        return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_UPDATE_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
     }
 
-    /**
-     * *删除运营商参数设置表 信息
-     **/
+    /*
+     *
+     *功能描述
+     * @author xiaoguo
+     * @description 数组删除运营商参数设置表 数据
+     * @date 2020/2/12 17:09
+     * @param  * @param OperatorSettinngPageQueryParam
+     * @return
+     */
     @Override
     public ResObject deleteByIds(String[] ids) {
         if (ids.length <= 0){
@@ -196,7 +233,7 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
         Boolean result = operatorSettinngService.removeById(id);
         log.info(this.getClass() + "deleteById-方法请求结果{}",result);
         // 判断结果
-        return result ?R.success(result):R.failure(result);
+        return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_DELETE_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_DELETE_FAILL.subCode(),SubResultCode.DATA_DELETE_FAILL.subMsg());
     }
 
     /**
@@ -209,7 +246,7 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
         List<OperatorSettinngEntity> list = operatorSettinngService.list(queryWrapper);
         List<OperatorSettinngVo>operatorSettinngList = operatorSettinngMapStruct.toVoList(list);
         ExcelUtils.exportExcel(operatorSettinngList, OperatorSettinngVo.class, "", new ExportParams(), response);
-        return R.success("导出成功");
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.EXPORT_DATA_SUCCESS.subMsg());
     }
 
     /**
@@ -229,7 +266,7 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
         Boolean result = operatorSettinngService.updateById(OperatorSettinngEntity);
         log.info(this.getClass() +"changeStatus方法请求对象参数{}，请求结果{}",OperatorSettinngEntity,result);
         // 判断结果
-        return result ?R.success(result):R.failure(result);
+        return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_STATUS_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_STATUS_FAILL.subCode(),SubResultCode.DATA_STATUS_FAILL.subMsg());
     }
 
 }

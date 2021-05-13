@@ -40,4 +40,6 @@ public class RecommendManagerPageQueryParam extends BasePageQueryParam {
 	// 运营商id(数据权限标记)
 	private String operatorId;
 
+	private String vagueRemarksSearch;
+
 }

@@ -88,7 +88,7 @@ public class TestTrainPriceController extends BaseController<TestTrainPricePageQ
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/testTrainPrice',  'admin:testTrainPrice:query')")
 	@PostMapping("/getInfo")
-	public ResObject getInfo(@PathVariable @RequestBody TestTrainPricePageQueryParam param) {
+	public ResObject getInfo(@Valid @RequestBody TestTrainPricePageQueryParam param) {
 		return testTrainPriceRepository.getInfo(param);
 	}
 

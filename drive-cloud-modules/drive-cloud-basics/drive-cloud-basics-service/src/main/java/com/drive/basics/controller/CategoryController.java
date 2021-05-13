@@ -47,18 +47,18 @@ public class CategoryController extends BaseController<CategoryPageQueryParam, C
 	* 产品分类表 分页列表
 	*/
 	@ApiOperation("产品分类表分页列表")
-	@PreAuthorize("hasPermission('/basics/category',  'basics:category:query')")
+	//@PreAuthorize("hasPermission('/basics/category',  'basics:category:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid CategoryPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody CategoryPageQueryParam param) {
 		return categoryRepository.pageList(param);
 	}
 	/**
 	* 产品分类表 分页列表
 	*/
 	@ApiOperation("产品分类表列表")
-	@PreAuthorize("hasPermission('/basics/category',  'basics:category:query')")
+	//@PreAuthorize("hasPermission('/basics/category',  'basics:category:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid CategoryPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody CategoryPageQueryParam param) {
 		return categoryRepository.findList(param);
 	}
 
@@ -67,7 +67,7 @@ public class CategoryController extends BaseController<CategoryPageQueryParam, C
 	*/
 	@ApiOperation("获取产品分类表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/category',  'basics:category:query')")
+	//@PreAuthorize("hasPermission('/basics/category',  'basics:category:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return categoryRepository.getById(id);
@@ -78,7 +78,7 @@ public class CategoryController extends BaseController<CategoryPageQueryParam, C
 	*/
 	@ApiOperation("新增产品分类表")
 	@ApiImplicitParam(name = "CategoryEditParam ", value = "新增产品分类表", dataType = "CategoryEditParam")
-	@PreAuthorize("hasPermission('/basics/category',  'basics:category:add')")
+	//@PreAuthorize("hasPermission('/basics/category',  'basics:category:add')")
 	@EventLog(message = "新增产品分类表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody CategoryEditParam categoryEditParam) {
@@ -90,7 +90,7 @@ public class CategoryController extends BaseController<CategoryPageQueryParam, C
 	*/
 	@ApiOperation("修改产品分类表")
 	@ApiImplicitParam(name = "CategoryEditParam ", value = "修改产品分类表", dataType = "CategoryEditParam")
-	@PreAuthorize("hasPermission('/basics/category',  'basics:category:edit')")
+	//@PreAuthorize("hasPermission('/basics/category',  'basics:category:edit')")
 	@EventLog(message = "修改产品分类表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody CategoryEditParam categoryEditParam) {
@@ -102,10 +102,10 @@ public class CategoryController extends BaseController<CategoryPageQueryParam, C
 	*/
 	@ApiOperation("删除产品分类表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/category',  'basics:category:delete')")
+	//@PreAuthorize("hasPermission('/basics/category',  'basics:category:delete')")
 	@EventLog(message = "删除产品分类表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(categoryService.removeByIds(Arrays.asList(ids)));
 	}
 
@@ -114,7 +114,7 @@ public class CategoryController extends BaseController<CategoryPageQueryParam, C
 	*/
 	@ApiOperation("通过主键删除产品分类表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除产品分类表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -125,11 +125,11 @@ public class CategoryController extends BaseController<CategoryPageQueryParam, C
 	* 导出产品分类表
 	*/
 	@ApiOperation("导出产品分类表")
-	@PreAuthorize("hasPermission('/basics/category',  'basics:category:export')")
+	//@PreAuthorize("hasPermission('/basics/category',  'basics:category:export')")
 	@SneakyThrows
 	@EventLog(message = "导出产品分类表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(CategoryPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody CategoryPageQueryParam param, HttpServletResponse response) {
 		categoryRepository.exportXls(param,response);
 	}
 
@@ -138,7 +138,7 @@ public class CategoryController extends BaseController<CategoryPageQueryParam, C
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用产品分类表")
-	@PreAuthorize("hasPermission('/basics/category',  'basics:category:changeStatus')")
+	//@PreAuthorize("hasPermission('/basics/category',  'basics:category:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用产品分类表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")
@@ -151,7 +151,7 @@ public class CategoryController extends BaseController<CategoryPageQueryParam, C
 	 */
 	@ApiOperation("获取产品分类表")
 	@ApiImplicitParam(name = "type", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/basics/category',  'basics:category:query')")
+	//@PreAuthorize("hasPermission('/basics/category',  'basics:category:query')")
 	@PostMapping("/getCategoryByType")
 	public ResObject getCategoryByType(@RequestBody CategoryPageQueryParam categoryPageQueryParam) {
 		return categoryRepository.getCategoryByType(categoryPageQueryParam.getDictType(),categoryPageQueryParam.getTenantId());

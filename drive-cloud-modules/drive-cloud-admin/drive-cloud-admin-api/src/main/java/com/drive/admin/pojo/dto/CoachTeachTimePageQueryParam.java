@@ -202,6 +202,17 @@ public class CoachTeachTimePageQueryParam extends BasePageQueryParam {
 	@ApiModelProperty(value = "预收入班型id")
 	private String expectClassId;
 	// 模糊查询字段
-	//private String vagueNameSearch
+	private String vagueClassNameSearch;
+
+
+	// 教练名称模糊
+	private String vagueCoachNameSearch;
+
+	// 教练手机模糊
+	private String vagueCoachPhoneSearch;
+
+	private String[] dateTimeSearchArr = new String[2];
+
+
 
 }

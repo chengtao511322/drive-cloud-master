@@ -51,8 +51,8 @@ public class AppVersionController extends BaseController<AppVersionPageQueryPara
 	*/
 	@ApiOperation("平台应用版本表分页列表")
 	@PreAuthorize("hasPermission('/admin/appVersion',  'admin:appVersion:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid AppVersionPageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid  @RequestBody AppVersionPageQueryParam param) {
 		return appVersionRepository.pageList(param);
 	}
 	/**
@@ -60,8 +60,8 @@ public class AppVersionController extends BaseController<AppVersionPageQueryPara
 	*/
 	@ApiOperation("平台应用版本表列表")
 	@PreAuthorize("hasPermission('/admin/appVersion',  'admin:appVersion:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid AppVersionPageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody AppVersionPageQueryParam param) {
 		return appVersionRepository.findList(param);
 	}
 
@@ -143,7 +143,7 @@ public class AppVersionController extends BaseController<AppVersionPageQueryPara
 	@SneakyThrows
 	@EventLog(message = "导出平台应用版本表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(AppVersionPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody AppVersionPageQueryParam param, HttpServletResponse response) {
 		appVersionRepository.exportXls(param,response);
 	}
 

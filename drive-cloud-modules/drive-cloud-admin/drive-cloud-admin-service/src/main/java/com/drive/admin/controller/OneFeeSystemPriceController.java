@@ -50,7 +50,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	@ApiOperation("学车一费制定价表分页列表")
 	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid OneFeeSystemPricePageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody OneFeeSystemPricePageQueryParam param) {
 		return oneFeeSystemPriceRepository.pageList(param);
 	}
 	/**
@@ -59,7 +59,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	@ApiOperation("学车一费制定价表列表")
 	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid OneFeeSystemPricePageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody OneFeeSystemPricePageQueryParam param) {
 		return oneFeeSystemPriceRepository.findList(param);
 	}
 
@@ -150,7 +150,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:delete')")
 	@EventLog(message = "删除学车一费制定价表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(oneFeeSystemPriceService.removeByIds(Arrays.asList(ids)));
 	}
 
@@ -174,7 +174,7 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	@SneakyThrows
 	@EventLog(message = "导出学车一费制定价表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(OneFeeSystemPricePageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody OneFeeSystemPricePageQueryParam param, HttpServletResponse response) {
 			oneFeeSystemPriceRepository.exportXls(param,response);
 	}
 

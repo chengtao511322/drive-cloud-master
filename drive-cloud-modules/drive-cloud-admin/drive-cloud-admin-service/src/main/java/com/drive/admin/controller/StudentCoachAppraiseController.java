@@ -51,8 +51,8 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	*/
 	@ApiOperation("学员教练互评表分页列表")
 	//@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid StudentCoachAppraisePageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody StudentCoachAppraisePageQueryParam param) {
 		return studentCoachAppraiseRepository.pageList(param);
 	}
 	/**
@@ -60,8 +60,8 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	*/
 	@ApiOperation("学员教练互评表列表")
 	//@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid StudentCoachAppraisePageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody StudentCoachAppraisePageQueryParam param) {
 		return studentCoachAppraiseRepository.findList(param);
 	}
 
@@ -82,8 +82,8 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	@ApiOperation("条件查询获取学员教练互评表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/studentCoachAppraise',  'admin:studentCoachAppraise:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable StudentCoachAppraisePageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@PathVariable @RequestBody StudentCoachAppraisePageQueryParam param) {
 		return studentCoachAppraiseRepository.getInfo(param);
 	}
 
@@ -143,7 +143,7 @@ public class StudentCoachAppraiseController extends BaseController<StudentCoachA
 	@SneakyThrows
 	@EventLog(message = "导出学员教练互评表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(StudentCoachAppraisePageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody StudentCoachAppraisePageQueryParam param, HttpServletResponse response) {
 		studentCoachAppraiseRepository.exportXls(param,response);
 	}
 

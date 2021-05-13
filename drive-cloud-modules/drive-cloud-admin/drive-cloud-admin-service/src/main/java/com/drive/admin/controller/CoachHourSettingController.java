@@ -54,8 +54,8 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 	*/
 	@ApiOperation("教练发课设置分页列表")
 	//@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid CoachHourSettingPageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody CoachHourSettingPageQueryParam param) {
 		return coachHourSettingRepository.pageList(param);
 	}
 	/**
@@ -63,8 +63,8 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 	*/
 	@ApiOperation("教练发课设置列表")
 	//@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid CoachHourSettingPageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid  @RequestBody CoachHourSettingPageQueryParam param) {
 		return coachHourSettingRepository.findList(param);
 	}
 
@@ -93,8 +93,8 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 	@ApiOperation("条件查询获取教练发课设置")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/coachHourSetting',  'admin:coachHourSetting:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable CoachHourSettingPageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@PathVariable @RequestBody CoachHourSettingPageQueryParam param) {
 		return coachHourSettingRepository.getInfo(param);
 	}
 
@@ -171,7 +171,7 @@ public class CoachHourSettingController extends BaseController<CoachHourSettingP
 	@SneakyThrows
 	@EventLog(message = "导出教练发课设置", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(CoachHourSettingPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody CoachHourSettingPageQueryParam param, HttpServletResponse response) {
 		coachHourSettingRepository.exportXls(param,response);
 	}
 

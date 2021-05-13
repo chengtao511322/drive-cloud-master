@@ -51,8 +51,8 @@ public class EvaluateTagController extends BaseController<EvaluateTagPageQueryPa
 	*/
 	@ApiOperation("评价标签表分页列表")
 	//@PreAuthorize("hasPermission('/admin/evaluateTag',  'admin:evaluateTag:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid EvaluateTagPageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody EvaluateTagPageQueryParam param) {
 		return evaluateTagRepository.pageList(param);
 	}
 	/**
@@ -60,8 +60,8 @@ public class EvaluateTagController extends BaseController<EvaluateTagPageQueryPa
 	*/
 	@ApiOperation("评价标签表列表")
 	//@PreAuthorize("hasPermission('/admin/evaluateTag',  'admin:evaluateTag:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid EvaluateTagPageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody EvaluateTagPageQueryParam param) {
 		return evaluateTagRepository.findList(param);
 	}
 
@@ -82,8 +82,8 @@ public class EvaluateTagController extends BaseController<EvaluateTagPageQueryPa
 	@ApiOperation("条件查询获取评价标签表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/evaluateTag',  'admin:evaluateTag:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable EvaluateTagPageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@PathVariable @RequestBody EvaluateTagPageQueryParam param) {
 		return evaluateTagRepository.getInfo(param);
 	}
 
@@ -143,7 +143,7 @@ public class EvaluateTagController extends BaseController<EvaluateTagPageQueryPa
 	@SneakyThrows
 	@EventLog(message = "导出评价标签表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(EvaluateTagPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody EvaluateTagPageQueryParam param, HttpServletResponse response) {
 		evaluateTagRepository.exportXls(param,response);
 	}
 

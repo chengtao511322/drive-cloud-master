@@ -51,8 +51,8 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	*/
 	@ApiOperation("合作驾校用户分页列表")
 	//@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid SchoolUserPageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody SchoolUserPageQueryParam param) {
 		return schoolUserRepository.pageList(param);
 	}
 	/**
@@ -60,8 +60,8 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	*/
 	@ApiOperation("合作驾校用户列表")
 	//@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid SchoolUserPageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody SchoolUserPageQueryParam param) {
 		return schoolUserRepository.findList(param);
 	}
 
@@ -82,8 +82,8 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	@ApiOperation("条件查询获取合作驾校用户")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable SchoolUserPageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@PathVariable @RequestBody SchoolUserPageQueryParam param) {
 		return schoolUserRepository.getInfo(param);
 	}
 
@@ -143,7 +143,7 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	@SneakyThrows
 	@EventLog(message = "导出合作驾校用户", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(SchoolUserPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody SchoolUserPageQueryParam param, HttpServletResponse response) {
 		schoolUserRepository.exportXls(param,response);
 	}
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.OneFeeSystemUpgradeClassPriceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.OneFeeSystemUpgradeClassPriceEntity">
+        <id column="id" property="id" />
+        <result column="original_class_id" property="originalClassId" />
+        <result column="original_class_type" property="originalClassType" />
+        <result column="upgrade_class_id" property="upgradeClassId" />
+        <result column="upgrade_class_type" property="upgradeClassType" />
+        <result column="upgrade_price" property="upgradePrice" />
+        <result column="details_url" property="detailsUrl" />
+        <result column="is_delete" property="isDelete" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="operator_id" property="operatorId" />
+        <result column="operator_change_money" property="operatorChangeMoney" />
+        <result column="service_change_money" property="serviceChangeMoney" />
+        <result column="status" property="status" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, original_class_id, original_class_type, upgrade_class_id, upgrade_class_type, upgrade_price, details_url, is_delete, create_time, update_time, operator_id, operator_change_money, service_change_money, status
+    </sql>
+
+</mapper>

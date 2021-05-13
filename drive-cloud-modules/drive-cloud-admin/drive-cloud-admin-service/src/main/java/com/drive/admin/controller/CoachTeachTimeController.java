@@ -143,7 +143,7 @@ public class CoachTeachTimeController extends BaseController<CoachTeachTimePageQ
 	@SneakyThrows
 	@EventLog(message = "导出教练课程时间表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(CoachTeachTimePageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody CoachTeachTimePageQueryParam param, HttpServletResponse response) {
 		coachTeachTimeRepository.exportXls(param,response);
 	}
 

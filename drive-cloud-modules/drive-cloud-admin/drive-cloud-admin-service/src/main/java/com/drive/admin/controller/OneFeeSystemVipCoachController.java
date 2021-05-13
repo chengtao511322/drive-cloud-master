@@ -50,8 +50,8 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	*/
 	@ApiOperation("一费制vip教练分页列表")
 	//@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:query')")
-	@GetMapping(value = "/pageList")
-	public ResObject pageList(@Valid OneFeeSystemVipCoachPageQueryParam param) {
+	@PostMapping(value = "/pageList")
+	public ResObject pageList(@Valid @RequestBody OneFeeSystemVipCoachPageQueryParam param) {
 		return oneFeeSystemVipCoachRepository.pageList(param);
 	}
 	/**
@@ -59,8 +59,8 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	*/
 	@ApiOperation("一费制vip教练列表")
 	//@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:query')")
-	@GetMapping(value = "/findList")
-	public ResObject findList(@Valid OneFeeSystemVipCoachPageQueryParam param) {
+	@PostMapping(value = "/findList")
+	public ResObject findList(@Valid @RequestBody OneFeeSystemVipCoachPageQueryParam param) {
 		return oneFeeSystemVipCoachRepository.findList(param);
 	}
 
@@ -81,8 +81,8 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	@ApiOperation("条件查询获取一费制vip教练")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable OneFeeSystemVipCoachPageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@PathVariable @RequestBody OneFeeSystemVipCoachPageQueryParam param) {
 		return oneFeeSystemVipCoachRepository.getInfo(param);
 	}
 
@@ -142,7 +142,7 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	@SneakyThrows
 	@EventLog(message = "导出一费制vip教练", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(OneFeeSystemVipCoachPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody OneFeeSystemVipCoachPageQueryParam param, HttpServletResponse response) {
 		oneFeeSystemVipCoachRepository.exportXls(param,response);
 	}
 

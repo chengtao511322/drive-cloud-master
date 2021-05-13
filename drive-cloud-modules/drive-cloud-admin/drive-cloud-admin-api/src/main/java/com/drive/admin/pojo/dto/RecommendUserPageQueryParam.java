@@ -72,4 +72,7 @@ public class RecommendUserPageQueryParam extends BasePageQueryParam {
 	private BigDecimal vipClassTiemPercent;
 
 
+	private String[] createDateTimeSearchArr = new String[2];
+
+
 }

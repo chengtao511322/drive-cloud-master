@@ -95,7 +95,7 @@ public class ${entity}Controller extends BaseController<${entity}PageQueryParam,
 	@ApiImplicitParam(name = "${pkColumn.propertyName}", required = true, dataType = "String", paramType = "path")
 	@PreAuthorize("hasPermission('/${cfg.moduleName}/${className}',  '${cfg.moduleName}:${className}:query')")
 	@PostMapping("/getInfo")
-	public ResObject getInfo(@PathVariable @RequestBody ${entity}PageQueryParam param) {
+	public ResObject getInfo(@RequestBody ${entity}PageQueryParam param) {
 		return ${className}Repository.getInfo(param);
 	}
 
@@ -155,7 +155,7 @@ public class ${entity}Controller extends BaseController<${entity}PageQueryParam,
 	@SneakyThrows
 	@EventLog(message = "导出${table.comment}", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(${entity}PageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody ${entity}PageQueryParam param, HttpServletResponse response) {
 		${className}Repository.exportXls(param,response);
 	}
 

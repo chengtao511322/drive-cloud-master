@@ -48,7 +48,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	@ApiOperation("一费制学员教练关联表分页列表")
 	//@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid OneFeeSystemCoachStudentPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody OneFeeSystemCoachStudentPageQueryParam param) {
 		return oneFeeSystemCoachStudentRepository.pageList(param);
 	}
 	/**
@@ -57,7 +57,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	@ApiOperation("一费制学员教练关联表列表")
 	//@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid OneFeeSystemCoachStudentPageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody OneFeeSystemCoachStudentPageQueryParam param) {
 		return oneFeeSystemCoachStudentRepository.findList(param);
 	}
 
@@ -150,7 +150,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	@SneakyThrows
 	@EventLog(message = "导出一费制学员教练关联表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(OneFeeSystemCoachStudentPageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody OneFeeSystemCoachStudentPageQueryParam param, HttpServletResponse response) {
 		oneFeeSystemCoachStudentRepository.exportXls(param,response);
 	}
 

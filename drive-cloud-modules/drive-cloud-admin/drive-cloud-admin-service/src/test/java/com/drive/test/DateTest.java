@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import com.drive.admin.util.MyDateUtil;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -17,6 +18,18 @@ public class DateTest {
         System.out.println(dateTime);
 
         String ids = "01b13fad909245abb042d5efc37b82ee,b00a7c7b60be4c42ba37f2f66c10806a,bbdc1bd499b241daa6fe99063e63a193";
+
+
+        // 日期字符串
+        String dateStr1 = "2018-12-27 17:07:07";
+        String dateStr2 = "2021-05-14 00:00:00";
+
+        // 获取日期
+        Date date1 = new Date();
+        Date date2 = MyDateUtil.parseDate(dateStr2, "yyyy-MM-dd HH:mm:ss");
+
+        long betweenDays = (date2.getTime() - date1.getTime()) / (1000L*3600L*12);
+        System.out.println(betweenDays);
         //System.out.println(DateUtil.between(new Date(),in, DateUnit.DAY, false));
         //新建FIFOCache
         /*Cache<String,String> fifoCache = CacheUtil.newFIFOCache(3);

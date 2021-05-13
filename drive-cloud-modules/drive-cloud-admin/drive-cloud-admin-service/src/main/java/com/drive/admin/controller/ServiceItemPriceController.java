@@ -48,7 +48,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	@ApiOperation("服务项目价格表分页列表")
 	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid ServiceItemPricePageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody ServiceItemPricePageQueryParam param) {
 		return serviceItemPriceRepository.pageList(param);
 	}
 	/**
@@ -57,7 +57,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	@ApiOperation("服务项目价格表列表")
 	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid ServiceItemPricePageQueryParam param) {
+	public ResObject findList(@Valid @RequestBody ServiceItemPricePageQueryParam param) {
 		return serviceItemPriceRepository.findList(param);
 	}
 
@@ -68,7 +68,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	@ApiOperation("服务项目价格表列表")
 	//@PreAuthorize("hasPermission('/admin/serviceItemPrice',  'admin:serviceItemPrice:query')")
 	@PostMapping(value = "/findListContrast")
-	public ResObject findListContrast(@Valid ServiceItemPricePageQueryParam param) {
+	public ResObject findListContrast(@Valid @RequestBody ServiceItemPricePageQueryParam param) {
 		return serviceItemPriceRepository.findListContrast(param);
 	}
 
@@ -165,7 +165,7 @@ public class ServiceItemPriceController extends BaseController<ServiceItemPriceP
 	@SneakyThrows
 	@EventLog(message = "导出服务项目价格表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(ServiceItemPricePageQueryParam param, HttpServletResponse response) {
+	public void exportXls(@RequestBody ServiceItemPricePageQueryParam param, HttpServletResponse response) {
 			serviceItemPriceRepository.exportXls(param,response);
 	}
 

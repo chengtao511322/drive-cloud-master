@@ -1,3 +1,4 @@
+/*
 package com.drive.pay.pojo.dto;
 
 import lombok.Data;
@@ -5,13 +6,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+*/
 /**
  * @Author 小郭
  * @Description //TODO
  * @Date $ $
  * @Param $
  * @return $
- **/
+ **//*
+
 @Component
 @PropertySource("classpath:/production/alipay.properties")
 @ConfigurationProperties(prefix = "alipay")
@@ -31,3 +34,4 @@ public class AliPayDto {
     private String alipayRootCertPath;
 
 }
+*/

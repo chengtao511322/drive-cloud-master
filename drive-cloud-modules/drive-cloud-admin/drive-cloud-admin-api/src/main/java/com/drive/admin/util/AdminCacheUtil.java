@@ -2,10 +2,7 @@ package com.drive.admin.util;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.drive.admin.pojo.vo.AreaVo;
-import com.drive.admin.pojo.vo.CoachInfoVo;
-import com.drive.admin.pojo.vo.OneFeeSystemPriceVo;
-import com.drive.admin.pojo.vo.ServiceInfoVo;
+import com.drive.admin.pojo.vo.*;
 import com.drive.common.core.constant.CacheConstants;
 import com.drive.common.core.utils.StringUtils;
 import com.drive.common.redis.util.CacheUtils;
@@ -127,5 +124,22 @@ public class AdminCacheUtil {
             return null;
         }
         return oneFeeSystemPriceVo.getName();
+    }
+
+
+    /**
+     * 场地
+     * @param coachingId
+     * @return
+     */
+    public static String getCoachingGridName(String coachingId){
+        if (StrUtil.isEmpty(coachingId)){
+            return null;
+        }
+        CoachingGridVo coachingGridVo = JSONObject.parseObject(CacheUtils.getCache(CacheConstants.REDIS_COACHING_GRID_KEY+coachingId),CoachingGridVo.class);
+        if(StringUtils.isNull(coachingGridVo)){
+            return null;
+        }
+        return coachingGridVo.getName();
     }
 }
