@@ -167,6 +167,20 @@ public class  TestTrainPriceRepositoryImpl extends BaseController<TestTrainPrice
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+        // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 驾照类型
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getDriveType()),"drive_type",installParam.getDriveType());
+        // 科目类型
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getSubjectType()),"subject_type",installParam.getSubjectType());
+        // 价格类型
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getPriceType()),"price_type",installParam.getPriceType());
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getOperatorId()),"operator_id",installParam.getOperatorId());
+        queryWrapper.last("limit 1");
+        TestTrainPriceEntity isTestTrainPrice = testTrainPriceService.getOne(queryWrapper);
+        if (isTestTrainPrice != null){
+            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
         TestTrainPriceEntity testTrainPrice = BeanConvertUtils.copy(installParam, TestTrainPriceEntity.class);
         Boolean result = testTrainPriceService.save(testTrainPrice);
         log.info(this.getClass() + "save-方法请求结果{}",result);

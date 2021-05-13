@@ -170,6 +170,16 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+        // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 运营商名称
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getNumber()),"number",installParam.getNumber());
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getOperatorId()),"operator_id",installParam.getOperatorId());
+        queryWrapper.last("limit 1");
+        OperatorSettinngEntity isOperatorSettinng = operatorSettinngService.getOne(queryWrapper);
+        if (isOperatorSettinng != null){
+            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
         OperatorSettinngEntity operatorSettinng = BeanConvertUtils.copy(installParam, OperatorSettinngEntity.class);
         Boolean result = operatorSettinngService.save(operatorSettinng);
         log.info(this.getClass() + "save-方法请求结果{}",result);

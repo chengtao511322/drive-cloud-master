@@ -5,11 +5,13 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.pojo.dto.RecommendUserEditParam;
 import com.drive.admin.pojo.dto.RecommendUserPageQueryParam;
 import com.drive.admin.pojo.entity.RecommendManagerEntity;
 import com.drive.admin.pojo.entity.RecommendUserEntity;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
+import com.drive.admin.pojo.entity.TestTrainPriceEntity;
 import com.drive.admin.pojo.vo.RecommendUserVo;
 import com.drive.admin.repository.RecommendManagerRepository;
 import com.drive.admin.repository.RecommendUserRepository;
@@ -191,7 +193,21 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+        // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 学员id
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getStudentId()),"student_id",installParam.getStudentId());
+        // 推广商查询
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getName()),"name",installParam.getName());
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getOperatorId()),"operator_id",installParam.getOperatorId());
+        queryWrapper.last("limit 1");
+        RecommendUserEntity isRecommendUser = recommendUserService.getOne(queryWrapper);
+        if (isRecommendUser != null){
+            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
         RecommendUserEntity recommendUser = BeanConvertUtils.copy(installParam, RecommendUserEntity.class);
+        // 待审
+        recommendUser.setStatus(StatusEnum.ENABLE.getCode());
         Boolean result = recommendUserService.save(recommendUser);
         log.info(this.getClass() + "save-方法请求结果{}",result);
         // 判断结果
@@ -208,6 +224,18 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+      /*  // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 学员id
+        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getStudentId()),"student_id",updateParam.getStudentId());
+        // 推广商查询
+        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getName()),"name",updateParam.getName());
+        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getOperatorId()),"operator_id",updateParam.getOperatorId());
+        queryWrapper.last("limit 1");
+        RecommendUserEntity isRecommendUser = recommendUserService.getOne(queryWrapper);
+        if (isRecommendUser != null){
+            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }*/
         RecommendUserEntity recommendUser = BeanConvertUtils.copy(updateParam, RecommendUserEntity.class);
         Boolean result = recommendUserService.updateById(recommendUser);
         log.info(this.getClass() + "update-方法请求结果{}",result);

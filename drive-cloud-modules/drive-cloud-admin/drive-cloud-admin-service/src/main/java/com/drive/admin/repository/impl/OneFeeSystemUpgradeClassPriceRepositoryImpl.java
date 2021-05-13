@@ -1,6 +1,7 @@
 package com.drive.admin.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.pojo.entity.OneFeeSystemUpgradeClassPriceEntity;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.drive.admin.service.OneFeeSystemPriceService;
@@ -198,7 +199,20 @@ public class  OneFeeSystemUpgradeClassPriceRepositoryImpl extends BaseController
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+        // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 学员id
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getOriginalClassId()),"original_class_id",installParam.getOriginalClassId());
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getUpgradeClassId()),"upgrade_class_id",installParam.getUpgradeClassId());
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getOperatorId()),"operator_id",installParam.getOperatorId());
+        queryWrapper.last("limit 1");
+        OneFeeSystemUpgradeClassPriceEntity isOneFeeSystemUpgradeClassPrice = oneFeeSystemUpgradeClassPriceService.getOne(queryWrapper);
+        if (isOneFeeSystemUpgradeClassPrice != null){
+            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
         OneFeeSystemUpgradeClassPriceEntity oneFeeSystemUpgradeClassPrice = BeanConvertUtils.copy(installParam, OneFeeSystemUpgradeClassPriceEntity.class);
+        // 待审
+        oneFeeSystemUpgradeClassPrice.setStatus(StatusEnum.ENABLE.getCode());
         Boolean result = oneFeeSystemUpgradeClassPriceService.save(oneFeeSystemUpgradeClassPrice);
         log.info(this.getClass() + "save-方法请求结果{}",result);
         // 判断结果
@@ -221,6 +235,19 @@ public class  OneFeeSystemUpgradeClassPriceRepositoryImpl extends BaseController
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+
+       /* // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 学员id
+        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getOriginalClassId()),"original_class_id",updateParam.getOriginalClassId());
+        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getUpgradeClassId()),"upgrade_class_id",updateParam.getUpgradeClassId());
+        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getOperatorId()),"operator_id",updateParam.getOperatorId());
+        queryWrapper.last("limit 1");
+        OneFeeSystemUpgradeClassPriceEntity isOneFeeSystemUpgradeClassPrice = oneFeeSystemUpgradeClassPriceService.getOne(queryWrapper);
+        if (isOneFeeSystemUpgradeClassPrice != null){
+            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }*/
+
         OneFeeSystemUpgradeClassPriceEntity oneFeeSystemUpgradeClassPrice = BeanConvertUtils.copy(updateParam, OneFeeSystemUpgradeClassPriceEntity.class);
         Boolean result = oneFeeSystemUpgradeClassPriceService.updateById(oneFeeSystemUpgradeClassPrice);
         log.info(this.getClass() + "update-方法请求结果{}",result);

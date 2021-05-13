@@ -9,6 +9,7 @@ import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.pojo.dto.*;
 import com.drive.admin.pojo.entity.OperatorAreaEntity;
 import com.drive.admin.pojo.entity.OperatorEntity;
+import com.drive.admin.pojo.entity.RecommendManagerEntity;
 import com.drive.admin.pojo.vo.OperatorAreaVo;
 import com.drive.admin.pojo.vo.OperatorVo;
 import com.drive.admin.repository.OperatorRepository;
@@ -176,6 +177,15 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
         if (installParam == null){
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 运营商名称
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getName()),"name",installParam.getName());
+        queryWrapper.last("limit 1");
+        OperatorEntity isOperator = operatorService.getOne(queryWrapper);
+        if (isOperator != null){
+            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         OperatorEntity operator = BeanConvertUtils.copy(installParam, OperatorEntity.class);
         Boolean result = operatorService.save(operator);

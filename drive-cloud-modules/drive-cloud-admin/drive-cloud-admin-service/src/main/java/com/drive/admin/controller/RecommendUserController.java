@@ -114,7 +114,7 @@ public class RecommendUserController extends BaseController<RecommendUserPageQue
 	//@PreAuthorize("hasPermission('/admin/recommendUser',  'admin:recommendUser:delete')")
 	@EventLog(message = "删除推广人员信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(recommendUserService.removeByIds(Arrays.asList(ids)));
 	}
 

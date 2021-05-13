@@ -4,9 +4,11 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.pojo.dto.RecommendManagerEditParam;
 import com.drive.admin.pojo.dto.RecommendManagerPageQueryParam;
 import com.drive.admin.pojo.entity.RecommendManagerEntity;
+import com.drive.admin.pojo.entity.RecommendUserEntity;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.vo.RecommendManagerVo;
 import com.drive.admin.repository.RecommendManagerRepository;
@@ -159,7 +161,19 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+        // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 学员id
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getStudentId()),"student_id",installParam.getStudentId());
+        queryWrapper.eq(StrUtil.isNotEmpty(installParam.getOperatorId()),"operator_id",installParam.getOperatorId());
+        queryWrapper.last("limit 1");
+        RecommendManagerEntity isRecommendManager = recommendManagerService.getOne(queryWrapper);
+        if (isRecommendManager != null){
+            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
         RecommendManagerEntity recommendManager = BeanConvertUtils.copy(installParam, RecommendManagerEntity.class);
+        // 待审
+        recommendManager.setStatus(StatusEnum.ENABLE.getCode());
         Boolean result = recommendManagerService.save(recommendManager);
         log.info(this.getClass() + "save-方法请求结果{}",result);
         // 判断结果
@@ -176,6 +190,16 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+       /* // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 学员id
+        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getStudentId()),"student_id",updateParam.getStudentId());
+        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getOperatorId()),"operator_id",updateParam.getOperatorId());
+        queryWrapper.last("limit 1");
+        RecommendManagerEntity isRecommendManager = recommendManagerService.getOne(queryWrapper);
+        if (isRecommendManager != null){
+            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }*/
         RecommendManagerEntity recommendManager = BeanConvertUtils.copy(updateParam, RecommendManagerEntity.class);
         Boolean result = recommendManagerService.updateById(recommendManager);
         log.info(this.getClass() + "update-方法请求结果{}",result);
