@@ -203,7 +203,7 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
         queryWrapper.last("limit 1");
         RecommendUserEntity isRecommendUser = recommendUserService.getOne(queryWrapper);
         if (isRecommendUser != null){
-            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         RecommendUserEntity recommendUser = BeanConvertUtils.copy(installParam, RecommendUserEntity.class);
         // 待审

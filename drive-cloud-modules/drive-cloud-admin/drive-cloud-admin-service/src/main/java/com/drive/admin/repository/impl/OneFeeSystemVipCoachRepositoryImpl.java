@@ -95,7 +95,11 @@ public class  OneFeeSystemVipCoachRepositoryImpl extends BaseController<OneFeeSy
             if (StrUtil.isNotEmpty(item.getCoachId())){
                 CoachInfoEntity coachInfo = coachInfoService.getById(item.getCoachId());
                 // 设置教练信息
-                if (coachInfo != null)item.setCoachName(coachInfo.getRealName());item.setCoachPhone(coachInfo.getPhone());
+                if (coachInfo != null){
+                    item.setCoachName(coachInfo.getRealName());
+                    item.setCoachPhone(coachInfo.getPhone());
+                    item.setCoachAge(coachInfo.getAge());
+                }
             }
         });
         log.info(this.getClass() + "pageList-方法请求结果{}",oneFeeSystemVipCoachVoPage);

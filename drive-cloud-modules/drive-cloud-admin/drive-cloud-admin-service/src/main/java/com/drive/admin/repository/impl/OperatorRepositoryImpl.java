@@ -16,6 +16,7 @@ import com.drive.admin.repository.OperatorRepository;
 import com.drive.admin.service.OperatorAreaService;
 import com.drive.admin.service.OperatorService;
 import com.drive.admin.service.mapstruct.OperatorMapStruct;
+import com.drive.basics.feign.RemoteOperatorFeignService;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
@@ -52,6 +53,9 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
     @Autowired
     private OperatorAreaService operatorAreaService;
 
+    @Autowired
+    private RemoteOperatorFeignService remoteOperatorFeignService;
+
     /*
      *
      *功能描述
@@ -75,7 +79,7 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
 
-        if (param.getCreateDateTimeSearchArr() != null && param.getCreateDateTimeSearchArr().length > 0 ){
+        if (StrUtil.isNotEmpty(param.getCreateDateTimeSearchArr()[0]) && StrUtil.isNotEmpty(param.getCreateDateTimeSearchArr()[1])){
             queryWrapper.between("create_time",param.getCreateDateTimeSearchArr()[0],param.getCreateDateTimeSearchArr()[1]);
         }
         IPage<OperatorEntity> pageList = operatorService.page(page, queryWrapper);
@@ -185,7 +189,7 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
         queryWrapper.last("limit 1");
         OperatorEntity isOperator = operatorService.getOne(queryWrapper);
         if (isOperator != null){
-            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         OperatorEntity operator = BeanConvertUtils.copy(installParam, OperatorEntity.class);
         Boolean result = operatorService.save(operator);
@@ -310,6 +314,12 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
             Boolean res = operatorAreaService.saveOrUpdateBatch(operatorArea);
             if (!res)return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
         }
+
+        // 添加微服务运营商数据
+        com.drive.basics.pojo.dto.OperatorEditParam operatorEdit =BeanConvertUtils.copy(operatorEditParam, com.drive.basics.pojo.dto.OperatorEditParam.class);
+        operatorEdit.setOperatorAreaList(BeanConvertUtils.copyList(operatorAreaInstallParams, com.drive.basics.pojo.dto.OperatorAreaInstallParam.class));
+        ResObject resObject = remoteOperatorFeignService.saveOperator(operatorEdit);
+        log.info("请求结果resObject{}",resObject);
         return R.success();
     }
 

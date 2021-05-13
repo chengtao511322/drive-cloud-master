@@ -1,20 +1,28 @@
 package com.drive.basics.repository.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.drive.basics.pojo.dto.OperatorAreaInstallParam;
 import com.drive.basics.pojo.dto.OperatorEditParam;
 import com.drive.basics.pojo.dto.OperatorPageQueryParam;
+import com.drive.basics.pojo.entity.OperatorAreaEntity;
 import com.drive.basics.pojo.entity.OperatorEntity;
 import com.drive.basics.pojo.vo.OperatorItemVo;
 import com.drive.basics.repository.OperatorRepository;
+import com.drive.basics.service.OperatorAreaService;
 import com.drive.basics.service.OperatorService;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
+import com.drive.common.core.biz.SubResultCode;
+import com.drive.common.core.enums.StatusEnum;
+import com.drive.common.core.utils.BeanConvertUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 
 @Service
@@ -23,6 +31,9 @@ public class OperatorRepositoryImpl extends BaseController<OperatorPageQueryPara
 
     @Autowired
     private OperatorService operatorService;
+
+    @Autowired
+    private OperatorAreaService operatorAreaService;
 
     @Override
     public ResObject pageList(OperatorPageQueryParam param) {
@@ -93,5 +104,31 @@ public class OperatorRepositoryImpl extends BaseController<OperatorPageQueryPara
         List<OperatorItemVo> operatorItemVos =operatorService.findAllList();
         log.info(this.getClass() + "findAllList-方法请求结果{}",operatorItemVos);
         return R.success(operatorItemVos);
+    }
+
+    @Override
+    public ResObject saveOperator(@Valid OperatorEditParam operatorEditParam) {
+        log.info(this.getClass() + "save方法请求参数{}",operatorEditParam);
+        if (operatorEditParam == null){
+            log.error("数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        OperatorEntity operator = BeanConvertUtils.copy(operatorEditParam, OperatorEntity.class);
+        operator.setStatus(StatusEnum.ENABLE.getCode());
+        Boolean result = operatorService.save(operator);
+        log.info(this.getClass() + "save-方法请求结果{}",result);
+
+        // 区域处理
+        List<OperatorAreaInstallParam> operatorAreaInstallParams = operatorEditParam.getOperatorAreaList();
+        if (operatorAreaInstallParams.size() > 0){
+            // 添加区域
+            List<OperatorAreaEntity> operatorArea = BeanConvertUtils.copyList(operatorAreaInstallParams, OperatorAreaEntity.class);
+            operatorArea.stream().forEach((item) ->{
+                item.setOperatorId(operator.getId());
+            });
+            Boolean res = operatorAreaService.saveOrUpdateBatch(operatorArea);
+            if (!res)return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+        }
+        return R.success();
     }
 }

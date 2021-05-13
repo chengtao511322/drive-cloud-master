@@ -92,6 +92,13 @@ public class TestTrainPriceController extends BaseController<TestTrainPricePageQ
 		return testTrainPriceRepository.getInfo(param);
 	}
 
+	@ApiOperation("条件查询获取运营商参数设置表")
+	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
+	//@PreAuthorize("hasPermission('/admin/operatorSettinng',  'admin:operatorSettinng:query')")
+	@GetMapping("/getOperatorDeduct/{operatorId}")
+	public ResObject getOperatorDeduct(@PathVariable String operatorId) {
+		return testTrainPriceRepository.getOperatorDeduct(operatorId);
+	}
 	/**
 	* 新增平台报名考试练车单价表
 	*/

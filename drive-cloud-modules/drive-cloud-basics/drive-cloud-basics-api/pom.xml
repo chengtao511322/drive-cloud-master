@@ -32,5 +32,15 @@
             <groupId>com.drive</groupId>
             <artifactId>drive-cloud-common-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.drive</groupId>
+            <artifactId>drive-cloud-common-swagger</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>cn.afterturn</groupId>
+            <artifactId>easypoi-spring-boot-starter</artifactId>
+        </dependency>
     </dependencies>
 </project>

@@ -7,7 +7,6 @@ import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.marketing.api.RemoteActivityService;
 import com.drive.marketing.pojo.dto.CouponEditParam;
-import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,11 +29,10 @@ public class AccountRepositoryImpl implements AccountRepository {
     @Autowired
     private RemoteActivityService remoteActivityService;
 
-    @GlobalTransactional
     @Override
     public ResObject increaseAmount(String account) {
         log.info(this.getClass() + "increaseAmount-方法请求参数{}",account);
-        StudentInfoEntity studentInfoEntity = new StudentInfoEntity();
+       /* StudentInfoEntity studentInfoEntity = new StudentInfoEntity();
         studentInfoEntity.setId(account);
         studentInfoEntity.setUsername("测试事务");
         Boolean result = studentInfoService.updateById(studentInfoEntity);
@@ -46,6 +44,7 @@ public class AccountRepositoryImpl implements AccountRepository {
         ResObject couponRes = remoteActivityService.saveCoupon(coupon);
         log.info("请求优惠券接口{}",couponRes);
         int i = 1 / 0;
-        return result ? R.success(true) : R.failure("出错");
+        return result ? R.success(true) : R.failure("出错");*/
+        return null;
     }
 }

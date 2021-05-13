@@ -5,13 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.enums.StatusEnum;
+import com.drive.admin.pojo.dto.DeductSettingInstallParam;
 import com.drive.admin.pojo.dto.RecommendManagerEditParam;
 import com.drive.admin.pojo.dto.RecommendManagerPageQueryParam;
+import com.drive.admin.pojo.entity.DeductSettingEntity;
 import com.drive.admin.pojo.entity.RecommendManagerEntity;
 import com.drive.admin.pojo.entity.RecommendUserEntity;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.vo.RecommendManagerVo;
 import com.drive.admin.repository.RecommendManagerRepository;
+import com.drive.admin.service.DeductSettingService;
 import com.drive.admin.service.RecommendManagerService;
 import com.drive.admin.service.StudentInfoService;
 import com.drive.admin.service.mapstruct.RecommendManagerMapStruct;
@@ -24,6 +27,7 @@ import com.drive.common.core.utils.BeanConvertUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -50,6 +54,9 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
 
     @Autowired
     private StudentInfoService studentInfoService;
+
+    @Autowired
+    private DeductSettingService deductSettingService;
 
     /**
     * *推广渠道经理 分页列表
@@ -169,7 +176,7 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
         queryWrapper.last("limit 1");
         RecommendManagerEntity isRecommendManager = recommendManagerService.getOne(queryWrapper);
         if (isRecommendManager != null){
-            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         RecommendManagerEntity recommendManager = BeanConvertUtils.copy(installParam, RecommendManagerEntity.class);
         // 待审
@@ -256,5 +263,53 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
         return result ?R.success(result):R.failure(result);
     }
 
+    @Transactional
+    @Override
+    public ResObject saveRecommendManager(RecommendManagerEditParam recommendManagerEditParam) {
+        log.info(this.getClass() + "saveRecommendManager方法请求参数{}",recommendManagerEditParam);
+        if (recommendManagerEditParam == null){
+            log.error("数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 学员id
+        queryWrapper.eq(StrUtil.isNotEmpty(recommendManagerEditParam.getStudentId()),"student_id",recommendManagerEditParam.getStudentId());
+        queryWrapper.eq(StrUtil.isNotEmpty(recommendManagerEditParam.getOperatorId()),"operator_id",recommendManagerEditParam.getOperatorId());
+        queryWrapper.last("limit 1");
+        RecommendManagerEntity isRecommendManager = recommendManagerService.getOne(queryWrapper);
+        if (isRecommendManager != null){
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
+        RecommendManagerEntity recommendManager = BeanConvertUtils.copy(recommendManagerEditParam, RecommendManagerEntity.class);
+        // 待审
+        recommendManager.setStatus(StatusEnum.ENABLE.getCode());
+        Boolean result = recommendManagerService.save(recommendManager);
+        log.info(this.getClass() + "save-方法请求结果{}",result);
+        // 判断结果
+        if (!result){
+            throw new BizException(500,SubResultCode.DATA_INSTALL_SUCCESS.subCode(),SubResultCode.DATA_INSTALL_SUCCESS.subMsg());
+        }
+        // 批量处理提成
+        List<DeductSettingInstallParam> deductSettingInstallParamList = recommendManagerEditParam.getDeductSettingList();
+        log.info(this.getClass() + "changeStatus方法请求参数{}",deductSettingInstallParamList);
+        if (deductSettingInstallParamList.size() > 0){
+            List<DeductSettingEntity> deductSettingList = BeanConvertUtils.copyList(deductSettingInstallParamList,DeductSettingEntity.class);
+            // 先删除 数据
+            QueryWrapper delQueryWrapper = new  QueryWrapper();
+            delQueryWrapper.eq("recommend_manager_id",recommendManager.getId());
+            deductSettingService.remove(delQueryWrapper);
+            //DeductSettingEntity.setUpdateTime()
+            deductSettingList.stream().forEach((item) ->{
+                item.setRecommendManagerId(recommendManager.getId());
+            });
+            Boolean deductSettingResult = deductSettingService.saveOrUpdateBatch(deductSettingList);
+            log.info(this.getClass() +"changeStatus方法请求对象参数{}，请求结果{}",deductSettingResult);
+            if (!deductSettingResult){
+                throw new BizException(500,SubResultCode.DATA_INSTALL_SUCCESS.subCode(),SubResultCode.DATA_INSTALL_SUCCESS.subMsg());
+            }
+        }
+        return R.success();
+    }
 }
 

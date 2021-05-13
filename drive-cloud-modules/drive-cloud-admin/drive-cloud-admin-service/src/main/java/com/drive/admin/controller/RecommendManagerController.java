@@ -83,6 +83,14 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	public ResObject save(@Valid @RequestBody RecommendManagerEditParam recommendManagerEditParam) {
 		return recommendManagerRepository.save(recommendManagerEditParam);
 	}
+	@ApiOperation("新增推广渠道经理")
+	@ApiImplicitParam(name = "RecommendManagerEditParam ", value = "新增推广渠道经理", dataType = "RecommendManagerEditParam")
+	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:add')")
+	@EventLog(message = "新增推广渠道经理", businessType = EventLogEnum.CREATE)
+	@PostMapping("/saveRecommendManager")
+	public ResObject saveRecommendManager(@Valid @RequestBody RecommendManagerEditParam recommendManagerEditParam) {
+		return recommendManagerRepository.saveRecommendManager(recommendManagerEditParam);
+	}
 
 	/**
 	* 修改推广渠道经理

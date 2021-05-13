@@ -1,6 +1,6 @@
 # Tomcat
 server:
-  port: 9661
+  port: 9666
   undertow:
     buffer-size: 1024
     direct-buffers: true

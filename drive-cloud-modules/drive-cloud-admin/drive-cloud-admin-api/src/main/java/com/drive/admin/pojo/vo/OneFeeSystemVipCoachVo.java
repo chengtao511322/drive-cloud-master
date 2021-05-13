@@ -1,7 +1,9 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.drive.admin.util.AdminCacheUtil;
 import lombok.Data;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -60,6 +62,8 @@ public class OneFeeSystemVipCoachVo {
 	@Excel(name = "教练提成百分比", width = 20)
 	private BigDecimal coachChargePercent;
 
+	private CoachInfoVo coachInfoVo;
+
 	// 公车提成百分比（驾校收入）
 	@Excel(name = "公车提成百分比（驾校收入）", width = 20)
 	private BigDecimal carChargePercent;
@@ -68,4 +72,10 @@ public class OneFeeSystemVipCoachVo {
 
 	private String coachPhone;
 
+	private Integer coachAge;
+
+	public void setCoachId(String coachId) {
+		this.coachId = coachId;
+		this.coachInfoVo = AdminCacheUtil.getCoachInfo(coachId);
+	}
 }

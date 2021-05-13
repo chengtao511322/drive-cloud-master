@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
  * @author xiaoguo
  */
 @Data
-public class OperatorEditParam {
+public class OperatorEditParam implements java.io.Serializable{
 
 
     // 主键
@@ -47,6 +48,8 @@ public class OperatorEditParam {
 
     // 其他benaid
     private String channelBeanId;
+
+    private List<OperatorAreaInstallParam> operatorAreaList;
 
 
 }

@@ -64,4 +64,7 @@ public class OperatorEditParam {
     // 运营区域
     private List<OperatorAreaInstallParam> operatorAreaInstallParams;
 
+    // 运营区域
+    private String operatorAreaList;
+
 }

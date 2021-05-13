@@ -3,6 +3,7 @@ package com.drive.admin.repository.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.drive.admin.pojo.entity.OperatorSettinngEntity;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import com.drive.admin.service.TestTrainPriceService;
 import com.drive.common.core.base.BaseController;
 import com.drive.admin.repository.OperatorSettinngRepository;
 import com.drive.admin.pojo.entity.*;
@@ -44,6 +45,9 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
     @Autowired
     private OperatorSettinngMapStruct operatorSettinngMapStruct;
 
+    @Autowired
+    private TestTrainPriceService testTrainPriceService;
+
     /*
      *
      *功能描述
@@ -67,7 +71,7 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
 
-        if (param.getCreateDateTimeSearchArr() != null && param.getCreateDateTimeSearchArr().length > 0 ){
+        if (StrUtil.isNotEmpty(param.getCreateDateTimeSearchArr()[0]) && StrUtil.isNotEmpty(param.getCreateDateTimeSearchArr()[1])){
             queryWrapper.between("create_time",param.getCreateDateTimeSearchArr()[0],param.getCreateDateTimeSearchArr()[1]);
         }
         IPage<OperatorSettinngEntity> pageList = operatorSettinngService.page(page, queryWrapper);
@@ -178,7 +182,7 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
         queryWrapper.last("limit 1");
         OperatorSettinngEntity isOperatorSettinng = operatorSettinngService.getOne(queryWrapper);
         if (isOperatorSettinng != null){
-            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         OperatorSettinngEntity operatorSettinng = BeanConvertUtils.copy(installParam, OperatorSettinngEntity.class);
         Boolean result = operatorSettinngService.save(operatorSettinng);

@@ -27,10 +27,10 @@ public class ChannelEditParam implements java.io.Serializable{
     private Integer sort;
 
     // 状态：0：未发表  1：已经发表  默认1
-    private Integer status;
+    private String status;
 
     // 删除状态:0:未删除  1：已经删除  默认0
-    private Integer isDelete;
+    private String isDelete;
 
     // 创建时间
     private LocalDateTime createTime;
@@ -51,10 +51,10 @@ public class ChannelEditParam implements java.io.Serializable{
     private String tenantId;
 
     // android显示状态：0不显示，1：显示
-    private Integer androidShow;
+    private String androidShow;
 
     // ios显示状态：0不显示，1：显示
-    private Integer iosShow;
+    private String iosShow;
 
     // 描述
     private String description;
@@ -73,6 +73,14 @@ public class ChannelEditParam implements java.io.Serializable{
 
     // 权限
     private String auth;
+
+    private String userId;
+
+    // (20)明细用户是否显示（1-明细表的人显示，2-明细表的人不显示），控制明细表中的数据是否显示按钮
+    private String itemShow;
+
+    // 排序类型
+    private Integer sortType;
 
 
 }

@@ -51,6 +51,8 @@ public class OperatorSettinngPageQueryParam extends BasePageQueryParam {
 	// 更新时间
 	private LocalDateTime updateTime;
 	// 模糊查询字段
-	//private String vagueNameSearch
+	private String vagueNumberSearch;
+	private String vagueNumberDescribeSearch;
+	private String[] createDateTimeSearchArr = new String[2];
 
 }

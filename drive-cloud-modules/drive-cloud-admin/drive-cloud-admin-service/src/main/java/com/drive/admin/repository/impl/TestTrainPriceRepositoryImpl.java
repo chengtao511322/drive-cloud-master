@@ -1,6 +1,8 @@
 package com.drive.admin.repository.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.drive.admin.enums.PriceTypeEnum;
 import com.drive.admin.pojo.entity.TestTrainPriceEntity;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.drive.common.core.base.BaseController;
@@ -14,15 +16,19 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import cn.hutool.core.util.StrUtil;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.SubResultCode;
+import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import lombok.extern.slf4j.Slf4j;
 import com.drive.common.core.biz.ResObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.drive.admin.service.TestTrainPriceService;
 import com.drive.common.data.utils.ExcelUtils;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Arrays;
 import java.io.IOException;
+import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 
@@ -179,7 +185,7 @@ public class  TestTrainPriceRepositoryImpl extends BaseController<TestTrainPrice
         queryWrapper.last("limit 1");
         TestTrainPriceEntity isTestTrainPrice = testTrainPriceService.getOne(queryWrapper);
         if (isTestTrainPrice != null){
-            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         TestTrainPriceEntity testTrainPrice = BeanConvertUtils.copy(installParam, TestTrainPriceEntity.class);
         Boolean result = testTrainPriceService.save(testTrainPrice);
@@ -280,5 +286,40 @@ public class  TestTrainPriceRepositoryImpl extends BaseController<TestTrainPrice
         return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_STATUS_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_STATUS_FAILL.subCode(),SubResultCode.DATA_STATUS_FAILL.subMsg());
     }
 
+    @Override
+    public ResObject getOperatorDeduct(String operatorId) {
+        log.info("getOperatorDeduct-方法请求参数{}",operatorId);
+        if (StrUtil.isEmpty(operatorId)){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        JSONObject jsonObject = new JSONObject();
+        // 5-推广商推荐报名提成金额,6-推广商课时提成百分比
+        // 推广商课时提成百分比
+        QueryWrapper classDeductAmountQueryWrapper = new QueryWrapper();
+        classDeductAmountQueryWrapper.eq("price_type", PriceTypeEnum.CLASS_DEDUCT_AMOUNT.getCode());
+        classDeductAmountQueryWrapper.eq("operator_id",operatorId);
+        TestTrainPriceEntity classDeductDo= testTrainPriceService.getOne(classDeductAmountQueryWrapper);
+        if (classDeductDo != null) {
+            BigDecimal classDeductAmount = classDeductDo.getPrice();
+            // 设置课时金额
+            jsonObject.put("classDeductAmount",classDeductAmount);
+        }
+        // BigDecimal classDeductAmount = Optional.ofNullable(testTrainPriceService.getOne(classDeductAmountQueryWrapper)).map(u -> u.getPrice()).get();
+    // Object object2 = optional2.orElseThrow(() -> {
+        //                    System.out.println("执行逻辑，然后抛出异常");
+        //                    return new RuntimeException("抛出异常");
+        //                }
+        QueryWrapper classDeductPercentQueryWrapper = new QueryWrapper();
+        classDeductPercentQueryWrapper.eq("price_type", PriceTypeEnum.CLASS_DEDUCT_PERCENT.getCode());
+        classDeductPercentQueryWrapper.eq("operator_id",operatorId);
+        //BigDecimal classDeductPercent = Optional.ofNullable(testTrainPriceService.getOne(classDeductPercentQueryWrapper)).map(u -> u.getPrice()).get();
+        TestTrainPriceEntity classDeductPercentDo= testTrainPriceService.getOne(classDeductPercentQueryWrapper);
+        if (classDeductPercentDo != null) {
+            BigDecimal classDeductPercent = classDeductPercentDo.getPrice();
+            // 设置课时金额
+            jsonObject.put("classDeductPercent",classDeductPercent);
+        }
+        return R.success(jsonObject);
+    }
 }
 

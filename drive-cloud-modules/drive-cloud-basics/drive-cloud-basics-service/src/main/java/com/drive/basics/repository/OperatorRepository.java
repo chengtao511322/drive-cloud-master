@@ -18,4 +18,11 @@ public interface OperatorRepository extends BaseRepository<OperatorPageQueryPara
      * @return
      */
     ResObject findAllList();
+
+    /**
+     * 保存
+     * @param operatorEditParam
+     * @return
+     */
+    ResObject saveOperator(OperatorEditParam operatorEditParam);
 }

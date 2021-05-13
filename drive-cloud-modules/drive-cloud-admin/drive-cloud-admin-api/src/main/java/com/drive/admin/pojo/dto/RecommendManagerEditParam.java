@@ -3,6 +3,7 @@ package com.drive.admin.pojo.dto;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -38,5 +39,6 @@ public class RecommendManagerEditParam {
     // 运营商id(数据权限标记)
     private String operatorId;
 
+    List<DeductSettingInstallParam> deductSettingList;
 
 }

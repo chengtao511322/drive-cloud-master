@@ -7,6 +7,7 @@ import com.drive.basics.pojo.dto.OperatorEditParam;
 import com.drive.basics.pojo.dto.OperatorPageQueryParam;
 import com.drive.basics.pojo.entity.OperatorEntity;
 import com.drive.basics.pojo.vo.OperatorVo;
+import com.drive.basics.repository.OperatorRepository;
 import com.drive.basics.service.OperatorService;
 import com.drive.basics.service.mapstruct.OperatorMapStruct;
 import com.drive.common.core.base.BaseController;
@@ -21,7 +22,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -43,6 +43,8 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 
 	@Autowired
 	private OperatorService operatorService;
+	@Autowired
+	private OperatorRepository operatorRepository;
 	@Autowired
 	private OperatorMapStruct operatorMapStruct;
 
@@ -102,6 +104,14 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	public ResObject save(@Valid @RequestBody OperatorEditParam operatorEditParam) {
 		OperatorEntity operator = operatorMapStruct.toEntity(operatorEditParam);
 		return R.toRes(operatorService.save(operator));
+	}
+	@ApiOperation("新增运营商基础信息")
+	@ApiImplicitParam(name = "OperatorEditParam ", value = "新增运营商基础信息", dataType = "OperatorEditParam")
+	//@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:add')")
+	@EventLog(message = "新增运营商基础信息", businessType = EventLogEnum.CREATE)
+	@PostMapping("/saveOperator")
+	public ResObject saveOperator(@Valid @RequestBody OperatorEditParam operatorEditParam) {
+		return operatorRepository.saveOperator(operatorEditParam);
 	}
 
 	/**

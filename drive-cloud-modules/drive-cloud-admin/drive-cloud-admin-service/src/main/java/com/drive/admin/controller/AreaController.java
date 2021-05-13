@@ -37,8 +37,7 @@ import java.util.Arrays;
 @RequestMapping("/area")
 public class AreaController extends BaseController<AreaPageQueryParam, AreaEntity> {
 
-	@Autowired
-	private RemoteUserService remoteUserService;
+
 
 	@Autowired
 	private AreaService areaService;
