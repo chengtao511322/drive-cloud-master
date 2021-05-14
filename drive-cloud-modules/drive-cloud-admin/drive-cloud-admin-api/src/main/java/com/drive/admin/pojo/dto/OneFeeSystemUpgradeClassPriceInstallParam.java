@@ -39,12 +39,10 @@ public class OneFeeSystemUpgradeClassPriceInstallParam {
     private String upgradeClassType;
 
     // 升班班型价格
-    @NotBlank(message = "升班班型价格不能为空")
     @ApiModelProperty(value = "升班班型价格")
     private BigDecimal upgradePrice;
 
     // 升班价格详情介绍
-    @NotBlank(message = "升班价格详情介绍不能为空")
     @ApiModelProperty(value = "升班价格详情介绍")
     private String detailsUrl;
 
@@ -66,12 +64,10 @@ public class OneFeeSystemUpgradeClassPriceInstallParam {
     private String operatorId;
 
     // 运营商提成金额
-    @NotBlank(message = "运营商提成金额不能为空")
     @ApiModelProperty(value = "运营商提成金额")
     private BigDecimal operatorChangeMoney;
 
     // 平台提成金额（所有上级运营商提成金）
-    @NotBlank(message = "平台提成金额（所有上级运营商提成金）不能为空")
     @ApiModelProperty(value = "平台提成金额（所有上级运营商提成金）")
     private BigDecimal serviceChangeMoney;
 

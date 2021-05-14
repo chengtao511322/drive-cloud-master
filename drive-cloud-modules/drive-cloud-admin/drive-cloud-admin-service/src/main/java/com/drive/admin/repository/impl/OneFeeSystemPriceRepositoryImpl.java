@@ -70,7 +70,42 @@ public class  OneFeeSystemPriceRepositoryImpl extends BaseController<OneFeeSyste
         String searchName  = param.getName();
         param.setName(null);
         Page<OneFeeSystemPriceEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<OneFeeSystemPriceEntity> pageList = oneFeeSystemPriceService.page(page, this.getQueryWrapper(oneFeeSystemPriceMapStruct, param).like(StrUtil.isNotEmpty(searchName),"name",searchName));
+        QueryWrapper queryWrapper = this.getQueryWrapper(oneFeeSystemPriceMapStruct, param);
+        queryWrapper.like(StrUtil.isNotEmpty(searchName),"name",searchName);
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        IPage<OneFeeSystemPriceEntity> pageList = oneFeeSystemPriceService.page(page,queryWrapper);
+        Page<OneFeeSystemPriceVo> oneFeeSystemPriceVoPage = oneFeeSystemPriceMapStruct.toVoList(pageList);
+        log.info(this.getClass() + "pageList-方法请求结果{}",oneFeeSystemPriceVoPage);
+        return R.success(oneFeeSystemPriceVoPage);
+    }
+
+    @Override
+    public ResObject getUpgradeClassPageList(OneFeeSystemPricePageQueryParam param) {
+        log.info(this.getClass() + "pageList-方法请求参数{}",param);
+        if (StrUtil.isEmpty(param.getId())){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 根据对应的版型ID 查询出数据
+        OneFeeSystemPriceEntity oneFeeSystemPrice = oneFeeSystemPriceService.getById(param.getId());
+        // 数据空
+        if (oneFeeSystemPrice == null && oneFeeSystemPrice.getIsUpgrade().equals(StatusEnum.NOTDELETE.getCode()))return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),new Page<>());
+        Page<OneFeeSystemPriceEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 查询 该版型可升级
+        queryWrapper.gt("class_grade",oneFeeSystemPrice.getClassGrade());
+        // 运营商查询
+        queryWrapper.eq("operator_id",oneFeeSystemPrice.getOperatorId());
+        // 状态查询
+        queryWrapper.eq("status",StatusEnum.ENABLE.getCode());
+        queryWrapper.notIn("id",oneFeeSystemPrice.getId());
+
+        // 班型名称模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+
+        IPage<OneFeeSystemPriceEntity> pageList = oneFeeSystemPriceService.page(page, queryWrapper);
+        if (pageList.getRecords().size() <= 0){
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
+        }
         Page<OneFeeSystemPriceVo> oneFeeSystemPriceVoPage = oneFeeSystemPriceMapStruct.toVoList(pageList);
         log.info(this.getClass() + "pageList-方法请求结果{}",oneFeeSystemPriceVoPage);
         return R.success(oneFeeSystemPriceVoPage);
@@ -189,6 +224,7 @@ public class  OneFeeSystemPriceRepositoryImpl extends BaseController<OneFeeSyste
      **/
     @Override
     public ResObject exportXls(OneFeeSystemPricePageQueryParam param, HttpServletResponse response) {
+        log.info(this.getClass() + "exportXls-方法请求参数{}",param);
         return null;
     }
 

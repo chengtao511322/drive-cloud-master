@@ -206,9 +206,9 @@ public class  OneFeeSystemUpgradeClassPriceRepositoryImpl extends BaseController
         queryWrapper.eq(StrUtil.isNotEmpty(installParam.getUpgradeClassId()),"upgrade_class_id",installParam.getUpgradeClassId());
         queryWrapper.eq(StrUtil.isNotEmpty(installParam.getOperatorId()),"operator_id",installParam.getOperatorId());
         queryWrapper.last("limit 1");
-        OneFeeSystemUpgradeClassPriceEntity isOneFeeSystemUpgradeClassPrice = oneFeeSystemUpgradeClassPriceService.getOne(queryWrapper);
-        if (isOneFeeSystemUpgradeClassPrice != null){
-            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        int isOneFeeSystemUpgradeClassPriceCount = oneFeeSystemUpgradeClassPriceService.count(queryWrapper);
+        if (isOneFeeSystemUpgradeClassPriceCount > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         OneFeeSystemUpgradeClassPriceEntity oneFeeSystemUpgradeClassPrice = BeanConvertUtils.copy(installParam, OneFeeSystemUpgradeClassPriceEntity.class);
         // 待审
@@ -236,17 +236,15 @@ public class  OneFeeSystemUpgradeClassPriceRepositoryImpl extends BaseController
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
 
-       /* // 幂等性查询
+        // 幂等性查询
         QueryWrapper queryWrapper = new QueryWrapper();
         // 学员id
-        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getOriginalClassId()),"original_class_id",updateParam.getOriginalClassId());
-        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getUpgradeClassId()),"upgrade_class_id",updateParam.getUpgradeClassId());
-        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getOperatorId()),"operator_id",updateParam.getOperatorId());
+        queryWrapper.setEntity(updateParam);
         queryWrapper.last("limit 1");
-        OneFeeSystemUpgradeClassPriceEntity isOneFeeSystemUpgradeClassPrice = oneFeeSystemUpgradeClassPriceService.getOne(queryWrapper);
-        if (isOneFeeSystemUpgradeClassPrice != null){
-            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
-        }*/
+        int isOneFeeSystemUpgradeClassPriceCount = oneFeeSystemUpgradeClassPriceService.count(queryWrapper);
+        if (isOneFeeSystemUpgradeClassPriceCount > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
 
         OneFeeSystemUpgradeClassPriceEntity oneFeeSystemUpgradeClassPrice = BeanConvertUtils.copy(updateParam, OneFeeSystemUpgradeClassPriceEntity.class);
         Boolean result = oneFeeSystemUpgradeClassPriceService.updateById(oneFeeSystemUpgradeClassPrice);

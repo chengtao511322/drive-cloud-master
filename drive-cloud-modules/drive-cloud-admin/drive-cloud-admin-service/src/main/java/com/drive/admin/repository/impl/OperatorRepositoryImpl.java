@@ -189,7 +189,7 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
         queryWrapper.last("limit 1");
         OperatorEntity isOperator = operatorService.getOne(queryWrapper);
         if (isOperator != null){
-            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         OperatorEntity operator = BeanConvertUtils.copy(installParam, OperatorEntity.class);
         Boolean result = operatorService.save(operator);

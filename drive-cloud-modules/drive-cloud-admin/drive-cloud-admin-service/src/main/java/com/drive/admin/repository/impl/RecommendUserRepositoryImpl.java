@@ -178,7 +178,12 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
         StudentInfoEntity studentInfo = studentInfoService.getById(recommendUserVo.getStudentId());
         if (studentInfo != null){
             recommendUserVo.setPhone(studentInfo.getPhone());
+            recommendUserVo.setStudentName(studentInfo.getUsername());
         }
+        // 查询渠道经理
+        RecommendManagerEntity recommendManager = recommendManagerService.getById(recommendUserVo.getManagerId());
+        // 不加{}时，就近原则，只控制第一句 性能上面有所提升
+        if (recommendManager != null)recommendUserVo.setManagerName(recommendManager.getRemarks());
         log.info(this.getClass() + "getInfo-方法请求结果{}",recommendUserVo);
         return R.success(recommendUserVo);
     }
@@ -203,7 +208,7 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
         queryWrapper.last("limit 1");
         RecommendUserEntity isRecommendUser = recommendUserService.getOne(queryWrapper);
         if (isRecommendUser != null){
-            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         RecommendUserEntity recommendUser = BeanConvertUtils.copy(installParam, RecommendUserEntity.class);
         // 待审

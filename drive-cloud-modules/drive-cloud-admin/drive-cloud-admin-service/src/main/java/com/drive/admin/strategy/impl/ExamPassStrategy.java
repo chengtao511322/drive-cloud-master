@@ -12,6 +12,7 @@ import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.entity.StudentOrderEntity;
 import com.drive.admin.pojo.entity.StudentStudyProgressHistoryEntity;
 import com.drive.admin.pojo.entity.StudentTestEnrollEntity;
+import com.drive.admin.pojo.vo.AccountFlowDetailVo;
 import com.drive.admin.repository.AccountFlowRepository;
 import com.drive.admin.repository.PlatformWalletRepository;
 import com.drive.admin.repository.StudentStudyProgressHistoryRepository;
@@ -132,12 +133,14 @@ public class ExamPassStrategy implements StudyEnrollStrategy {
         // 考试通过，创建账务流明细，结算教练收入费用
         if(SubjectTypeEnum.SUBJECT_TWO.getCode().equals(studentTestEnroll.getSubjectType())
                 ||
-                SubjectTypeEnum.SUBJECT_THREE.getCode().equals(studentTestEnrol.getSubjectType())){
+        SubjectTypeEnum.SUBJECT_THREE.getCode().equals(studentTestEnrol.getSubjectType())){
             // 创建账务流水明细
-             ResObject accountFlowRes = accountFlowRepository.createTestPassVIPCoachFlowDetail(BeanConvertUtils.copy(studentTestEnrol, StudentTestEnrollEditParam.class));
+             ResObject<List<AccountFlowDetailVo>> accountFlowRes = accountFlowRepository.createTestPassVIPCoachFlowDetail(BeanConvertUtils.copy(studentTestEnroll, StudentTestEnrollEditParam.class));
             // 结算费用到钱包
             if (accountFlowRes.getCode().equals(ResCodeEnum.SUCCESS.getCode())){
-                accountFlowRepository.settlementByFlowDetailList((List<AccountFlowDetailEditParam>) accountFlowRes.getData());
+                List<AccountFlowDetailVo> accountFlowDetailVoList = accountFlowRes.getData();
+                log.info("转化后的对象{}",accountFlowDetailVoList);
+                accountFlowRepository.settlementByFlowDetailList(BeanConvertUtils.copyList(accountFlowDetailVoList,AccountFlowDetailEditParam.class));
             }
 
         }

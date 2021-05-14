@@ -1,6 +1,7 @@
 package com.drive.admin.repository;
 
 import com.drive.admin.pojo.dto.*;
+import com.drive.admin.pojo.vo.AccountFlowDetailVo;
 import com.drive.common.core.base.BasicsRepository;
 import com.drive.common.core.biz.ResObject;
 
@@ -19,7 +20,7 @@ public interface AccountFlowRepository extends BasicsRepository<AccountFlowPageQ
      * 查询出账户流水
      * @return
      */
-    ResObject createTestPassVIPCoachFlowDetail(StudentTestEnrollEditParam studentTestEnrollEditParam);
+    ResObject<List<AccountFlowDetailVo>> createTestPassVIPCoachFlowDetail(StudentTestEnrollEditParam studentTestEnrollEditParam);
 
     /**
      * 设置流水

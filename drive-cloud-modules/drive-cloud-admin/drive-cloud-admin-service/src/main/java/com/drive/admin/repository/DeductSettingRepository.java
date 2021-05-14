@@ -22,5 +22,12 @@ public interface DeductSettingRepository extends BasicsRepository<DeductSettingP
      */
     ResObject saveBatch(List<DeductSettingInstallParam> deductSettingInstallParamList);
 
+    /**
+     * 通过渠道经理ID 获取数据
+     * @param managerId
+     * @return
+     */
+    ResObject getByManagerId(String managerId);
+
 }
 

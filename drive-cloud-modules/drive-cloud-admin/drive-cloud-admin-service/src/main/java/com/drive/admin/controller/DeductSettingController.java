@@ -81,6 +81,15 @@ public class DeductSettingController extends BaseController<DeductSettingPageQue
 		return deductSettingRepository.getById(id);
 	}
 
+
+	@ApiOperation("获取提成设置表")
+	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
+	@PreAuthorize("hasPermission('/admin/deductSetting',  'admin:deductSetting:query')")
+	@GetMapping("/getByManagerId/{managerId}")
+	public ResObject getByManagerId(@PathVariable String managerId) {
+		return deductSettingRepository.getByManagerId(managerId);
+	}
+
 	/**
 	 * 条件查询获取提成设置表
 	 */

@@ -1,6 +1,7 @@
 package com.drive.admin.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,11 +13,9 @@ import java.time.LocalDateTime;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.TableField;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,6 +44,7 @@ public class OperatorRecruitEntity extends BaseEntity {
 
 
 	// 主键
+	@TableId(type= IdType.ID_WORKER)
 	private String id;
 
 	// 省
@@ -72,6 +72,8 @@ public class OperatorRecruitEntity extends BaseEntity {
 	private String applyExplain;
 
 	// 是否删除
+	@TableLogic
+  	@TableField(value="is_delete")
 	private String isDelete;
 
 	// 注册时间

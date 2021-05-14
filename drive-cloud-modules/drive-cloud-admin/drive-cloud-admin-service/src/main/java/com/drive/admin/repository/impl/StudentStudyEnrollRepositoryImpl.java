@@ -933,7 +933,7 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
 
         // 模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"t3.phone",param.getVaguePhoneSearch());
-        // 真实
+        // 真实 姓名 模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"t3.real_name",param.getVagueRealNameSearch());
         queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePromoterName()),"t3.real_name",param.getVaguePromoterName());
         if (StrUtil.isNotEmpty(param.getSubjectType()) && StrUtil.isNotEmpty(param.getEnrollStatus())){

@@ -58,13 +58,13 @@ public class OneFeeSystemCoachStudentPageQueryParam extends BasePageQueryParam {
 	private LocalDateTime updateTime;
 
 	// 驾照类型
-	private Integer driveType;
+	private String driveType;
 
 	// 绑定时间
 	private LocalDateTime bindTime;
 
 	// 绑定状态 (1-待绑定 ,2-已绑定，3-已解绑)
-	private Integer bindStatus;
+	private String bindStatus;
 
 	// 解除绑定时间
 	private LocalDateTime relieveBindTime;
@@ -85,7 +85,7 @@ public class OneFeeSystemCoachStudentPageQueryParam extends BasePageQueryParam {
 	private Integer subject4CostFreeNumber;
 
 	// 支付状态 (1-待支付, 2-已经支付)
-	private Integer payStatus;
+	private String payStatus;
 
 	// 科目二教练提成金额
 	private BigDecimal coachSubjectType2;

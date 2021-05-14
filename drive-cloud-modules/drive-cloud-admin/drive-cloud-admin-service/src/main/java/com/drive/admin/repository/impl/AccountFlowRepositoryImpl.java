@@ -310,12 +310,14 @@ public class  AccountFlowRepositoryImpl extends BaseController<AccountFlowPageQu
 
     @Transactional
     @Override
-    public ResObject createTestPassVIPCoachFlowDetail(StudentTestEnrollEditParam studentTestEnrollEditParam) {
+    public ResObject<List<AccountFlowDetailVo>> createTestPassVIPCoachFlowDetail(StudentTestEnrollEditParam studentTestEnrollEditParam) {
         if (StrUtil.isEmpty(studentTestEnrollEditParam.getStudentId())) {
-            return R.failure(SubResultCode.PARAMISBLANK.subCode(), SubResultCode.PARAMISBLANK.subMsg());
+            //return R.failure(SubResultCode.PARAMISBLANK.subCode(), SubResultCode.PARAMISBLANK.subMsg());
+            throw new BizException(500, SubResultCode.PARAMISBLANK.subCode(), "学员ID不能为空");
         }
         if (StrUtil.isEmpty(studentTestEnrollEditParam.getDriveType())) {
-            return R.failure(SubResultCode.PARAMISBLANK.subCode(), SubResultCode.PARAMISBLANK.subMsg());
+            // return R.failure(SubResultCode.PARAMISBLANK.subCode(), SubResultCode.PARAMISBLANK.subMsg());
+            throw new BizException(500, SubResultCode.PARAMISBLANK.subCode(), SubResultCode.PARAMISBLANK.subMsg());
         }
 
         List<AccountFlowDetailVo> returnList = new ArrayList<>();
@@ -330,12 +332,14 @@ public class  AccountFlowRepositoryImpl extends BaseController<AccountFlowPageQu
         queryWrapper.eq("enroll_status", StudyEnrollEnum.ENROLL_STATUS_ENROLL_COMPLETE.getCode());
         StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(queryWrapper);
         if (studentStudyEnroll == null) {
-            return R.failure(SubResultCode.DATA_NULL.subCode(), "报名单不存在");
+            // return R.failure(SubResultCode.DATA_NULL.subCode(), "报名单不存在");
+            throw new BizException(500, SubResultCode.PARAMISBLANK.subCode(), "报名单不存在");
         }
 
         //判断报名单是否为
         if (EnrollStatusEnum.DECIDE_CLASS.getCode().equals(studentStudyEnroll.getEnrollType())) {
-            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(), "自主模式,不可操作");
+            // return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(), "自主模式,不可操作");
+            throw new BizException(500, SubResultCode.DATA_NULL.subCode(),"自主模式,不可操作");
         }
 
         QueryWrapper orderQueryWrapper = new QueryWrapper();
@@ -343,7 +347,8 @@ public class  AccountFlowRepositoryImpl extends BaseController<AccountFlowPageQu
         orderQueryWrapper.eq("study_enroll_no", studentStudyEnroll.getStudyEnrollNo());
         StudentOrderEntity studentOrder = orderService.getOne(orderQueryWrapper);
         if (studentOrder == null) {
-            R.failure(SubResultCode.DATA_NULL.subCode(), "订单信息不存在");
+            //R.failure(SubResultCode.DATA_NULL.subCode(), "订单信息不存在");
+            throw new BizException(500, SubResultCode.DATA_NULL.subCode(),"订单信息不存在");
         }
 
 
@@ -358,7 +363,8 @@ public class  AccountFlowRepositoryImpl extends BaseController<AccountFlowPageQu
         feeSystemCoachStudentQueryWrapper.eq("drive_type", OperatorEnum.C1.getCode());
         OneFeeSystemCoachStudentEntity feeSystemCoachStudent = feeSystemCoachStudentService.getOne(feeSystemCoachStudentQueryWrapper);
         if (feeSystemCoachStudent == null) {
-            return R.failure(SubResultCode.DATA_NULL.subCode(), "没有绑定教练，无法操作");
+            //return R.failure(SubResultCode.DATA_NULL.subCode(), "没有绑定教练，无法操作");
+            throw new BizException(500, SubResultCode.DATA_NULL.subCode(),"没有绑定教练，无法操作");
         }
         QueryWrapper accountFlowQueryWrapper = new QueryWrapper();
         // 订单号
@@ -367,7 +373,8 @@ public class  AccountFlowRepositoryImpl extends BaseController<AccountFlowPageQu
         accountFlowQueryWrapper.eq("flow_type", OperatorEnum.FLOW_TYPE_PAY.getCode());
         AccountFlowEntity accountFlow = accountFlowService.getOne(accountFlowQueryWrapper);
         if (accountFlow == null) {
-            return R.failure(SubResultCode.DATA_NULL.subCode(), "没有流水，无法操作");
+            //return R.failure(SubResultCode.DATA_NULL.subCode(), "没有流水，无法操作");
+            throw new BizException(500, SubResultCode.DATA_INSTALL_FAILL.subCode(),"没有流水，无法操作");
         }
         // 查询教练
         CoachInfoEntity coachInfo = coachInfoService.getById(feeSystemCoachStudent.getCoachId());
@@ -417,7 +424,7 @@ public class  AccountFlowRepositoryImpl extends BaseController<AccountFlowPageQu
             if (oneFeeSystemVipCoach != null) {
                 //教练提成百分比(保留4位小数，防止用户设置的值为 55.55)
                 BigDecimal coachChargePercent = ArithUtil.divDown(oneFeeSystemVipCoach.getCoachChargePercent(), new BigDecimal(100), 4);
-                //教练理论收入总金额
+                //教练理论收入总金额 精确的乘法运算
                 BigDecimal coachSumIncome = ArithUtil.mulDown(coachIncome, coachChargePercent, 2);
                 //教练实际历史收入总金额
                 CoachTeachTimePageQueryParam coachTeachTimePageQueryParam = new CoachTeachTimePageQueryParam();
@@ -581,11 +588,17 @@ public class  AccountFlowRepositoryImpl extends BaseController<AccountFlowPageQu
             // 科目类型
             studentTestEnrollQueryWrapper.eq("enroll_status", ExamEnrollEnum.EXAM_PASS.getCode());
             studentTestEnrollQueryWrapper.eq("subject_type", studentTestEnrollEditParam.getSubjectType().equals(SubjectTypeEnum.SUBJECT_TWO.getCode()) ? SubjectTypeEnum.SUBJECT_THREE.getCode() : SubjectTypeEnum.SUBJECT_TWO.getCode());
-            int testPassCount = studentStudyEnrollService.count(studentTestEnrollQueryWrapper);
+            // 查看考试报名单
+            int testPassCount = studentTestEnrollService.count(studentTestEnrollQueryWrapper);
+            // 考试结果 科目2 科目三都通过才进行结算奖金操作
+            if (testPassCount <= 0){
+                return R.success(returnList);
+            }
             QueryWrapper studentTestEnrollNotQueryWrapper = new QueryWrapper();
             studentTestEnrollNotQueryWrapper.apply("exam_type  != 1");
             studentTestEnrollNotQueryWrapper.in("subject_type", SubjectTypeEnum.SUBJECT_TWO.getCode(), SubjectTypeEnum.SUBJECT_THREE.getCode());
             studentTestEnrollNotQueryWrapper.eq("enroll_status", ExamEnrollEnum.EXAM_NO_PASS.getCode());
+            studentTestEnrollNotQueryWrapper.eq("student_id", studentTestEnrollEditParam.getStudentId());
             // 查询挂科购买VIP 之后,挂科次数
             int count = studentTestEnrollService.count(studentTestEnrollNotQueryWrapper);
             //考试挂科扣款金额
@@ -707,6 +720,7 @@ public class  AccountFlowRepositoryImpl extends BaseController<AccountFlowPageQu
         if(accountFlowDetailEditParams.size() <=0){
             return R.failure(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
         }
+
         accountFlowDetailEditParams.stream().forEach((item) ->{
             //判断是否已经结算（防止重复结算）
             QueryWrapper queryWrapper = new QueryWrapper();
