@@ -101,4 +101,5 @@ public class OneFeeSystemPricePageQueryParam extends BasePageQueryParam {
 	// 状态(1-正常，2-停用)
 	private String status;
 
+	private String vagueNameSearch;
 }

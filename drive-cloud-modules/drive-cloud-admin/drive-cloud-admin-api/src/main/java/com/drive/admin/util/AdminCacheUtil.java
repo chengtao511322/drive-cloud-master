@@ -128,6 +128,23 @@ public class AdminCacheUtil {
 
 
     /**
+     * 班型服务
+     * @param classId
+     * @return
+     */
+    public static OneFeeSystemPriceVo getClassVo(String classId){
+        if (StrUtil.isEmpty(classId)){
+            return null;
+        }
+        OneFeeSystemPriceVo oneFeeSystemPriceVo = JSONObject.parseObject(CacheUtils.getCache(CacheConstants.REDIS_CACHE_CLASS_KEY+classId),OneFeeSystemPriceVo.class);
+        if(StringUtils.isNull(oneFeeSystemPriceVo)){
+            return null;
+        }
+        return oneFeeSystemPriceVo;
+    }
+
+
+    /**
      * 场地
      * @param coachingId
      * @return

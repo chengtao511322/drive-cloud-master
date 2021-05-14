@@ -53,6 +53,13 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	public ResObject pageList(@Valid @RequestBody OneFeeSystemPricePageQueryParam param) {
 		return oneFeeSystemPriceRepository.pageList(param);
 	}
+
+	@ApiOperation("获取可升级班分页列表")
+	//@PreAuthorize("hasPermission('/admin/oneFeeSystemPrice',  'admin:oneFeeSystemPrice:query')")
+	@PostMapping(value = "/getUpgradeClassPageList")
+	ResObject getUpgradeClassPageList(@RequestBody OneFeeSystemPricePageQueryParam param){
+		return oneFeeSystemPriceRepository.getUpgradeClassPageList(param);
+	}
 	/**
 	* 学车一费制定价表 分页列表
 	*/

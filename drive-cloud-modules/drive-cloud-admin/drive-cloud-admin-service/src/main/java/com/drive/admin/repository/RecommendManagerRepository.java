@@ -20,5 +20,13 @@ public interface RecommendManagerRepository extends BaseRepository<RecommendMana
      * @return
      */
     ResObject saveRecommendManager(RecommendManagerEditParam recommendManagerEditParam);
+
+
+    /**
+     * 修改渠道经理
+     * @param recommendManagerEditParam
+     * @return
+     */
+    ResObject updateRecommendManager(RecommendManagerEditParam recommendManagerEditParam);
 }
 

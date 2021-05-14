@@ -12,6 +12,7 @@ import com.drive.admin.pojo.entity.DeductSettingEntity;
 import com.drive.admin.pojo.entity.RecommendManagerEntity;
 import com.drive.admin.pojo.entity.RecommendUserEntity;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
+import com.drive.admin.pojo.vo.DeductSettingVo;
 import com.drive.admin.pojo.vo.RecommendManagerVo;
 import com.drive.admin.repository.RecommendManagerRepository;
 import com.drive.admin.service.DeductSettingService;
@@ -57,6 +58,7 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
 
     @Autowired
     private DeductSettingService deductSettingService;
+
 
     /**
     * *推广渠道经理 分页列表
@@ -145,7 +147,8 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
             recommendManagerVo.setPhone(studentInfoEntity.getPhone());
             // 设置姓名
             recommendManagerVo.setRealName(studentInfoEntity.getRealName());
-
+            //
+            recommendManagerVo.setStudentName(studentInfoEntity.getUsername());
 
             // 设置手机
             recommendManagerVo.setStudentPhone(studentInfoEntity.getPhone());
@@ -154,6 +157,12 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
 
             recommendManagerVo.setStudentName(studentInfoEntity.getUsername());
         }
+
+        // 这里判断条件进行查询
+        QueryWrapper queryWrapper= new QueryWrapper();
+        queryWrapper.eq("recommend_manager_id",id);
+        List<DeductSettingEntity> deductSettingList = deductSettingService.list(queryWrapper);
+        recommendManagerVo.setDeductSettingList(BeanConvertUtils.copyList(deductSettingList,DeductSettingVo.class));
         return R.success(recommendManagerVo);
     }
 
@@ -219,7 +228,11 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
      **/
     @Override
     public ResObject deleteByIds(String[] ids) {
-        return R.toRes(recommendManagerService.removeByIds(Arrays.asList(ids)));
+        Boolean res = recommendManagerService.removeByIds(Arrays.asList(ids));
+        if (!res){
+            return R.failure(SubResultCode.DATA_DELETE_FAILL.subCode(),SubResultCode.DATA_DELETE_FAILL.subMsg());
+        }
+        return R.success(res);
     }
 
     /**
@@ -279,12 +292,59 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
         queryWrapper.last("limit 1");
         RecommendManagerEntity isRecommendManager = recommendManagerService.getOne(queryWrapper);
         if (isRecommendManager != null){
-            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         RecommendManagerEntity recommendManager = BeanConvertUtils.copy(recommendManagerEditParam, RecommendManagerEntity.class);
         // 待审
         recommendManager.setStatus(StatusEnum.ENABLE.getCode());
         Boolean result = recommendManagerService.save(recommendManager);
+        log.info(this.getClass() + "save-方法请求结果{}",result);
+        // 判断结果
+        if (!result){
+            throw new BizException(500,SubResultCode.DATA_INSTALL_SUCCESS.subCode(),SubResultCode.DATA_INSTALL_SUCCESS.subMsg());
+        }
+        // 批量处理提成
+        List<DeductSettingInstallParam> deductSettingInstallParamList = recommendManagerEditParam.getDeductSettingList();
+        log.info(this.getClass() + "changeStatus方法请求参数{}",deductSettingInstallParamList);
+        if (deductSettingInstallParamList !=null && deductSettingInstallParamList.size() > 0){
+            List<DeductSettingEntity> deductSettingList = BeanConvertUtils.copyList(deductSettingInstallParamList,DeductSettingEntity.class);
+            // 先删除 数据
+            QueryWrapper delQueryWrapper = new  QueryWrapper();
+            delQueryWrapper.eq("recommend_manager_id",recommendManager.getId());
+            deductSettingService.remove(delQueryWrapper);
+            //DeductSettingEntity.setUpdateTime()
+            deductSettingList.stream().forEach((item) ->{
+                item.setRecommendManagerId(recommendManager.getId());
+            });
+            Boolean deductSettingResult = deductSettingService.saveOrUpdateBatch(deductSettingList);
+            log.info(this.getClass() +"changeStatus方法请求对象参数{}，请求结果{}",deductSettingResult);
+            if (!deductSettingResult){
+                throw new BizException(500,SubResultCode.DATA_INSTALL_SUCCESS.subCode(),SubResultCode.DATA_INSTALL_SUCCESS.subMsg());
+            }
+        }
+        return R.success();
+    }
+    @Transactional
+    @Override
+    public ResObject updateRecommendManager(RecommendManagerEditParam recommendManagerEditParam) {
+        log.info(this.getClass() + "saveRecommendManager方法请求参数{}",recommendManagerEditParam);
+        if (StrUtil.isEmpty(recommendManagerEditParam.getId())){
+            log.error("数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+       /* // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        // 学员id
+        queryWrapper.eq(StrUtil.isNotEmpty(recommendManagerEditParam.getStudentId()),"student_id",recommendManagerEditParam.getStudentId());
+        queryWrapper.eq(StrUtil.isNotEmpty(recommendManagerEditParam.getOperatorId()),"operator_id",recommendManagerEditParam.getOperatorId());
+        queryWrapper.last("limit 1");
+        RecommendManagerEntity isRecommendManager = recommendManagerService.getOne(queryWrapper);
+        if (isRecommendManager != null){
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }*/
+        RecommendManagerEntity recommendManager = BeanConvertUtils.copy(recommendManagerEditParam, RecommendManagerEntity.class);
+        // 待审
+        Boolean result = recommendManagerService.updateById(recommendManager);
         log.info(this.getClass() + "save-方法请求结果{}",result);
         // 判断结果
         if (!result){

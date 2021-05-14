@@ -47,5 +47,12 @@ public interface OneFeeSystemPriceRepository extends BaseRepository<OneFeeSystem
      * @return
      */
     ResObject getServicePackageTree(String tenantId);
+
+    /**
+     *
+     * @param param
+     * @return
+     */
+    ResObject getUpgradeClassPageList(OneFeeSystemPricePageQueryParam param);
 }
 

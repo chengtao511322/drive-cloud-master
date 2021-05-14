@@ -281,7 +281,7 @@ public class  OneFeeSystemCoachStudentRepositoryImpl extends BaseController<OneF
             return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         oneFeeSystemCoachStudentEditParam.setBindTime(LocalDateTime.now());
-        oneFeeSystemCoachStudentEditParam.setBindStatus(Integer.parseInt(StudyEnrollEnum.BIND_STATUS_ALREADY_BIND.getCode()));
+        oneFeeSystemCoachStudentEditParam.setBindStatus(StudyEnrollEnum.BIND_STATUS_ALREADY_BIND.getCode());
         OneFeeSystemCoachStudentEntity oneFeeSystemCoachStudent = BeanConvertUtils.copy(oneFeeSystemCoachStudentEditParam, OneFeeSystemCoachStudentEntity.class);
         Boolean result = oneFeeSystemCoachStudentService.saveOrUpdate(oneFeeSystemCoachStudent);
         log.info(this.getClass() + "save-方法请求结果{}",result);

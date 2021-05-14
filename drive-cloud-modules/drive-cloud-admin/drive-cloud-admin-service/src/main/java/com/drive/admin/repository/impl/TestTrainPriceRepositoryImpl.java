@@ -185,7 +185,7 @@ public class  TestTrainPriceRepositoryImpl extends BaseController<TestTrainPrice
         queryWrapper.last("limit 1");
         TestTrainPriceEntity isTestTrainPrice = testTrainPriceService.getOne(queryWrapper);
         if (isTestTrainPrice != null){
-            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         TestTrainPriceEntity testTrainPrice = BeanConvertUtils.copy(installParam, TestTrainPriceEntity.class);
         Boolean result = testTrainPriceService.save(testTrainPrice);
@@ -209,6 +209,16 @@ public class  TestTrainPriceRepositoryImpl extends BaseController<TestTrainPrice
         if (updateParam == null){
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+
+        // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.setEntity(updateParam);
+        // 驾照类型
+        queryWrapper.last("limit 1");
+        int isTestTrainPriceCount = testTrainPriceService.count(queryWrapper);
+        if (isTestTrainPriceCount  > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         TestTrainPriceEntity testTrainPrice = BeanConvertUtils.copy(updateParam, TestTrainPriceEntity.class);
         Boolean result = testTrainPriceService.updateById(testTrainPrice);

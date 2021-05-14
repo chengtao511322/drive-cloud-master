@@ -25,6 +25,7 @@ public class OneFeeSystemUpgradeClassPriceVo {
 	@Excel(name = "原班类型id", width = 20)
 	private String originalClassId;
 	private String originalClassName;
+	private OneFeeSystemPriceVo originalClassVo;
 
 	// 原班类型（1-vip包过，2-vip普通，3-vip特训,4-自主预约）
 	@Excel(name = "原班类型（1-vip包过，2-vip普通，3-vip特训,4-自主预约）", width = 20)
@@ -34,6 +35,7 @@ public class OneFeeSystemUpgradeClassPriceVo {
 	@Excel(name = "升级班类型id", width = 20)
 	private String upgradeClassId;
 	private String upgradeClassName;
+	private OneFeeSystemPriceVo upgradeClassVo;
 
 	// 升级班类型（1-vip包过，2-vip普通，3-vip特训,4-自主预约）
 	@Excel(name = "升级班类型（1-vip包过，2-vip普通，3-vip特训,4-自主预约）", width = 20)
@@ -79,10 +81,12 @@ public class OneFeeSystemUpgradeClassPriceVo {
 	public void setOriginalClassId(String originalClassId) {
 		this.originalClassId = originalClassId;
 		this.originalClassName = AdminCacheUtil.getClassName(originalClassId);
+		this.originalClassVo = AdminCacheUtil.getClassVo(originalClassId);
 	}
 
 	public void setUpgradeClassId(String upgradeClassId) {
 		this.upgradeClassId = upgradeClassId;
 		this.upgradeClassName = AdminCacheUtil.getClassName(upgradeClassId);
+		this.upgradeClassVo = AdminCacheUtil.getClassVo(upgradeClassId);
 	}
 }

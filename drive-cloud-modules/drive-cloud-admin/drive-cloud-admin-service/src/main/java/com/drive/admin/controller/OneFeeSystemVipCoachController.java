@@ -118,7 +118,7 @@ public class OneFeeSystemVipCoachController extends BaseController<OneFeeSystemV
 	//@PreAuthorize("hasPermission('/admin/oneFeeSystemVipCoach',  'admin:oneFeeSystemVipCoach:delete')")
 	@EventLog(message = "删除一费制vip教练", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(oneFeeSystemVipCoachService.removeByIds(Arrays.asList(ids)));
 	}
 

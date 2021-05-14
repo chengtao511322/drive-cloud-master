@@ -182,7 +182,7 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
         queryWrapper.last("limit 1");
         OperatorSettinngEntity isOperatorSettinng = operatorSettinngService.getOne(queryWrapper);
         if (isOperatorSettinng != null){
-            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         OperatorSettinngEntity operatorSettinng = BeanConvertUtils.copy(installParam, OperatorSettinngEntity.class);
         Boolean result = operatorSettinngService.save(operatorSettinng);

@@ -11,6 +11,7 @@ import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.enums.EventLogEnum;
+import com.drive.common.data.annotation.Idemptent;
 import com.drive.common.log.annotation.EventLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -125,6 +126,8 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	 * 添加运营商
 	 * @return
 	 */
+
+	@Idemptent
 	@ApiOperation("新增运营商基础信息")
 	@ApiImplicitParam(name = "OperatorEditParam ", value = "新增运营商基础信息", dataType = "OperatorEditParam")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:edit')")

@@ -80,7 +80,7 @@ public class OneFeeSystemCoachStudentVo {
 
 	// 驾照类型
 	@Excel(name = "驾照类型", width = 20)
-	private Integer driveType;
+	private String driveType;
 
 	// 绑定时间
 	@Excel(name = "绑定时间", width = 20)
@@ -88,7 +88,7 @@ public class OneFeeSystemCoachStudentVo {
 
 	// 绑定状态 (1-待绑定 ,2-已绑定，3-已解绑)
 	@Excel(name = "绑定状态 (1-待绑定 ,2-已绑定，3-已解绑)", width = 20)
-	private Integer bindStatus;
+	private String bindStatus;
 
 	// 解除绑定时间
 	@Excel(name = "解除绑定时间", width = 20)
@@ -116,7 +116,7 @@ public class OneFeeSystemCoachStudentVo {
 
 	// 支付状态 (1-待支付, 2-已经支付)
 	@Excel(name = "支付状态 (1-待支付, 2-已经支付)", width = 20)
-	private Integer payStatus;
+	private String payStatus;
 
 	// 科目二教练提成金额
 	@Excel(name = "科目二教练提成金额", width = 20)

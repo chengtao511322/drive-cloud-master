@@ -4,6 +4,7 @@ import cn.afterturn.easypoi.excel.annotation.Excel;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -56,5 +57,7 @@ public class RecommendManagerVo implements java.io.Serializable{
 
 	@Excel(name = "姓名", width = 20)
 	private String realName;
+
+	private List<DeductSettingVo> deductSettingList;
 
 }

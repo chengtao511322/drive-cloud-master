@@ -181,3 +181,15 @@ server.undertow.buffers-per-region=1024
 # 是否分配的直接内存(NIO直接分配的堆外内存)
 
 server.undertow.direct-buffers=true
+
+
+
+
+Google的规范里，单行可以不加大括号：Short conditional statements may be written on one line if this enhances readability. You may use this only when the line is brief and the statement does not use the else clause.if (x == kFoo) return new Foo();
+if (x == kBar) return new Bar();
+......In general, curly braces are not required for single-line statements, but they are allowed if you like them; conditional or loop statements with complex conditions or statements may be more readable with curly braces. Some projects require that an if must always always have an accompanying brace.if (condition)
+  DoSomething();  // 2 space indent.
+
+if (condition) {
+  DoSomething();  // 2 space indent.
+}

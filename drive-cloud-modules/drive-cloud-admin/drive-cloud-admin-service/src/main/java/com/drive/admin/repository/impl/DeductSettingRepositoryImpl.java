@@ -275,5 +275,22 @@ public class  DeductSettingRepositoryImpl extends BaseController<DeductSettingPa
         return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_STATUS_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_STATUS_FAILL.subCode(),SubResultCode.DATA_STATUS_FAILL.subMsg());
     }
 
+    @Override
+    public ResObject getByManagerId(String managerId) {
+        log.info(managerId);
+        if (StrUtil.isEmpty(managerId)){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 这里判断条件进行查询
+        QueryWrapper queryWrapper= new QueryWrapper();
+        queryWrapper.eq("recommend_manager_id",managerId);
+        List<DeductSettingEntity> deductSettingList = deductSettingService.list(queryWrapper);
+        if (deductSettingList == null){
+            log.error("数据空");
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),deductSettingList);
+        }
+        return R.success(BeanConvertUtils.copyList(deductSettingList,DeductSettingVo.class));
+    }
+
 }
 

@@ -91,6 +91,14 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	public ResObject saveRecommendManager(@Valid @RequestBody RecommendManagerEditParam recommendManagerEditParam) {
 		return recommendManagerRepository.saveRecommendManager(recommendManagerEditParam);
 	}
+	@ApiOperation("修改推广渠道经理")
+	@ApiImplicitParam(name = "RecommendManagerEditParam ", value = "新增推广渠道经理", dataType = "RecommendManagerEditParam")
+	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:add')")
+	@EventLog(message = "修改推广渠道经理", businessType = EventLogEnum.CREATE)
+	@PostMapping("/updateRecommendManager")
+	public ResObject updateRecommendManager(@Valid @RequestBody RecommendManagerEditParam recommendManagerEditParam) {
+		return recommendManagerRepository.updateRecommendManager(recommendManagerEditParam);
+	}
 
 	/**
 	* 修改推广渠道经理
@@ -113,7 +121,7 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 	@EventLog(message = "删除推广渠道经理", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable String[] ids) {
-		return R.toRes(recommendManagerService.removeByIds(Arrays.asList(ids)));
+		return recommendManagerRepository.deleteByIds(ids);
 	}
 
 	/**

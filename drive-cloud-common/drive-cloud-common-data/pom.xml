@@ -31,5 +31,10 @@
             <artifactId>bytetcc-supports-springcloud</artifactId>
             <version>0.5.9</version>
         </dependency>-->
+
+        <dependency>
+            <groupId>com.drive</groupId>
+            <artifactId>drive-cloud-common-redis</artifactId>
+        </dependency>
     </dependencies>
 </project>
