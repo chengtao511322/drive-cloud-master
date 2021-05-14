@@ -147,7 +147,9 @@ public class  OneFeeSystemCoachStudentRepositoryImpl extends BaseController<OneF
             return R.failure("数据空");
         }
         OneFeeSystemCoachStudentEntity oneFeeSystemCoachStudent = oneFeeSystemCoachStudentService.getById(id);
+        StudentInfoEntity studentInfoEntity = studentInfoService.getById(oneFeeSystemCoachStudent.getStudentId());
         OneFeeSystemCoachStudentVo oneFeeSystemCoachStudentVo = BeanConvertUtils.copy(oneFeeSystemCoachStudent, OneFeeSystemCoachStudentVo.class);
+        oneFeeSystemCoachStudentVo.setStudentName(studentInfoEntity.getRealName());
         log.info(this.getClass() + "getInfo-方法请求结果{}",oneFeeSystemCoachStudentVo);
         if (oneFeeSystemCoachStudentVo ==null){
             log.error("活动数据对象空");
