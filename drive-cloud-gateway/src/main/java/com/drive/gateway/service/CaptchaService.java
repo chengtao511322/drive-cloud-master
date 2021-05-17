@@ -59,10 +59,11 @@ public class CaptchaService {
         }
 
         String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
-        String captcha = redisService.getStr(verifyKey);
+        //String captcha = redisService.getStr(verifyKey);
+        String verifyStr = redisService.getVerifyStr(verifyKey);
         redisService.del(verifyKey);
 
-        if (!code.equalsIgnoreCase(captcha)) {
+        if (!code.equalsIgnoreCase(verifyStr)) {
             throw new CustomException("验证码错误");
         }
     }

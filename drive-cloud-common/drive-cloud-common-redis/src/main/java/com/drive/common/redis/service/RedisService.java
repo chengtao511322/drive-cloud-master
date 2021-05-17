@@ -111,6 +111,10 @@ public class RedisService {
         return key == null ? null : JSONObject.toJSONString(redisTemplate.opsForValue().get(key));
     }
 
+    public String getVerifyStr(String key){
+        return redisTemplate.opsForValue().get(key).toString();
+    }
+
     /**
      * 普通缓存放入
      *
