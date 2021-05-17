@@ -4,6 +4,7 @@ import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.enums.StatusEnum;
@@ -15,12 +16,10 @@ import com.drive.admin.pojo.dto.PlatformWalletPageQueryParam;
 import com.drive.admin.pojo.entity.AccountFlowDetailEntity;
 import com.drive.admin.pojo.entity.PlatformWalletDetailEntity;
 import com.drive.admin.pojo.entity.PlatformWalletEntity;
+import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.vo.PlatformWalletVo;
 import com.drive.admin.repository.PlatformWalletRepository;
-import com.drive.admin.service.AccountFlowDetailService;
-import com.drive.admin.service.AccountFlowService;
-import com.drive.admin.service.PlatformWalletDetailService;
-import com.drive.admin.service.PlatformWalletService;
+import com.drive.admin.service.*;
 import com.drive.admin.service.mapstruct.PlatformWalletMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
@@ -70,6 +69,8 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
     @Autowired
     private AccountFlowService accountFlowService;
 
+    @Autowired
+    private StudentInfoService studentInfoService;
     /*
      *
      *功能描述
@@ -98,6 +99,13 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<PlatformWalletVo> platformWalletVoPage = platformWalletMapStruct.toVoList(pageList);
+        List<PlatformWalletVo> records = platformWalletVoPage.getRecords();
+        //查询用户名
+        for (PlatformWalletVo record : records) {
+            StudentInfoEntity byId = studentInfoService.getById(record.getUserId());
+            record.setUserName(byId.getUsername());
+        }
+
         log.info(this.getClass() + "pageList-方法请求结果{}",platformWalletVoPage);
         return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),platformWalletVoPage);
     }
