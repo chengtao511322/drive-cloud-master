@@ -182,6 +182,8 @@ public class CoachInfoPageQueryParam extends BasePageQueryParam {
 	private String vaguePhoneSearch;
 	//真实姓名模糊查询
 	private String vagueRealNameSearch;
+	// 车牌号模糊查询
+	private String vagueVehicleNoSearch;
 	// 推荐时间查询
 	private String recommendDateSearch;
 

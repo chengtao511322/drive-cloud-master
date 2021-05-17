@@ -183,8 +183,8 @@ public class  TestTrainPriceRepositoryImpl extends BaseController<TestTrainPrice
         queryWrapper.eq(StrUtil.isNotEmpty(installParam.getPriceType()),"price_type",installParam.getPriceType());
         queryWrapper.eq(StrUtil.isNotEmpty(installParam.getOperatorId()),"operator_id",installParam.getOperatorId());
         queryWrapper.last("limit 1");
-        TestTrainPriceEntity isTestTrainPrice = testTrainPriceService.getOne(queryWrapper);
-        if (isTestTrainPrice != null){
+        int isTestTrainPrice = testTrainPriceService.count(queryWrapper);
+        if (isTestTrainPrice > 0){
             return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         TestTrainPriceEntity testTrainPrice = BeanConvertUtils.copy(installParam, TestTrainPriceEntity.class);

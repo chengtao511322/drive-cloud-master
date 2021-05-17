@@ -56,7 +56,15 @@ public class  AreaRepositoryImpl extends BaseController<AreaPageQueryParam, Area
     public ResObject pageList(AreaPageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
         Page<AreaEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<AreaEntity> pageList = areaService.page(page, this.getQueryWrapper(areaMapStruct, param));
+        QueryWrapper queryWrapper = this.getQueryWrapper(areaMapStruct, param);
+        // code
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueBaCodeSearch()),"ba_code",param.getVagueBaCodeSearch());
+        // name
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueBaNameSearch()),"ba_name",param.getVagueBaNameSearch());
+        IPage<AreaEntity> pageList = areaService.page(page, queryWrapper);
+        if (pageList.getRecords().isEmpty()){
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
+        }
         Page<AreaVo> areaVoPage = areaMapStruct.toVoList(pageList);
         log.info(this.getClass() + "pageList-方法请求结果{}",areaVoPage);
         return R.success(areaVoPage);
@@ -69,6 +77,9 @@ public class  AreaRepositoryImpl extends BaseController<AreaPageQueryParam, Area
         QueryWrapper queryWrapper= this.getQueryWrapper(areaMapStruct, param);
         // 如 queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"phone",param.getPhone());
         List<AreaEntity> pageList = areaService.list(queryWrapper);
+        if (pageList.isEmpty()){
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
+        }
         List<AreaVo> areaVoList = areaMapStruct.toVoList(pageList);
         log.info(this.getClass() + "findList-方法请求结果{}",areaVoList);
         if (areaVoList == null){
@@ -126,8 +137,16 @@ public class  AreaRepositoryImpl extends BaseController<AreaPageQueryParam, Area
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+        // 幂等性校验
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("ba_code",installParam.getBaCode());
+        queryWrapper.last("limit 1");
+        int isArea = areaService.count(queryWrapper);
+        if (isArea > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
         AreaEntity area = BeanConvertUtils.copy(installParam, AreaEntity.class);
-        Boolean result = areaService.save(area);
+        Boolean result = areaService.saveArea(area);
         log.info(this.getClass() + "save-方法请求结果{}",result);
         // 判断结果
         return result ?R.success(result):R.failure(result);
@@ -142,6 +161,13 @@ public class  AreaRepositoryImpl extends BaseController<AreaPageQueryParam, Area
         if (updateParam == null){
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 幂等性校验
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.setEntity(updateParam);
+        int isArea = areaService.count(queryWrapper);
+        if (isArea > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         AreaEntity area = BeanConvertUtils.copy(updateParam, AreaEntity.class);
         Boolean result = areaService.updateById(area);
@@ -224,6 +250,17 @@ public class  AreaRepositoryImpl extends BaseController<AreaPageQueryParam, Area
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
         }
         return R.success(areaVoList);
+    }
+
+    @Override
+    public ResObject delAreaByCode(String code) {
+        log.info(this.getClass() + "delAreaByCode-方法请求参数{}",code);
+        if (StrUtil.isEmpty(code)){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        Boolean result = areaService.delAreaByCode(code);
+        if (!result)return R.failure(SubResultCode.DATA_DELETE_FAILL.subCode(),SubResultCode.DATA_DELETE_FAILL.subMsg());
+        return R.success(result);
     }
 }
 

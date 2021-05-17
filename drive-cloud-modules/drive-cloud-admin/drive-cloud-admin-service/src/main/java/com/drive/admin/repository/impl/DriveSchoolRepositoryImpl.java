@@ -154,6 +154,15 @@ public class  DriveSchoolRepositoryImpl extends BaseController<DriveSchoolPageQu
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+        // 幂等性处理
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("province_id",installParam.getProvinceId());
+        queryWrapper.eq("city_id",installParam.getCityId());
+        queryWrapper.eq("area_id",installParam.getAreaId());
+        int isDriveSchool = driveSchoolService.count(queryWrapper);
+        if (isDriveSchool > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
         DriveSchoolEntity driveSchool = BeanConvertUtils.copy(installParam, DriveSchoolEntity.class);
         Boolean result = driveSchoolService.save(driveSchool);
         log.info(this.getClass() + "save-方法请求结果{}",result);
@@ -170,6 +179,13 @@ public class  DriveSchoolRepositoryImpl extends BaseController<DriveSchoolPageQu
         if (updateParam == null){
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 幂等性处理
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.setEntity(updateParam);
+        int isDriveSchool = driveSchoolService.count(queryWrapper);
+        if (isDriveSchool > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         DriveSchoolEntity driveSchool = BeanConvertUtils.copy(updateParam, DriveSchoolEntity.class);
         Boolean result = driveSchoolService.updateById(driveSchool);

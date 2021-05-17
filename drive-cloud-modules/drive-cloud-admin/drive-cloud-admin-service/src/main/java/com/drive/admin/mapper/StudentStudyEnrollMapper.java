@@ -46,6 +46,14 @@ public interface StudentStudyEnrollMapper extends BaseMapper<StudentStudyEnrollE
      */
     IPage<StatisticsStudentDataVo> statisticsStudentDataPageList(Page page, @Param("ew") Wrapper<StudentStudyEnrollPageQueryParam> ew);
 
+    /**
+     * 查询数据统计
+     * @param page
+     * @param ew
+     * @return
+     */
+    IPage<StatisticsStudentDataVo> newStatisticsStudentDataPageList(Page page, @Param("ew") Wrapper<StudentStudyEnrollPageQueryParam> ew);
+
 
 
     /**

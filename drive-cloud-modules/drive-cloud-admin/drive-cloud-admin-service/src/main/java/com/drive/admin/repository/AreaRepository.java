@@ -2,6 +2,7 @@ package com.drive.admin.repository;
 
 import com.drive.admin.pojo.dto.AreaEditParam;
 import com.drive.admin.pojo.dto.AreaPageQueryParam;
+import com.drive.admin.pojo.entity.AreaEntity;
 import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.biz.ResObject;
 
@@ -18,5 +19,10 @@ public interface AreaRepository extends BaseRepository<AreaPageQueryParam, AreaE
      * @return
      */
     ResObject allList();
+
+    ResObject delAreaByCode(String code);
+
+
+
 }
 

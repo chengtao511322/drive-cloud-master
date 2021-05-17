@@ -68,7 +68,7 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         QueryWrapper queryWrapper = this.getQueryWrapper(${className}MapStruct, param);
 
         //  模糊查询
-        //queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
@@ -97,6 +97,8 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         log.info(this.getClass() + "findList-方法请求参数{}",param);
         // 这里判断条件进行查询
         QueryWrapper queryWrapper= this.getQueryWrapper(${className}MapStruct, param);
+        // 通过名称查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
         // 如 queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"phone",param.getPhone());
         List<${entity}Entity> ${className}List = ${className}Service.list(queryWrapper);
         if (${className}List == null){
@@ -121,6 +123,8 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         }
         // 这里判断条件进行查询
         QueryWrapper queryWrapper = this.getQueryWrapper(${className}MapStruct, param);
+        // 这里有且只返回一条数据
+        queryWrapper.last("limit 1");
         ${entity}Entity ${className} = ${className}Service.getOne(queryWrapper);
         if (${className} == null){
             log.error("数据空");

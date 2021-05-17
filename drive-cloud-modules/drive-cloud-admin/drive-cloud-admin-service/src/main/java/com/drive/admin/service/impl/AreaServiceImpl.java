@@ -55,6 +55,20 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
         return this.getBaseMapper().findView();
     }
 
+    @Override
+    public Boolean delAreaByCode(String code) {
+        int result = this.getBaseMapper().delAreaByCode(code);
+        if (result > 0)return true;
+        return false;
+    }
+
+    @Override
+    public Boolean saveArea(AreaEntity areaEntity) {
+        int result = this.getBaseMapper().saveArea(areaEntity);
+        if (result > 0)return true;
+        return false;
+    }
+
 
     @CacheEvict(value = "redisCache", key = "'areaItem:area_'+#entity.getId()")
     @Override

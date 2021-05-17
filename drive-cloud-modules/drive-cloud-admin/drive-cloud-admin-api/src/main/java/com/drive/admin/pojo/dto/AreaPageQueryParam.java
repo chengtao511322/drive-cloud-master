@@ -22,4 +22,7 @@ public class AreaPageQueryParam extends BasePageQueryParam {
 
 	private String baParentId;
 
+	private String vagueBaNameSearch;
+	private String vagueBaCodeSearch;
+
 }

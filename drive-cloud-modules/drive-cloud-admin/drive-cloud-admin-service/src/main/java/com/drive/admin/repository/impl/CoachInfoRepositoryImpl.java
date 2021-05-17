@@ -66,6 +66,8 @@ public class  CoachInfoRepositoryImpl extends BaseController<CoachInfoPageQueryP
         queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"phone",param.getVaguePhoneSearch());
         // 真实姓名模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"real_name",param.getVagueRealNameSearch());
+        // 车牌号模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueVehicleNoSearch()),"vehicle_no",param.getVagueVehicleNoSearch());
         // 推荐时间时间
         queryWrapper.apply(StrUtil.isNotBlank(param.getRecommendDateSearch()),
                 "date_format (recommend_date,'%Y-%m-%d') = date_format('" + param.getRecommendDateSearch() + "','%Y-%m-%d')");

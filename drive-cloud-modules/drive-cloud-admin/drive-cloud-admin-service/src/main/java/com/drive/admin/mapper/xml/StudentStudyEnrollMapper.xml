@@ -207,6 +207,21 @@
     </select>
 
 
+    <select id="newStatisticsStudentDataPageList" parameterType="com.drive.admin.pojo.dto.StudentStudyEnrollPageQueryParam" resultType="com.drive.admin.pojo.vo.StatisticsStudentDataVo">
+        SELECT
+           	t3.id as studentId,
+            t3.username as nickName,
+            t3.real_name as realName,
+            t3.phone as phone,
+            t3.recommend_date as referrerTime,
+            t3.recommend_user_id as referrerId,
+            t3.operator_id as operatorId
+        FROM
+             t_student_info t3
+            ${ew.customSqlSegment}
+    </select>
+
+
     <select id="studyCarSchedulePageList" parameterType="com.drive.admin.pojo.dto.StudyCarScheduleQueryParam" resultType="com.drive.admin.pojo.vo.StudyCarScheduleVo">
       select
                 t.*

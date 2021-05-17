@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * @author xiaoguo
  */
 @Data
-public class RecommendUserVo {
+public class RecommendUserVo implements java.io.Serializable {
 
 
 	// id

@@ -180,8 +180,8 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
         queryWrapper.eq(StrUtil.isNotEmpty(installParam.getNumber()),"number",installParam.getNumber());
         queryWrapper.eq(StrUtil.isNotEmpty(installParam.getOperatorId()),"operator_id",installParam.getOperatorId());
         queryWrapper.last("limit 1");
-        OperatorSettinngEntity isOperatorSettinng = operatorSettinngService.getOne(queryWrapper);
-        if (isOperatorSettinng != null){
+        int isOperatorSettinng = operatorSettinngService.count(queryWrapper);
+        if (isOperatorSettinng > 0){
             return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         OperatorSettinngEntity operatorSettinng = BeanConvertUtils.copy(installParam, OperatorSettinngEntity.class);
@@ -207,6 +207,17 @@ public class  OperatorSettinngRepositoryImpl extends BaseController<OperatorSett
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+
+        // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.setEntity(updateParam);
+        // 运营商名称
+        queryWrapper.last("limit 1");
+        int isOperatorSettinng = operatorSettinngService.count(queryWrapper);
+        if (isOperatorSettinng > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
+
         OperatorSettinngEntity operatorSettinng = BeanConvertUtils.copy(updateParam, OperatorSettinngEntity.class);
         Boolean result = operatorSettinngService.updateById(operatorSettinng);
         log.info(this.getClass() + "update-方法请求结果{}",result);

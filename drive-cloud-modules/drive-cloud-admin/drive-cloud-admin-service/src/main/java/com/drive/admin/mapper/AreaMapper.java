@@ -15,5 +15,18 @@ public interface AreaMapper extends BaseMapper<AreaEntity> {
 
     List<ViewDataVo> findView();
 
+    /**
+     * 通过code 删除数据
+     * @param code
+     * @return
+     */
+    int delAreaByCode(String code);
+
+    /**
+     * 保存数据
+     * @param areaEntity
+     * @return
+     */
+    int saveArea(AreaEntity areaEntity);
 }
 

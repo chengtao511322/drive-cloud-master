@@ -187,8 +187,8 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
         // 运营商名称
         queryWrapper.eq(StrUtil.isNotEmpty(installParam.getName()),"name",installParam.getName());
         queryWrapper.last("limit 1");
-        OperatorEntity isOperator = operatorService.getOne(queryWrapper);
-        if (isOperator != null){
+        int isOperator = operatorService.count(queryWrapper);
+        if (isOperator > 0){
             return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         OperatorEntity operator = BeanConvertUtils.copy(installParam, OperatorEntity.class);
@@ -213,6 +213,15 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
         if (updateParam == null){
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 幂等性查询
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.setEntity(updateParam);
+        // 运营商名称
+        queryWrapper.last("limit 1");
+        int isOperator = operatorService.count(queryWrapper);
+        if (isOperator > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         OperatorEntity operator = BeanConvertUtils.copy(updateParam, OperatorEntity.class);
         Boolean result = operatorService.updateById(operator);

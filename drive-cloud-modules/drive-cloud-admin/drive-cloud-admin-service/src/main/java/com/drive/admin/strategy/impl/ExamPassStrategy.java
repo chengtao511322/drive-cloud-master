@@ -133,7 +133,7 @@ public class ExamPassStrategy implements StudyEnrollStrategy {
         // 考试通过，创建账务流明细，结算教练收入费用
         if(SubjectTypeEnum.SUBJECT_TWO.getCode().equals(studentTestEnroll.getSubjectType())
                 ||
-        SubjectTypeEnum.SUBJECT_THREE.getCode().equals(studentTestEnrol.getSubjectType())){
+        SubjectTypeEnum.SUBJECT_THREE.getCode().equals(studentTestEnroll.getSubjectType())){
             // 创建账务流水明细
              ResObject<List<AccountFlowDetailVo>> accountFlowRes = accountFlowRepository.createTestPassVIPCoachFlowDetail(BeanConvertUtils.copy(studentTestEnroll, StudentTestEnrollEditParam.class));
             // 结算费用到钱包

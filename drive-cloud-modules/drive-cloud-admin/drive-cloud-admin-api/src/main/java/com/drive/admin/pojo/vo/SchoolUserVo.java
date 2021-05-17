@@ -35,6 +35,8 @@ public class SchoolUserVo {
 	@Excel(name = "账户所属驾校", width = 20)
 	private String schoolId;
 
+	private String schoolName;
+
 	// 状态(1-正常，2-停用)
 	@Excel(name = "状态(1-正常，2-停用)", width = 20)
 	private String status;

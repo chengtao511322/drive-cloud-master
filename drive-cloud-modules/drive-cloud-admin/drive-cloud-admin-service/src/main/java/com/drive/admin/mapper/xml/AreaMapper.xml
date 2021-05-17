@@ -19,4 +19,12 @@
             select vbd.code as CODE, vbd.value as VALUE from v_base_data vbd
 
     </select>
+
+    <delete id="delAreaByCode" parameterType="java.lang.String">
+        DELETE FROM t_base_area WHERE ba_code=#{code}
+    </delete>
+
+    <insert id="saveArea" parameterType="com.drive.admin.pojo.entity.AreaEntity">
+        INSERT INTO t_base_area ( ba_code, ba_name, ba_parent_id ) VALUES ( #{baCode}, #{baName}, #{baParentId} )
+    </insert>
 </mapper>

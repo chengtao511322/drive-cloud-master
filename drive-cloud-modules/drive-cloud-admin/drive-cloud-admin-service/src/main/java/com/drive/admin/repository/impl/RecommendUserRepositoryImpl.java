@@ -116,6 +116,7 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
                     .map(u-> u.getRemarks())
                     .orElseThrow(()->new BizException("渠道经理获取数据空")));
 */
+
             if (StrUtil.isNotEmpty(item.getManagerId())){
                 RecommendManagerEntity manager = recommendManagerService.getById(item.getStudentId());
                 if (manager != null)item.setStudentName(manager.getRemarks());
@@ -206,8 +207,8 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
         queryWrapper.eq(StrUtil.isNotEmpty(installParam.getName()),"name",installParam.getName());
         queryWrapper.eq(StrUtil.isNotEmpty(installParam.getOperatorId()),"operator_id",installParam.getOperatorId());
         queryWrapper.last("limit 1");
-        RecommendUserEntity isRecommendUser = recommendUserService.getOne(queryWrapper);
-        if (isRecommendUser != null){
+        int isRecommendUser = recommendUserService.count(queryWrapper);
+        if (isRecommendUser > 0){
             return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         RecommendUserEntity recommendUser = BeanConvertUtils.copy(installParam, RecommendUserEntity.class);
@@ -229,18 +230,15 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
-      /*  // 幂等性查询
+
+        // 幂等性查询
         QueryWrapper queryWrapper = new QueryWrapper();
-        // 学员id
-        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getStudentId()),"student_id",updateParam.getStudentId());
-        // 推广商查询
-        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getName()),"name",updateParam.getName());
-        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getOperatorId()),"operator_id",updateParam.getOperatorId());
+        queryWrapper.setEntity(updateParam);
         queryWrapper.last("limit 1");
-        RecommendUserEntity isRecommendUser = recommendUserService.getOne(queryWrapper);
-        if (isRecommendUser != null){
-            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
-        }*/
+        int isRecommendUser = recommendUserService.count(queryWrapper);
+        if (isRecommendUser > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
         RecommendUserEntity recommendUser = BeanConvertUtils.copy(updateParam, RecommendUserEntity.class);
         Boolean result = recommendUserService.updateById(recommendUser);
         log.info(this.getClass() + "update-方法请求结果{}",result);
