@@ -64,7 +64,7 @@ public class RecommendUserController extends BaseController<RecommendUserPageQue
 	}
 	@ApiOperation("通过渠道经理ID获取推广人员信息表列表")
 	//@PreAuthorize("hasPermission('/admin/recommendUser',  'admin:recommendUser:getRecommendUserByChannelManagerId')")
-	@PostMapping(value = "/getRecommendUserByChannelManagerId/{channelManagerId}")
+	@GetMapping(value = "/getRecommendUserByChannelManagerId/{channelManagerId}")
 	ResObject<List<RecommendUserVo>> getRecommendUserByChannelManagerId(@PathVariable(value = "channelManagerId") String channelManagerId) {
 		RecommendUserPageQueryParam param = new RecommendUserPageQueryParam();
 		param.setManagerId(channelManagerId);

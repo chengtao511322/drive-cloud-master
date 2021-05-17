@@ -925,9 +925,9 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         }*/
         QueryWrapper queryWrapper = new QueryWrapper();
         // 运营商查询
-        queryWrapper.eq(StrUtil.isNotEmpty(param.getOperatorId()),"t1.operator_id",param.getOperatorId());
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getOperatorId()),"t3.operator_id",param.getOperatorId());
         // 学员ID
-        queryWrapper.eq(StrUtil.isNotEmpty(param.getStudentId()),"t1.student_id",param.getStudentId());
+        //queryWrapper.eq(StrUtil.isNotEmpty(param.getStudentId()),"t1.student_id",param.getStudentId());
         // 推荐人ID
         queryWrapper.eq(StrUtil.isNotEmpty(param.getRecommendUserId()),"t3.recommend_user_id",param.getRecommendUserId());
 
@@ -937,10 +937,10 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRealNameSearch()),"t3.real_name",param.getVagueRealNameSearch());
         queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePromoterName()),"t3.real_name",param.getVaguePromoterName());
         if (StrUtil.isNotEmpty(param.getSubjectType()) && StrUtil.isNotEmpty(param.getEnrollStatus())){
-            queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t1.student_id = t_student_test_enroll.student_id AND t_student_test_enroll.subject_type="+param.getSubjectType()+" AND t_student_test_enroll.enroll_status = "+param.getEnrollStatus()+")",0);
+            queryWrapper.gt("(SELECT COUNT(1) FROM t_student_test_enroll WHERE t3.id = t_student_test_enroll.student_id AND t_student_test_enroll.subject_type="+param.getSubjectType()+" AND t_student_test_enroll.enroll_status = "+param.getEnrollStatus()+")",0);
         }
-        queryWrapper.orderByDesc("t1.create_time");
-        IPage<StatisticsStudentDataVo> pageList = studentStudyEnrollService.statisticsStudentDataPageList(page, queryWrapper);
+        queryWrapper.orderByDesc("t3.create_time");
+        IPage<StatisticsStudentDataVo> pageList = studentStudyEnrollService.newStatisticsStudentDataPageList(page, queryWrapper);
         if (pageList.getRecords().size() <= 0){
             log.error("数据空-------------");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
@@ -948,6 +948,32 @@ public class  StudentStudyEnrollRepositoryImpl extends BaseController<StudentStu
 
         // 循环取数据
         pageList.getRecords().stream().forEach((item) ->{
+            String[] statusArr =
+            {
+                EnrollStatusEnum.RELATION_WAIT_PAY.getCode(),
+                EnrollStatusEnum.PAY_WAIT_PUT.getCode(),
+                EnrollStatusEnum.ENROLL_SUCCESS.getCode(),
+                EnrollStatusEnum.AUTO_ENROLL_SUCCESS.getCode(),
+                EnrollStatusEnum.AUTO_ENROLL_WAIT_AUDIT.getCode(),
+                EnrollStatusEnum.PUT_WAIT_AUDIT.getCode(),
+                EnrollStatusEnum.PASSWORD_SUBMIT_WAIT_AUDIT.getCode(),
+                EnrollStatusEnum.REFUND_LOADING.getCode(),
+                EnrollStatusEnum.UPGRADE.getCode(),
+            };
+            QueryWrapper studentStudyEnrollQueryWrapper = new QueryWrapper();
+            // 学员id
+            studentStudyEnrollQueryWrapper.eq("student_id",item.getStudentId());
+            studentStudyEnrollQueryWrapper.in("enroll_status",statusArr);
+            studentStudyEnrollQueryWrapper.last("limit 1");
+            StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getOne(studentStudyEnrollQueryWrapper);
+            if (studentStudyEnroll != null){
+                item.setOnLineServiceId(studentStudyEnroll.getUserId());
+                item.setStudyEnrollNo(studentStudyEnroll.getStudyEnrollNo());
+                item.setApplyAmount(studentStudyEnroll.getPrice());
+                item.setApplySchoolId(studentStudyEnroll.getDriveSchoolId());
+                item.setAddress(studentStudyEnroll.getAddress());
+                item.setEnrollStatus(studentStudyEnroll.getEnrollStatus());
+            }
             // 查询科目一
             QueryWrapper subjectOneQueryWrapper = new QueryWrapper();
             subjectOneQueryWrapper.eq("subject_type", SubjectTypeEnum.SUBJECT_ONE.getCode());

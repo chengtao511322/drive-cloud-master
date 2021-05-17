@@ -101,6 +101,7 @@ public class ${entity}Controller extends BaseController<${entity}PageQueryParam,
 
 	/**
 	* 新增${table.comment}
+	 * author:xiaoguo
 	*/
 	@ApiOperation("新增${table.comment}")
 	@ApiImplicitParam(name = "${entity}EditParam ", value = "新增${table.comment}", dataType = "${entity}EditParam")
@@ -131,7 +132,7 @@ public class ${entity}Controller extends BaseController<${entity}PageQueryParam,
 	@PreAuthorize("hasPermission('/${cfg.moduleName}/${className}',  '${cfg.moduleName}:${className}:delete')")
 	@EventLog(message = "删除${table.comment}", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{${pkColumn.propertyName}s}")
-	public ResObject delete(@PathVariable Long[] ${pkColumn.propertyName}s) {
+	public ResObject delete(@PathVariable String[] ${pkColumn.propertyName}s) {
 		return R.toRes(${className}Service.removeByIds(Arrays.asList(${pkColumn.propertyName}s)));
 	}
 
@@ -140,7 +141,7 @@ public class ${entity}Controller extends BaseController<${entity}PageQueryParam,
 	*/
 	@ApiOperation("通过主键删除${table.comment}")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "通过主键删除${table.comment}", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {

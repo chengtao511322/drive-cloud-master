@@ -183,9 +183,9 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
         queryWrapper.eq(StrUtil.isNotEmpty(installParam.getStudentId()),"student_id",installParam.getStudentId());
         queryWrapper.eq(StrUtil.isNotEmpty(installParam.getOperatorId()),"operator_id",installParam.getOperatorId());
         queryWrapper.last("limit 1");
-        RecommendManagerEntity isRecommendManager = recommendManagerService.getOne(queryWrapper);
-        if (isRecommendManager != null){
-            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        int isRecommendManager = recommendManagerService.count(queryWrapper);
+        if (isRecommendManager > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         RecommendManagerEntity recommendManager = BeanConvertUtils.copy(installParam, RecommendManagerEntity.class);
         // 待审
@@ -206,16 +206,14 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
-       /* // 幂等性查询
+        // 幂等性查询
         QueryWrapper queryWrapper = new QueryWrapper();
-        // 学员id
-        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getStudentId()),"student_id",updateParam.getStudentId());
-        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getOperatorId()),"operator_id",updateParam.getOperatorId());
+        queryWrapper.setEntity(updateParam);
         queryWrapper.last("limit 1");
-        RecommendManagerEntity isRecommendManager = recommendManagerService.getOne(queryWrapper);
-        if (isRecommendManager != null){
-            return R.failure(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
-        }*/
+        int isRecommendManager = recommendManagerService.count(queryWrapper);
+        if (isRecommendManager > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
         RecommendManagerEntity recommendManager = BeanConvertUtils.copy(updateParam, RecommendManagerEntity.class);
         Boolean result = recommendManagerService.updateById(recommendManager);
         log.info(this.getClass() + "update-方法请求结果{}",result);

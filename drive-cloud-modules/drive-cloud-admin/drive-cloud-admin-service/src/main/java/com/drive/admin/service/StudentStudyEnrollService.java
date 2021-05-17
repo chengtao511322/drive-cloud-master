@@ -46,6 +46,14 @@ public interface StudentStudyEnrollService extends IService<StudentStudyEnrollEn
      */
     IPage<StatisticsStudentDataVo> statisticsStudentDataPageList(Page page, @Param("ew") Wrapper<StudentStudyEnrollPageQueryParam> ew);
 
+    /**
+     *
+     * @param page
+     * @param ew
+     * @return
+     */
+    IPage<StatisticsStudentDataVo> newStatisticsStudentDataPageList(Page page, @Param("ew") Wrapper<StudentStudyEnrollPageQueryParam> ew);
+
 
     /**
      * 分页查询_学员学车进度列表

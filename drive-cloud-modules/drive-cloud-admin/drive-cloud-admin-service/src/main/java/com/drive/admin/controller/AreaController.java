@@ -80,7 +80,7 @@ public class AreaController extends BaseController<AreaPageQueryParam, AreaEntit
 	*/
 	@ApiOperation("城市区域通过ID获取")
 	@ApiImplicitParam(name = "baCode", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/area',  'admin:area:query')")
+	//@PreAuthorize("hasPermission('/admin/area',  'admin:area:query')")
 	@GetMapping("/{baCode}")
 	public ResObject get(@PathVariable String baCode) {
 		return areaRepository.getById(baCode);
@@ -91,7 +91,7 @@ public class AreaController extends BaseController<AreaPageQueryParam, AreaEntit
 	*/
 	@ApiOperation("城市区域新增")
 	@ApiImplicitParam(name = "AreaEditParam ", value = "新增", dataType = "AreaEditParam")
-	@PreAuthorize("hasPermission('/admin/area',  'admin:area:add')")
+	//@PreAuthorize("hasPermission('/admin/area',  'admin:area:add')")
 	@EventLog(message = "新增", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody AreaEditParam areaEditParam) {
@@ -103,7 +103,7 @@ public class AreaController extends BaseController<AreaPageQueryParam, AreaEntit
 	*/
 	@ApiOperation("城市区域修改")
 	@ApiImplicitParam(name = "AreaEditParam ", value = "修改", dataType = "AreaEditParam")
-	@PreAuthorize("hasPermission('/admin/area',  'admin:area:edit')")
+	//@PreAuthorize("hasPermission('/admin/area',  'admin:area:edit')")
 	@EventLog(message = "修改", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody AreaEditParam areaEditParam) {
@@ -115,10 +115,10 @@ public class AreaController extends BaseController<AreaPageQueryParam, AreaEntit
 	*/
 	@ApiOperation("城市区域删除")
 	@ApiImplicitParam(name = "baCode", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/area',  'admin:area:delete')")
+	//@PreAuthorize("hasPermission('/admin/area',  'admin:area:delete')")
 	@EventLog(message = "删除", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{baCodes}")
-	public ResObject delete(@PathVariable Long[] baCodes) {
+	public ResObject delete(@PathVariable String[] baCodes) {
 		return R.toRes(areaService.removeByIds(Arrays.asList(baCodes)));
 	}
 
@@ -127,18 +127,18 @@ public class AreaController extends BaseController<AreaPageQueryParam, AreaEntit
 	*/
 	@ApiOperation("通过主键删除城市区域")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
 	@EventLog(message = "通过主键删除", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
-		return areaRepository.deleteById(id);
+		return areaRepository.delAreaByCode(id);
 	}
 
 	/**
 	* 导出
 	*/
 	@ApiOperation("城市区域导出")
-	@PreAuthorize("hasPermission('/admin/area',  'admin:area:export')")
+	//@PreAuthorize("hasPermission('/admin/area',  'admin:area:export')")
 	@SneakyThrows
 	@EventLog(message = "导出", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -151,7 +151,7 @@ public class AreaController extends BaseController<AreaPageQueryParam, AreaEntit
 	* 状态启用/停用
 	*/
 	@ApiOperation("城市区域状态启用/停用")
-	@PreAuthorize("hasPermission('/admin/area',  'admin:area:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/area',  'admin:area:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

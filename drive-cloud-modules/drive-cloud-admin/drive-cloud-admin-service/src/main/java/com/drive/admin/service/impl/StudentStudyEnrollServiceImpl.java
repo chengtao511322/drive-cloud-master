@@ -56,6 +56,11 @@ public class StudentStudyEnrollServiceImpl extends BaseService<StudentStudyEnrol
         return this.getBaseMapper().statisticsStudentDataPageList(page,ew);
     }
 
+    @Override
+    public IPage<StatisticsStudentDataVo> newStatisticsStudentDataPageList(Page page, Wrapper<StudentStudyEnrollPageQueryParam> ew) {
+        return this.getBaseMapper().newStatisticsStudentDataPageList(page,ew);
+    }
+
     @DataScope(deptAlias = "tsse.operator_id",userAlias = "tsse.user_id", module = "admin")
     @Override
     public IPage<StudyCarScheduleVo> studyCarSchedulePageList(Page page, Wrapper<StudyCarScheduleQueryParam> ew) {

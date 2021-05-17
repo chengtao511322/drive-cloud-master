@@ -8,9 +8,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.pojo.dto.SchoolUserEditParam;
 import com.drive.admin.pojo.dto.SchoolUserInstallParam;
 import com.drive.admin.pojo.dto.SchoolUserPageQueryParam;
+import com.drive.admin.pojo.entity.DriveSchoolEntity;
 import com.drive.admin.pojo.entity.SchoolUserEntity;
+import com.drive.admin.pojo.vo.DriveSchoolVo;
 import com.drive.admin.pojo.vo.SchoolUserVo;
 import com.drive.admin.repository.SchoolUserRepository;
+import com.drive.admin.service.DriveSchoolService;
 import com.drive.admin.service.SchoolUserService;
 import com.drive.admin.service.mapstruct.SchoolUserMapStruct;
 import com.drive.common.core.base.BaseController;
@@ -46,6 +49,9 @@ public class  SchoolUserRepositoryImpl extends BaseController<SchoolUserPageQuer
     @Autowired
     private SchoolUserMapStruct schoolUserMapStruct;
 
+    @Autowired
+    private DriveSchoolService driveSchoolService;
+
     /*
      *
      *功能描述
@@ -74,8 +80,16 @@ public class  SchoolUserRepositoryImpl extends BaseController<SchoolUserPageQuer
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<SchoolUserVo> schoolUserVoPage = schoolUserMapStruct.toVoList(pageList);
+        schoolUserVoPage.getRecords().stream().forEach((item) ->{
+            if (StrUtil.isNotEmpty(item.getSchoolId())){
+                DriveSchoolEntity driveSchool = driveSchoolService.getById(item.getSchoolId());
+                if (driveSchool != null){
+                    item.setSchoolName(driveSchool.getSchoolName());
+                }
+            }
+        });
         log.info(this.getClass() + "pageList-方法请求结果{}",schoolUserVoPage);
-        return R.success(SubResultCode.DATA_SEARCH_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),schoolUserVoPage);
+        return R.success(schoolUserVoPage);
     }
 
     /*
@@ -100,7 +114,7 @@ public class  SchoolUserRepositoryImpl extends BaseController<SchoolUserPageQuer
         }
         List<SchoolUserVo> schoolUserVoList = schoolUserMapStruct.toVoList(schoolUserList);
         log.info(this.getClass() + "findList-方法请求结果{}",schoolUserVoList);
-        return R.success(SubResultCode.DATA_SEARCH_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),schoolUserVoList);
+        return R.success(schoolUserVoList);
     }
 
     /**
@@ -123,7 +137,7 @@ public class  SchoolUserRepositoryImpl extends BaseController<SchoolUserPageQuer
         }
         SchoolUserVo schoolUserVo = BeanConvertUtils.copy(schoolUser, SchoolUserVo.class);
         log.info(this.getClass() + "getInfo-方法请求结果{}",schoolUserVo);
-        return R.success(SubResultCode.DATA_SEARCH_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),schoolUserVo);
+        return R.success(schoolUserVo);
     }
 
     /*
@@ -149,7 +163,7 @@ public class  SchoolUserRepositoryImpl extends BaseController<SchoolUserPageQuer
         }
         SchoolUserVo schoolUserVo = BeanConvertUtils.copy(schoolUser, SchoolUserVo.class);
         log.info(this.getClass() + "getById-方法请求结果{}",schoolUserVo);
-        return R.success(SubResultCode.DATA_SEARCH_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),schoolUserVo);
+        return R.success(schoolUserVo);
     }
 
     /*

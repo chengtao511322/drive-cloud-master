@@ -1,5 +1,6 @@
 package com.drive.admin.pojo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,6 +23,7 @@ public class AreaEntity implements java.io.Serializable{
 	// 区域名称
 	private String baName;
 
+	@TableField(value="ba_parent_id")
 	private String baParentId;
 
 }
