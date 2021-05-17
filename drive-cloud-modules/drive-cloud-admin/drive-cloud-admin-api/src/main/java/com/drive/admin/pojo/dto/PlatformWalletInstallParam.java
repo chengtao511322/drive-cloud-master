@@ -16,8 +16,7 @@ import java.math.BigDecimal;
 public class PlatformWalletInstallParam {
 
 
-    // id
-    @NotBlank(message = "id不能为空")
+
     @ApiModelProperty(value = "id")
     private String id;
 
@@ -31,8 +30,7 @@ public class PlatformWalletInstallParam {
     @ApiModelProperty(value = "钱包类型(1-学员；2-教练；3-运维；4 平台支付宝；5 平台微信；6 驾校；7-运营商)")
     private String walletType;
 
-    // 钱包总额
-    @NotBlank(message = "钱包总额不能为空")
+
     @ApiModelProperty(value = "钱包总额")
     private BigDecimal walletAmount;
 
@@ -62,17 +60,15 @@ public class PlatformWalletInstallParam {
     private String aliRealName;
 
     // 银行卡号
-    @NotBlank(message = "银行卡号不能为空")
+
     @ApiModelProperty(value = "银行卡号")
     private String bankAccount;
 
     // 持卡人姓名
-    @NotBlank(message = "持卡人姓名不能为空")
     @ApiModelProperty(value = "持卡人姓名")
     private String bankAccountName;
 
     // 开户行
-    @NotBlank(message = "开户行不能为空")
     @ApiModelProperty(value = "开户行")
     private String openAccountBank;
 

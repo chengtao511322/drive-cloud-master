@@ -55,6 +55,7 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid @RequestBody OperatorPageQueryParam param) {
 		return operatorRepository.pageList(param);
+
 	}
 	/**
 	* 运营商基础信息 列表

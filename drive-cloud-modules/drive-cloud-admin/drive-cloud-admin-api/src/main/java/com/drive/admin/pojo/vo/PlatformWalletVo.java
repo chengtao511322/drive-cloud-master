@@ -23,6 +23,9 @@ public class PlatformWalletVo {
 	@Excel(name = "钱包用户Id", width = 20)
 	private String userId;
 
+	@Excel(name = "用户名",width = 20)
+	private String userName;
+
 	// 钱包类型(1-学员；2-教练；3-运维；4 平台支付宝；5 平台微信；6 驾校；7-运营商)
 	@Excel(name = "钱包类型(1-学员；2-教练；3-运维；4 平台支付宝；5 平台微信；6 驾校；7-运营商)", width = 20)
 	private String walletType;
