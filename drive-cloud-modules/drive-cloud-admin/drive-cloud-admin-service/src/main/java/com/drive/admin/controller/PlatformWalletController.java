@@ -51,7 +51,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	*/
 	@ApiOperation("教练钱包表分页列表")
 	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
-	@GetMapping(value = "/pageList")
+	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid @RequestBody PlatformWalletPageQueryParam param) {
 		return platformWalletRepository.pageList(param);
 	}
@@ -60,7 +60,7 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	*/
 	@ApiOperation("教练钱包表列表")
 	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
-	@GetMapping(value = "/findList")
+	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid @RequestBody PlatformWalletPageQueryParam param) {
 		return platformWalletRepository.findList(param);
 	}
@@ -82,8 +82,8 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	@ApiOperation("条件查询获取教练钱包表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
-	@GetMapping("/getInfo")
-	public ResObject getInfo(@PathVariable PlatformWalletPageQueryParam param) {
+	@PostMapping("/getInfo")
+	public ResObject getInfo(@RequestBody PlatformWalletPageQueryParam param) {
 		return platformWalletRepository.getInfo(param);
 	}
 
