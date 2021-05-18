@@ -24,6 +24,7 @@ public interface AreaService extends IService<AreaEntity>{
      * @param code
      * @return
      */
+
     Boolean delAreaByCode(String code);
 
     /**

@@ -1,9 +1,11 @@
 package com.drive.admin.controller;
 
+import com.drive.admin.pojo.dto.PlatformWalletDetailPageQueryParam;
 import com.drive.admin.pojo.dto.PlatformWalletEditParam;
 import com.drive.admin.pojo.dto.PlatformWalletInstallParam;
 import com.drive.admin.pojo.dto.PlatformWalletPageQueryParam;
 import com.drive.admin.pojo.entity.PlatformWalletEntity;
+import com.drive.admin.repository.PlatformWalletDetailRepository;
 import com.drive.admin.repository.PlatformWalletRepository;
 import com.drive.admin.service.PlatformWalletService;
 import com.drive.admin.service.mapstruct.PlatformWalletMapStruct;
@@ -42,6 +44,8 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	// 教练钱包表 业务服务
 	@Autowired
 	private PlatformWalletRepository platformWalletRepository;
+	@Autowired
+	private PlatformWalletDetailRepository platformWalletDetailRepository;
 	// 教练钱包表 DO-DTO转化
 	@Autowired
 	private PlatformWalletMapStruct platformWalletMapStruct;
@@ -49,6 +53,12 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	/**
 	* 教练钱包表 分页列表
 	*/
+	@ApiOperation("教练钱包明细表分页列表")
+	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
+	@PostMapping(value = "/pageWalletDetailList")
+	public ResObject pagePlatformWalletDetailList(@Valid @RequestBody PlatformWalletDetailPageQueryParam param) {
+		return platformWalletDetailRepository.pageList(param);
+	}
 	@ApiOperation("教练钱包表分页列表")
 	//@PreAuthorize("hasPermission('/admin/platformWallet',  'admin:platformWallet:query')")
 	@PostMapping(value = "/pageList")
@@ -158,6 +168,16 @@ public class PlatformWalletController extends BaseController<PlatformWalletPageQ
 	@PostMapping("/changeStatus")
 	public ResObject changeStatus(@Valid @RequestBody PlatformWalletEditParam platformWalletEditParam) {
 		return platformWalletRepository.changeStatus(platformWalletEditParam);
+	}
+
+	/**
+	 * 钱包对账
+	 */
+	@ApiOperation("钱包对账")
+	@EventLog(message = "钱包对账",businessType = EventLogEnum.UPDATE)
+	@PostMapping("/walletReconciliationById/{id}")
+	public ResObject walletReconciliation(@PathVariable String id){
+		return platformWalletRepository.walletReconciliation(id);
 	}
 
 }

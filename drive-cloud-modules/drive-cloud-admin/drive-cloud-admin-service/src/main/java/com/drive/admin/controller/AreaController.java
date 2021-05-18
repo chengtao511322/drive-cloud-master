@@ -75,6 +75,13 @@ public class AreaController extends BaseController<AreaPageQueryParam, AreaEntit
 		return areaRepository.allList();
 	}
 
+
+	@ApiOperation("可选择城市区域列表")
+	@GetMapping(value = "/allOptionalAreaList")
+	public ResObject allOptionalAreaList(){
+		return null;
+	}
+
 	/**
 	* 获取
 	*/

@@ -35,5 +35,11 @@ public interface PlatformWalletRepository extends BasicsRepository<PlatformWalle
      * @return
      */
     ResObject settlementToWallet(AccountFlowDetailInstallParam accountFlowDetailInstallParam);
+
+    /**
+     * 钱包对账
+     * @param walletId 钱包id
+     */
+    ResObject walletReconciliation(String walletId);
 }
 

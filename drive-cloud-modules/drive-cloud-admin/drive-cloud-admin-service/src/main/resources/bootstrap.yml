@@ -22,7 +22,7 @@ spring:
     nacos:
       discovery:
         # 服务注册地址 172.24.86.62
-        server-addr: ${nacos_host:125.0.8.191}:${nacos_port:6648}
+        server-addr: ${nacos_host:125.0.8.214}:${nacos_port:8848}
       config:
         # 配置中心地址
         server-addr: ${nacos_host:125.0.8.191}:${nacos_port:6648}
@@ -31,6 +31,10 @@ spring:
         # 共享配置
         shared-configs:
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+  devtools:
+    restart:
+      enabled: true  #设置开启热部署
+      additional-paths: src/main/java #重启目录
 
 seata:
   enabled: true

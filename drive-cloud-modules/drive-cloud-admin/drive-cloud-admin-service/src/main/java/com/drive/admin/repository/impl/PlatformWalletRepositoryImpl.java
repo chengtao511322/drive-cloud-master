@@ -30,6 +30,7 @@ import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.data.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -103,7 +106,9 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
         //查询用户名
         for (PlatformWalletVo record : records) {
             StudentInfoEntity byId = studentInfoService.getById(record.getUserId());
-            record.setUserName(byId.getUsername());
+            if(byId != null){
+                record.setUserName(byId.getUsername());
+            }
         }
 
         log.info(this.getClass() + "pageList-方法请求结果{}",platformWalletVoPage);
@@ -437,6 +442,65 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
         return R.success("执行成功");
     }
 
+    /**
+     * 钱包对账
+     * @param walletId 钱包id
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResObject walletReconciliation(String walletId) {
+        if(StringUtils.isEmpty(walletId)){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),"用户钱包id不能为空");
+        }
 
+        //查询用户钱包id
+        PlatformWalletEntity wallet = platformWalletService.getById(walletId);
+        //查询条件
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("user_id",wallet.getUserId());
+        queryWrapper.orderByAsc("create_time");
+        List<PlatformWalletDetailEntity> platformWalletDetailEntityList = platformWalletDetailService.list(queryWrapper);
+        //没有明细直接返回
+        if(platformWalletDetailEntityList.isEmpty() && platformWalletDetailEntityList == null){
+            return R.success("钱包对账成功");
+        }
 
+        //新余额
+        BigDecimal newBalance = new BigDecimal(0);
+        for (PlatformWalletDetailEntity detailEntity : platformWalletDetailEntityList) {
+                //交易成功的明细
+                if(!"2".equals(detailEntity.getStatus())){
+                    //交易类型
+                    String tradeType = detailEntity.getTradeType();
+                    //余额
+                    BigDecimal balance = detailEntity.getBalance();
+                    //交易金额
+                    BigDecimal tradeAmount = detailEntity.getTradeAmount();
+                    //交易类型为收益
+                    if("1".equals(tradeType)){
+                       newBalance = newBalance.add(tradeAmount);
+                    }
+                    //交易类型为支出
+                    if("2".equals(tradeType)){
+                        if(tradeAmount.compareTo(BigDecimal.ZERO) != -1){
+                            newBalance = newBalance.subtract(tradeAmount);
+                        }else {
+                            newBalance = newBalance.add(tradeAmount);
+                        }
+                    }
+                    //新余额与该条数据余额相等跳出
+                    if(newBalance.compareTo(balance) == 0){
+                        continue;
+                    }
+                    detailEntity.setBalance(newBalance);
+                    //更新该明细的余额记录
+                    platformWalletDetailService.updateById(detailEntity);
+                }
+        }
+        //设置钱包的余额
+        wallet.setWalletAmount(newBalance);
+        boolean flag = platformWalletService.updateById(wallet);
+        return flag == true ? R.success("对账成功") : R.failure("对账失败");
+    }
 }
