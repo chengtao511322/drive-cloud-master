@@ -8,9 +8,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.pojo.dto.StudentTrainCarApplyEditParam;
 import com.drive.admin.pojo.dto.StudentTrainCarApplyInstallParam;
 import com.drive.admin.pojo.dto.StudentTrainCarApplyPageQueryParam;
+import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.entity.StudentTrainCarApplyEntity;
 import com.drive.admin.pojo.vo.StudentTrainCarApplyVo;
 import com.drive.admin.repository.StudentTrainCarApplyRepository;
+import com.drive.admin.service.CoachTeachTimeService;
+import com.drive.admin.service.StudentInfoService;
 import com.drive.admin.service.StudentTrainCarApplyService;
 import com.drive.admin.service.mapstruct.StudentTrainCarApplyMapStruct;
 import com.drive.common.core.base.BaseController;
@@ -46,6 +49,12 @@ public class  StudentTrainCarApplyRepositoryImpl extends BaseController<StudentT
     @Autowired
     private StudentTrainCarApplyMapStruct studentTrainCarApplyMapStruct;
 
+    @Autowired
+    private StudentInfoService studentInfoService;
+
+    @Autowired
+    private CoachTeachTimeService coachTeachTimeService;
+
     /*
      *
      *功能描述
@@ -74,6 +83,14 @@ public class  StudentTrainCarApplyRepositoryImpl extends BaseController<StudentT
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<StudentTrainCarApplyVo> studentTrainCarApplyVoPage = studentTrainCarApplyMapStruct.toVoList(pageList);
+
+        List<StudentTrainCarApplyVo> records = studentTrainCarApplyVoPage.getRecords();
+        for (StudentTrainCarApplyVo record : records) {
+            //设置学员名称
+            record.setStudentName(studentInfoService.getById(record.getStudentId()).getRealName());
+            //设置课程名称
+            record.setClassName(coachTeachTimeService.getById(record.getClassId()).getClassName());
+        }
         log.info(this.getClass() + "pageList-方法请求结果{}",studentTrainCarApplyVoPage);
         return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),studentTrainCarApplyVoPage);
     }

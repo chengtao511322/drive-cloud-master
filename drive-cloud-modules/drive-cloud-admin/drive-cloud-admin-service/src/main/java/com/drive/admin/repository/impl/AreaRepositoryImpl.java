@@ -8,9 +8,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.pojo.dto.AreaEditParam;
 import com.drive.admin.pojo.dto.AreaPageQueryParam;
 import com.drive.admin.pojo.entity.AreaEntity;
+import com.drive.admin.pojo.entity.OperatorAreaEntity;
 import com.drive.admin.pojo.vo.AreaVo;
 import com.drive.admin.repository.AreaRepository;
 import com.drive.admin.service.AreaService;
+import com.drive.admin.service.OperatorAreaService;
 import com.drive.admin.service.mapstruct.AreaMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
@@ -42,6 +44,8 @@ public class  AreaRepositoryImpl extends BaseController<AreaPageQueryParam, Area
     private AreaService areaService;
     @Autowired
     private AreaMapStruct areaMapStruct;
+    @Autowired
+    private OperatorAreaService operatorAreaService;
 
     /*
      *
@@ -261,6 +265,33 @@ public class  AreaRepositoryImpl extends BaseController<AreaPageQueryParam, Area
         Boolean result = areaService.delAreaByCode(code);
         if (!result)return R.failure(SubResultCode.DATA_DELETE_FAILL.subCode(),SubResultCode.DATA_DELETE_FAILL.subMsg());
         return R.success(result);
+    }
+
+    @Override
+    public ResObject allOptionalAreaList() {
+        log.info(this.getClass()+"allOptionalAreaList-方法请求参数{}");
+        //查询已划分的运营商区域
+        QueryWrapper<OperatorAreaEntity> areaEntityQueryWrapper = new QueryWrapper<>();
+        areaEntityQueryWrapper.select("area_id");
+        List<OperatorAreaEntity> operatorAreaEntityList = operatorAreaService.list();
+        String[] areaIds = new String[operatorAreaEntityList.size()];
+        for(int i = 0; i<areaIds.length;i++){
+            areaIds[i] = operatorAreaEntityList.get(i).getAreaId();
+        }
+        //查询可用运营商区域
+        QueryWrapper<AreaEntity> areaQueryWrapper = new QueryWrapper<>();
+        //String[] areaIdStr = (String[]) areaIds.toArray();
+        areaQueryWrapper.notIn("ba_code",areaIds);
+        List<AreaEntity> allList = areaService.list(areaQueryWrapper);
+        List<AreaVo> areaVoList = areaMapStruct.toVoList(allList);
+        //把可用区域存入redis
+
+
+        if (areaVoList == null){
+            log.error("数据空");
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        }
+        return R.success(areaVoList);
     }
 }
 

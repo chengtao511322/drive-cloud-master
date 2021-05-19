@@ -76,12 +76,6 @@ public class AreaController extends BaseController<AreaPageQueryParam, AreaEntit
 	}
 
 
-	@ApiOperation("可选择城市区域列表")
-	@GetMapping(value = "/allOptionalAreaList")
-	public ResObject allOptionalAreaList(){
-		return null;
-	}
-
 	/**
 	* 获取
 	*/
@@ -165,5 +159,17 @@ public class AreaController extends BaseController<AreaPageQueryParam, AreaEntit
 	public ResObject changeStatus(@Valid @RequestBody AreaEditParam areaEditParam) {
 		return areaRepository.changeStatus(areaEditParam);
 	}
+
+	/**
+	 * 查询运营商可选择城市区域列表
+	 * @return
+	 */
+	@ApiOperation("可选择城市区域列表")
+	@GetMapping(value = "/allOptionalAreaList")
+	public ResObject allOptionalAreaList(){
+		return areaRepository.allOptionalAreaList();
+	}
+
+
 
 }

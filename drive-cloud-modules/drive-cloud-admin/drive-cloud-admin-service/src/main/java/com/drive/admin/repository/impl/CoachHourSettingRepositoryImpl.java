@@ -376,7 +376,7 @@ public class  CoachHourSettingRepositoryImpl extends BaseController<CoachHourSet
            }
         }
         // 判断结果
-        return R.success(SubResultCode.DATA_INSTALL_SUCCESS.subCode(),SubResultCode.DATA_INSTALL_SUCCESS.subMsg());
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_INSTALL_SUCCESS.subMsg());
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.drive.admin.util.AdminCacheUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
  * @author xiaoguo
  */
 @Data
-public class StudentTrainCarApplyVo {
+public class 	StudentTrainCarApplyVo {
 
 
 	// 预约单号
@@ -193,6 +194,40 @@ public class StudentTrainCarApplyVo {
 	@Excel(name = "运营商id(数据权限标记)", width = 20)
 	private String operatorId;
 
+	//课程名称
+	@Excel(name = "教练课程名称",width = 20)
+	private String className;
+
+	//教练名称
+	@Excel(name = "教练名称",width = 20)
+	private String coachName;
+
+	//学员名称
+	@Excel(name = "学员名称",width = 20)
+	private String studentName;
+
+	//训练场地名称
+	@Excel(name = "训练场地名称",width = 20)
+	private String coachingGridName;
+
 	private int classHourTotal;
 
+
+	public void setCoachId(String coachId) {
+		this.coachId = coachId;
+		this.coachName = AdminCacheUtil.getCoachName(coachId);
+	}
+
+	public void setStudentId(String studentId) {
+		this.studentId = studentId;
+	}
+
+	public void setClassId(String classId) {
+		this.classId = classId;
+	}
+
+	public void setCoachingGridId(String coachingGridId) {
+		this.coachingGridId = coachingGridId;
+		this.coachingGridName = AdminCacheUtil.getCoachingGridName(coachingGridId);
+	}
 }
