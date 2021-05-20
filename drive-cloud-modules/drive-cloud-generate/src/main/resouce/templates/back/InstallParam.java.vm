@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -23,7 +24,7 @@ public class ${entity}InstallParam {
 #if("$!field.comment" != "")
     // ${field.comment}
 #end
-    @NotBlank(message = "${field.comment}不能为空")
+    @NotNull(message = "${field.comment}不能为空")
     @ApiModelProperty(value = "${field.comment}")
     private ${field.propertyType} ${field.propertyName};
 #end

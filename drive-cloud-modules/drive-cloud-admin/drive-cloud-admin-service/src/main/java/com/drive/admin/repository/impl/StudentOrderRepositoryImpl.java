@@ -35,6 +35,7 @@ import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.ArithUtil;
 import com.drive.common.core.utils.BeanConvertUtils;
+import com.drive.common.core.utils.GsonUtil;
 import com.drive.common.core.utils.StringUtils;
 import com.drive.common.data.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -189,7 +190,12 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
         }
         Page<StudentOrderVo> studentOrderVoPage = studentOrderMapStruct.toVoList(pageList);
         studentOrderVoPage.getRecords().stream().forEach((item) ->{
-            if (StrUtil.isNotEmpty(item.getStudentId()))item.setStudentName(studentInfoService.getById(item.getStudentId()).getRealName());
+            if (StrUtil.isNotEmpty(item.getStudyEnrollNo())){
+                QueryWrapper studentStudyQueryWrapper = new QueryWrapper();
+                studentStudyQueryWrapper.eq("study_enroll_no",item.getStudyEnrollNo());
+                studentStudyQueryWrapper.last("limit 1");
+                Optional.ofNullable(studentStudyEnrollService.getOne(studentStudyQueryWrapper)).ifPresent(u ->{item.setStudentName(u.getRealName());});
+            }
         });
         log.info(this.getClass() + "pageList-方法请求结果{}",studentOrderVoPage);
         return R.success(studentOrderVoPage);
@@ -424,7 +430,7 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
 
     @Transactional
     @Override
-    public ResObject orderRefund(StudentOrderEditParam studentOrderEditParam) throws AlipayApiException {
+    public ResObject orderRefund(StudentOrderEditParam studentOrderEditParam) throws Exception {
         log.info(this.getClass() + "orderRefund-方法请求参数{}",studentOrderEditParam);
         // 查询对应的订单信息
         StudentOrderEntity studentOrder = studentOrderService.getById(studentOrderEditParam.getOrderNo());
@@ -433,6 +439,8 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
         }
         // 退款订单号
         String outRequestNo = StringUtils.generateSequenceNo();
+        // 目前订单状态
+        String orderStatus =studentOrder.getStatus();
         //支付成功才可退款
         if(!(StudyEnrollEnum.PAY_SUCCESS.getCode().equals(studentOrder.getStatus()))){
             return R.failure("该订单不可退款");
@@ -444,16 +452,16 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
         refundQueryWrapper.eq("flow_type",StudyEnrollEnum.FLOW_TYPE_REFUND.getCode());
         int count = accountFlowService.count(refundQueryWrapper);
         if(count > 0){
-            return R.failure(SubResultCode.ORDER_YET_REFUND.subCode(),SubResultCode.ORDER_YET_REFUND.subMsg());
+            return R.success(SubResultCode.ORDER_YET_REFUND.subCode(),SubResultCode.ORDER_YET_REFUND.subMsg());
         }
         //学车报名单退款，已升班 的需先退上一笔订单
         if(studentOrder.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_STUDY_ENROLL.getCode())){
             StudentStudyEnrollEntity studentStudyEnroll = studentStudyEnrollService.getById(studentOrder.getStudyEnrollNo());
             if(studentStudyEnroll == null){
-                return R.failure(SubResultCode.DATA_NULL.subCode(),"该订单的明细单不存在,请联系管理员");
+                return R.failure("该订单的明细单不存在,请联系管理员");
             }
             if(studentStudyEnroll.getEnrollStatus().equals(StudyEnrollEnum.YET_ENROLL_UPGRADE_CLASS.getCode())){
-                return R.failure(SubResultCode.DATA_NULL.subCode(),"已升班订单不可取消");
+                return R.failure("已升班订单不可取消");
             }
         }
 
@@ -465,13 +473,15 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
         payFlowQueryWrapper.eq("tran_type",StudyEnrollEnum.TRADE_FLOW_STATUS_PAY.getCode());
         // 支付类型（微信）
         payFlowQueryWrapper.eq("pay_type",studentOrder.getPayType());
+        payFlowQueryWrapper.orderByDesc("create_time");
+        payFlowQueryWrapper.last("limit 1");
         // 支付流水
         PayFlowLogEntity payFlowLog = payFlowLogService.getOne(payFlowQueryWrapper);
         if(!studentOrder.getPayType().equals(StudyEnrollEnum.PAY_TYPE_VIP.getCode())){
             this.createRefundAccountFlow(studentOrder,outRequestNo); //生成退款流水
         }
-        //更新订单状态
-        this.updateOrderStutas(studentOrder);
+        //更新订单状态 orderStatus记录目前订单的状态 如果升班才能还原状态
+        this.updateOrderStutas(studentOrder,orderStatus);
         ResObject returnVal = new ResObject();
         // 支付宝
         if (studentOrder.getPayType().equals(StudyEnrollEnum.PAY_TYPE_ALI.getCode())){
@@ -535,8 +545,8 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
         StudentOrderEntity originalStudentOrder = studentOrderService.getById(studentOrderEntity.getNewOrderNo());
         if(originalStudentOrder != null){
             originalStudentOrder.setStatus(studentOrderEntity.getStatus());
-            Boolean originalRes = studentOrderService.updateById(originalStudentOrder);
-            log.info("原订单更新结果{}",originalRes);
+           /* Boolean originalRes = studentOrderService.updateById(originalStudentOrder);
+            log.info("原订单更新结果{}",originalRes);*/
         }
 
         //更新订单状态
@@ -584,7 +594,8 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
         newAccountFlowQueryWrapper.eq("order_no", studentOrderEntity.getOrderNo());
         List<AccountFlowDetailEntity> accountFlowDetailList = accountFlowDetailService.list(newAccountFlowQueryWrapper);
         if (accountFlowDetailList.isEmpty()){
-            throw new BizException(500,SubResultCode.DATA_NULL.subCode(),"没有流水");
+            //throw new BizException(500,SubResultCode.DATA_NULL.subCode(),"没有流水");
+            return ;
         }
         accountFlowDetailList.stream().forEach((item) ->{
             //若费用已经结算到钱包，则需要扣除
@@ -650,7 +661,7 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
      * 更新订单状态
      * @throws Exception
      */
-    private void  updateOrderStutas(StudentOrderEntity studentOrderDo) throws BizException {
+    private void  updateOrderStutas(StudentOrderEntity studentOrderDo,String nowOrderStatus) throws BizException {
 
         //学车报名
         if (studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_STUDY_ENROLL.getCode())) {
@@ -674,14 +685,14 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
                 //还原---老订单状态
                 StudentOrderEntity originalOrder = studentOrderService.getById(studentOrderDo.getNewOrderNo());
                 if (originalOrder != null) {
-                    originalOrder.setStatus(studentOrderDo.getStatus());
+                    originalOrder.setStatus(nowOrderStatus);
                     Boolean originalOrderRes = studentOrderService.updateById(originalOrder);
                     if (!originalOrderRes) {
                         throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), SubResultCode.DATA_UPDATE_FAILL.subMsg());
                     }
                     //还原--老学车报名单号状态
                     StudentStudyEnrollEntity originalStudyEnroll = studentStudyEnrollService.getById(originalOrder.getStudyEnrollNo());
-                    originalStudyEnroll.setEnrollStatus(studentStudyEnrollDo.getEnrollStatus());
+                    originalStudyEnroll.setEnrollStatus(oldStudyEnrollStatus);
                     Boolean originalStudyEnrollRes = studentStudyEnrollService.updateById(originalStudyEnroll);
                     if (!originalStudyEnrollRes) {
                         throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), "报名单更新异常");
@@ -779,7 +790,8 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
      * 支付宝退款方法
      * @throws Exception
      */
-    private  ResObject aliRefund(StudentOrderEntity studentOrderEntity,String outRequestNo,PayFlowLogEntity payFlowLogDo) throws BizException, AlipayApiException {
+    @Transactional
+      ResObject aliRefund(StudentOrderEntity studentOrderEntity,String outRequestNo,PayFlowLogEntity payFlowLogDo) throws BizException, AlipayApiException {
 
         //调用支付宝退款
         Map<String,Object> params = new HashMap<String,Object>();
@@ -801,14 +813,16 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
         aliRequest.setBizContent(JSONObject.toJSONString(content));
 
         AlipayTradeRefundResponse aliResponse = alipayClient.execute(aliRequest);
+        log.info("请求数据结构{}",aliResponse);
         if(aliResponse.isSuccess()){
             String bodyData = aliResponse.getBody();
-            Map<String,String> data = JSON.parseObject(bodyData,Map.class);
+            Map<String,String> data =  GsonUtil.toMap(bodyData);
+            log.info("支付宝退款数据{}",data);
             String sign = data.get("sign");
             String alipay_trade_refund_response = data.get("alipay_trade_refund_response");
             boolean falg = AlipaySignature.rsaCheck(alipay_trade_refund_response, sign, aliPublicKey, "UTF-8", "RSA2");
             if(falg) {
-                    Map<String,String> refundData = JSON.parseObject(alipay_trade_refund_response,Map.class);
+                Map<String,String> refundData = GsonUtil.toMap(alipay_trade_refund_response);
                 //平台订单号
                 String out_trade_no = refundData.get("out_trade_no");
                 //退款总金额
@@ -822,11 +836,11 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
                     //校验金额  bd1.compareTo(bd2);
                     BigDecimal refundAmount = refundFee.subtract(studentOrderEntity.getPayableAmount());
                     // 判断是否等于0
-                    int isAmount = refundAmount.compareTo(new BigDecimal(0));
-                    if(isAmount == -1) {
+                    //int isAmount = refundAmount.compareTo(new BigDecimal(0));
+                    //if(isAmount == -1) {
 //						//更新交易流水状态
                         return this.refundSuccess(JSONObject.toJSONString(content),bodyData,refundFee, newGmtRefundPay,payFlowLogDo,studentOrderEntity);
-                    }
+                    //}
                 }
             }else{
                 throw new BizException("退款异常");
@@ -845,7 +859,8 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
      * @param gmt_refund_pay 第三方退款时间
      * @throws Exception
      */
-    private ResObject refundSuccess(String submitParams,String returnParam,BigDecimal refundFee,LocalDateTime gmt_refund_pay,PayFlowLogEntity payFlowLogDo,StudentOrderEntity studentOrderDo) throws BizException{
+    @Transactional
+    ResObject refundSuccess(String submitParams,String returnParam,BigDecimal refundFee,LocalDateTime gmt_refund_pay,PayFlowLogEntity payFlowLogDo,StudentOrderEntity studentOrderDo) throws BizException{
         //更新交易流水状态
         payFlowLogDo.setThirdReturnTime(gmt_refund_pay); //第三方处理时间
         //状态（退款处理中）
@@ -870,6 +885,9 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
         QueryWrapper accountFlowQueryWrapper = new QueryWrapper();
         // 订单号
         accountFlowQueryWrapper.eq("order_no",studentOrderDo.getOrderNo());
+        // 退款流水
+        accountFlowQueryWrapper.eq("flow_type",StudyEnrollEnum.TRADE_FLOW_REFUND.getCode());
+        accountFlowQueryWrapper.eq("pay_type",studentOrderDo.getPayType());
         // 生成账务流水-退款流水
         AccountFlowEntity accountFlowDo = accountFlowService.getOne(accountFlowQueryWrapper);
         //更新账务流水状态
@@ -885,7 +903,8 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
      * 微信退款方法
      * @throws Exception
      */
-    private ResObject weChatRefund(String payType,String outRequestNo,StudentOrderEntity studentOrderDo,PayFlowLogEntity payFlowLogDo) throws BizException{
+    @Transactional
+     ResObject weChatRefund(String payType,String outRequestNo,StudentOrderEntity studentOrderDo,PayFlowLogEntity payFlowLogDo) throws Exception {
 
         Map<String,String> signMap = new LinkedHashMap<String,String>();
         String nonceStr = RandomUtil.getSecureRandom().getAlgorithm();
@@ -909,8 +928,8 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
         signMap.put("out_trade_no", payFlowLogDo.getId());
         //商户退款单号
         signMap.put("out_refund_no", outRequestNo);
-        BigDecimal payAmount = ArithUtil.mulDown(studentOrderDo.getPayableAmount(),new BigDecimal(100),2);
-        BigDecimal refundAmount = ArithUtil.mulDown(studentOrderDo.getPayableAmount(),new BigDecimal(100),2);
+        BigDecimal payAmount = ArithUtil.mulDown(studentOrderDo.getPayableAmount(),new BigDecimal(100),0);
+        BigDecimal refundAmount = ArithUtil.mulDown(studentOrderDo.getPayableAmount(),new BigDecimal(100),0);
         //订单金额（为订单表的  应付金额） 单位:分
         signMap.put("total_fee", payAmount.toPlainString());
         //退款金额（为订单表的应付金额）
@@ -928,7 +947,6 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
                 "<sign>"+sign+"</sign>" +
                 "</xml>";
         FileInputStream fis=null;
-        try {
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
             //服务器证书地址
@@ -941,7 +959,6 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
             SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1" }, null,
             SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
             CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
-            try {
                 HttpPost httpost = new HttpPost(weChatRefuneUrl); // 设置响应头信息
                 httpost.addHeader("Connection", "keep-alive");
                 httpost.addHeader("Accept", "*/*");
@@ -952,7 +969,6 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
                 httpost.addHeader("User-Agent","Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0) ");
                 httpost.setEntity(new StringEntity(sendXml, "UTF-8"));
                 CloseableHttpResponse response = httpclient.execute(httpost);
-                try {
                     String jsonStr = EntityUtils.toString(response.getEntity(), "UTF-8");
                     JSONObject json= XmlUtil.xml2JSONStr(jsonStr);
                     //封装返回前端的数据
@@ -974,38 +990,10 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
                     }else{
                         throw new BizException("微信退款方法调用异常："+xml.getString("return_msg"));
                     }
-                } finally {
-                    response.close();
-                }
-            } finally {
-                httpclient.close();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if(fis!=null) {
-                try {
                     fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-       return R.success();
+                    httpclient.close();
+                    response.close();
+                    return R.failure();
     }
 
 

@@ -156,6 +156,8 @@ public class ArithUtil {
         System.out.println(round(b2.doubleValue(),2));
         System.out.println(b1.compareTo(b2) == 0);
         System.out.println(b2.setScale( 0, BigDecimal.ROUND_UP ));
+
+        System.out.println(ArithUtil.mulDown(new BigDecimal(0.01),new BigDecimal(100),0));;
         //System.out.println(changeF2Y("0.01"));
     }
 }

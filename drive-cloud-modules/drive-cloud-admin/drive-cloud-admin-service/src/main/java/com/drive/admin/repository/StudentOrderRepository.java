@@ -35,6 +35,6 @@ public interface StudentOrderRepository extends BaseRepository<StudentOrderPageQ
      * @param studentOrderEditParam
      * @return
      */
-    ResObject orderRefund(StudentOrderEditParam studentOrderEditParam) throws AlipayApiException;
+    ResObject orderRefund(StudentOrderEditParam studentOrderEditParam) throws Exception;
 }
 

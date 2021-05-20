@@ -45,6 +45,7 @@ public enum StudyEnrollEnum {
 
     AFD_SYSTEM_COUPON_PAY("20","优惠券支出",""),
     TRADE_FLOW_STATUS_PAY("1","支付流水 ",""),
+    TRADE_FLOW_REFUND("1","退款流水 ",""),
     /******-----------------------订单相关-----------------------------------*/
     // 待支付
     STAT_PAY("1","待支付",""),

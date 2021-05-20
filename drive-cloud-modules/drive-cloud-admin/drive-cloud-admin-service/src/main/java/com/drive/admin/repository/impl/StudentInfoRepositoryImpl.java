@@ -62,7 +62,6 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
     @Autowired
     private ServiceReturnVisitHistoryService serviceReturnVisitHistoryService;
 
-    private static Jedis jedis = RedisDS.create().getJedis();
 
     @Transactional
     @Override
