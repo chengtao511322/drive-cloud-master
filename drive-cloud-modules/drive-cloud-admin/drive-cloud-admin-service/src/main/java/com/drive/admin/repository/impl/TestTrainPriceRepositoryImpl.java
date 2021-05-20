@@ -211,11 +211,18 @@ public class  TestTrainPriceRepositoryImpl extends BaseController<TestTrainPrice
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
 
-        // 幂等性查询
+        // 幂等性查询,不能有同样的单价数据
         QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.setEntity(updateParam);
+        //queryWrapper.setEntity(updateParam);
+
         // 驾照类型
-        queryWrapper.last("limit 1");
+        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getDriveType()),"drive_type",updateParam.getDriveType());
+        // 科目类型
+        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getSubjectType()),"subject_type",updateParam.getSubjectType());
+        // 价格类型
+        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getPriceType()),"price_type",updateParam.getPriceType());
+        queryWrapper.eq(StrUtil.isNotEmpty(updateParam.getOperatorId()),"operator_id",updateParam.getOperatorId());
+        /*queryWrapper.last("limit 1");*/
         int isTestTrainPriceCount = testTrainPriceService.count(queryWrapper);
         if (isTestTrainPriceCount  > 0){
             return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());

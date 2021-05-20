@@ -240,4 +240,12 @@ public class StudentTrainCarApplyPageQueryParam extends BasePageQueryParam {
 	// 模糊查询字段
 	//private String vagueNameSearch
 
+	//模糊查询字段教练姓名
+	@ApiModelProperty(value = "教练姓名模糊查询字段")
+	private String vagueCoachNameSearch;
+
+	//模糊查询字段学员姓名
+	@ApiModelProperty(value = "学员姓名模糊查询字段")
+	private String vagueStudentNameSearch;
+
 }

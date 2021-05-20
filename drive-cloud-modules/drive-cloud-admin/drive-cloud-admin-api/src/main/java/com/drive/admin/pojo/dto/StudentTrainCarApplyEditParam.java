@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,37 +45,36 @@ public class StudentTrainCarApplyEditParam {
     private String driveType;
 
     // 科目类型
-    @NotBlank(message = "科目类型不能为空")
     @ApiModelProperty(value = "科目类型")
     private String subjectType;
 
     // 单价
-    @NotBlank(message = "单价不能为空")
+    @NotNull(message = "单价不能为空")
     @ApiModelProperty(value = "单价")
     private BigDecimal price;
 
     // 总价格
-    @NotBlank(message = "总价格不能为空")
+    @NotNull(message = "总价格不能为空")
     @ApiModelProperty(value = "总价格")
     private BigDecimal sumPrice;
 
     // 平台服务费用百分比/H
-    @NotBlank(message = "平台服务费用百分比/H不能为空")
+    @NotNull(message = "平台服务费用百分比/H不能为空")
     @ApiModelProperty(value = "平台服务费用百分比/H")
     private BigDecimal serviceChargePercent;
 
     // 教练课时费用百分比/H2
-    @NotBlank(message = "教练课时费用百分比/H2不能为空")
+    @NotNull(message = "教练课时费用百分比/H2不能为空")
     @ApiModelProperty(value = "教练课时费用百分比/H2")
     private BigDecimal coachChargePercent;
 
     // 平台服务费用
-    @NotBlank(message = "平台服务费用不能为空")
+    @NotNull(message = "平台服务费用不能为空")
     @ApiModelProperty(value = "平台服务费用")
     private BigDecimal serviceCharge;
 
     // 教练课时费用
-    @NotBlank(message = "教练课时费用不能为空")
+    @NotNull(message = "教练课时费用不能为空")
     @ApiModelProperty(value = "教练课时费用")
     private BigDecimal coachCharge;
 
@@ -89,27 +89,27 @@ public class StudentTrainCarApplyEditParam {
     private String coachingGridId;
 
     // 接你的时间
-    @NotBlank(message = "接你的时间不能为空")
+    @NotNull(message = "接你的时间不能为空")
     @ApiModelProperty(value = "接你的时间")
     private LocalDateTime takeTime;
 
     // 上车时间
-    @NotBlank(message = "上车时间不能为空")
+    @NotNull(message = "上车时间不能为空")
     @ApiModelProperty(value = "上车时间")
     private LocalDateTime aboardTime;
 
     // 课程日期
-    @NotBlank(message = "课程日期不能为空")
+    @NotNull(message = "课程日期不能为空")
     @ApiModelProperty(value = "课程日期")
     private LocalDate classDate;
 
     // 开始时间
-    @NotBlank(message = "开始时间不能为空")
+    @NotNull(message = "开始时间不能为空")
     @ApiModelProperty(value = "开始时间")
     private LocalDateTime startTime;
 
     // 结束时间
-    @NotBlank(message = "结束时间不能为空")
+    @NotNull(message = "结束时间不能为空")
     @ApiModelProperty(value = "结束时间")
     private LocalDateTime endTime;
 
@@ -124,12 +124,12 @@ public class StudentTrainCarApplyEditParam {
     private String applyStatus;
 
     // 创建时间
-    @NotBlank(message = "创建时间不能为空")
+    @NotNull(message = "创建时间不能为空")
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 
     // 更新时间
-    @NotBlank(message = "更新时间不能为空")
+    @NotNull(message = "更新时间不能为空")
     @ApiModelProperty(value = "更新时间")
     private LocalDateTime updateTime;
 
@@ -144,12 +144,12 @@ public class StudentTrainCarApplyEditParam {
     private String studentRecommendUserId;
 
     // 学员推荐用户提成百分比
-    @NotBlank(message = "学员推荐用户提成百分比不能为空")
+    @NotNull(message = "学员推荐用户提成百分比不能为空")
     @ApiModelProperty(value = "学员推荐用户提成百分比")
     private BigDecimal studentRecommendUserChargePercent;
 
     // 学员推荐用户提成费用
-    @NotBlank(message = "学员推荐用户提成费用不能为空")
+    @NotNull(message = "学员推荐用户提成费用不能为空")
     @ApiModelProperty(value = "学员推荐用户提成费用")
     private BigDecimal studentRecommendUserCharge;
 
@@ -169,17 +169,17 @@ public class StudentTrainCarApplyEditParam {
     private String coachRecommendUserId;
 
     // 教练推荐用户提成百分比
-    @NotBlank(message = "教练推荐用户提成百分比不能为空")
+    @NotNull(message = "教练推荐用户提成百分比不能为空")
     @ApiModelProperty(value = "教练推荐用户提成百分比")
     private BigDecimal coachRecommendUserChargePercent;
 
     // 教练推荐用户提成费用
-    @NotBlank(message = "教练推荐用户提成费用不能为空")
+    @NotNull(message = "教练推荐用户提成费用不能为空")
     @ApiModelProperty(value = "教练推荐用户提成费用")
     private BigDecimal coachRecommendUserCharge;
 
     // 取消时间
-    @NotBlank(message = "取消时间不能为空")
+    @NotNull(message = "取消时间不能为空")
     @ApiModelProperty(value = "取消时间")
     private LocalDateTime cancelTiem;
 
@@ -189,17 +189,17 @@ public class StudentTrainCarApplyEditParam {
     private String cancelReason;
 
     // 取消扣款百分比
-    @NotBlank(message = "取消扣款百分比不能为空")
+    @NotNull(message = "取消扣款百分比不能为空")
     @ApiModelProperty(value = "取消扣款百分比")
     private BigDecimal cancelWithholdPercent;
 
     // 取消扣款金额
-    @NotBlank(message = "取消扣款金额不能为空")
+    @NotNull(message = "取消扣款金额不能为空")
     @ApiModelProperty(value = "取消扣款金额")
     private BigDecimal cancelWithholdMoney;
 
     // 取消退款金额
-    @NotBlank(message = "取消退款金额不能为空")
+    @NotNull(message = "取消退款金额不能为空")
     @ApiModelProperty(value = "取消退款金额")
     private BigDecimal cancelRefundMoney;
 
@@ -214,7 +214,7 @@ public class StudentTrainCarApplyEditParam {
     private String isDelete;
 
     // 实际开始时间
-    @NotBlank(message = "实际开始时间不能为空")
+    @NotNull(message = "实际开始时间不能为空")
     @ApiModelProperty(value = "实际开始时间")
     private LocalDateTime actualStartTime;
 
@@ -229,7 +229,7 @@ public class StudentTrainCarApplyEditParam {
     private String classAppraise;
 
     // 公车提成费用
-    @NotBlank(message = "公车提成费用不能为空")
+    @NotNull(message = "公车提成费用不能为空")
     @ApiModelProperty(value = "公车提成费用")
     private BigDecimal publicCarPrice;
 

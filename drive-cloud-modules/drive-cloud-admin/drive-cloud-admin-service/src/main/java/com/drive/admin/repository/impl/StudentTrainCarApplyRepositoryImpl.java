@@ -8,10 +8,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.pojo.dto.StudentTrainCarApplyEditParam;
 import com.drive.admin.pojo.dto.StudentTrainCarApplyInstallParam;
 import com.drive.admin.pojo.dto.StudentTrainCarApplyPageQueryParam;
+import com.drive.admin.pojo.entity.CoachInfoEntity;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.entity.StudentTrainCarApplyEntity;
 import com.drive.admin.pojo.vo.StudentTrainCarApplyVo;
 import com.drive.admin.repository.StudentTrainCarApplyRepository;
+import com.drive.admin.service.CoachInfoService;
 import com.drive.admin.service.CoachTeachTimeService;
 import com.drive.admin.service.StudentInfoService;
 import com.drive.admin.service.StudentTrainCarApplyService;
@@ -21,6 +23,7 @@ import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.utils.BeanConvertUtils;
+import com.drive.common.core.utils.StringUtils;
 import com.drive.common.data.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,6 +59,9 @@ public class  StudentTrainCarApplyRepositoryImpl extends BaseController<StudentT
     @Autowired
     private CoachTeachTimeService coachTeachTimeService;
 
+    @Autowired
+    private CoachInfoService coachInfoService;
+
     /*
      *
      *功能描述
@@ -73,6 +80,38 @@ public class  StudentTrainCarApplyRepositoryImpl extends BaseController<StudentT
 
         //  模糊查询
         //queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        // 模糊查询学生姓名
+        List<StudentInfoEntity> studentInfoList = new ArrayList<>();
+        if(StrUtil.isNotEmpty(param.getVagueStudentNameSearch())){
+            QueryWrapper<StudentInfoEntity> studentQueryWrapper = new QueryWrapper<>();
+            studentQueryWrapper.like(true,"real_name",param.getVagueStudentNameSearch());
+            studentInfoList = studentInfoService.list(studentQueryWrapper);
+            if(studentInfoList.size() <=0){
+                return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentInfoList);
+            }
+            String[] studentIdStrArr = new String[studentInfoList.size()];
+            for(int i=0;i<studentInfoList.size();i++){
+                studentIdStrArr[i] = studentInfoList.get(i).getId();
+            }
+            queryWrapper.in("student_id",studentIdStrArr);
+        }
+
+        List<CoachInfoEntity> coachInfoList = new ArrayList<>();
+        //模糊查询教练姓名
+        if(StrUtil.isNotEmpty(param.getVagueCoachNameSearch())){
+            QueryWrapper<CoachInfoEntity> coachQueryWrapper = new QueryWrapper<>();
+            coachQueryWrapper.like(true,"real_name",param.getVagueCoachNameSearch());
+            coachInfoList = coachInfoService.list(coachQueryWrapper);
+            if(coachInfoList.size()<=0){
+                return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),coachInfoList);
+            }
+            String[] coachInfoIdStrArr = new String[coachInfoList.size()];
+            for(int i=0;i<coachInfoList.size();i++){
+                coachInfoIdStrArr[i] = coachInfoList.get(i).getId();
+            }
+            queryWrapper.in("coach_id",coachInfoIdStrArr);
+        }
+
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());

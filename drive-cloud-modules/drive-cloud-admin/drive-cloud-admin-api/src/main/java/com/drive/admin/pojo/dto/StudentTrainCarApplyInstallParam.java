@@ -44,7 +44,6 @@ public class StudentTrainCarApplyInstallParam {
     private String driveType;
 
     // 科目类型
-    @NotBlank(message = "科目类型不能为空")
     @ApiModelProperty(value = "科目类型")
     private String subjectType;
 
