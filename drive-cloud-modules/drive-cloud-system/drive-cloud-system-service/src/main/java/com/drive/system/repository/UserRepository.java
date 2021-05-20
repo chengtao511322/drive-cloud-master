@@ -15,4 +15,7 @@ public interface UserRepository extends BaseRepository<UserPageQueryParam, UserE
      * @return
      */
     ResObject init();
+
+
+    ResObject pageUserList(UserPageQueryParam param);
 }

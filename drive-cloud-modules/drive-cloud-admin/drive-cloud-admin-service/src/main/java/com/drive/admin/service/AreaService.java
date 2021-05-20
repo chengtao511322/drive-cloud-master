@@ -32,5 +32,12 @@ public interface AreaService extends IService<AreaEntity>{
      * @return
      */
     Boolean saveArea(AreaEntity areaEntity);
+
+    /**
+     * 修改
+     * @param areaEntity
+     * @return
+     */
+    Boolean updateByCode(AreaEntity areaEntity);
 }
 

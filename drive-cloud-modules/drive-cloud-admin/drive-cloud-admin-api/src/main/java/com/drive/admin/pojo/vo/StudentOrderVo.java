@@ -1,6 +1,7 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.drive.admin.util.AdminCacheUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -157,13 +158,16 @@ public class StudentOrderVo implements java.io.Serializable {
 	// 总课时
 	private int totalHour;
 
-	private String CoachName;
+	private String coachName;
+
+	// 商户号
+	private String mchId;
 
 	private StudentStudyEnrollVo studentStudyEnrollVo;
 	private StudentTrainCarApplyVo studentTrainCarApplyVo;
 
 	public void setProductId(String productId) {
 		this.productId = productId;
-
+		this.className = AdminCacheUtil.getClassName(productId);
 	}
 }

@@ -121,4 +121,7 @@ public class StudentOrderPageQueryParam extends BasePageQueryParam {
 	// 支付时间查询
 	private String payTimeSearch;
 
+	// 商户号
+	private String mchId;
+
 }

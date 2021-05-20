@@ -1,5 +1,6 @@
 package com.drive.system.repository.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -53,9 +54,23 @@ public class UserRepositoryImpl extends BaseController implements UserRepository
     public ResObject pageList(UserPageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
         Page<UserEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<UserEntity> pageList = userService.getUserList(page, this.getQueryWrapper(userMapStruct, param));
+        QueryWrapper queryWrapper = this.getQueryWrapper(userMapStruct, param);
+        IPage<UserEntity> pageList = userService.getUserList(page, queryWrapper);
         //Page<UserVo> userVoPage = userMapStruct.toVoList(pageList);
        // log.info(this.getClass() + "pageList-方法请求结果{}",userVoPage);
+        return R.success(pageList);
+    }
+
+
+    @Override
+    public ResObject pageUserList(UserPageQueryParam param) {
+        log.info(this.getClass() + "pageList-方法请求参数{}",param);
+        Page<UserEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
+        QueryWrapper queryWrapper = this.getQueryWrapper(userMapStruct, param);
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueUserNameSearch()),"user_name",param.getVagueUserNameSearch());
+        IPage<UserEntity> pageList = userService.page(page, queryWrapper);
+        //Page<UserVo> userVoPage = userMapStruct.toVoList(pageList);
+        // log.info(this.getClass() + "pageList-方法请求结果{}",userVoPage);
         return R.success(pageList);
     }
 
@@ -81,7 +96,12 @@ public class UserRepositoryImpl extends BaseController implements UserRepository
 
     @Override
     public ResObject findList(UserPageQueryParam param) {
-        return null;
+        log.info(this.getClass() + "findList-方法请求参数{}",param);
+        QueryWrapper queryWrapper = this.getQueryWrapper(userMapStruct, param);
+        List<UserEntity> listAll = userService.list(queryWrapper);
+        //Page<UserVo> userVoPage = userMapStruct.toVoList(pageList);
+        // log.info(this.getClass() + "pageList-方法请求结果{}",userVoPage);
+        return R.success(listAll);
     }
 
     @Override

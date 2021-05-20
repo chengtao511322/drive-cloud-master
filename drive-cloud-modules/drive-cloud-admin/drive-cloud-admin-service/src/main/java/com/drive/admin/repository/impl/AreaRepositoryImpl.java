@@ -117,7 +117,11 @@ public class  AreaRepositoryImpl extends BaseController<AreaPageQueryParam, Area
         if (StrUtil.isEmpty(baCode)){
             return R.failure("数据空");
         }
-        AreaEntity area = areaService.getById(baCode);
+        AreaEntity area = areaService.getByBaCode(baCode);
+        if (area ==null){
+            log.error("活动数据对象空");
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg());
+        }
         AreaVo areaVo = BeanConvertUtils.copy(area, AreaVo.class);
         log.info(this.getClass() + "getInfo-方法请求结果{}",areaVo);
         if (areaVo ==null){
@@ -170,7 +174,7 @@ public class  AreaRepositoryImpl extends BaseController<AreaPageQueryParam, Area
             return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         AreaEntity area = BeanConvertUtils.copy(updateParam, AreaEntity.class);
-        Boolean result = areaService.updateById(area);
+        Boolean result = areaService.updateByCode(area);
         log.info(this.getClass() + "update-方法请求结果{}",result);
         // 判断结果
         return result ?R.success(result):R.failure(result);

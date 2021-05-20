@@ -47,13 +47,14 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
         }
         QueryWrapper<AreaEntity> queryWrapper = new QueryWrapper<AreaEntity>();
         queryWrapper.eq("ba_code",baCode);
-        return super.getById(queryWrapper);
+        return super.getOne(queryWrapper);
     }
 
     @Override
     public List<ViewDataVo> findView() {
         return this.getBaseMapper().findView();
     }
+
 
     @Override
     public Boolean delAreaByCode(String code) {
@@ -62,6 +63,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
         return false;
     }
 
+    @CacheEvict(value = "redisCache", key = "'areaItem:area_'+#areaEntity.getBaCode()")
     @Override
     public Boolean saveArea(AreaEntity areaEntity) {
         int result = this.getBaseMapper().saveArea(areaEntity);
@@ -69,8 +71,16 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
         return false;
     }
 
+    @CacheEvict(value = "redisCache", key = "'areaItem:area_'+#areaEntity.getBaCode()")
+    @Override
+    public Boolean updateByCode(AreaEntity areaEntity) {
+        int result = this.getBaseMapper().updateByCode(areaEntity);
+        if (result > 0)return true;
+        return false;
+    }
 
-    @CacheEvict(value = "redisCache", key = "'areaItem:area_'+#entity.getId()")
+
+    @CacheEvict(value = "redisCache", key = "'areaItem:area_'+#entity.getBaCode()")
     @Override
     public boolean save(AreaEntity entity) {
         return super.save(entity);
@@ -82,7 +92,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
         return super.updateById(entity);
     }
 
-    @Cacheable(value = "redisCache", key = "'areaItem:area_'+ #id")
+    //@Cacheable(value = "redisCache", key = "'areaItem:area_'+ #id")
     @Override
     public AreaEntity getById(Serializable id) {
         return super.getById(id);
@@ -114,8 +124,6 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, AreaEntity> impleme
      *     long endTime = System.currentTimeMillis();
      *     System.out.println(endTime - startTime);
      * ————————————————
-     * 版权声明：本文为CSDN博主「xlecho」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
-     * 原文链接：https://blog.csdn.net/xlecho/article/details/103130855
      *
      * Jedis jedis = RedisDS.create().getJedis();
      *         QueryWrapper<AreaEntity> wrapper = new QueryWrapper<AreaEntity>();

@@ -3,6 +3,7 @@ package com.drive.common.data.handler;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResCodeEnum;
 import com.drive.common.core.biz.ResObject;
+import com.drive.common.core.exception.BizException;
 import com.drive.common.core.exception.CustomException;
 import com.drive.common.core.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +33,23 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public ResObject businessException(CustomException e) {
         if (StringUtils.isNull(e.getCode())) {
+            log.info(e.getMessage());
+            return R.failure();
+        }
+        return R.failure(Integer.parseInt(e.getCode()),e.getMessage(),e.getSubCode(),e.getSubMsg());
+    }
+
+    /**
+     * 自定义业务异常
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(BizException.class)
+    public ResObject businessBizException(BizException e) {
+        if (StringUtils.isNull(e.getCode())) {
             return R.failure(e.getMessage());
         }
-        return R.failure(e.getMessage());
+        return R.failure(e.getCode(),e.getMessage(),e.getSubCode(),e.getSubMsg());
     }
 
     /**

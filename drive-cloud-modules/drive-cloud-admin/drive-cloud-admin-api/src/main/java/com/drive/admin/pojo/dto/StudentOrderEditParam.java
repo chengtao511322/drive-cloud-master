@@ -2,6 +2,7 @@ package com.drive.admin.pojo.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -16,6 +17,7 @@ public class StudentOrderEditParam {
 
 
     // 订单号
+    @NotEmpty(message="订单号不能为空")
     private String orderNo;
 
     // 订单类型（1-学车报名；2-考试报名；3-常规训练；4-考试训练）
@@ -107,6 +109,9 @@ public class StudentOrderEditParam {
 
     // 订单类型明细id
     private String classTypeId;
+
+    // 商户号
+    private String mchId;
 
 
 }

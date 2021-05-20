@@ -80,6 +80,8 @@ public class DriveSchoolPageQueryParam extends BasePageQueryParam {
 	private BigDecimal vipEnrollPrice;
 
 	// 模糊查询
-	private String vagueSchoolName;
+	private String vagueSchoolNameSearch;
+	private String vagueContactsNameSearch;
+	private String vagueContactPhoneSearch;
 
 }

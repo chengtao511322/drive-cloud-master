@@ -1,6 +1,7 @@
 package com.drive.basics.controller;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.basics.pojo.dto.AppVersionEditParam;
@@ -12,7 +13,10 @@ import com.drive.basics.service.mapstruct.AppVersionMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
+import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.enums.EventLogEnum;
+import com.drive.common.core.exception.BizException;
+import com.drive.common.core.exception.CustomException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.data.utils.ExcelUtils;
 import com.drive.common.log.annotation.EventLog;
@@ -29,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -70,6 +75,23 @@ public class AppVersionController extends BaseController<AppVersionPageQueryPara
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable Long id) {
 		AppVersionEntity appVersion = appVersionService.getById(id);
+		return R.success(appVersionMapStruct.toVo(appVersion));
+	}
+
+	@ApiOperation("获取app版本控制信息表")
+	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
+	@PreAuthorize("hasPermission('/basics/appVersion',  'basics:appVersion:query')")
+	@GetMapping("/getBiz/{id}")
+	public ResObject getBiz(@PathVariable String id) {
+		if (StrUtil.isEmpty(id)){
+			throw new BizException(500,"请先为学员绑定教练", SubResultCode.NO_BINDING_COACH.subCode(),"请先为学员绑定教练");
+		}
+		// "500","请先为学员绑定教练", SubResultCode.NO_BINDING_COACH.subCode(),"请先为学员绑定教练"
+		AppVersionEntity appVersion = appVersionService.getById(id);
+		Optional.ofNullable(appVersion)
+				.orElseThrow(
+		()->new BizException(500,"请先为学员绑定教练", SubResultCode.NO_BINDING_COACH.subCode(),"请先为学员绑定教练"));
+		// orElseThrow(e->{throw new BizException(500,"请先为学员绑定教练", SubResultCode.NO_BINDING_COACH.subCode(),"请先为学员绑定教练");} )
 		return R.success(appVersionMapStruct.toVo(appVersion));
 	}
 

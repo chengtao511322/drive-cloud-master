@@ -122,5 +122,7 @@ public class StudentOrderEntity extends BaseEntity {
 
 	// 订单类型明细id
 	private String classTypeId;
+	// 商户号
+	private String mchId;
 
 }

@@ -326,6 +326,7 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
 
         // 添加微服务运营商数据
         com.drive.basics.pojo.dto.OperatorEditParam operatorEdit =BeanConvertUtils.copy(operatorEditParam, com.drive.basics.pojo.dto.OperatorEditParam.class);
+        operatorEdit.setId(operator.getId());
         operatorEdit.setOperatorAreaList(BeanConvertUtils.copyList(operatorAreaInstallParams, com.drive.basics.pojo.dto.OperatorAreaInstallParam.class));
         ResObject resObject = remoteOperatorFeignService.saveOperator(operatorEdit);
         log.info("请求结果resObject{}",resObject);

@@ -1,5 +1,8 @@
 package com.drive.admin.pojo.dto;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.drive.common.core.base.BaseDto;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -12,7 +15,7 @@ import java.time.LocalDateTime;
  * @author xiaoguo
  */
 @Data
-public class DriveSchoolEditParam {
+public class DriveSchoolEditParam extends BaseDto {
 
 
     private String id;

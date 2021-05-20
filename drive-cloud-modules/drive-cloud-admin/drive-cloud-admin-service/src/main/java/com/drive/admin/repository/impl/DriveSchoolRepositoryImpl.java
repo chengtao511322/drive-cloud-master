@@ -28,8 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-                                                                                        
+
 /**
  *
  * 平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。 服务类
@@ -64,7 +65,9 @@ public class  DriveSchoolRepositoryImpl extends BaseController<DriveSchoolPageQu
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
         Page<DriveSchoolEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         QueryWrapper queryWrapper = this.getQueryWrapper(driveSchoolMapStruct, param);
-        queryWrapper.like(StringUtils.isNotBlank(param.getVagueSchoolName()),"school_name",param.getVagueSchoolName());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueSchoolNameSearch()),"school_name",param.getVagueSchoolNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueContactPhoneSearch()),"contact_phone",param.getVagueContactPhoneSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueContactsNameSearch()),"contacts",param.getVagueContactsNameSearch());
         // 登录时间
         //queryWrapper.apply(StrUtil.isNotBlank(param.getSearchLoginDate()),
                 //"date_format (login_time,'%Y-%m-%d') = date_format('" + param.getSearchLoginDate() + "','%Y-%m-%d')");
@@ -86,7 +89,9 @@ public class  DriveSchoolRepositoryImpl extends BaseController<DriveSchoolPageQu
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
+        //Optional.ofNullable(driveSchoolService.getById(item.getSchoolId())).ifPresent(u ->{item.setSchoolName(u.getSchoolName());});
         IPage<DriveSchoolEntity> pageList = driveSchoolService.page(page, queryWrapper);
+        //Optional.ofNullable(pageList).orElse(page);
         if (pageList.getRecords().size() <= 0){
             log.error("数据空");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
@@ -108,12 +113,6 @@ public class  DriveSchoolRepositoryImpl extends BaseController<DriveSchoolPageQu
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
         }
         List<DriveSchoolVo> driveSchoolVoList = driveSchoolMapStruct.toVoList(driveSchoolList);
-        driveSchoolVoList.stream().forEach((item) ->{
-            // 省市区
-            if (StrUtil.isNotEmpty(item.getProvinceId()))item.setProvinceName(areaService.getByBaCode(item.getProvinceId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getCityId()))item.setCityName(areaService.getByBaCode(item.getCityId()).getBaName());
-            if (StrUtil.isNotEmpty(item.getAreaId()))item.setAreaName(areaService.getByBaCode(item.getAreaId()).getBaName());
-        });
         log.info(this.getClass() + "findList-方法请求结果{}",driveSchoolVoList);
         return R.success(driveSchoolVoList);
     }
@@ -159,8 +158,10 @@ public class  DriveSchoolRepositoryImpl extends BaseController<DriveSchoolPageQu
         queryWrapper.eq("province_id",installParam.getProvinceId());
         queryWrapper.eq("city_id",installParam.getCityId());
         queryWrapper.eq("area_id",installParam.getAreaId());
+        queryWrapper.eq("school_name",installParam.getSchoolName());
         int isDriveSchool = driveSchoolService.count(queryWrapper);
         if (isDriveSchool > 0){
+            log.info("已经存在数据不允许重复提交");
             return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
         }
         DriveSchoolEntity driveSchool = BeanConvertUtils.copy(installParam, DriveSchoolEntity.class);

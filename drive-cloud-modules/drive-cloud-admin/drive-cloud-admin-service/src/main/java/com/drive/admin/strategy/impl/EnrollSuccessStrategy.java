@@ -3,6 +3,7 @@ package com.drive.admin.strategy.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.drive.admin.enums.EnrollStatusEnum;
 import com.drive.admin.enums.OperatorEnum;
 import com.drive.admin.enums.StudyEnrollEnum;
 import com.drive.admin.pojo.dto.CompleteStudyEnrollParam;
@@ -109,11 +110,15 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
         if (studentOrder == null)throw new BizException(500,SubResultCode.STUDENT_NO_ENROLL.subCode(),SubResultCode.STUDENT_NO_ENROLL.subMsg());
         // 判断自主
         Boolean isDecide = studentStudyEnroll.getEnrollType() == 1;
+        // 订单状态待评价
+        studentOrder.setStatus(StudyEnrollEnum.STAT_EVALUATE.getCode());
+        Boolean orderResult = studentOrderService.updateById(studentOrder);
+        log.info("订单状态更新结果{}",orderResult);
         //创建包过模式-报名完成账务流水
         if (!isDecide){
             // 验证 是否已绑定教练
             QueryWrapper coachStudentQueryWrapper = new QueryWrapper();
-            coachStudentQueryWrapper.eq("class_id",studentOrder.getProductId());
+            //coachStudentQueryWrapper.eq("class_id",studentOrder.getProductId());
             coachStudentQueryWrapper.eq("student_id",studentOrder.getStudentId());
             coachStudentQueryWrapper.eq("order_no",studentOrder.getOrderNo());
             coachStudentQueryWrapper.eq("bind_status",StudyEnrollEnum.BIND_STATUS_ALREADY_BIND.getCode());
@@ -159,7 +164,7 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
         // 查询教练学员关联表，获取运营商提成金额
         QueryWrapper coachStudentQueryWrapper = new QueryWrapper();
         // 班型ID
-        coachStudentQueryWrapper.eq("class_id",studentOrder.getProductId());
+        //coachStudentQueryWrapper.eq("class_id",studentOrder.getProductId());
         // 学员ID
         coachStudentQueryWrapper.eq("student_id",studentOrder.getStudentId());
         // 订单号
@@ -167,7 +172,7 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
         // 绑定状态
         coachStudentQueryWrapper.eq("bind_status",StudyEnrollEnum.BIND_STATUS_ALREADY_BIND.getCode());
         OneFeeSystemCoachStudentEntity oneFeeSystemCoachStudent = oneFeeSystemCoachStudentService.getOne(coachStudentQueryWrapper);
-        if(oneFeeSystemCoachStudent == null)throw  new BizException(500,"该学员未绑定教练，无法计算提成",SubResultCode.DATA_NULL.subCode(),"该学员未绑定教练，无法计算提成");
+        if(oneFeeSystemCoachStudent == null)throw  new BizException(500,"请先为学员绑定教练",SubResultCode.NO_BINDING_COACH.subCode(),"该学员未绑定教练，无法计算提成");
 
         //计算最底层运营商收益
         AccountFlowDetailEntity accountFlowDetail = new AccountFlowDetailEntity();
@@ -498,7 +503,9 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
             accountFlowDetail.setIncomeUserId(studentStudyEnroll.getDriveSchoolId()); //收益人id(驾校)
             accountFlowDetail.setTradeSubject(FlowTypeConstant.ENROLL_INCOME.getCode());  //报名收入
             accountFlowDetail.setTradeSubjectItems(FlowTypeConstant.ENROLL_INCOME.getItemsMap("ENROLL_SHARE")); // 报名提成
+            accountFlowDetail.setId(IdWorker.getIdStr());
             accountFlowDetailService.save(accountFlowDetail);
+
 
             //最底层运营商支出
             accountFlowDetail.setItemType(OperatorEnum.PLATFORM_WALLET_OPERATOR_PAY.getCode());
@@ -508,6 +515,7 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
             accountFlowDetail.setIncomeUserId(downOperator.getId()); //收益人id(平台支付宝钱包用户id  )
             accountFlowDetail.setTradeSubject(FlowTypeConstant.ENROLL_PAY.getCode());  //报名支出
             accountFlowDetail.setTradeSubjectItems(FlowTypeConstant.ENROLL_PAY.getItemsMap("SCHOOL_PAY")); // 驾校提成支出
+            accountFlowDetail.setId(IdWorker.getIdStr());
             accountFlowDetailService.save(accountFlowDetail);
         }
 
@@ -519,6 +527,7 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
         accountFlowDetail.setIncomeUserId(downOperator.getId()); //收益人id(平台支付宝钱包用户id  )
         accountFlowDetail.setTradeSubject(FlowTypeConstant.ENROLL_INCOME.getCode());  //报名收入
         accountFlowDetail.setTradeSubjectItems(FlowTypeConstant.ENROLL_INCOME.getItemsMap("ENROLL_SHARE")); // 报名提成
+        accountFlowDetail.setId(IdWorker.getIdStr());
         accountFlowDetailService.save(accountFlowDetail);
         //------------------------------------计算当前驾校收益 end--------------------
 

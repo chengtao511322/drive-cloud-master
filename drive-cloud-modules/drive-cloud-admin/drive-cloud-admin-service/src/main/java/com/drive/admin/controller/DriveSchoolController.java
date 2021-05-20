@@ -107,7 +107,7 @@ public class DriveSchoolController extends BaseController<DriveSchoolPageQueryPa
 	//@PreAuthorize("hasPermission('/admin/driveSchool',  'admin:driveSchool:delete')")
 	@EventLog(message = "删除平台为合作驾校开通账号后，将其驾校信息统一维护到该表中。", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(driveSchoolService.removeByIds(Arrays.asList(ids)));
 	}
 
