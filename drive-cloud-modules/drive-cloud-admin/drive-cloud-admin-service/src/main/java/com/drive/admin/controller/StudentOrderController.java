@@ -167,4 +167,14 @@ public class StudentOrderController extends BaseController<StudentOrderPageQuery
 		return studentOrderRepository.cancelOrder(studentOrderEditParam);
 	}
 
+
+	@ApiOperation("订单退款")
+	//@PreAuthorize("hasPermission('/admin/studentOrder',  'admin:studentOrder:cancelOrder')")
+	@SneakyThrows
+	@EventLog(message = "订单退款", businessType = EventLogEnum.UPDATE)
+	@PostMapping("/orderRefund")
+	public ResObject orderRefund(@RequestBody StudentOrderEditParam studentOrderEditParam) {
+		return studentOrderRepository.orderRefund(studentOrderEditParam);
+	}
+
 }

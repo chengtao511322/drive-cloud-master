@@ -1,7 +1,10 @@
 package com.drive.admin.repository.impl;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -30,8 +33,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-                                                
+
 /**
  *
  * 合作驾校用户 服务类
@@ -67,26 +71,27 @@ public class  SchoolUserRepositoryImpl extends BaseController<SchoolUserPageQuer
         Page<SchoolUserEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         // 条件查询
         QueryWrapper queryWrapper = this.getQueryWrapper(schoolUserMapStruct, param);
-
         //  模糊查询
-        //queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"phone",param.getVaguePhoneSearch());
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
         IPage<SchoolUserEntity> pageList = schoolUserService.page(page, queryWrapper);
+        Console.log("请求数据库数据{}",pageList);
         if (pageList.getRecords().size() <= 0){
             log.error("数据空");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<SchoolUserVo> schoolUserVoPage = schoolUserMapStruct.toVoList(pageList);
         schoolUserVoPage.getRecords().stream().forEach((item) ->{
-            if (StrUtil.isNotEmpty(item.getSchoolId())){
+            Optional.ofNullable(driveSchoolService.getById(item.getSchoolId())).ifPresent(u ->{item.setSchoolName(u.getSchoolName());});
+            /*if (StrUtil.isNotEmpty(item.getSchoolId())){
                 DriveSchoolEntity driveSchool = driveSchoolService.getById(item.getSchoolId());
                 if (driveSchool != null){
                     item.setSchoolName(driveSchool.getSchoolName());
                 }
-            }
+            }*/
         });
         log.info(this.getClass() + "pageList-方法请求结果{}",schoolUserVoPage);
         return R.success(schoolUserVoPage);
@@ -162,6 +167,7 @@ public class  SchoolUserRepositoryImpl extends BaseController<SchoolUserPageQuer
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),schoolUser);
         }
         SchoolUserVo schoolUserVo = BeanConvertUtils.copy(schoolUser, SchoolUserVo.class);
+        Optional.ofNullable(driveSchoolService.getById(schoolUserVo.getSchoolId())).ifPresent(d ->{schoolUserVo.setSchoolName(d.getSchoolName());});
         log.info(this.getClass() + "getById-方法请求结果{}",schoolUserVo);
         return R.success(schoolUserVo);
     }
@@ -182,11 +188,20 @@ public class  SchoolUserRepositoryImpl extends BaseController<SchoolUserPageQuer
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+        // 幂等性
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("phone",installParam.getPhone());
+        int isSchoolUser = schoolUserService.count(queryWrapper);
+        if (isSchoolUser > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
         SchoolUserEntity schoolUser = BeanConvertUtils.copy(installParam, SchoolUserEntity.class);
+        // 加密
+        schoolUser.setPassword(SecureUtil.md5(installParam.getPassword()));
         Boolean result = schoolUserService.save(schoolUser);
         log.info(this.getClass() + "save-方法请求结果{}",result);
         // 判断结果
-        return result ?R.success(SubResultCode.DATA_INSTALL_SUCCESS.subCode(),SubResultCode.DATA_INSTALL_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+        return result ?R.success():R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
     }
 
     /*
@@ -205,11 +220,18 @@ public class  SchoolUserRepositoryImpl extends BaseController<SchoolUserPageQuer
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
+        // 幂等性
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.setEntity(updateParam);
+        int isSchoolUser = schoolUserService.count(queryWrapper);
+        if (isSchoolUser > 0){
+            return R.success(SubResultCode.DATA_IDEMPOTENT.subCode(),SubResultCode.DATA_IDEMPOTENT.subMsg());
+        }
         SchoolUserEntity schoolUser = BeanConvertUtils.copy(updateParam, SchoolUserEntity.class);
         Boolean result = schoolUserService.updateById(schoolUser);
         log.info(this.getClass() + "update-方法请求结果{}",result);
         // 判断结果
-        return result ?R.success(SubResultCode.DATA_UPDATE_SUCCESS.subCode(),SubResultCode.DATA_UPDATE_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
+        return result ?R.success():R.failure(SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
     }
 
     /*
@@ -245,7 +267,7 @@ public class  SchoolUserRepositoryImpl extends BaseController<SchoolUserPageQuer
         Boolean result = schoolUserService.removeById(id);
         log.info(this.getClass() + "deleteById-方法请求结果{}",result);
         // 判断结果
-        return result ?R.success(SubResultCode.DATA_DELETE_SUCCESS.subCode(),SubResultCode.DATA_DELETE_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_DELETE_FAILL.subCode(),SubResultCode.DATA_DELETE_FAILL.subMsg());
+        return result ?R.success():R.failure(SubResultCode.DATA_DELETE_FAILL.subCode(),SubResultCode.DATA_DELETE_FAILL.subMsg());
     }
 
     /**
@@ -258,7 +280,7 @@ public class  SchoolUserRepositoryImpl extends BaseController<SchoolUserPageQuer
         List<SchoolUserEntity> list = schoolUserService.list(queryWrapper);
         List<SchoolUserVo>schoolUserList = schoolUserMapStruct.toVoList(list);
         ExcelUtils.exportExcel(schoolUserList, SchoolUserVo.class, "", new ExportParams(), response);
-        return R.success(SubResultCode.EXPORT_DATA_SUCCESS.subCode(),SubResultCode.EXPORT_DATA_SUCCESS.subMsg());
+        return R.success();
     }
 
     /**
@@ -278,8 +300,7 @@ public class  SchoolUserRepositoryImpl extends BaseController<SchoolUserPageQuer
         Boolean result = schoolUserService.updateById(SchoolUserEntity);
         log.info(this.getClass() +"changeStatus方法请求对象参数{}，请求结果{}",SchoolUserEntity,result);
         // 判断结果
-        return result ?R.success(SubResultCode.DATA_STATUS_SUCCESS.subCode(),SubResultCode.DATA_STATUS_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_STATUS_FAILL.subCode(),SubResultCode.DATA_STATUS_FAILL.subMsg());
+        return result ?R.success():R.failure(SubResultCode.DATA_STATUS_FAILL.subCode(),SubResultCode.DATA_STATUS_FAILL.subMsg());
     }
-
 }
 

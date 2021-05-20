@@ -28,5 +28,7 @@ public interface AreaMapper extends BaseMapper<AreaEntity> {
      * @return
      */
     int saveArea(AreaEntity areaEntity);
+
+    int updateByCode(AreaEntity areaEntity);
 }
 

@@ -109,7 +109,7 @@
         <where>
             u.del_status = '0'
             <if test="ew.emptyOfWhere == false">
-                and ${ew.sqlSegment}
+                 ${ew.sqlSegment}
             </if>
         </where>
     </select>

@@ -22,7 +22,7 @@ public class OperatorEntity extends BaseEntity implements Serializable {
 
 
 	// 主键
-	@TableId(type= IdType.ID_WORKER)
+	//@TableId(type= IdType.ID_WORKER)
 	private String id;
 
 	// 运营商名称

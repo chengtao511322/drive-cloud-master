@@ -76,4 +76,7 @@ public class UserPageQueryParam extends BasePageQueryParam {
 	// 操作者ID，可以是客服ID
 	private String operationId;
 
+
+	private String vagueUserNameSearch;
+
 }

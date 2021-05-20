@@ -407,7 +407,7 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
         //2 记录钱包流水明细
         PlatformWalletDetailEntity platformWalletDetail = new PlatformWalletDetailEntity();
         // 用户ID
-        platformWalletDetail.setUserId(accountFlowDetailInstallParam.getAccountId());
+        platformWalletDetail.setUserId(platformWallet.getUserId());
         // 交易金额
         platformWalletDetail.setTradeAmount(accountFlowDetailInstallParam.getItemAmount());
         // 交易类型科目

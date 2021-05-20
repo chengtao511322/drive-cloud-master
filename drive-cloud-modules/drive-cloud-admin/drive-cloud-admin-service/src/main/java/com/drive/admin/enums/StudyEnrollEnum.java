@@ -22,7 +22,7 @@ public enum StudyEnrollEnum {
     ENROLL_STATUS_CANCEL ("7", "报名取消","noIntentionStudyEnroll"),
     ENROLL_STATUS_PREPARE_STAY_EXAMINE ("12", "已面签待审核","enrollStatusPrepareStayExamineStrategy"),
     ENROLL_STATUS_PASSWORD_EXAMINE ("13", "密码已提交待审核","enrollStatusPasswordExamineStrategy"),
-
+    YET_ENROLL_UPGRADE_CLASS("15","已升班",""),
     /*钱包明细交易状态: 收益*/
     DRIVER_WALLET_INCOME ("1", "收益",""),
     /*钱包明细交易状态: 支出*/
@@ -44,7 +44,8 @@ public enum StudyEnrollEnum {
     INCOME_USER_TYPE_SCHOOL("6","驾校",""),
 
     AFD_SYSTEM_COUPON_PAY("20","优惠券支出",""),
-
+    TRADE_FLOW_STATUS_PAY("1","支付流水 ",""),
+    /******-----------------------订单相关-----------------------------------*/
     // 待支付
     STAT_PAY("1","待支付",""),
     PAY_SUCCESS("2","支付成功",""),
@@ -55,8 +56,34 @@ public enum StudyEnrollEnum {
     EVALUATE_SUCCESS("7","已评价",""),
     REFUND_SUCCESS("8","退款成功",""),
     REFUND_LOADING("9","退款处理中",""),
+    FLOW_TYPE_REFUND_IN_HAND("5","退款处理中",""),
+
+    FLOW_TYPE_REFUND("2","退款流水",""),
+    ENROLL_STATUS_REFUND("9","已退款",""),
+    TEST_ENROLL_REFUND_SUCCESS("12","退款成功",""),
+    FLOW_TYPE_REFUND_SUCCESS("6","退款成功",""),
+    ORDER_TYPE_REFUND_SUCCESS("8","退款成功",""),
+
+    ORDER_TYPE_STUDY_ENROLL("1","学车报名",""),
+    ORDER_TYPE_TEST_ENROLL("2","考试报名",""),
+    ORDER_TYPE_COMMONLY_TRAIN("3","常规训练",""),
+    ORDER_TYPE_TEST_TRAIN("4","考试训练",""),
+    CLASS_TYPE_COMMONLY_TRAIN("1","普通训练",""),
+    CLASS_TYPE_TEST_TRAIN("2","考试训练",""),
+
+    REFUND_TYPE_WHOLE("0","全额退款 ",""),
+    PAY_TYPE_ALI("1","支付宝",""),
+    PAY_TYPE_WECHAT ("2","微信",""),
+    PAY_TYPE_COUPON  ("3","优惠卷支付",""),
+    PAY_TYPE_VIP("4","一费制vip支付",""),
+    PAY_TYPE_WECHAT_PUBLIC("6","微信公众号",""),
+    APPLY_STATUS_CANCEL("3","预约取消",""),
 
 
+
+
+
+    /*----------------------教学相关--------------------*/
     //
     BOOK_SUCCESS("5","预约成功",""),
     EXAM_ACCOMPLISH("7","考试完成",""),
@@ -67,11 +94,16 @@ public enum StudyEnrollEnum {
     EXAM_REFUND_SUCCESS("12","退款成功",""),
 
 
+    NO_APPOINTMENT("1","未预约",""),
     YET_APPOINTMENT("2","已预约",""),
     TEACHING_LOADING("3","教学中",""),
     TEACHING_SUCCESS("4","已预约",""),
+    CLASS_STATUS_CANCEL("5","已取消",""),
     PICK_SOMEBODY_UP("6","接人中",""),
     YET_GET_ON("7","已上车",""),
+
+
+
 
 
     ;

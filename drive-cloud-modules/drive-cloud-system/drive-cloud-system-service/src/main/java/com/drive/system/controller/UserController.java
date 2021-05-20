@@ -71,6 +71,21 @@ public class UserController extends BaseController<UserPageQueryParam, UserEntit
     public ResObject pageList(@Valid UserPageQueryParam param) {
         return userRepository.pageList(param);
     }
+    /**
+     * 用户信息 分页列表
+     */
+    @ApiOperation("用户信息分页列表")
+    @PreAuthorize("hasPermission('/user',  'system:user:query')")
+    @PostMapping(value = "/pageUserList")
+    public ResObject pageUserList(@Valid @RequestBody UserPageQueryParam param) {
+        return userRepository.pageUserList(param);
+    }
+    @ApiOperation("用户信息分页列表")
+    @PreAuthorize("hasPermission('/user',  'system:user:query')")
+    @GetMapping(value = "/findList")
+    public ResObject findList(@Valid UserPageQueryParam param) {
+        return userRepository.findList(param);
+    }
 
     /**
      * 获取用户信息

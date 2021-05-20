@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.PayFlowLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.PayFlowLogEntity">
+        <id column="id" property="id" />
+        <result column="order_no" property="orderNo" />
+        <result column="tran_type" property="tranType" />
+        <result column="pay_type" property="payType" />
+        <result column="pay_account" property="payAccount" />
+        <result column="payable_amount" property="payableAmount" />
+        <result column="third_order_no" property="thirdOrderNo" />
+        <result column="third_order_amount" property="thirdOrderAmount" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="third_return_time" property="thirdReturnTime" />
+        <result column="commit_parameter" property="commitParameter" />
+        <result column="return_parameter" property="returnParameter" />
+        <result column="pay_time" property="payTime" />
+        <result column="buyer_logon_id" property="buyerLogonId" />
+        <result column="operator_id" property="operatorId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, order_no, tran_type, pay_type, pay_account, payable_amount, third_order_no, third_order_amount, status, create_time, update_time, third_return_time, commit_parameter, return_parameter, pay_time, buyer_logon_id, operator_id
+    </sql>
+
+</mapper>

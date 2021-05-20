@@ -1,9 +1,11 @@
 package com.drive.admin.repository;
 
+import com.alipay.api.AlipayApiException;
 import com.drive.admin.pojo.dto.StudentOrderEditParam;
 import com.drive.admin.pojo.dto.StudentOrderPageQueryParam;
 import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.biz.ResObject;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  *
@@ -27,5 +29,12 @@ public interface StudentOrderRepository extends BaseRepository<StudentOrderPageQ
      * @return
      */
     ResObject cancelOrder(StudentOrderEditParam studentOrderEditParam);
+
+    /**
+     * 订单退款
+     * @param studentOrderEditParam
+     * @return
+     */
+    ResObject orderRefund(StudentOrderEditParam studentOrderEditParam) throws AlipayApiException;
 }
 

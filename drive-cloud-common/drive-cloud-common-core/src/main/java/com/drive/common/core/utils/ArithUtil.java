@@ -89,6 +89,12 @@ public class ArithUtil {
         BigDecimal b2 = new BigDecimal(Double.toString(v2));
         return b1.divide(b2,scale,BigDecimal.ROUND_HALF_UP);
     }
+    public static BigDecimal divBigDecimal(BigDecimal v1,BigDecimal v2,int scale){
+        if(scale<0){
+            throw new IllegalArgumentException("The scale must be a positive integer or zero");
+        }
+        return v1.divide(v2,scale,BigDecimal.ROUND_HALF_UP);
+    }
     /**
      * 提供精确的小数位四舍五入处理。
      * @param v 需要四舍五入的数字

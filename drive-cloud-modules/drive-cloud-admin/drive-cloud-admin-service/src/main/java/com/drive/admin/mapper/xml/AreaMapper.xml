@@ -27,4 +27,15 @@
     <insert id="saveArea" parameterType="com.drive.admin.pojo.entity.AreaEntity">
         INSERT INTO t_base_area ( ba_code, ba_name, ba_parent_id ) VALUES ( #{baCode}, #{baName}, #{baParentId} )
     </insert>
+
+    <update id="updateByCode" parameterType="com.drive.admin.pojo.entity.AreaEntity">
+        UPDATE t_base_area SET
+        <if test="@cn.hutool.core.util.StrUtil@isNotEmpty(baName)">
+            ba_name = #{baName} ,
+        </if>
+        <if test="@cn.hutool.core.util.StrUtil@isNotEmpty(baParentId)">
+            ba_parent_id = #{baParentId}
+        </if>
+        WHERE ba_code=#{baCode}
+    </update>
 </mapper>

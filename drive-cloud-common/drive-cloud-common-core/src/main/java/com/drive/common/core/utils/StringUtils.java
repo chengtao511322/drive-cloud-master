@@ -2,6 +2,9 @@ package com.drive.common.core.utils;
 
 import com.google.common.base.CaseFormat;
 
+import java.text.*;
+import java.util.Calendar;
+
 
 /**
  * 字符串工具类
@@ -9,6 +12,21 @@ import com.google.common.base.CaseFormat;
  * @author xiaoguo
  */
 public class StringUtils {
+
+    /** This Format for format the data to special format. */
+    private final static Format dateFormat = new SimpleDateFormat("YYYYMMddHHmmssS");
+
+    /** This Format for format the number to special format. */
+    private final static NumberFormat numberFormat = new DecimalFormat("0000");
+
+    /** The FieldPosition. */
+    private static final FieldPosition HELPER_POSITION = new FieldPosition(0);
+
+
+    /** This int is the sequence number ,the default value is 0. */
+    private static int seq = 0;
+
+    private static final int MAX = 9999;
 
     public static boolean isNotBlank(final String str) {
         return !isBlank(str);
@@ -49,6 +67,30 @@ public class StringUtils {
         CaseFormat toFormat = CaseFormat.LOWER_CAMEL;
         return fromFormat.to(toFormat, str);
     }
+
+    /**
+     * 时间格式生成序列(时间序列)
+     * @return String
+     */
+    public static synchronized String generateSequenceNo() {
+
+        Calendar rightNow = Calendar.getInstance();
+
+        StringBuffer sb = new StringBuffer();
+
+        dateFormat.format(rightNow.getTime(), sb, HELPER_POSITION);
+
+        numberFormat.format(seq, sb, HELPER_POSITION);
+
+        if (seq == MAX) {
+            seq = 0;
+        } else {
+            seq++;
+        }
+
+        return sb.toString();
+    }
+
 
     /**
      * 驼峰式的字符串转换为下划线

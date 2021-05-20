@@ -119,7 +119,7 @@ public class SchoolUserController extends BaseController<SchoolUserPageQueryPara
 	//@PreAuthorize("hasPermission('/admin/schoolUser',  'admin:schoolUser:delete')")
 	@EventLog(message = "删除合作驾校用户", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
+	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(schoolUserService.removeByIds(Arrays.asList(ids)));
 	}
 

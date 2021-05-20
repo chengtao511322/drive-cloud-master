@@ -14,7 +14,7 @@ public enum  SubResultCode {
     SYSTEM_SUCCESS("SUCCESS","接口数据请求成功"),
     SYSTEM_FAILL("FAILL","接口数据请求失败"),
     DATA_NULL("DATA_NULL","数据空"),
-    DATA_IDEMPOTENT("DATA_IDEMPOTENT","数据不允许重复提交"),
+    DATA_IDEMPOTENT("DATA_IDEMPOTENT","已经存在该数据不允许重复提交"),
     BIZ_ERROR("BIZ_ERROR","业务异常"),
     UNAUTHORIZED("UNAUTHORIZED","签名错误"),
     VALIDATESIGNERROR("VALIDATESIGNERROR","签名失败"),
@@ -82,6 +82,7 @@ public enum  SubResultCode {
     ORDER_PAY_DURING("ORDER_PAY_DURING","订单支付中......"),
     ORDER_CREATE_SUCCESS("ORDER_CREATE_SUCCESS","订单创建成功"),
     ORDER_PAY_SUCCESS_NOT_CANCEL("ORDER_PAY_SUCCESS_NOT_CANCEL","该订单已经支付,不可取消"),
+    ORDER_YET_REFUND("ORDER_YET_REFUND","该订单已退款,不可取消"),
 
     /*评论回复*/
     ADD_COMMENT_BACK_ERROR("ADD_COMMENT_BACK_ERROR","添加评论失败"),
