@@ -672,10 +672,14 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
      void  updateOrderStutas(StudentOrderEntity studentOrderDo,String nowOrderStatus) throws BizException {
         new Thread(() ->{
 //学车报名
-            if (studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_STUDY_ENROLL.getCode())) {
+            //if (studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_STUDY_ENROLL.getCode())) {
                 if (studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_STUDY_ENROLL.getCode())) {
 
                     StudentStudyEnrollEntity studentStudyEnrollDo = studentStudyEnrollService.getById(studentOrderDo.getStudyEnrollNo());
+                    // 判断状态
+                    if (!(studentStudyEnrollDo.getEnrollStatus().equals(StudyEnrollEnum.ENROLL_STATUS_PAY_SUCCESS.getCode()))){
+                        throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), "报名单状态已经流程化，不可退款");
+                    }
                     Optional.ofNullable(studentStudyEnrollDo).orElseThrow(() -> new BizException(500, SubResultCode.DATA_NULL.subCode(), "报名单不存在"));
                     String oldStudyEnrollStatus = studentStudyEnrollDo.getEnrollStatus();
                     //退款处理中
@@ -710,10 +714,15 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
                 }
                 //  考试报名
                 else if (studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_TEST_ENROLL.getCode())) {
+
                     //更新考试报名单状态
                     //考试报名单
                     StudentTestEnrollEntity studentTestEnrollDo = studentTestEnrollService.getById(studentOrderDo.getTestEnrollNo());
                     Optional.ofNullable(studentTestEnrollDo).orElseThrow(() -> new BizException(500, SubResultCode.DATA_NULL.subCode(), "考试单不存在"));
+                    // 判断状态
+                    if (!(studentTestEnrollDo.getEnrollStatus().equals(StudyEnrollEnum.PAY_SUCCESS.getCode()))){
+                        throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), "考试单状态已经流程化，不可退款");
+                    }
                     //退款处理中
                     studentTestEnrollDo.setEnrollStatus(StudyEnrollEnum.TEST_ENROLL_REFUND_SUCCESS.getCode());
                     Boolean testEnrollRes = studentTestEnrollService.updateById(studentTestEnrollDo);
@@ -728,6 +737,10 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
                     // 查询预约订单
                     StudentTrainCarApplyEntity studentTrainCarApplyDo = studentTrainCarApplyService.getById(studentOrderDo.getTrainApplyNo());
                     Optional.ofNullable(studentTrainCarApplyDo).orElseThrow(() -> new BizException(500, SubResultCode.DATA_NULL.subCode(), "常规训练预约单不存在"));
+                    // 判断状态
+                   /* if (!(studentTrainCarApplyDo.getApplyStatus().equals(StudyEnrollEnum.PAY_SUCCESS.getCode()))){
+                        throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), "考试单状态已经流程化，不可退款");
+                    }*/
                     //预约取消
                     studentTrainCarApplyDo.setApplyStatus(StudyEnrollEnum.APPLY_STATUS_CANCEL.getCode());
                     //取消时间
@@ -791,7 +804,7 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
                         }
                     }
                 }
-            }
+           // }
         }).start();
     }
 
