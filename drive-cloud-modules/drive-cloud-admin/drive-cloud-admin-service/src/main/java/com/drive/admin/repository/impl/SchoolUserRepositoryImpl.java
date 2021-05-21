@@ -73,6 +73,7 @@ public class  SchoolUserRepositoryImpl extends BaseController<SchoolUserPageQuer
         QueryWrapper queryWrapper = this.getQueryWrapper(schoolUserMapStruct, param);
         //  模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"phone",param.getVaguePhoneSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());

@@ -100,7 +100,7 @@ public class  OneFeeSystemCoachStudentRepositoryImpl extends BaseController<OneF
         }
         IPage<OneFeeSystemCoachStudentEntity> pageList = oneFeeSystemCoachStudentService.page(page,queryWrapper);
         if (pageList.getRecords().size() <= 0){
-            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg());
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<OneFeeSystemCoachStudentVo> oneFeeSystemCoachStudentVoPage = oneFeeSystemCoachStudentMapStruct.toVoList(pageList);
         oneFeeSystemCoachStudentVoPage.getRecords().stream().forEach((item) ->{

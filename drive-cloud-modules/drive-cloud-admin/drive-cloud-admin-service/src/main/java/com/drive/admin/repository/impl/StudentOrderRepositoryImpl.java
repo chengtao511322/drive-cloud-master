@@ -493,11 +493,15 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
         }
         // 微信公众号
         if (studentOrder.getPayType().equals(StudyEnrollEnum.PAY_TYPE_WECHAT_PUBLIC.getCode())){
-
+            return this.weChatRefund(StudyEnrollEnum.PAY_TYPE_WECHAT.getCode(),outRequestNo,studentOrder,payFlowLog);
         }
         // 优惠券支付
         if (studentOrder.getPayType().equals(StudyEnrollEnum.PAY_TYPE_COUPON.getCode())){
-
+            studentOrder.setStatus(StudyEnrollEnum.ORDER_TYPE_REFUND_SUCCESS.getCode()); //退款成功
+            studentOrderService.updateById(studentOrder);
+            // 退还优惠卷
+            //tCouponService.updateCouponNotUse(tStudentOrder);
+            return R.success(StudyEnrollEnum.PAY_TYPE_COUPON.getCode());
         }
         /*switch (studentOrder.getPayType()) {
             case StudyEnrollEnum.PAY_TYPE_ALI.getCode():
@@ -540,79 +544,80 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
      * @throws Exception
      */
     private  void createRefundAccountFlow(StudentOrderEntity studentOrderEntity,String outRequestNo) throws BizException {
-
-        //还原上一笔（升班过程是，新订单存老订单）
-        StudentOrderEntity originalStudentOrder = studentOrderService.getById(studentOrderEntity.getNewOrderNo());
-        if(originalStudentOrder != null){
-            originalStudentOrder.setStatus(studentOrderEntity.getStatus());
+        // 异步处理
+        new Thread(() ->{
+//还原上一笔（升班过程是，新订单存老订单）
+            StudentOrderEntity originalStudentOrder = studentOrderService.getById(studentOrderEntity.getNewOrderNo());
+            if(originalStudentOrder != null){
+                originalStudentOrder.setStatus(studentOrderEntity.getStatus());
            /* Boolean originalRes = studentOrderService.updateById(originalStudentOrder);
             log.info("原订单更新结果{}",originalRes);*/
-        }
-
-        //更新订单状态
-        studentOrderEntity.setStatus(StudyEnrollEnum.REFUND_LOADING.getCode());//退款处理中
-        studentOrderEntity.setAliOutRefundNo(outRequestNo); //支付宝，退款请求号
-        studentOrderService.updateById(studentOrderEntity);
-
-        //生成退款交易流水
-        PayFlowLogEntity payFlowLogDo = new PayFlowLogEntity();
-        //订单号
-        payFlowLogDo.setOrderNo(studentOrderEntity.getOrderNo());
-        //流水类型(退款流水)
-        payFlowLogDo.setTranType(StudyEnrollEnum.FLOW_TYPE_REFUND.getCode());
-        //支付类型
-        payFlowLogDo.setPayType(studentOrderEntity.getPayType());
-        //订单应付金额
-        payFlowLogDo.setPayableAmount(studentOrderEntity.getPayableAmount());
-        //状态（退款处理中）
-        payFlowLogDo.setStatus(StudyEnrollEnum.FLOW_TYPE_REFUND_IN_HAND.getCode());
-        payFlowLogDo.setThirdOrderNo(outRequestNo); //第三方订单号
-        payFlowLogDo.setCreateTime(LocalDateTime.now()); //创建时间
-        //payFlowLogDo.setCommitParameter("");//提交参数
-        payFlowLogDo.setOperatorId(studentOrderEntity.getOperatorId());
-        Boolean payFlowRes = payFlowLogService.save(payFlowLogDo);
-        if (!payFlowRes){
-            throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
-        }
-        QueryWrapper accountFlowQueryWrapper = new QueryWrapper();
-        // 订单号
-        accountFlowQueryWrapper.eq("order_no",studentOrderEntity.getOrderNo());
-        // 生成账务流水-退款流水
-        AccountFlowEntity accountFlowDo = accountFlowService.getOne(accountFlowQueryWrapper);
-        accountFlowDo.setId(IdWorker.getIdStr());
-        //流水类型（退款流水）
-        accountFlowDo.setFlowType(StudyEnrollEnum.FLOW_TYPE_REFUND_IN_HAND.getCode());
-        //退款类型（全额退款）
-        accountFlowDo.setRefundType(StudyEnrollEnum.REFUND_TYPE_WHOLE.getCode());
-        accountFlowDo.setRefundTime(LocalDateTime.now());  //退款时间
-        Boolean accountFlowRes = accountFlowService.save(accountFlowDo);
-        if (!accountFlowRes){
-            throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
-        }
-        // 查询所有支付流水明细（生成退款流水明细）
-        QueryWrapper newAccountFlowQueryWrapper = new QueryWrapper();
-        newAccountFlowQueryWrapper.eq("order_no", studentOrderEntity.getOrderNo());
-        List<AccountFlowDetailEntity> accountFlowDetailList = accountFlowDetailService.list(newAccountFlowQueryWrapper);
-        if (accountFlowDetailList.isEmpty()){
-            //throw new BizException(500,SubResultCode.DATA_NULL.subCode(),"没有流水");
-            return ;
-        }
-        accountFlowDetailList.stream().forEach((item) ->{
-            //若费用已经结算到钱包，则需要扣除
-            QueryWrapper platformWalletDetailQueryWrapper = new QueryWrapper();
-            platformWalletDetailQueryWrapper.eq("account_detail_id", item.getId());
-            int count = platformWalletDetailService.count(platformWalletDetailQueryWrapper);
-            item.setId(IdWorker.getIdStr());
-            item.setAccountId(accountFlowDo.getId());
-            item.setItemName(item.getItemName() + "-订单取消");
-            item.setItemAmount(item.getItemAmount().negate());
-            item.setCreateTime(LocalDateTime.now());
-            Boolean res = accountFlowDetailService.save(item);
-            if(count > 0){
-                this.settlementToWallet(item);
             }
-        });
 
+            //更新订单状态
+            studentOrderEntity.setStatus(StudyEnrollEnum.REFUND_LOADING.getCode());//退款处理中
+            studentOrderEntity.setAliOutRefundNo(outRequestNo); //支付宝，退款请求号
+            studentOrderService.updateById(studentOrderEntity);
+
+            //生成退款交易流水
+            PayFlowLogEntity payFlowLogDo = new PayFlowLogEntity();
+            //订单号
+            payFlowLogDo.setOrderNo(studentOrderEntity.getOrderNo());
+            //流水类型(退款流水)
+            payFlowLogDo.setTranType(StudyEnrollEnum.FLOW_TYPE_REFUND.getCode());
+            //支付类型
+            payFlowLogDo.setPayType(studentOrderEntity.getPayType());
+            //订单应付金额
+            payFlowLogDo.setPayableAmount(studentOrderEntity.getPayableAmount());
+            //状态（退款处理中）
+            payFlowLogDo.setStatus(StudyEnrollEnum.FLOW_TYPE_REFUND_IN_HAND.getCode());
+            payFlowLogDo.setThirdOrderNo(outRequestNo); //第三方订单号
+            payFlowLogDo.setCreateTime(LocalDateTime.now()); //创建时间
+            //payFlowLogDo.setCommitParameter("");//提交参数
+            payFlowLogDo.setOperatorId(studentOrderEntity.getOperatorId());
+            Boolean payFlowRes = payFlowLogService.save(payFlowLogDo);
+            if (!payFlowRes){
+                throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+            }
+            QueryWrapper accountFlowQueryWrapper = new QueryWrapper();
+            // 订单号
+            accountFlowQueryWrapper.eq("order_no",studentOrderEntity.getOrderNo());
+            // 生成账务流水-退款流水
+            AccountFlowEntity accountFlowDo = accountFlowService.getOne(accountFlowQueryWrapper);
+            accountFlowDo.setId(IdWorker.getIdStr());
+            //流水类型（退款流水）
+            accountFlowDo.setFlowType(StudyEnrollEnum.FLOW_TYPE_REFUND_IN_HAND.getCode());
+            //退款类型（全额退款）
+            accountFlowDo.setRefundType(StudyEnrollEnum.REFUND_TYPE_WHOLE.getCode());
+            accountFlowDo.setRefundTime(LocalDateTime.now());  //退款时间
+            Boolean accountFlowRes = accountFlowService.save(accountFlowDo);
+            if (!accountFlowRes){
+                throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+            }
+            // 查询所有支付流水明细（生成退款流水明细）
+            QueryWrapper newAccountFlowQueryWrapper = new QueryWrapper();
+            newAccountFlowQueryWrapper.eq("order_no", studentOrderEntity.getOrderNo());
+            List<AccountFlowDetailEntity> accountFlowDetailList = accountFlowDetailService.list(newAccountFlowQueryWrapper);
+            if (accountFlowDetailList.isEmpty()){
+                //throw new BizException(500,SubResultCode.DATA_NULL.subCode(),"没有流水");
+                return ;
+            }
+            accountFlowDetailList.stream().forEach((item) ->{
+                //若费用已经结算到钱包，则需要扣除
+                QueryWrapper platformWalletDetailQueryWrapper = new QueryWrapper();
+                platformWalletDetailQueryWrapper.eq("account_detail_id", item.getId());
+                int count = platformWalletDetailService.count(platformWalletDetailQueryWrapper);
+                item.setId(IdWorker.getIdStr());
+                item.setAccountId(accountFlowDo.getId());
+                item.setItemName(item.getItemName() + "-订单取消");
+                item.setItemAmount(item.getItemAmount().negate());
+                item.setCreateTime(LocalDateTime.now());
+                Boolean res = accountFlowDetailService.save(item);
+                if(count > 0){
+                    this.settlementToWallet(item);
+                }
+            });
+        }).start();
     }
 
     /**
@@ -620,40 +625,42 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
      * @throws Exception
      */
     private void  settlementToWallet(AccountFlowDetailEntity accountFlowDetail) throws BizException{
-
-        //结算相关用户的钱包金额，以及记录相关流水
-        QueryWrapper accountFlowDetailQueryWrapper = new QueryWrapper();
-        // 用户DI
-        accountFlowDetailQueryWrapper.eq("user_id", accountFlowDetail.getIncomeUserId());
-        PlatformWalletEntity platformWalletDo = platformWalletService.getOne(accountFlowDetailQueryWrapper);
-        if (platformWalletDo == null){
-            throw new BizException(500,SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
-        }
-        platformWalletDo.setWalletAmount(platformWalletDo.getWalletAmount().subtract(accountFlowDetail.getItemAmount()));
-        Boolean platformWalletRes = platformWalletService.updateById(platformWalletDo);
-        log.info("更新钱包结果{}",platformWalletRes);
-        if (!platformWalletRes) {
-            throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
-        }
-        //记录钱包流水明细
-        PlatformWalletDetailEntity platformWalletDetailDo = new PlatformWalletDetailEntity();
-        platformWalletDetailDo.setUserId(platformWalletDo.getUserId());
-        platformWalletDetailDo.setTradeAmount(accountFlowDetail.getItemAmount());
-        platformWalletDetailDo.setTradeSubject(accountFlowDetail.getTradeSubject());
-        platformWalletDetailDo.setTradeSubjectItems(accountFlowDetail.getTradeSubjectItems());
-        if(accountFlowDetail.getItemAmount() == null){
-            //负数（支出）
-            platformWalletDetailDo.setTradeType(StudyEnrollEnum.DRIVER_WALLET_SUBMIT_CASH.getCode());
-        }
-        //正数（收益）
-        platformWalletDetailDo.setTradeType(StudyEnrollEnum.DRIVER_WALLET_INCOME.getCode());
-        platformWalletDetailDo.setWalletDetailName(accountFlowDetail.getItemName());
-        platformWalletDetailDo.setCreateTime(LocalDateTime.now());
-        platformWalletDetailDo.setAccountDetailId(accountFlowDetail.getId());
-        platformWalletDetailDo.setBalance(platformWalletDo.getWalletAmount()); //账户余额
-        platformWalletDetailDo.setOperatorId(platformWalletDo.getOperatorId());  // 运营商
-        platformWalletDetailDo.setDataMsValue(System.currentTimeMillis());
-        platformWalletDetailService.save(platformWalletDetailDo);
+        // 异步处理
+        new Thread(() ->{
+            //结算相关用户的钱包金额，以及记录相关流水
+            QueryWrapper accountFlowDetailQueryWrapper = new QueryWrapper();
+            // 用户DI
+            accountFlowDetailQueryWrapper.eq("user_id", accountFlowDetail.getIncomeUserId());
+            PlatformWalletEntity platformWalletDo = platformWalletService.getOne(accountFlowDetailQueryWrapper);
+            if (platformWalletDo == null){
+                throw new BizException(500,SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+            }
+            platformWalletDo.setWalletAmount(platformWalletDo.getWalletAmount().subtract(accountFlowDetail.getItemAmount()));
+            Boolean platformWalletRes = platformWalletService.updateById(platformWalletDo);
+            log.info("更新钱包结果{}",platformWalletRes);
+            if (!platformWalletRes) {
+                throw new BizException(500,SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+            }
+            //记录钱包流水明细
+            PlatformWalletDetailEntity platformWalletDetailDo = new PlatformWalletDetailEntity();
+            platformWalletDetailDo.setUserId(platformWalletDo.getUserId());
+            platformWalletDetailDo.setTradeAmount(accountFlowDetail.getItemAmount());
+            platformWalletDetailDo.setTradeSubject(accountFlowDetail.getTradeSubject());
+            platformWalletDetailDo.setTradeSubjectItems(accountFlowDetail.getTradeSubjectItems());
+            if(accountFlowDetail.getItemAmount() == null){
+                //负数（支出）
+                platformWalletDetailDo.setTradeType(StudyEnrollEnum.DRIVER_WALLET_SUBMIT_CASH.getCode());
+            }
+            //正数（收益）
+            platformWalletDetailDo.setTradeType(StudyEnrollEnum.DRIVER_WALLET_INCOME.getCode());
+            platformWalletDetailDo.setWalletDetailName(accountFlowDetail.getItemName());
+            platformWalletDetailDo.setCreateTime(LocalDateTime.now());
+            platformWalletDetailDo.setAccountDetailId(accountFlowDetail.getId());
+            platformWalletDetailDo.setBalance(platformWalletDo.getWalletAmount()); //账户余额
+            platformWalletDetailDo.setOperatorId(platformWalletDo.getOperatorId());  // 运营商
+            platformWalletDetailDo.setDataMsValue(System.currentTimeMillis());
+            platformWalletDetailService.save(platformWalletDetailDo);
+        }).start();
     }
 
 
@@ -661,129 +668,131 @@ public class  StudentOrderRepositoryImpl extends BaseController<StudentOrderPage
      * 更新订单状态
      * @throws Exception
      */
-    private void  updateOrderStutas(StudentOrderEntity studentOrderDo,String nowOrderStatus) throws BizException {
-
-        //学车报名
-        if (studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_STUDY_ENROLL.getCode())) {
+    @Transactional
+     void  updateOrderStutas(StudentOrderEntity studentOrderDo,String nowOrderStatus) throws BizException {
+        new Thread(() ->{
+//学车报名
             if (studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_STUDY_ENROLL.getCode())) {
+                if (studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_STUDY_ENROLL.getCode())) {
 
-                StudentStudyEnrollEntity studentStudyEnrollDo = studentStudyEnrollService.getById(studentOrderDo.getStudyEnrollNo());
-                Optional.ofNullable(studentStudyEnrollDo).orElseThrow(() -> new BizException(500, SubResultCode.DATA_NULL.subCode(), "报名单不存在"));
-                String oldStudyEnrollStatus = studentStudyEnrollDo.getEnrollStatus();
-                //退款处理中
-                studentStudyEnrollDo.setEnrollStatus(StudyEnrollEnum.ENROLL_STATUS_REFUND.getCode());
-                Boolean studentStudyEnrollRes = studentStudyEnrollService.updateById(studentStudyEnrollDo);
-                if (!studentStudyEnrollRes) {
-                    throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), SubResultCode.DATA_UPDATE_FAILL.subMsg());
-                }
-
-                //逻辑删除一费制逻辑绑定关系
-                QueryWrapper coachStudentQueryWrapper = new QueryWrapper();
-                coachStudentQueryWrapper.eq("order_no", studentOrderDo.getOrderNo());
-                Boolean coachStudentRes = oneFeeSystemCoachStudentService.remove(coachStudentQueryWrapper);
-                log.info("删除结果{}", coachStudentRes);
-                //还原---老订单状态
-                StudentOrderEntity originalOrder = studentOrderService.getById(studentOrderDo.getNewOrderNo());
-                if (originalOrder != null) {
-                    originalOrder.setStatus(nowOrderStatus);
-                    Boolean originalOrderRes = studentOrderService.updateById(originalOrder);
-                    if (!originalOrderRes) {
+                    StudentStudyEnrollEntity studentStudyEnrollDo = studentStudyEnrollService.getById(studentOrderDo.getStudyEnrollNo());
+                    Optional.ofNullable(studentStudyEnrollDo).orElseThrow(() -> new BizException(500, SubResultCode.DATA_NULL.subCode(), "报名单不存在"));
+                    String oldStudyEnrollStatus = studentStudyEnrollDo.getEnrollStatus();
+                    //退款处理中
+                    studentStudyEnrollDo.setEnrollStatus(StudyEnrollEnum.ENROLL_STATUS_REFUND.getCode());
+                    Boolean studentStudyEnrollRes = studentStudyEnrollService.updateById(studentStudyEnrollDo);
+                    if (!studentStudyEnrollRes) {
                         throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), SubResultCode.DATA_UPDATE_FAILL.subMsg());
                     }
-                    //还原--老学车报名单号状态
-                    StudentStudyEnrollEntity originalStudyEnroll = studentStudyEnrollService.getById(originalOrder.getStudyEnrollNo());
-                    originalStudyEnroll.setEnrollStatus(oldStudyEnrollStatus);
-                    Boolean originalStudyEnrollRes = studentStudyEnrollService.updateById(originalStudyEnroll);
-                    if (!originalStudyEnrollRes) {
+
+                    //逻辑删除一费制逻辑绑定关系
+                    QueryWrapper coachStudentQueryWrapper = new QueryWrapper();
+                    coachStudentQueryWrapper.eq("order_no", studentOrderDo.getOrderNo());
+                    Boolean coachStudentRes = oneFeeSystemCoachStudentService.remove(coachStudentQueryWrapper);
+                    log.info("删除结果{}", coachStudentRes);
+                    //还原---老订单状态
+                    StudentOrderEntity originalOrder = studentOrderService.getById(studentOrderDo.getNewOrderNo());
+                    if (originalOrder != null) {
+                        originalOrder.setStatus(nowOrderStatus);
+                        Boolean originalOrderRes = studentOrderService.updateById(originalOrder);
+                        if (!originalOrderRes) {
+                            throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), SubResultCode.DATA_UPDATE_FAILL.subMsg());
+                        }
+                        //还原--老学车报名单号状态
+                        StudentStudyEnrollEntity originalStudyEnroll = studentStudyEnrollService.getById(originalOrder.getStudyEnrollNo());
+                        originalStudyEnroll.setEnrollStatus(oldStudyEnrollStatus);
+                        Boolean originalStudyEnrollRes = studentStudyEnrollService.updateById(originalStudyEnroll);
+                        if (!originalStudyEnrollRes) {
+                            throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), "报名单更新异常");
+                        }
+                    }
+
+                }
+                //  考试报名
+                else if (studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_TEST_ENROLL.getCode())) {
+                    //更新考试报名单状态
+                    //考试报名单
+                    StudentTestEnrollEntity studentTestEnrollDo = studentTestEnrollService.getById(studentOrderDo.getTestEnrollNo());
+                    Optional.ofNullable(studentTestEnrollDo).orElseThrow(() -> new BizException(500, SubResultCode.DATA_NULL.subCode(), "考试单不存在"));
+                    //退款处理中
+                    studentTestEnrollDo.setEnrollStatus(StudyEnrollEnum.TEST_ENROLL_REFUND_SUCCESS.getCode());
+                    Boolean testEnrollRes = studentTestEnrollService.updateById(studentTestEnrollDo);
+                    if (!testEnrollRes) {
                         throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), "报名单更新异常");
                     }
+
                 }
 
-            }
-            //  考试报名
-            else if (studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_TEST_ENROLL.getCode())) {
-                //更新考试报名单状态
-                //考试报名单
-                StudentTestEnrollEntity studentTestEnrollDo = studentTestEnrollService.getById(studentOrderDo.getTestEnrollNo());
-                Optional.ofNullable(studentTestEnrollDo).orElseThrow(() -> new BizException(500, SubResultCode.DATA_NULL.subCode(), "考试单不存在"));
-                //退款处理中
-                studentTestEnrollDo.setEnrollStatus(StudyEnrollEnum.TEST_ENROLL_REFUND_SUCCESS.getCode());
-                Boolean testEnrollRes = studentTestEnrollService.updateById(studentTestEnrollDo);
-                if (!testEnrollRes) {
-                    throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), "报名单更新异常");
-                }
-
-            }
-
-            // 常规训练 或者 考试训练
-            else if (studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_COMMONLY_TRAIN.getCode()) || studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_TEST_TRAIN.getCode())) {
-                // 查询预约订单
-                StudentTrainCarApplyEntity studentTrainCarApplyDo = studentTrainCarApplyService.getById(studentOrderDo.getTrainApplyNo());
-                Optional.ofNullable(studentTrainCarApplyDo).orElseThrow(() -> new BizException(500, SubResultCode.DATA_NULL.subCode(), "常规训练预约单不存在"));
-                //预约取消
-                studentTrainCarApplyDo.setApplyStatus(StudyEnrollEnum.APPLY_STATUS_CANCEL.getCode());
-                //取消时间
-                studentTrainCarApplyDo.setCancelTiem(LocalDateTime.now());
-                //取消原因
-                studentTrainCarApplyDo.setCancelReason("后台管理员手动取消");
-                //退款金额
-                studentTrainCarApplyDo.setCancelRefundMoney(studentOrderDo.getPayableAmount());
-                Boolean trainCarApplyRes = studentTrainCarApplyService.updateById(studentTrainCarApplyDo);
-                if (!trainCarApplyRes) {
-                    throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), "常规训练预约单更新异常");
-                }
-                // 查询课时
-                CoachTeachTimeEntity coachTeachTimeDo = coachTeachTimeService.getById(studentTrainCarApplyDo.getClassId());
-                Optional.ofNullable(coachTeachTimeDo).orElseThrow(() -> new BizException(500, SubResultCode.DATA_NULL.subCode(), "课时不存在"));
-                //课程剩余课时
-                int surplusClassHours = coachTeachTimeDo.getSurplusClassHours();
-                //普通训练
-                if (coachTeachTimeDo.getClassType().equals((StudyEnrollEnum.CLASS_TYPE_COMMONLY_TRAIN.getCode()))) {
-                    //修改课程状态为未预约
-                    //未预约
-                    coachTeachTimeDo.setStatus(StudyEnrollEnum.NO_APPOINTMENT.getCode());
-                    /** 原代码 有问题
-                     * tCoachTeachTime.setStatus(WebConstant.CLASS_STATUS_NOT_BESPOKE); //未预约
-                     .setStatus(WebConstant.CLASS_STATUS_CANCEL);
-                     */
-                    coachTeachTimeDo.setStatus(StudyEnrollEnum.CLASS_STATUS_CANCEL.getCode());
-                    coachTeachTimeDo.setRemarks("系统管理人员发起退款");
-                    coachTeachTimeDo.setSurplusClassHours(0);
-                    coachTeachTimeDo.setStudentId("");
-                    Boolean coachTeachTimeRes = coachTeachTimeService.updateById(coachTeachTimeDo);  //更新课时状态
-                    if (!coachTeachTimeRes) {
+                // 常规训练 或者 考试训练
+                else if (studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_COMMONLY_TRAIN.getCode()) || studentOrderDo.getOrderType().equals(StudyEnrollEnum.ORDER_TYPE_TEST_TRAIN.getCode())) {
+                    // 查询预约订单
+                    StudentTrainCarApplyEntity studentTrainCarApplyDo = studentTrainCarApplyService.getById(studentOrderDo.getTrainApplyNo());
+                    Optional.ofNullable(studentTrainCarApplyDo).orElseThrow(() -> new BizException(500, SubResultCode.DATA_NULL.subCode(), "常规训练预约单不存在"));
+                    //预约取消
+                    studentTrainCarApplyDo.setApplyStatus(StudyEnrollEnum.APPLY_STATUS_CANCEL.getCode());
+                    //取消时间
+                    studentTrainCarApplyDo.setCancelTiem(LocalDateTime.now());
+                    //取消原因
+                    studentTrainCarApplyDo.setCancelReason("后台管理员手动取消");
+                    //退款金额
+                    studentTrainCarApplyDo.setCancelRefundMoney(studentOrderDo.getPayableAmount());
+                    Boolean trainCarApplyRes = studentTrainCarApplyService.updateById(studentTrainCarApplyDo);
+                    if (!trainCarApplyRes) {
                         throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), "常规训练预约单更新异常");
                     }
-                } else {
-                    //获取当前取消订单关联的教练课程信息
-                    //如果已被预约的课时数等于该笔订单取消的课时数跟新课程状态为未预约
-                    if ((coachTeachTimeDo.getClassHours() - surplusClassHours - studentTrainCarApplyDo.getClassHours()) == 0) {
+                    // 查询课时
+                    CoachTeachTimeEntity coachTeachTimeDo = coachTeachTimeService.getById(studentTrainCarApplyDo.getClassId());
+                    Optional.ofNullable(coachTeachTimeDo).orElseThrow(() -> new BizException(500, SubResultCode.DATA_NULL.subCode(), "课时不存在"));
+                    //课程剩余课时
+                    int surplusClassHours = coachTeachTimeDo.getSurplusClassHours();
+                    //普通训练
+                    if (coachTeachTimeDo.getClassType().equals((StudyEnrollEnum.CLASS_TYPE_COMMONLY_TRAIN.getCode()))) {
                         //修改课程状态为未预约
-                        //已取消
+                        //未预约
+                        coachTeachTimeDo.setStatus(StudyEnrollEnum.NO_APPOINTMENT.getCode());
+                        /** 原代码 有问题
+                         * tCoachTeachTime.setStatus(WebConstant.CLASS_STATUS_NOT_BESPOKE); //未预约
+                         .setStatus(WebConstant.CLASS_STATUS_CANCEL);
+                         */
                         coachTeachTimeDo.setStatus(StudyEnrollEnum.CLASS_STATUS_CANCEL.getCode());
+                        coachTeachTimeDo.setRemarks("系统管理人员发起退款");
                         coachTeachTimeDo.setSurplusClassHours(0);
-                        //课时总价这个数字用途在哪里确认好，不要就删除
-                        coachTeachTimeDo.setSumCharge(new BigDecimal(0));
-                        //取消后平台服务费没了，教练收入也没了
-                        coachTeachTimeDo.setServiceCharge(new BigDecimal(0));
-                        coachTeachTimeDo.setCoaceCharge(new BigDecimal(0));
-
-                        //取消订单的课时数不等于已被预约的课时数，说明还有别的人已预约，此时只更新剩余课时数(取消的课时数加回去);扣除课时中的教练收入,课时总费用,平台收入
+                        coachTeachTimeDo.setStudentId("");
+                        Boolean coachTeachTimeRes = coachTeachTimeService.updateById(coachTeachTimeDo);  //更新课时状态
+                        if (!coachTeachTimeRes) {
+                            throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), "常规训练预约单更新异常");
+                        }
                     } else {
-                        coachTeachTimeDo.setSurplusClassHours(surplusClassHours + studentTrainCarApplyDo.getClassHours());
-                        //课时总价这个数字用途在哪里确认好，不要就删除
-                        BigDecimal sumCharge = coachTeachTimeDo.getSumCharge().subtract(studentTrainCarApplyDo.getSumPrice().multiply(new BigDecimal(studentTrainCarApplyDo.getClassHours())));
-                        coachTeachTimeDo.setSumCharge(sumCharge);
-                        coachTeachTimeDo.setServiceCharge(coachTeachTimeDo.getServiceCharge().subtract(studentTrainCarApplyDo.getServiceCharge()));
-                        coachTeachTimeDo.setCoaceCharge(coachTeachTimeDo.getCoaceCharge().subtract(studentTrainCarApplyDo.getCoachCharge()));
-                    }
-                    Boolean res = coachTeachTimeService.updateById(coachTeachTimeDo);  //更新课时状态
-                    if (!res) {
-                        throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), "常规训练预约单更新异常");
+                        //获取当前取消订单关联的教练课程信息
+                        //如果已被预约的课时数等于该笔订单取消的课时数跟新课程状态为未预约
+                        if ((coachTeachTimeDo.getClassHours() - surplusClassHours - studentTrainCarApplyDo.getClassHours()) == 0) {
+                            //修改课程状态为未预约
+                            //已取消
+                            coachTeachTimeDo.setStatus(StudyEnrollEnum.CLASS_STATUS_CANCEL.getCode());
+                            coachTeachTimeDo.setSurplusClassHours(0);
+                            //课时总价这个数字用途在哪里确认好，不要就删除
+                            coachTeachTimeDo.setSumCharge(new BigDecimal(0));
+                            //取消后平台服务费没了，教练收入也没了
+                            coachTeachTimeDo.setServiceCharge(new BigDecimal(0));
+                            coachTeachTimeDo.setCoaceCharge(new BigDecimal(0));
+
+                            //取消订单的课时数不等于已被预约的课时数，说明还有别的人已预约，此时只更新剩余课时数(取消的课时数加回去);扣除课时中的教练收入,课时总费用,平台收入
+                        } else {
+                            coachTeachTimeDo.setSurplusClassHours(surplusClassHours + studentTrainCarApplyDo.getClassHours());
+                            //课时总价这个数字用途在哪里确认好，不要就删除
+                            BigDecimal sumCharge = coachTeachTimeDo.getSumCharge().subtract(studentTrainCarApplyDo.getSumPrice().multiply(new BigDecimal(studentTrainCarApplyDo.getClassHours())));
+                            coachTeachTimeDo.setSumCharge(sumCharge);
+                            coachTeachTimeDo.setServiceCharge(coachTeachTimeDo.getServiceCharge().subtract(studentTrainCarApplyDo.getServiceCharge()));
+                            coachTeachTimeDo.setCoaceCharge(coachTeachTimeDo.getCoaceCharge().subtract(studentTrainCarApplyDo.getCoachCharge()));
+                        }
+                        Boolean res = coachTeachTimeService.updateById(coachTeachTimeDo);  //更新课时状态
+                        if (!res) {
+                            throw new BizException(500, SubResultCode.DATA_UPDATE_FAILL.subCode(), "常规训练预约单更新异常");
+                        }
                     }
                 }
             }
-        }
+        }).start();
     }
 
     /**

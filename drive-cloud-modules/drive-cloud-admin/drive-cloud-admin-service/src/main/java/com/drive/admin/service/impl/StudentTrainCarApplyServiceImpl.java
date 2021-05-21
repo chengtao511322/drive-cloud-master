@@ -1,5 +1,6 @@
 package com.drive.admin.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.drive.admin.mapper.StudentTrainCarApplyMapper;
 import com.drive.admin.pojo.dto.StudentTrainCarApplyPageQueryParam;
 import com.drive.admin.pojo.entity.StudentTrainCarApplyEntity;
@@ -17,7 +18,11 @@ public class StudentTrainCarApplyServiceImpl extends BaseService<StudentTrainCar
 
     @Override
     public Integer classHoursSum(String studentId, String subjectType) {
-        return this.getBaseMapper().classHoursSum(studentId,subjectType);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("student_id",studentId);
+        queryWrapper.eq("subject_type",subjectType);
+        queryWrapper.in("apply_status",1,4,5,6,7);
+        return this.getBaseMapper().selectCount(queryWrapper);
     }
 
     @Override
