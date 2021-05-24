@@ -25,7 +25,7 @@ public interface AreaRepository extends BaseRepository<AreaPageQueryParam, AreaE
     /**
      * 查询所有可选城市区域列表
      */
-    ResObject allOptionalAreaList();
+    ResObject allOptionalAreaList(String operatorId);
 
 
 }

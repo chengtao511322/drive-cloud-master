@@ -98,6 +98,8 @@ public class  OneFeeSystemCoachStudentRepositoryImpl extends BaseController<OneF
             if(coachInfoList.size() <= 0)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),coachInfoList);
             queryWrapper.in("coach_id",coachInfoList.stream().map(CoachInfoEntity::getId).collect(Collectors.toList()));
         }
+        // 订单号模糊查询
+        //queryWrapper.in(StrUtil.isNotEmpty(param.getVagueOrderNoSearch()),"order_no",param.getVagueOrderNoSearch());
         IPage<OneFeeSystemCoachStudentEntity> pageList = oneFeeSystemCoachStudentService.page(page,queryWrapper);
         if (pageList.getRecords().size() <= 0){
             return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);

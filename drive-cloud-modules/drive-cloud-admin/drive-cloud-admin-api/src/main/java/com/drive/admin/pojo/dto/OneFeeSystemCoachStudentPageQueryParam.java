@@ -124,4 +124,6 @@ public class OneFeeSystemCoachStudentPageQueryParam extends BasePageQueryParam {
 	@ApiModelProperty(value = "教练手机搜索")
 	private String vagueCoachPhoneSearch;
 
+	@ApiModelProperty(value = "订单号模糊搜索")
+	private String vagueOrderNoSearch;
 }
