@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.SysParamMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.SysParamEntity">
+        <id column="prm_enum_id" property="prmEnumId" />
+        <result column="prm_name" property="prmName" />
+        <result column="prm_cn_name" property="prmCnName" />
+        <result column="prm_value" property="prmValue" />
+        <result column="prm_remark" property="prmRemark" />
+        <result column="prm_status" property="prmStatus" />
+        <result column="create_time" property="createTime" />
+        <result column="create_user" property="createUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_user" property="updateUser" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            prm_enum_id, prm_name, prm_cn_name, prm_value, prm_remark, prm_status, create_time, create_user, update_time, update_user
+    </sql>
+
+</mapper>
