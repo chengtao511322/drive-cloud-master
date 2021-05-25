@@ -272,12 +272,24 @@ public class  AreaRepositoryImpl extends BaseController<AreaPageQueryParam, Area
     }
 
     @Override
-    public ResObject allOptionalAreaList() {
+    public ResObject allOptionalAreaList(String operatorId) {
         log.info(this.getClass()+"allOptionalAreaList-方法请求参数{}");
-        //查询已划分的运营商区域
+        //查询已划分的运营商区域,运营商id不为空需把该运营商下的区域也显示出来
         QueryWrapper<OperatorAreaEntity> areaEntityQueryWrapper = new QueryWrapper<>();
-        areaEntityQueryWrapper.select("area_id");
-        List<OperatorAreaEntity> operatorAreaEntityList = operatorAreaService.list();
+        if(operatorId != null){
+            QueryWrapper<OperatorAreaEntity> objectQueryWrapper = new QueryWrapper<>();
+            objectQueryWrapper.in("operator_id",operatorId);
+            List<OperatorAreaEntity> list = operatorAreaService.list(objectQueryWrapper);
+            if(list != null && list.size() > 0){
+                String[] excludeIds = new String[list.size()];
+                for(int i = 0; i<excludeIds.length;i++){
+                    excludeIds[i] = list.get(i).getAreaId();
+                }
+                areaEntityQueryWrapper.notIn("area_id",excludeIds);
+            }
+        }
+        List<OperatorAreaEntity> operatorAreaEntityList = operatorAreaService.list(areaEntityQueryWrapper);
+
         String[] areaIds = new String[operatorAreaEntityList.size()];
         for(int i = 0; i<areaIds.length;i++){
             areaIds[i] = operatorAreaEntityList.get(i).getAreaId();

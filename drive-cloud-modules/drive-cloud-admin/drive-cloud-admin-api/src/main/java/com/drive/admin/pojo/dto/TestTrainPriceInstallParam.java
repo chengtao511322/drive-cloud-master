@@ -39,7 +39,6 @@ public class TestTrainPriceInstallParam {
     private String driveType;
 
     // 科目类型（一；二；三；四）
-    @NotBlank(message = "科目类型（一；二；三；四）不能为空")
     @ApiModelProperty(value = "科目类型（一；二；三；四）")
     private String subjectType;
 

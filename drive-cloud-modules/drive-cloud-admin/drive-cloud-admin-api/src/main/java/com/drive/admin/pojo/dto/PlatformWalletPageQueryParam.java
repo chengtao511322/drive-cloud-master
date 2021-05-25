@@ -83,4 +83,5 @@ public class PlatformWalletPageQueryParam extends BasePageQueryParam {
 	// 模糊查询字段
 	//private String vagueNameSearch
 
+
 }
