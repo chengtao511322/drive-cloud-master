@@ -11,6 +11,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +49,8 @@ public class MarketingTest {
         actionMappings.put(value3, (someParams) -> { doAction3(someParams)});
 // 省略多余逻辑语句
         actionMappings.get(param).apply(someParams);*/
+
+       // SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
 
     }
 

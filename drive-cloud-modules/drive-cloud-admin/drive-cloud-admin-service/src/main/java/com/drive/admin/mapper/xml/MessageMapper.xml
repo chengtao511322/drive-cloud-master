@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.MessageMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.MessageEntity">
+        <id column="id" property="id" />
+        <result column="phone" property="phone" />
+        <result column="code" property="code" />
+        <result column="createtime" property="createtime" />
+        <result column="expiretime" property="expiretime" />
+        <result column="remarks" property="remarks" />
+        <result column="operator_id" property="operatorId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, phone, code, createtime, expiretime, remarks, operator_id
+    </sql>
+
+    <select id="pageList" resultMap="BaseResultMap">
+        select  id,
+                phone,
+                code,
+                createtime as createtime,
+                expiretime as expiretime,
+                remarks,
+                operator_id as operatorId,
+                create_time AS createTime,
+	            update_time AS updateTime
+	    from t_message
+	    ${ew.customSqlSegment}
+    </select>
+
+</mapper>

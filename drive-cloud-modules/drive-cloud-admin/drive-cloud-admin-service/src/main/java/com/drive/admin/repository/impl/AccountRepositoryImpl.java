@@ -29,10 +29,11 @@ public class AccountRepositoryImpl implements AccountRepository {
     @Autowired
     private RemoteActivityService remoteActivityService;
 
+    //@GlobalTransactional
     @Override
     public ResObject increaseAmount(String account) {
         log.info(this.getClass() + "increaseAmount-方法请求参数{}",account);
-       /* StudentInfoEntity studentInfoEntity = new StudentInfoEntity();
+       StudentInfoEntity studentInfoEntity = new StudentInfoEntity();
         studentInfoEntity.setId(account);
         studentInfoEntity.setUsername("测试事务");
         Boolean result = studentInfoService.updateById(studentInfoEntity);
@@ -43,8 +44,7 @@ public class AccountRepositoryImpl implements AccountRepository {
         coupon.setMinPoint(new BigDecimal(10));
         ResObject couponRes = remoteActivityService.saveCoupon(coupon);
         log.info("请求优惠券接口{}",couponRes);
-        int i = 1 / 0;
-        return result ? R.success(true) : R.failure("出错");*/
-        return null;
+        int i = 1 / Integer.parseInt(account);
+        return result ? R.success(true) : R.failure("出错");
     }
 }

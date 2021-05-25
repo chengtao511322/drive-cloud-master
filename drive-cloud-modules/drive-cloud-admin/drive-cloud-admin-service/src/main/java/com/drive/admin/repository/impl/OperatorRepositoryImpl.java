@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -361,6 +362,38 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
             Boolean res = operatorAreaService.saveOrUpdateBatch(operatorArea);
             if (!res)return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
         }
+        return R.success();
+    }
+
+    @Override
+    public ResObject delOperator(OperatorEditParam operatorEditParam) {
+        if (StrUtil.isEmpty(operatorEditParam.getId())){
+            return R.failure();
+        }
+        log.info(this.getClass() + "update方法请求参数{}",operatorEditParam);
+        if (operatorEditParam == null){
+            log.error("数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        OperatorEntity operator = BeanConvertUtils.copy(operatorEditParam, OperatorEntity.class);
+        operator.setStatus(StatusEnum.SOLD.getCode());
+        operator.setUpdateTime(LocalDateTime.now());
+        Boolean result = operatorService.updateById(operator);
+        log.info(this.getClass() + "update-方法请求结果{}",result);
+        // 区域处理
+        List<OperatorAreaInstallParam> operatorAreaInstallParams = operatorEditParam.getOperatorAreaInstallParams();
+        if (operatorAreaInstallParams.size() > 0){
+            // 删除数据
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("operator_id",operatorEditParam.getId());
+            operatorAreaService.remove(queryWrapper);
+        }
+        // 添加微服务运营商数据
+        com.drive.basics.pojo.dto.OperatorEditParam operatorEdit =BeanConvertUtils.copy(operatorEditParam, com.drive.basics.pojo.dto.OperatorEditParam.class);
+        operatorEdit.setId(operator.getId());
+        operatorEdit.setOperatorAreaList(BeanConvertUtils.copyList(operatorAreaInstallParams, com.drive.basics.pojo.dto.OperatorAreaInstallParam.class));
+        ResObject resObject = remoteOperatorFeignService.saveOperator(operatorEdit);
+        log.info("请求结果resObject{}",resObject);
         return R.success();
     }
 

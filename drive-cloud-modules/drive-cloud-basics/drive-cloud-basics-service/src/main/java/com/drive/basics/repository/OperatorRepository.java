@@ -25,4 +25,18 @@ public interface OperatorRepository extends BaseRepository<OperatorPageQueryPara
      * @return
      */
     ResObject saveOperator(OperatorEditParam operatorEditParam);
+
+    /**
+     * 修改运营商
+     * @param operatorEditParam
+     * @return
+     */
+    ResObject updateOperator(OperatorEditParam operatorEditParam);
+
+    /**
+     * 删除运营商
+     * @param operatorEditParam
+     * @return
+     */
+    ResObject delOperator(OperatorEditParam operatorEditParam);
 }

@@ -28,6 +28,13 @@ public interface OperatorRepository extends BasicsRepository<OperatorPageQueryPa
     ResObject updateOperator(OperatorEditParam operatorEditParam);
 
     /**
+     * 删除运营商
+     * @param operatorEditParam
+     * @return
+     */
+    ResObject delOperator(OperatorEditParam operatorEditParam);
+
+    /**
      * 通过运营商ID 获取运营区域
      * @param operatorId
      * @return

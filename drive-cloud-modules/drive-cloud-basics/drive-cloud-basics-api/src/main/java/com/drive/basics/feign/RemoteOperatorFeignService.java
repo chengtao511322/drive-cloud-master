@@ -19,7 +19,18 @@ public interface RemoteOperatorFeignService {
      */
     @GetMapping(value = "/operator/{id}")
     ResObject<OperatorVo> get(@PathVariable("id") String id);
+
     // 添加数据
     @PostMapping(value = "/operator/saveOperator")
     ResObject saveOperator(@RequestBody OperatorEditParam operatorEditParam);
+
+
+    // 修改数据
+    @PostMapping(value = "/operator/updateOperator")
+    ResObject updateOperator(@RequestBody OperatorEditParam operatorEditParam);
+
+
+    // 删除数据
+    @PostMapping(value = "/operator/delOperator")
+    ResObject delOperator(@RequestBody OperatorEditParam operatorEditParam);
 }

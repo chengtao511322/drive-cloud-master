@@ -1,6 +1,7 @@
 package com.drive.basics.repository.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.drive.basics.pojo.dto.OperatorAreaInstallParam;
 import com.drive.basics.pojo.dto.OperatorEditParam;
 import com.drive.basics.pojo.dto.OperatorPageQueryParam;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -106,6 +108,7 @@ public class OperatorRepositoryImpl extends BaseController<OperatorPageQueryPara
         return R.success(operatorItemVos);
     }
 
+    @Transactional
     @Override
     public ResObject saveOperator(@Valid OperatorEditParam operatorEditParam) {
         log.info(this.getClass() + "save方法请求参数{}",operatorEditParam);
@@ -129,6 +132,60 @@ public class OperatorRepositoryImpl extends BaseController<OperatorPageQueryPara
             Boolean res = operatorAreaService.saveOrUpdateBatch(operatorArea);
             if (!res)return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
         }
+        return R.success();
+    }
+
+    @Transactional
+    @Override
+    public ResObject updateOperator(OperatorEditParam operatorEditParam) {
+        log.info(this.getClass() + "save方法请求参数{}",operatorEditParam);
+        if (operatorEditParam == null){
+            log.error("数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        OperatorEntity operator = BeanConvertUtils.copy(operatorEditParam, OperatorEntity.class);
+        // 修改时间
+        operator.setUpdateTime(LocalDateTime.now());
+        Boolean result = operatorService.updateById(operator);
+        log.info(this.getClass() + "update方法请求结果{}",result);
+
+        // 区域处理
+        List<OperatorAreaInstallParam> operatorAreaInstallParams = operatorEditParam.getOperatorAreaList();
+        if (operatorAreaInstallParams.size() > 0){
+            // 删除数据
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("operator_id",operatorEditParam.getId());
+            operatorAreaService.remove(queryWrapper);
+            // 添加区域
+            List<OperatorAreaEntity> operatorArea = BeanConvertUtils.copyList(operatorAreaInstallParams, OperatorAreaEntity.class);
+            operatorArea.stream().forEach((item) ->{
+                item.setOperatorId(operator.getId());
+            });
+            Boolean res = operatorAreaService.saveOrUpdateBatch(operatorArea);
+            if (!res)return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+        }
+        return R.success();
+    }
+
+    @Transactional
+    @Override
+    public ResObject delOperator(OperatorEditParam operatorEditParam) {
+        log.info(this.getClass() + "save方法请求参数{}",operatorEditParam);
+        if (operatorEditParam == null){
+            log.error("数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        OperatorEntity operator = BeanConvertUtils.copy(operatorEditParam, OperatorEntity.class);
+        operator.setStatus(StatusEnum.NO.getCode());
+        // 修改时间
+        operator.setUpdateTime(LocalDateTime.now());
+        Boolean result = operatorService.updateById(operator);
+        log.info(this.getClass() + "update方法请求结果{}",result);
+        // 区域处理
+        // 删除数据
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("operator_id",operatorEditParam.getId());
+        operatorAreaService.remove(queryWrapper);
         return R.success();
     }
 }

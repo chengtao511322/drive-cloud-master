@@ -22,6 +22,8 @@ public enum OperatorEnum {
     FLOW_TYPE_PAY("1","支付流水"),
     AFD_COACH_TIEM_ROYALTY_COST("3","课时教练提成费用"),
     INCOME_USER_TYPE_COACH("2","教练"),
+    STUDENT("1","学员"),
+    SERVICE("3","客服"),
     INCOME_USER_TYPE_TOPERATOR("7","运营商"),
     INCOME_USER_TYPE_SCHOOL("6","驾校"),
     DRIVERPRINCE_OPERATORID("8d26f5f6cae74532bf0baf37fc8ccd0f","学车小王子"),

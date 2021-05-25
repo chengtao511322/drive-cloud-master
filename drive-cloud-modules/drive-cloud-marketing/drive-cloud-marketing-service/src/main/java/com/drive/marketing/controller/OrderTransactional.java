@@ -6,7 +6,6 @@ import com.drive.basics.pojo.dto.OperatorEditParam;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.marketing.repository.ActivityRepository;
-import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +27,7 @@ public class OrderTransactional {
     private RemoteOperatorFeignService remoteOperatorFeignService;
 
     @RequestMapping("/insertOrder")
-    @GlobalTransactional
+    //@GlobalTransactional
     public ResObject insertOrder(int age) {
         String orderId = System.currentTimeMillis() + "";
         activityRepository.transfer("123");

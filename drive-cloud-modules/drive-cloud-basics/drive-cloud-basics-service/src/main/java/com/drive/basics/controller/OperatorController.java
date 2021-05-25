@@ -113,6 +113,22 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	public ResObject saveOperator(@Valid @RequestBody OperatorEditParam operatorEditParam) {
 		return operatorRepository.saveOperator(operatorEditParam);
 	}
+	@ApiOperation("修改运营商基础信息")
+	@ApiImplicitParam(name = "OperatorEditParam ", value = "新增运营商基础信息", dataType = "OperatorEditParam")
+	//@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:add')")
+	@EventLog(message = "修改运营商基础信息", businessType = EventLogEnum.CREATE)
+	@PostMapping("/updateOperator")
+	public ResObject updateOperator(@Valid @RequestBody OperatorEditParam operatorEditParam) {
+		return operatorRepository.updateOperator(operatorEditParam);
+	}
+	@ApiOperation("删除运营商基础信息")
+	@ApiImplicitParam(name = "OperatorEditParam ", value = "新增运营商基础信息", dataType = "OperatorEditParam")
+	//@PreAuthorize("hasPermission('/basics/operator',  'basics:operator:add')")
+	@EventLog(message = "删除运营商基础信息", businessType = EventLogEnum.CREATE)
+	@PostMapping("/delOperator")
+	public ResObject delOperator(@Valid @RequestBody OperatorEditParam operatorEditParam) {
+		return operatorRepository.delOperator(operatorEditParam);
+	}
 
 	/**
 	* 修改运营商基础信息

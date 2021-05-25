@@ -58,7 +58,7 @@ public class GeneratorMain {
 
     //要生成的表名templatestemplates
     private static String[] tables = {
-            "t_pay_flow_log",
+            "t_user_commonly_address",
     };
 
 

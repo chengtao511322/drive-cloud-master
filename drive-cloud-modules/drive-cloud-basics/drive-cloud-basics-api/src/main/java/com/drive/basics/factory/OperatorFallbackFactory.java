@@ -25,6 +25,16 @@ public class OperatorFallbackFactory implements FallbackFactory<RemoteOperatorFe
             public ResObject saveOperator(OperatorEditParam operatorEditParam) {
                 return R.failure();
             }
+
+            @Override
+            public ResObject updateOperator(OperatorEditParam operatorEditParam) {
+                return null;
+            }
+
+            @Override
+            public ResObject delOperator(OperatorEditParam operatorEditParam) {
+                return null;
+            }
         };
     }
 }
