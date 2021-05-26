@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.WalletSettlementSummaryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.WalletSettlementSummaryEntity">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="settle_accounts_sum" property="settleAccountsSum" />
+        <result column="settle_accounts_apply_time" property="settleAccountsApplyTime" />
+        <result column="settle_accounts_complete_time" property="settleAccountsCompleteTime" />
+        <result column="examine_time" property="examineTime" />
+        <result column="settle_accounts_number" property="settleAccountsNumber" />
+        <result column="status" property="status" />
+        <result column="settle_type" property="settleType" />
+        <result column="out_biz_no" property="outBizNo" />
+        <result column="remarks" property="remarks" />
+        <result column="submit_account" property="submitAccount" />
+        <result column="submit_real_name" property="submitRealName" />
+        <result column="operator_id" property="operatorId" />
+        <result column="reject_time" property="rejectTime" />
+        <result column="open_account_bank" property="openAccountBank" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, user_id, settle_accounts_sum, settle_accounts_apply_time, settle_accounts_complete_time, examine_time, settle_accounts_number, status, settle_type, out_biz_no, remarks, submit_account, submit_real_name, operator_id, reject_time, open_account_bank
+    </sql>
+
+</mapper>
