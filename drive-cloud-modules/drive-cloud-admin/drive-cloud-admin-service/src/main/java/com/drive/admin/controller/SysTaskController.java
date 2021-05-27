@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -57,7 +58,7 @@ public class SysTaskController extends BaseController<SysTaskPageQueryParam, Sys
 	@ApiOperation("系统任务表分页列表")
 	@PreAuthorize("hasPermission('/admin/sysTask',  'admin:sysTask:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid @RequestBody SysTaskPageQueryParam param) {
+	public ResObject pageList(@Valid @RequestBody SysTaskPageQueryParam param) throws SchedulerException {
 		return sysTaskRepository.pageList(param);
 	}
 	/**
@@ -94,7 +95,7 @@ public class SysTaskController extends BaseController<SysTaskPageQueryParam, Sys
 
 	/**
 	* 新增系统任务表
-	 * author:xiaoguo
+	 * author:chentao
 	*/
 	@ApiOperation("新增系统任务表")
 	@ApiImplicitParam(name = "SysTaskEditParam ", value = "新增系统任务表", dataType = "SysTaskEditParam")
@@ -164,6 +165,26 @@ public class SysTaskController extends BaseController<SysTaskPageQueryParam, Sys
 	@PostMapping("/changeStatus")
 	public ResObject changeStatus(@Valid @RequestBody SysTaskEditParam sysTaskEditParam) {
 		return sysTaskRepository.changeStatus(sysTaskEditParam);
+	}
+
+	/**
+	 * 开启定时任务
+	 */
+	@ApiOperation("开启定时任务")
+	@PreAuthorize("hasPermission('/admin/sysTask',  'admin:sysTask:query')")
+	@GetMapping("/startTask/{taskId}")
+	public ResObject startTask(@PathVariable String taskId){
+		return sysTaskRepository.startTask(taskId);
+	}
+
+	/**
+	 * 暂停定时任务
+	 */
+	@ApiOperation("暂停定时任务")
+	@PreAuthorize("hasPermission('/admin/sysTask',  'admin:sysTask:query')")
+	@GetMapping("/endTask/{taskId}")
+	public ResObject endTask(@PathVariable String taskId){
+		return sysTaskRepository.endTask(taskId);
 	}
 
 }

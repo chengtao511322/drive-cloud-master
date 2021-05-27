@@ -75,4 +75,12 @@ public class SysTaskPageQueryParam extends BasePageQueryParam {
 	// 模糊查询字段
 	//private String vagueNameSearch
 
+	@ApiModelProperty(value = "任务id模糊搜索")
+	//编号模糊搜索
+	private String vagueTaskIdSearch;
+
+	@ApiModelProperty(value = "任务名称模糊搜索")
+	//任务名模糊搜索
+	private String vagueTaskNameSearch;
+
 }

@@ -14,10 +14,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import cn.hutool.core.util.StrUtil;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.SubResultCode;
+import com.drive.admin.job.JobManager;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.security.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import com.drive.common.core.biz.ResObject;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
+import org.mockito.internal.util.collections.ListUtil;
+import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.drive.admin.service.SysTaskService;
 import com.drive.common.data.utils.ExcelUtils;
@@ -26,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Arrays;
 import java.io.IOException;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +69,8 @@ public class  SysTaskRepositoryImpl extends BaseController<SysTaskPageQueryParam
         Page<SysTaskEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         // 条件查询
         QueryWrapper queryWrapper = this.getQueryWrapper(sysTaskMapStruct, param);
-
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueTaskIdSearch()),"st_task_id",param.getVagueTaskIdSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueTaskNameSearch()),"st_task_name",param.getVagueTaskNameSearch());
         //  模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
         //  开始时间 结束时间都有才进入
@@ -73,6 +81,25 @@ public class  SysTaskRepositoryImpl extends BaseController<SysTaskPageQueryParam
         if (pageList.getRecords().size() <= 0){
             log.error("数据空");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
+        }
+        try {
+            //从任务调度器当中获取任务执行状态
+            List<SysTaskEntity> taskList = pageList.getRecords();
+            //获取任务调度器scheduler
+            Scheduler scheduler = JobManager.getScheduler();
+            for (SysTaskEntity sysTaskEntity : taskList) {
+                if(sysTaskEntity != null){
+                    String taskId = sysTaskEntity.getStTaskId();
+                    //获取jobKey name就是taskId
+                    JobKey jobKey = JobManager.getJobKey(taskId);
+                    List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
+                    if(CollectionUtils.isNotEmpty(triggers)){
+                        scheduler.getTriggerState(triggers.get(0).getKey()).toString();
+                    }
+                }
+            }
+        } catch (SchedulerException e) {
+            e.printStackTrace();
         }
         Page<SysTaskVo> sysTaskVoPage = sysTaskMapStruct.toVoList(pageList);
         log.info(this.getClass() + "pageList-方法请求结果{}",sysTaskVoPage);
@@ -161,13 +188,24 @@ public class  SysTaskRepositoryImpl extends BaseController<SysTaskPageQueryParam
      *
      *功能描述
      * @author chentao
-     * @description 保存系统任务表 数据
+     * @description 保存系统任务表 数据,同时往任务管理器中添加一个任务
      * @date 2020/2/12 17:09
      * @param  * @param SysTaskPageQueryParam
      * @return
      */
     @Override
     public ResObject save(SysTaskInstallParam installParam) {
+        Class<?> jobClass = null;
+        try {
+            jobClass = Class.forName(installParam.getStJobClass());
+        } catch (ClassNotFoundException e) {
+            log.error("添加定时任务的类出错:找不到类{}",installParam.getStJobClass());
+            return R.failure(SubResultCode.PARAMISINVALID.subCode(),"定时任务类错误,找不到该类");
+        }
+        if(jobClass != null && !Job.class.isAssignableFrom(jobClass)){
+            log.error("添加定时任务的类出错:{} 定时任务类必须实现Job接口",installParam.getStJobClass());
+            return R.failure(SubResultCode.PARAMISINVALID.subCode(),"定时任务类错误,类没有继承Job接口");
+        }
         installParam.setCreateUser(SecurityUtils.getUsername());
         log.info(this.getClass() + "save方法请求参数{}",installParam);
         if (installParam == null){
@@ -274,5 +312,45 @@ public class  SysTaskRepositoryImpl extends BaseController<SysTaskPageQueryParam
         return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_STATUS_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_STATUS_FAILL.subCode(),SubResultCode.DATA_STATUS_FAILL.subMsg());
     }
 
+    /**
+     * 开启定时任务,如果已经存在就恢复执行,不存在则加入job
+     * @param taskId 任务id编号
+     * @return
+     */
+    @Override
+    public ResObject startTask(String taskId) {
+        Class<?> obj = null;
+        SysTaskEntity sysTask = sysTaskService.getById(taskId);
+        try {
+            List<Map<String, Object>> allJobs = JobManager.getAllJobs();
+            JobKey jobKey = JobManager.getJobKey(taskId);
+            //任务存在则恢复执行
+            if(jobKey != null){
+                JobManager.resumeJob(taskId);
+                return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),"恢复执行");
+            }
+            obj = Class.forName(sysTask.getStJobClass());
+            JobManager.addJob(taskId,taskId,sysTask.getStCronExpression(),(Class<? extends Job>) obj);
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_STATUS_SUCCESS.subMsg());
+        } catch (Exception e) {
+            log.error("表达式错误或者"+obj.getName()+"没有继承Job接口");
+        }
+        return null;
+    }
+
+    /**
+     * 关闭定时任务
+     * @param taskId 定时任务id编号
+     * @return
+     */
+    @Override
+    public ResObject endTask(String taskId) {
+        try {
+            JobManager.pauseJob(taskId);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),"暂停了定时任务执行");
+    }
 }
 

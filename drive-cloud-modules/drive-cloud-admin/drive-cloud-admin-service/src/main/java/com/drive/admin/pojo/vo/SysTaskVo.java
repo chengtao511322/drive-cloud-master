@@ -2,10 +2,19 @@ package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 
+import com.drive.admin.job.JobManager;
 import lombok.Data;
+import org.apache.commons.collections4.CollectionUtils;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -61,4 +70,52 @@ public class SysTaskVo {
 	@Excel(name = "修改人", width = 20)
 	private String updateUser;
 
+	//执行状态
+	private String executeState;
+
+	//下一次执行时间
+	private Date nextFireTime;
+
+	public void setStTaskId(String taskId) {
+		this.stTaskId =taskId;
+		//获取任务调度器scheduler
+		Scheduler scheduler = JobManager.getScheduler();
+		//获取jobKey name就是taskId
+		JobKey jobKey = JobManager.getJobKey(taskId);
+		try {
+			List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
+			if(CollectionUtils.isNotEmpty(triggers)){
+				String isExecute = scheduler.getTriggerState(triggers.get(0).getKey()).toString();
+				if (("NORMAL").equals(isExecute)) {
+					this.executeState = "执行中";// 已执行
+					this.nextFireTime = triggers.get(0).getNextFireTime();// 已执行
+				} else {
+					this.executeState = "等待或异常";// 等待或异常
+				}
+			}else {
+				this.executeState = "未执行";
+			}
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void setNextFireTime() {
+		//获取任务调度器scheduler
+		Scheduler scheduler = JobManager.getScheduler();
+		//获取jobKey name就是taskId
+		JobKey jobKey = JobManager.getJobKey(this.stTaskId);
+		try {
+			List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
+			if(CollectionUtils.isNotEmpty(triggers)){
+				String isExecute = scheduler.getTriggerState(triggers.get(0).getKey()).toString();
+				if (("NORMAL").equals(isExecute)) {
+
+				}
+			}
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+		}
+
+	}
 }
