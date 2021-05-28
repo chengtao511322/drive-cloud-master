@@ -1,11 +1,12 @@
 package com.drive.admin.controller;
 
-import com.drive.admin.pojo.dto.AccountFlowEditParam;
-import com.drive.admin.pojo.dto.AccountFlowInstallParam;
-import com.drive.admin.pojo.dto.AccountFlowPageQueryParam;
+import com.drive.admin.pojo.dto.*;
+import com.drive.admin.pojo.entity.AccountFlowDetailEntity;
 import com.drive.admin.pojo.entity.AccountFlowEntity;
+import com.drive.admin.repository.AccountFlowDetailRepository;
 import com.drive.admin.repository.AccountFlowRepository;
 import com.drive.admin.service.AccountFlowService;
+import com.drive.admin.service.mapstruct.AccountFlowDetailMapStruct;
 import com.drive.admin.service.mapstruct.AccountFlowMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
@@ -18,7 +19,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -28,24 +28,20 @@ import java.util.Arrays;
 
 /**
  * 平台账务流水管理
- *
  * @author xiaoguo
  */
-@Api(tags = "平台账务流水管理")
+@Api(tags = "平台账务流水明细管理")
 @Slf4j
 @RestController
-@RequestMapping("/accountFlow")
-public class AccountFlowController extends BaseController<AccountFlowPageQueryParam, AccountFlowEntity> {
+@RequestMapping("/accountFlowDetail")
+public class AccountFlowDetailController extends BaseController<AccountFlowPageQueryParam, AccountFlowEntity> {
 
-	// 平台账务流水 服务
-	@Autowired
-	private AccountFlowService accountFlowService;
 	// 平台账务流水 业务服务
 	@Autowired
-	private AccountFlowRepository accountFlowRepository;
+	private AccountFlowDetailRepository accountFlowDetailRepository;
 	// 平台账务流水 DO-DTO转化
 	@Autowired
-	private AccountFlowMapStruct accountFlowMapStruct;
+	private AccountFlowDetailMapStruct accountFlowDetailMapStruct;
 
 	/**
 	* 平台账务流水 分页列表
@@ -53,8 +49,8 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	@ApiOperation("平台账务流水分页列表")
 	//@PreAuthorize("hasPermission('/admin/accountFlow',  'admin:accountFlow:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid @RequestBody AccountFlowPageQueryParam param) {
-		return accountFlowRepository.pageList(param);
+	public ResObject pageList(@Valid @RequestBody AccountFlowDetailPageQueryParam param) {
+		return accountFlowDetailRepository.pageList(param);
 	}
 	/**
 	* 平台账务流水 列表
@@ -62,8 +58,8 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	@ApiOperation("平台账务流水列表")
 	//@PreAuthorize("hasPermission('/admin/accountFlow',  'admin:accountFlow:query')")
 	@PostMapping(value = "/findList")
-	public ResObject findList(@Valid @RequestBody AccountFlowPageQueryParam param) {
-		return accountFlowRepository.findList(param);
+	public ResObject findList(@Valid @RequestBody AccountFlowDetailPageQueryParam param) {
+		return accountFlowDetailRepository.findList(param);
 	}
 
 	/**
@@ -74,7 +70,7 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	//@PreAuthorize("hasPermission('/admin/accountFlow',  'admin:accountFlow:query')")
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
-		return accountFlowRepository.getById(id);
+		return accountFlowDetailRepository.getById(id);
 	}
 
 	/**
@@ -84,8 +80,8 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/accountFlow',  'admin:accountFlow:query')")
 	@PostMapping("/getInfo")
-	public ResObject getInfo(@RequestBody AccountFlowPageQueryParam param) {
-		return accountFlowRepository.getInfo(param);
+	public ResObject getInfo(@RequestBody AccountFlowDetailPageQueryParam param) {
+		return accountFlowDetailRepository.getInfo(param);
 	}
 
 	/**
@@ -96,8 +92,8 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	//@PreAuthorize("hasPermission('/admin/accountFlow',  'admin:accountFlow:add')")
 	@EventLog(message = "新增平台账务流水", businessType = EventLogEnum.CREATE)
 	@PostMapping
-	public ResObject save(@Valid @RequestBody AccountFlowInstallParam accountFlowInstallParam) {
-		return accountFlowRepository.save(accountFlowInstallParam);
+	public ResObject save(@Valid @RequestBody AccountFlowDetailInstallParam accountFlowInstallParam) {
+		return accountFlowDetailRepository.save(accountFlowInstallParam);
 	}
 
 	/**
@@ -108,8 +104,8 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	//@PreAuthorize("hasPermission('/admin/accountFlow',  'admin:accountFlow:edit')")
 	@EventLog(message = "修改平台账务流水", businessType = EventLogEnum.UPDATE)
 	@PutMapping
-	public ResObject edit(@Valid @RequestBody AccountFlowEditParam accountFlowEditParam) {
-		return accountFlowRepository.update(accountFlowEditParam);
+	public ResObject edit(@Valid @RequestBody AccountFlowDetailEditParam accountFlowEditParam) {
+		return accountFlowDetailRepository.update(accountFlowEditParam);
 	}
 
 	/**
@@ -120,8 +116,8 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	//@PreAuthorize("hasPermission('/admin/accountFlow',  'admin:accountFlow:delete')")
 	@EventLog(message = "删除平台账务流水", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
-	public ResObject delete(@PathVariable Long[] ids) {
-		return R.toRes(accountFlowService.removeByIds(Arrays.asList(ids)));
+	public ResObject delete(@PathVariable String[] ids) {
+		return accountFlowDetailRepository.deleteByIds(ids);
 	}
 
 	/**
@@ -133,7 +129,7 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	@EventLog(message = "通过主键删除平台账务流水", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
-		return accountFlowRepository.deleteById(id);
+		return accountFlowDetailRepository.deleteById(id);
 	}
 
 	/**
@@ -144,8 +140,8 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	@SneakyThrows
 	@EventLog(message = "导出平台账务流水", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
-	public void exportXls(@RequestBody AccountFlowPageQueryParam param, HttpServletResponse response) {
-		accountFlowRepository.exportXls(param,response);
+	public void exportXls(@RequestBody AccountFlowDetailPageQueryParam param, HttpServletResponse response) {
+		accountFlowDetailRepository.exportXls(param,response);
 	}
 
 
@@ -157,8 +153,8 @@ public class AccountFlowController extends BaseController<AccountFlowPageQueryPa
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用平台账务流水", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")
-	public ResObject changeStatus(@Valid @RequestBody AccountFlowEditParam accountFlowEditParam) {
-		return accountFlowRepository.changeStatus(accountFlowEditParam);
+	public ResObject changeStatus(@Valid @RequestBody AccountFlowDetailEditParam accountFlowEditParam) {
+		return accountFlowDetailRepository.changeStatus(accountFlowEditParam);
 	}
 
 }

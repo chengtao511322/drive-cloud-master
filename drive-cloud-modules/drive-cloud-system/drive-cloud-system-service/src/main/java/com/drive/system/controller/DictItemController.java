@@ -1,11 +1,14 @@
 package com.drive.system.controller;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
+import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.enums.EventLogEnum;
 import com.drive.common.data.utils.ExcelUtils;
 import com.drive.common.log.annotation.EventLog;
@@ -57,9 +60,14 @@ public class DictItemController extends BaseController<DictItemPageQueryParam, D
     @PreAuthorize("hasPermission('/dictItem',  'system:dict:query')")
     @GetMapping(value = "/pageList")
     public ResObject pageList(@Valid DictItemPageQueryParam param) {
-
         Page<DictItemEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<DictItemEntity> pageList = dictItemService.page(page, this.getQueryWrapper(dictItemMapStruct, param));
+        QueryWrapper queryWrapper = this.getQueryWrapper(dictItemMapStruct, param);
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueItemNameSearch()),"item_name",param.getVagueItemNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueItemValueSearch()),"item_value",param.getVagueItemValueSearch());
+        IPage<DictItemEntity> pageList = dictItemService.page(page, queryWrapper);
+        if (pageList.getRecords().isEmpty()){
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
+        }
         Page<DictItemVo> dictItemVoPage = dictItemMapStruct.toVoList(pageList);
         return R.success(dictItemVoPage);
     }

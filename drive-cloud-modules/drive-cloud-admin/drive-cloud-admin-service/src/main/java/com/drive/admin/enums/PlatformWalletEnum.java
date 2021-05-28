@@ -19,7 +19,7 @@ public enum PlatformWalletEnum {
 
     //学员钱包
     STUDENT_WALLET("1",StudentInfoEntity.class, StudentInfoService.class,"real_name"),
-    //教练钱包
+    //教练钱包00
     COACH_WALLET("2", CoachInfoEntity.class, CoachInfoService.class,"real_name"),
     //客服钱包
     CUSTOMERSERVICE_WALLET("3", ServiceInfoEntity.class,ServiceInfoService.class,"real_name"),

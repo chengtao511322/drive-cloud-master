@@ -33,6 +33,10 @@ public class StatisticsFutureTask {
             new ThreadPoolExecutor.CallerRunsPolicy());
 
 
+    /**
+     * 获取首页数据
+     * @return
+     */
     public StatisticsTaskDataVo getHomeResult(){
         log.info("请求参数是{}");
         //学员总数
@@ -42,7 +46,6 @@ public class StatisticsFutureTask {
           Future<Integer> studentTotalFuture = executor.submit(() -> studentTotal);
 
           //get阻塞
-
           StatisticsTaskDataVo statisticsTaskDataVo = new StatisticsTaskDataVo();
           // 学员总数
           statisticsTaskDataVo.setStudentTotal(studentTotalFuture.get());

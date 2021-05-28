@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    com.drive.admin.factory.StudentFallbackFactory,com.drive.admin.factory.RecommendManagerFallbackFactory,com.drive.admin.factory.RecommendUserFallbackFactory,com.drive.admin.factory.RecommendOneFeeSystemPriceFallbackFactory
+    com.drive.admin.factory.StudentFallbackFactory,com.drive.admin.factory.RecommendManagerFallbackFactory,com.drive.admin.factory.RecommendUserFallbackFactory,com.drive.admin.factory.RecommendOneFeeSystemPriceFallbackFactory,com.drive.admin.factory.CodeFallbackFactory

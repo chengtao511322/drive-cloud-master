@@ -133,7 +133,7 @@ public class ${entity}Controller extends BaseController<${entity}PageQueryParam,
 	@EventLog(message = "删除${table.comment}", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{${pkColumn.propertyName}s}")
 	public ResObject delete(@PathVariable String[] ${pkColumn.propertyName}s) {
-		return R.toRes(${className}Service.removeByIds(Arrays.asList(${pkColumn.propertyName}s)));
+		return ${className}Repository.deleteByIds(${pkColumn.propertyName}s);
 	}
 
 	/**

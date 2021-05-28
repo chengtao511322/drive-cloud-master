@@ -885,7 +885,8 @@ public class ChannelManagerActivityRepositoryImpl implements ChannelManagerActiv
 
                 // 数据空 不出来
                 if (recommendUserVoList.size() <= 0) {
-                    throw new BizException("数据同步失败，该活动下没有渠道经理");
+                    return;
+                    //throw new BizException("数据同步失败，该活动下没有渠道经理");
                 }
                 List<ChannelManagerActivityEntity> channelManagerActivityEntityList = new ArrayList<>();
                 recommendUserVoList.stream().forEach((recommendUser) -> {

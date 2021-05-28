@@ -64,13 +64,10 @@ public class UserEntity extends BaseEntity {
 
 	// 最后登陆时间
 	private LocalDateTime loginDate;
-
 	// 备注
 	private String remark;
 	// 操作者ID，可以是客服ID
 	private String operationId;
-
 	// 租户ID
 	private String tenantId;
-
 }

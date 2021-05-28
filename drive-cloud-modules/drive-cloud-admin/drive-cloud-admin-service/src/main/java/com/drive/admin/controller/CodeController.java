@@ -55,7 +55,7 @@ public class CodeController extends BaseController<CodePageQueryParam, CodeEntit
 	* 字典表 分页列表
 	*/
 	@ApiOperation("字典表分页列表")
-	@PreAuthorize("hasPermission('/admin/code',  'admin:code:query')")
+	//@PreAuthorize("hasPermission('/admin/code',  'admin:code:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid @RequestBody CodePageQueryParam param) {
 		return codeRepository.pageList(param);
@@ -64,7 +64,7 @@ public class CodeController extends BaseController<CodePageQueryParam, CodeEntit
 	* 字典表 列表
 	*/
 	@ApiOperation("字典表列表")
-	@PreAuthorize("hasPermission('/admin/code',  'admin:code:query')")
+	//@PreAuthorize("hasPermission('/admin/code',  'admin:code:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid @RequestBody CodePageQueryParam param) {
 		return codeRepository.findList(param);
@@ -75,7 +75,7 @@ public class CodeController extends BaseController<CodePageQueryParam, CodeEntit
 	*/
 	@ApiOperation("获取字典表")
 	@ApiImplicitParam(name = "codeId", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/code',  'admin:code:query')")
+	//@PreAuthorize("hasPermission('/admin/code',  'admin:code:query')")
 	@GetMapping("/{codeId}")
 	public ResObject get(@PathVariable String codeId) {
 		return codeRepository.getById(codeId);
@@ -86,7 +86,7 @@ public class CodeController extends BaseController<CodePageQueryParam, CodeEntit
 	 */
 	@ApiOperation("条件查询获取字典表")
 	@ApiImplicitParam(name = "codeId", required = true, dataType = "String", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/code',  'admin:code:query')")
+	//@PreAuthorize("hasPermission('/admin/code',  'admin:code:query')")
 	@PostMapping("/getInfo")
 	public ResObject getInfo(@RequestBody CodePageQueryParam param) {
 		return codeRepository.getInfo(param);
@@ -98,7 +98,7 @@ public class CodeController extends BaseController<CodePageQueryParam, CodeEntit
 	*/
 	@ApiOperation("新增字典表")
 	@ApiImplicitParam(name = "CodeEditParam ", value = "新增字典表", dataType = "CodeEditParam")
-	@PreAuthorize("hasPermission('/admin/code',  'admin:code:add')")
+	//@PreAuthorize("hasPermission('/admin/code',  'admin:code:add')")
 	@EventLog(message = "新增字典表", businessType = EventLogEnum.CREATE)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody CodeInstallParam codeInstallParam) {
@@ -110,7 +110,7 @@ public class CodeController extends BaseController<CodePageQueryParam, CodeEntit
 	*/
 	@ApiOperation("修改字典表")
 	@ApiImplicitParam(name = "CodeEditParam ", value = "修改字典表", dataType = "CodeEditParam")
-	@PreAuthorize("hasPermission('/admin/code',  'admin:code:edit')")
+	//@PreAuthorize("hasPermission('/admin/code',  'admin:code:edit')")
 	@EventLog(message = "修改字典表", businessType = EventLogEnum.UPDATE)
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody CodeEditParam codeEditParam) {
@@ -122,7 +122,7 @@ public class CodeController extends BaseController<CodePageQueryParam, CodeEntit
 	*/
 	@ApiOperation("删除字典表")
 	@ApiImplicitParam(name = "codeId", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/code',  'admin:code:delete')")
+	//@PreAuthorize("hasPermission('/admin/code',  'admin:code:delete')")
 	@EventLog(message = "删除字典表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{codeIds}")
 	public ResObject delete(@PathVariable String[] codeIds) {
@@ -134,7 +134,7 @@ public class CodeController extends BaseController<CodePageQueryParam, CodeEntit
 	*/
 	@ApiOperation("通过主键删除字典表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
-	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
+	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "通过主键删除字典表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
@@ -145,7 +145,7 @@ public class CodeController extends BaseController<CodePageQueryParam, CodeEntit
 	* 导出字典表
 	*/
 	@ApiOperation("导出字典表")
-	@PreAuthorize("hasPermission('/admin/code',  'admin:code:export')")
+	//@PreAuthorize("hasPermission('/admin/code',  'admin:code:export')")
 	@SneakyThrows
 	@EventLog(message = "导出字典表", businessType = EventLogEnum.EXPORT)
 	@PostMapping(value = "/exportXls")
@@ -158,7 +158,7 @@ public class CodeController extends BaseController<CodePageQueryParam, CodeEntit
 	* 状态启用/停用
 	*/
 	@ApiOperation("状态启用/停用字典表")
-	@PreAuthorize("hasPermission('/admin/code',  'admin:code:changeStatus')")
+	//@PreAuthorize("hasPermission('/admin/code',  'admin:code:changeStatus')")
 	@SneakyThrows
 	@EventLog(message = "状态启用/停用字典表", businessType = EventLogEnum.EXPORT)
 	@PostMapping("/changeStatus")

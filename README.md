@@ -16,8 +16,7 @@ mvn  clean package -D maven.test.skip=true
 - lombok
 - mapstruct
 - redis
-- lombok
-
+- mysql5.0
 ### 功能介绍
 - 用户管理: 提供系统用户的管理
 - 角色管理: 分配角色的菜单权限，可根据部门设置角色的数据权限

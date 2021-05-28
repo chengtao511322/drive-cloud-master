@@ -47,4 +47,8 @@ public class PostPageQueryParam extends BasePageQueryParam {
 	// 更新时间
 	private LocalDateTime updateTime;
 
+
+	private String vaguePostCodeSearch;
+	private String vaguePostNameSearch;
+
 }

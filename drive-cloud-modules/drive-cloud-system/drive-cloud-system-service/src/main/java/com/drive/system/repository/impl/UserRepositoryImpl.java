@@ -8,7 +8,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
+import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.constant.CacheConstants;
+import com.drive.common.core.enums.StatusEnum;
 import com.drive.common.redis.service.RedisService;
 import com.drive.system.pojo.UserInfo;
 import com.drive.system.pojo.dto.UserEditParam;
@@ -55,7 +57,14 @@ public class UserRepositoryImpl extends BaseController implements UserRepository
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
         Page<UserEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         QueryWrapper queryWrapper = this.getQueryWrapper(userMapStruct, param);
+        queryWrapper.eq("d.status", StatusEnum.ENABLE.getCode());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueUserNameSearch()),"u.user_name",param.getVagueUserNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNickNameSearch()),"u.nick_name",param.getVagueNickNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"u.phone",param.getVaguePhoneSearch());
         IPage<UserEntity> pageList = userService.getUserList(page, queryWrapper);
+        if (pageList.getRecords().isEmpty()){
+            return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
+        }
         //Page<UserVo> userVoPage = userMapStruct.toVoList(pageList);
        // log.info(this.getClass() + "pageList-方法请求结果{}",userVoPage);
         return R.success(pageList);
