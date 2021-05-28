@@ -14,6 +14,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * @author : chentao
+ * @createdDate : 2021/05/26
+ * @updatedDate
+ * 初始化定时任务,根据定时任务的stState,当值为1时，项目启动就开始加载定时任务
+ *
+ */
 @Slf4j
 @Component
 public class StartTaskListener implements ApplicationListener<ApplicationStartedEvent> {
@@ -27,7 +34,7 @@ public class StartTaskListener implements ApplicationListener<ApplicationStarted
         List<SysTaskEntity> taskList = sysTaskService.list();
         for (SysTaskEntity sysTaskEntity : taskList) {
             //开机时启动
-            if(sysTaskEntity.getStState().equals("1")){
+            if(sysTaskEntity.getStState() != null && sysTaskEntity.getStState().equals("1")){
                 Class clazz = null;
                 try {
                     clazz = Class.forName(sysTaskEntity.getStJobClass());

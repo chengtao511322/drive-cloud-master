@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.admin.mapper.QuestionBankMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.QuestionBankEntity">
+        <id column="id" property="id" />
+        <result column="question_no" property="questionNo" />
+        <result column="subject_type" property="subjectType" />
+        <result column="question_chapter" property="questionChapter" />
+        <result column="question_type" property="questionType" />
+        <result column="media_url" property="mediaUrl" />
+        <result column="question_content" property="questionContent" />
+        <result column="is_multiple_answer" property="isMultipleAnswer" />
+        <result column="answer_time_limit" property="answerTimeLimit" />
+        <result column="answer_remarks" property="answerRemarks" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="difficulty" property="difficulty" />
+        <result column="is_view" property="isView" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, question_no, subject_type, question_chapter, question_type, media_url, question_content, is_multiple_answer, answer_time_limit, answer_remarks, create_user, create_time, update_user, update_time, difficulty, is_view
+    </sql>
+
+</mapper>
