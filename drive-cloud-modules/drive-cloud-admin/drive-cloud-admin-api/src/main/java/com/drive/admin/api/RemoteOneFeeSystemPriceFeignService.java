@@ -22,7 +22,6 @@ public interface RemoteOneFeeSystemPriceFeignService {
 
     @GetMapping("/oneFeeSystemPrice/{id}")
     ResObject get(@PathVariable(value = "id") String id);
-
     @PostMapping("/oneFeeSystemPrice/getServicePackageTree")
     ResObject<List<TreeNodeCategoryDto>> getServicePackageTree(@RequestBody OneFeeSystemPriceEditParam oneFeeSystemPriceEditParam);
 }
