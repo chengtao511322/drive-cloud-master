@@ -48,8 +48,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             log.info("登录用户：{} 已被停用.", username);
             throw new CustomException("您的账号：" + username + " 已停用!");
         }
-
+        // 获取权限
         Set<String> permissions = userService.getMenuPermission(user.getUserId());
+        // 获取角色
         Set<String> roles = userService.getRolePermission(user.getUserId());
 
         Set<String> dbAuthsSet = new HashSet<>();

@@ -4,8 +4,12 @@ import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.drive.admin.api.RemoteCodeFeignService;
+import com.drive.admin.pojo.dto.CodePageQueryParam;
+import com.drive.admin.pojo.vo.CodeVo;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
+import com.drive.common.core.biz.ResCodeEnum;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.enums.EventLogEnum;
@@ -15,11 +19,13 @@ import com.drive.common.log.annotation.EventLog;
 import com.drive.system.pojo.dto.DeptEditParam;
 import com.drive.system.pojo.dto.DeptPageQueryParam;
 import com.drive.system.pojo.entity.DeptEntity;
+import com.drive.system.pojo.entity.DictItemEntity;
 import com.drive.system.pojo.entity.RoleDeptEntity;
 import com.drive.system.pojo.vo.DeptVo;
 import com.drive.system.pojo.vo.RoleDeptVo;
 import com.drive.system.repository.UserRepository;
 import com.drive.system.service.DeptService;
+import com.drive.system.service.DictItemService;
 import com.drive.system.service.RoleDeptService;
 import com.drive.system.service.mapstruct.DeptMapStruct;
 import io.swagger.annotations.Api;
@@ -29,6 +35,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -60,6 +67,12 @@ public class DeptController extends BaseController<DeptPageQueryParam, DeptEntit
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RemoteCodeFeignService remoteCodeFeignService;
+
+    @Autowired
+    private DictItemService dictItemService;
+
     /**
      * 部门 分页列表
      */
@@ -71,6 +84,27 @@ public class DeptController extends BaseController<DeptPageQueryParam, DeptEntit
         IPage<DeptEntity> pageList = deptService.page(page, this.getQueryWrapper(deptMapStruct, param));
         Page<DeptVo> deptVoPage = deptMapStruct.toVoList(pageList);
         return R.success(deptVoPage);
+    }
+    @ApiOperation("同步数据")
+    @Transactional
+    @GetMapping(value = "/synData")
+    public ResObject synData() {
+        CodePageQueryParam codePageQueryParam = new CodePageQueryParam();
+        codePageQueryParam.setCategory("TRADE_TYPE");
+        ResObject<List<CodeVo>> codeVoResObject = remoteCodeFeignService.findList(codePageQueryParam);
+        List<CodeVo> codeVoList = null;
+        if (codeVoResObject.getCode().equals(ResCodeEnum.SUCCESS.getCode())){
+            codeVoList = codeVoResObject.getData();
+        }
+        codeVoList.stream().forEach((item) ->{
+            DictItemEntity dictItem = new DictItemEntity();
+            dictItem.setDictCode("trade_type");
+            dictItem.setItemName(item.getDisText());
+            dictItem.setItemValue(item.getCodeValue());
+            dictItem.setStatus("0");
+            dictItemService.save(dictItem);
+        });
+        return R.success();
     }
 
 

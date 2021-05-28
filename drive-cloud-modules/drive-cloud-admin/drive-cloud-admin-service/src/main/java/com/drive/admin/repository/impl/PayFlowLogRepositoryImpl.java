@@ -60,11 +60,20 @@ public class  PayFlowLogRepositoryImpl extends BaseController<PayFlowLogPageQuer
         // 条件查询
         QueryWrapper queryWrapper = this.getQueryWrapper(payFlowLogMapStruct, param);
 
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueOrderNoSearch()),"order_no",param.getVagueOrderNoSearch());
         //  模糊查询
-        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueThirdOrderNoSearch()),"third_order_no",param.getVagueThirdOrderNoSearch());
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
+        }
+        // 创建时间
+        if (param.getCreateArrSearch() != null && param.getCreateArrSearch().length > 0){
+            queryWrapper.between("create_time",param.getCreateArrSearch()[0],param.getCreateArrSearch()[1]);
+        }
+        // 支付时间
+        if (param.getPayTimeArrSearch() != null && param.getPayTimeArrSearch().length > 0){
+            queryWrapper.between("pay_time",param.getPayTimeArrSearch()[0],param.getPayTimeArrSearch()[1]);
         }
         IPage<PayFlowLogEntity> pageList = payFlowLogService.page(page, queryWrapper);
         if (pageList.getRecords().size() <= 0){

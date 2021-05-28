@@ -50,4 +50,6 @@ public class RolePageQueryParam extends BasePageQueryParam {
 	// 更新时间
 	private LocalDateTime updateTime;
 
+	private String vagueRoleNameSearch;
+
 }

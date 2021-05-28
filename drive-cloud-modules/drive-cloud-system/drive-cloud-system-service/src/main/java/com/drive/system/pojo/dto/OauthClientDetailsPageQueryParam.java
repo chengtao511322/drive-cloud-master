@@ -47,4 +47,6 @@ public class OauthClientDetailsPageQueryParam extends BasePageQueryParam {
 	// 是否登录时跳过授权
 	private Integer autoapprove;
 
+	private String vagueClientIdSearch;
+
 }

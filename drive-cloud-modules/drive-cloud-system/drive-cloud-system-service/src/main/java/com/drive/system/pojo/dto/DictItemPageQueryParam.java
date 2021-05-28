@@ -47,4 +47,8 @@ public class DictItemPageQueryParam extends BasePageQueryParam {
 	// 更新时间
 	private LocalDateTime updateTime;
 
+	private String vagueItemNameSearch;
+
+	private String vagueItemValueSearch;
+
 }

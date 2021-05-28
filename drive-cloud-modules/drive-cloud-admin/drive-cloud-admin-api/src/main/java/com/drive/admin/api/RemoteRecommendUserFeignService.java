@@ -33,7 +33,7 @@ public interface RemoteRecommendUserFeignService {
      * @return
      */
     // @ApiOperation("推广人员信息表列表")
-    @PostMapping(value = "/recommendUser/getRecommendUserByChannelManagerId/{channelManagerId}")
+    @GetMapping(value = "/recommendUser/getRecommendUserByChannelManagerId/{channelManagerId}")
     ResObject<List<RecommendUserVo>> getRecommendUserByChannelManagerId(@PathVariable(value = "channelManagerId") String channelManagerId);
 
 }

@@ -1,6 +1,8 @@
 package com.drive.system.controller;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.common.core.base.BaseController;
@@ -55,7 +57,10 @@ public class PostController extends BaseController<PostPageQueryParam, PostEntit
     public ResObject pageList(@Valid PostPageQueryParam param) {
 
         Page<PostEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<PostEntity> pageList = postService.page(page, this.getQueryWrapper(postMapStruct, param));
+        QueryWrapper queryWrapper = this.getQueryWrapper(postMapStruct, param);
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePostCodeSearch()),"post_code",param.getVaguePostCodeSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePostNameSearch()),"post_name",param.getVaguePostNameSearch());
+        IPage<PostEntity> pageList = postService.page(page,queryWrapper );
         Page<PostVo> postVoPage = postMapStruct.toVoList(pageList);
         return R.success(postVoPage);
     }

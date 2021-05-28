@@ -35,7 +35,7 @@ import com.drive.admin.repository.WalletSettlementDetailRepository;
  *
  * @author chentao
  */
-@Api(tags = "管理")
+@Api(tags = "钱包清算明细管理")
 @Slf4j
 @RestController
 @RequestMapping("/walletSettlementDetail")
@@ -54,7 +54,7 @@ public class WalletSettlementDetailController extends BaseController<WalletSettl
 	/**
 	*  分页列表
 	*/
-	@ApiOperation("分页列表")
+	@ApiOperation("钱包清算明细分页列表")
 	@PreAuthorize("hasPermission('/admin/walletSettlementDetail',  'admin:walletSettlementDetail:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid @RequestBody WalletSettlementDetailPageQueryParam param) {
@@ -63,7 +63,7 @@ public class WalletSettlementDetailController extends BaseController<WalletSettl
 	/**
 	*  列表
 	*/
-	@ApiOperation("列表")
+	@ApiOperation("钱包清算明细列表")
 	@PreAuthorize("hasPermission('/admin/walletSettlementDetail',  'admin:walletSettlementDetail:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid @RequestBody WalletSettlementDetailPageQueryParam param) {
@@ -73,7 +73,7 @@ public class WalletSettlementDetailController extends BaseController<WalletSettl
 	/**
 	* 获取
 	*/
-	@ApiOperation("获取")
+	@ApiOperation("获取钱包清算明细")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	@PreAuthorize("hasPermission('/admin/walletSettlementDetail',  'admin:walletSettlementDetail:query')")
 	@GetMapping("/{id}")
@@ -84,7 +84,7 @@ public class WalletSettlementDetailController extends BaseController<WalletSettl
 	/**
 	 * 条件查询获取
 	 */
-	@ApiOperation("条件查询获取")
+	@ApiOperation("钱包清算明细条件查询获取")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	@PreAuthorize("hasPermission('/admin/walletSettlementDetail',  'admin:walletSettlementDetail:query')")
 	@PostMapping("/getInfo")
@@ -96,7 +96,7 @@ public class WalletSettlementDetailController extends BaseController<WalletSettl
 	* 新增
 	 * author:xiaoguo
 	*/
-	@ApiOperation("新增")
+	@ApiOperation("新增钱包清算明细")
 	@ApiImplicitParam(name = "WalletSettlementDetailEditParam ", value = "新增", dataType = "WalletSettlementDetailEditParam")
 	@PreAuthorize("hasPermission('/admin/walletSettlementDetail',  'admin:walletSettlementDetail:add')")
 	@EventLog(message = "新增", businessType = EventLogEnum.CREATE)
@@ -108,7 +108,7 @@ public class WalletSettlementDetailController extends BaseController<WalletSettl
 	/**
 	* 修改
 	*/
-	@ApiOperation("修改")
+	@ApiOperation("修改钱包清算明细")
 	@ApiImplicitParam(name = "WalletSettlementDetailEditParam ", value = "修改", dataType = "WalletSettlementDetailEditParam")
 	@PreAuthorize("hasPermission('/admin/walletSettlementDetail',  'admin:walletSettlementDetail:edit')")
 	@EventLog(message = "修改", businessType = EventLogEnum.UPDATE)
@@ -120,7 +120,7 @@ public class WalletSettlementDetailController extends BaseController<WalletSettl
 	/**
 	* 删除
 	*/
-	@ApiOperation("删除")
+	@ApiOperation("删除钱包清算明细")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
 	@PreAuthorize("hasPermission('/admin/walletSettlementDetail',  'admin:walletSettlementDetail:delete')")
 	@EventLog(message = "删除", businessType = EventLogEnum.DELETE)
@@ -135,7 +135,7 @@ public class WalletSettlementDetailController extends BaseController<WalletSettl
 	@ApiOperation("通过主键删除")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
 	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
-	@EventLog(message = "通过主键删除", businessType = EventLogEnum.DELETE)
+	@EventLog(message = "通过主键删除钱包清算明细", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
 		return walletSettlementDetailRepository.deleteById(id);
@@ -144,7 +144,7 @@ public class WalletSettlementDetailController extends BaseController<WalletSettl
 	/**
 	* 导出
 	*/
-	@ApiOperation("导出")
+	@ApiOperation("导出钱包清算明细")
 	@PreAuthorize("hasPermission('/admin/walletSettlementDetail',  'admin:walletSettlementDetail:export')")
 	@SneakyThrows
 	@EventLog(message = "导出", businessType = EventLogEnum.EXPORT)

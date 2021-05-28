@@ -5,13 +5,14 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.drive.admin.enums.OperatorEnum;
 import com.drive.admin.pojo.dto.AccountFlowDetailEditParam;
 import com.drive.admin.pojo.dto.AccountFlowDetailInstallParam;
 import com.drive.admin.pojo.dto.AccountFlowDetailPageQueryParam;
 import com.drive.admin.pojo.entity.AccountFlowDetailEntity;
 import com.drive.admin.pojo.vo.AccountFlowDetailVo;
 import com.drive.admin.repository.AccountFlowDetailRepository;
-import com.drive.admin.service.AccountFlowDetailService;
+import com.drive.admin.service.*;
 import com.drive.admin.service.mapstruct.AccountFlowDetailMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
@@ -27,8 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-                                                                
+
 /**
  *
  * 平台账务流水明细 服务类
@@ -45,6 +47,21 @@ public class  AccountFlowDetailRepositoryImpl extends BaseController<AccountFlow
     //  平台账务流水明细 DO-DTO转化
     @Autowired
     private AccountFlowDetailMapStruct accountFlowDetailMapStruct;
+
+    @Autowired
+    private StudentInfoService studentInfoService;
+
+    @Autowired
+    private CoachInfoService coachInfoService;
+
+    @Autowired
+    private ServiceInfoService serviceInfoService;
+
+    @Autowired
+    private DriveSchoolService driveSchoolService;
+
+    @Autowired
+    private OperatorService operatorService;
 
     /*
      *
@@ -74,6 +91,40 @@ public class  AccountFlowDetailRepositoryImpl extends BaseController<AccountFlow
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<AccountFlowDetailVo> accountFlowDetailVoPage = accountFlowDetailMapStruct.toVoList(pageList);
+        accountFlowDetailVoPage.getRecords().stream().forEach((item) ->{
+            // 学员
+            if (item.getIncomeUserType().equals(OperatorEnum.STUDENT.getCode())){
+                Optional.ofNullable(studentInfoService.getById(item.getIncomeUserId())).ifPresent(u ->{item.setIncomeUserName(u.getRealName());});
+            }
+            // 教练
+            if (item.getIncomeUserType().equals(OperatorEnum.INCOME_USER_TYPE_COACH.getCode())){
+                Optional.ofNullable(coachInfoService.getById(item.getIncomeUserId())).ifPresent(u ->{item.setIncomeUserName(u.getRealName());});
+            }
+            // 客服
+            if (item.getIncomeUserType().equals(OperatorEnum.SERVICE.getCode())){
+                Optional.ofNullable(serviceInfoService.getById(item.getIncomeUserId())).ifPresent(u ->{item.setIncomeUserName(u.getRealName());});
+            }
+            // 驾校
+            if (item.getIncomeUserType().equals(OperatorEnum.SERVICE.getCode())){
+                Optional.ofNullable(serviceInfoService.getById(item.getIncomeUserId())).ifPresent(u ->{item.setIncomeUserName(u.getRealName());});
+            }
+            // 平台支付宝
+            if (item.getIncomeUserType().equals(OperatorEnum.OPERATOR_ALI.getCode())){
+                item.setIncomeUserName(OperatorEnum.OPERATOR_ALI.getInfo());
+            }
+            // 平台支付宝
+            if (item.getIncomeUserType().equals(OperatorEnum.OPERATOR_WECHAT.getCode())){
+                item.setIncomeUserName(OperatorEnum.OPERATOR_WECHAT.getInfo());
+            }
+            // 驾校
+            if (item.getIncomeUserType().equals(OperatorEnum.DRIVE_SCHOOL.getCode())){
+                Optional.ofNullable(driveSchoolService.getById(item.getIncomeUserId())).ifPresent(u ->{item.setIncomeUserName(u.getSchoolName());});
+            }
+            // 运营商
+            if (item.getIncomeUserType().equals(OperatorEnum.OPERATOR.getCode())){
+                Optional.ofNullable(operatorService.getById(item.getIncomeUserId())).ifPresent(u ->{item.setIncomeUserName(u.getName());});
+            }
+        });
         log.info(this.getClass() + "pageList-方法请求结果{}",accountFlowDetailVoPage);
         return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),accountFlowDetailVoPage);
     }

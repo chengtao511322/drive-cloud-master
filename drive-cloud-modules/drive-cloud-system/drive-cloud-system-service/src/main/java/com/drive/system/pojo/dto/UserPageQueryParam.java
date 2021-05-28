@@ -78,5 +78,6 @@ public class UserPageQueryParam extends BasePageQueryParam {
 
 
 	private String vagueUserNameSearch;
+	private String vagueNickNameSearch;
 
 }

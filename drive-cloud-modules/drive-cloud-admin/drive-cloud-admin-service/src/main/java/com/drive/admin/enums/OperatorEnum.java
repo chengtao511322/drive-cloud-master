@@ -4,7 +4,7 @@ package com.drive.admin.enums;
 /**
  * 常用状态枚举
  *
- * @Author JoyoDuan
+ * @Author xiaoguo
  * @Date 2021/1/6
  */
 public enum OperatorEnum {
@@ -16,11 +16,15 @@ public enum OperatorEnum {
     STAY_PAY("1","待支付"),
     YET_PAY_SUCCESS("2","已支付"),
 
-    C1 ("1","C1"),
+    C1("1","C1"),
 
 
     FLOW_TYPE_PAY("1","支付流水"),
     AFD_COACH_TIEM_ROYALTY_COST("3","课时教练提成费用"),
+    OPERATOR_ALI("4","平台支付宝"),
+    OPERATOR_WECHAT("5","平台微信"),
+    DRIVE_SCHOOL("6","驾校"),
+    OPERATOR("7","运营商"),
     INCOME_USER_TYPE_COACH("2","教练"),
     STUDENT("1","学员"),
     SERVICE("3","客服"),
@@ -31,9 +35,6 @@ public enum OperatorEnum {
     PLATFORM_WALLET_OPERATOR_PAY("35","运营商支出"),
     AFD_SCHOOL_ENROLL_COST ("1","学车报名驾校提成"),
     PLATFORM_WALLET_OPERATOR ("34","运营商收入"),
-
-
-
     ;
 
     private final String code;

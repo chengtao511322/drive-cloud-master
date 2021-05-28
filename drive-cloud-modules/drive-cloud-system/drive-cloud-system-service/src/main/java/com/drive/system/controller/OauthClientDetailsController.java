@@ -1,5 +1,7 @@
 package com.drive.system.controller;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.common.core.base.BaseController;
@@ -51,7 +53,9 @@ public class OauthClientDetailsController extends BaseController<OauthClientDeta
 	public ResObject pageList(@Valid OauthClientDetailsPageQueryParam param) {
 		param.setSortColumn("client_id");
 		Page<OauthClientDetailsEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-		IPage<OauthClientDetailsEntity> pageList = oauthClientDetailsService.page(page, this.getQueryWrapper(oauthClientDetailsMapStruct, param));
+		QueryWrapper queryWrapper = this.getQueryWrapper(oauthClientDetailsMapStruct, param);
+		queryWrapper.like(StrUtil.isNotEmpty(param.getVagueClientIdSearch()),"client_id",param.getVagueClientIdSearch());
+		IPage<OauthClientDetailsEntity> pageList = oauthClientDetailsService.page(page, queryWrapper);
 		Page<OauthClientDetailsVo> oauthClientDetailsVoPage = oauthClientDetailsMapStruct.toVoList(pageList);
 		return R.success(oauthClientDetailsVoPage);
 	}

@@ -1,6 +1,8 @@
 package com.drive.system.controller;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.common.core.base.BaseController;
@@ -56,7 +58,9 @@ public class RoleController extends BaseController<RolePageQueryParam, RoleEntit
     public ResObject pageList(@Valid RolePageQueryParam param) {
 
         Page<RoleEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<RoleEntity> pageList = roleService.page(page, this.getQueryWrapper(roleMapStruct, param));
+        QueryWrapper queryWrapper = this.getQueryWrapper(roleMapStruct, param);
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueRoleNameSearch()),"role_name",param.getVagueRoleNameSearch());
+        IPage<RoleEntity> pageList = roleService.page(page, queryWrapper);
         Page<RoleVo> roleVoPage = roleMapStruct.toVoList(pageList);
         return R.success(roleVoPage);
     }

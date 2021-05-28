@@ -3,6 +3,7 @@ package com.drive.admin.controller;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiImplicitParams;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +36,7 @@ import com.drive.admin.repository.WalletSettlementSummaryRepository;
  *
  * @author chentao
  */
-@Api(tags = "管理")
+@Api(tags = "钱包清算汇总管理")
 @Slf4j
 @RestController
 @RequestMapping("/walletSettlementSummary")
@@ -54,7 +55,7 @@ public class WalletSettlementSummaryController extends BaseController<WalletSett
 	/**
 	*  分页列表
 	*/
-	@ApiOperation("分页列表")
+	@ApiOperation("钱包清算汇总分页列表")
 	@PreAuthorize("hasPermission('/admin/walletSettlementSummary',  'admin:walletSettlementSummary:query')")
 	@PostMapping(value = "/pageList")
 	public ResObject pageList(@Valid @RequestBody WalletSettlementSummaryPageQueryParam param) {
@@ -63,7 +64,7 @@ public class WalletSettlementSummaryController extends BaseController<WalletSett
 	/**
 	*  列表
 	*/
-	@ApiOperation("列表")
+	@ApiOperation("钱包清算汇总列表")
 	@PreAuthorize("hasPermission('/admin/walletSettlementSummary',  'admin:walletSettlementSummary:query')")
 	@PostMapping(value = "/findList")
 	public ResObject findList(@Valid @RequestBody WalletSettlementSummaryPageQueryParam param) {
@@ -73,7 +74,7 @@ public class WalletSettlementSummaryController extends BaseController<WalletSett
 	/**
 	* 获取
 	*/
-	@ApiOperation("获取")
+	@ApiOperation("钱包清算汇总获取")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	@PreAuthorize("hasPermission('/admin/walletSettlementSummary',  'admin:walletSettlementSummary:query')")
 	@GetMapping("/{id}")
@@ -81,10 +82,46 @@ public class WalletSettlementSummaryController extends BaseController<WalletSett
 		return walletSettlementSummaryRepository.getById(id);
 	}
 
+	@ApiOperation("钱包清算汇总审核")
+	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
+	//@PreAuthorize("hasPermission('/admin/walletSettlementSummary',  'admin:walletSettlementSummary:query')")
+	@GetMapping("/examine/{id}")
+	public ResObject examine(@PathVariable String id) {
+		return walletSettlementSummaryRepository.examine(id);
+	}
+	@ApiOperation("钱包清算汇总驳回")
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType="query", name = "id",value = "钱包清算ID", required = true, dataType = "String"),
+			@ApiImplicitParam(paramType="query", name = "cause",value = "驳回理由",required = true, dataType = "String"),
+	})
+	//@PreAuthorize("hasPermission('/admin/walletSettlementSummary',  'admin:walletSettlementSummary:query')")
+	@PostMapping("/unusual")
+	ResObject unusual(@RequestBody WalletSettlementSummaryEditParam walletSettlementSummaryEditParam){
+		return walletSettlementSummaryRepository.unusual(walletSettlementSummaryEditParam);
+	}
+
+	@ApiOperation("钱包清算汇总状态操作")
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType="query", name = "id",value = "钱包清算ID", required = true, dataType = "String"),
+			@ApiImplicitParam(paramType="query", name = "cause",value = "驳回理由",required = false, dataType = "String"),
+			@ApiImplicitParam(paramType="query", name = "status",value = "操作状态",required = true, dataType = "String"),
+	})
+	@PostMapping("/operationStatus")
+	ResObject operationStatus(@RequestBody WalletSettlementSummaryEditParam walletSettlementSummaryEditParam){
+		return walletSettlementSummaryRepository.operationStatus(walletSettlementSummaryEditParam);
+	}
+	@ApiOperation("钱包清算汇总清算操作")
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType="query", name = "id",value = "钱包清算ID", required = true, dataType = "String"),
+	})
+	@PostMapping("/executeSingleSettlement")
+	ResObject executeSingleSettlement(@RequestBody WalletSettlementSummaryEditParam walletSettlementSummaryEditParam) throws Exception {
+		return walletSettlementSummaryRepository.executeSingleSettlement(walletSettlementSummaryEditParam);
+	}
 	/**
 	 * 条件查询获取
 	 */
-	@ApiOperation("条件查询获取")
+	@ApiOperation("钱包清算汇总条件查询获取")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	@PreAuthorize("hasPermission('/admin/walletSettlementSummary',  'admin:walletSettlementSummary:query')")
 	@PostMapping("/getInfo")
@@ -96,7 +133,7 @@ public class WalletSettlementSummaryController extends BaseController<WalletSett
 	* 新增
 	 * author:xiaoguo
 	*/
-	@ApiOperation("新增")
+	@ApiOperation("钱包清算汇总新增")
 	@ApiImplicitParam(name = "WalletSettlementSummaryEditParam ", value = "新增", dataType = "WalletSettlementSummaryEditParam")
 	@PreAuthorize("hasPermission('/admin/walletSettlementSummary',  'admin:walletSettlementSummary:add')")
 	@EventLog(message = "新增", businessType = EventLogEnum.CREATE)
@@ -108,7 +145,7 @@ public class WalletSettlementSummaryController extends BaseController<WalletSett
 	/**
 	* 修改
 	*/
-	@ApiOperation("修改")
+	@ApiOperation("钱包清算汇总修改")
 	@ApiImplicitParam(name = "WalletSettlementSummaryEditParam ", value = "修改", dataType = "WalletSettlementSummaryEditParam")
 	@PreAuthorize("hasPermission('/admin/walletSettlementSummary',  'admin:walletSettlementSummary:edit')")
 	@EventLog(message = "修改", businessType = EventLogEnum.UPDATE)
@@ -120,19 +157,19 @@ public class WalletSettlementSummaryController extends BaseController<WalletSett
 	/**
 	* 删除
 	*/
-	@ApiOperation("删除")
+	@ApiOperation("删除钱包清算汇总")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
 	@PreAuthorize("hasPermission('/admin/walletSettlementSummary',  'admin:walletSettlementSummary:delete')")
 	@EventLog(message = "删除", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable String[] ids) {
-		return R.toRes(walletSettlementSummaryService.removeByIds(Arrays.asList(ids)));
+		return walletSettlementSummaryRepository.deleteByIds(ids);
 	}
 
 	/**
 	* 通过主键删除
 	*/
-	@ApiOperation("通过主键删除")
+	@ApiOperation("通过主键删除钱包清算汇总")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
 	@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
 	@EventLog(message = "通过主键删除", businessType = EventLogEnum.DELETE)
@@ -144,7 +181,7 @@ public class WalletSettlementSummaryController extends BaseController<WalletSett
 	/**
 	* 导出
 	*/
-	@ApiOperation("导出")
+	@ApiOperation("导出钱包清算汇总")
 	@PreAuthorize("hasPermission('/admin/walletSettlementSummary',  'admin:walletSettlementSummary:export')")
 	@SneakyThrows
 	@EventLog(message = "导出", businessType = EventLogEnum.EXPORT)

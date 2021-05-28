@@ -82,6 +82,11 @@ public class AccountFlowPageQueryParam extends BasePageQueryParam {
 	@ApiModelProperty(value = "运营商id(数据权限标记)")
 	private String operatorId;
 	// 模糊查询字段
-	//private String vagueNameSearch
+	private String vagueOrderNoSearch;
+
+	// 创建时间
+	private String[] createArrSearch = new String[2];
+	// 支付时间
+	private String[] payTimeArrSearch = new String[2];
 
 }

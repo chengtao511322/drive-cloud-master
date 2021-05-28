@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @author xiaoguo
  */
 @Data
-public class DictItemVo {
+public class DictItemVo implements java.io.Serializable {
 
 
 	// 字典编码

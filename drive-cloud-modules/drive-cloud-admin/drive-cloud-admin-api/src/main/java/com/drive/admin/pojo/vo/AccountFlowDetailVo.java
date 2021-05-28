@@ -59,6 +59,7 @@ public class AccountFlowDetailVo {
 	// 收益人id
 	@Excel(name = "收益人id", width = 20)
 	private String incomeUserId;
+	private String incomeUserName;
 
 	// 创建时间
 	@Excel(name = "创建时间", width = 20)

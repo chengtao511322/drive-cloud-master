@@ -1,11 +1,14 @@
 package com.drive.system.controller;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
+import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.enums.EventLogEnum;
 import com.drive.common.data.utils.ExcelUtils;
 import com.drive.common.log.annotation.EventLog;
@@ -55,7 +58,13 @@ public class DictTypeController extends BaseController<DictTypePageQueryParam, D
     public ResObject pageList(@Valid DictTypePageQueryParam param) {
 
         Page<DictTypeEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<DictTypeEntity> pageList = dictTypeService.page(page, this.getQueryWrapper(dictTypeMapStruct, param));
+        QueryWrapper queryWrapper = this.getQueryWrapper(dictTypeMapStruct, param);
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueDictCodeSearch()),"dict_code",param.getVagueDictCodeSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueDictNameSearch()),"dict_name",param.getVagueDictNameSearch());
+        IPage<DictTypeEntity> pageList = dictTypeService.page(page, queryWrapper);
+        if (pageList.getRecords().isEmpty()){
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
+        }
         Page<DictTypeVo> dictTypeVoPage = dictTypeMapStruct.toVoList(pageList);
         return R.success(dictTypeVoPage);
     }

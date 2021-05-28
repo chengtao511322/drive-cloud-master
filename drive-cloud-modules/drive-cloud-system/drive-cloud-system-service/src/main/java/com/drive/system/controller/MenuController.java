@@ -1,6 +1,8 @@
 package com.drive.system.controller;
 
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.common.core.base.BaseController;
@@ -58,9 +60,10 @@ public class MenuController extends BaseController<MenuPageQueryParam, MenuEntit
     @PreAuthorize("hasPermission('/menu',  'system:menu:query')")
     @GetMapping(value = "/pageList")
     public ResObject pageList(@Valid MenuPageQueryParam param) {
-
         Page<MenuEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        IPage<MenuEntity> pageList = menuService.page(page, this.getQueryWrapper(menuMapStruct, param));
+        QueryWrapper queryWrapper = this.getQueryWrapper(menuMapStruct, param);
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueMenuNameSearch()),"menu_name",param.getVagueMenuNameSearch());
+        IPage<MenuEntity> pageList = menuService.page(page, queryWrapper);
         Page<MenuVo> menuVoPage = menuMapStruct.toVoList(pageList);
         return R.success(menuVoPage);
     }
