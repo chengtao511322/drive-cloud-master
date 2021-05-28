@@ -1,12 +1,10 @@
 package com.drive.admin.pojo.dto;
 
-import io.swagger.annotations.ApiModelProperty;
-import java.time.LocalDateTime;
 import com.drive.common.core.base.BasePageQueryParam;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 
 /**

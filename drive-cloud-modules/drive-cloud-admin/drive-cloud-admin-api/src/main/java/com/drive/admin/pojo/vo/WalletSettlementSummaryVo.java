@@ -1,10 +1,9 @@
 package com.drive.admin.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-
 import lombok.Data;
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -80,5 +79,14 @@ public class WalletSettlementSummaryVo {
 	// 开户行
 	@Excel(name = "开户行", width = 20)
 	private String openAccountBank;
+
+	// 教练手机号
+	private String coachPhone;
+	// 教练姓名
+	private String coachName;
+	// 学员手机
+	private String studentPhone;
+	// 学员姓名
+	private String userName;
 
 }

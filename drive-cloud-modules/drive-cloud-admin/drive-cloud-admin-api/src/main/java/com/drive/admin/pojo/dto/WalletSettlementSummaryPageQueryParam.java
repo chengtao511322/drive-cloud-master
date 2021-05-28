@@ -1,12 +1,11 @@
 package com.drive.admin.pojo.dto;
 
-import io.swagger.annotations.ApiModelProperty;
-import java.time.LocalDateTime;
 import com.drive.common.core.base.BasePageQueryParam;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -98,6 +97,11 @@ public class WalletSettlementSummaryPageQueryParam extends BasePageQueryParam {
 	@ApiModelProperty(value = "开户行")
 	private String openAccountBank;
 	// 模糊查询字段
-	//private String vagueNameSearch
+	private String vagueSubmitAccountSearch;
+	private String vagueSubmitRealNameSearch;
+
+	private String[] examineTimeArrSearch;
+	private String[] settleAccountsApplyTimeArrSearch ;
+	private String[] settleAccountsCompleteTimeArrSearch ;
 
 }

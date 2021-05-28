@@ -1,14 +1,10 @@
 package com.drive.admin.pojo.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import java.time.LocalDateTime;
 import lombok.Data;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import java.time.LocalDateTime;
 
 
 /**
@@ -17,37 +13,36 @@ import javax.validation.constraints.Pattern;
  * @author chentao
  */
 @Data
-public class SysParamInstallParam {
+public class SysParamEditParam {
 
 
     // 参数枚举编号
-    @NotNull
-    @Pattern(regexp = "^\\d{6}$",message = "枚举编号id需位6为数字如 000001")
+    @NotBlank(message = "参数枚举编号不能为空")
     @ApiModelProperty(value = "参数枚举编号")
     private String prmEnumId;
 
     // 参数名称
-    @NotNull(message = "参数名称不能为空")
+    @NotBlank(message = "参数名称不能为空")
     @ApiModelProperty(value = "参数名称")
     private String prmName;
 
     // 参数中文涵义
-    @NotNull(message = "参数中文涵义不能为空")
+    @NotBlank(message = "参数中文涵义不能为空")
     @ApiModelProperty(value = "参数中文涵义")
     private String prmCnName;
 
     // 参数数值
-    @NotNull(message = "参数数值不能为空")
+    @NotBlank(message = "参数数值不能为空")
     @ApiModelProperty(value = "参数数值")
     private String prmValue;
 
     // 参数备注
-    @NotNull(message = "参数备注不能为空")
+    @NotBlank(message = "参数备注不能为空")
     @ApiModelProperty(value = "参数备注")
     private String prmRemark;
 
     // 参数状态，0-正常 1-停用
-    @NotNull(message = "参数状态，0-正常 1-停用不能为空")
+    @NotBlank(message = "参数状态，0-正常 1-停用不能为空")
     @ApiModelProperty(value = "参数状态，0-正常 1-停用")
     private String prmStatus;
 

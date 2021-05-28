@@ -1,12 +1,11 @@
 package com.drive.admin.pojo.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import java.time.LocalDateTime;
 import lombok.Data;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 
 /**
@@ -97,6 +96,9 @@ public class WalletSettlementSummaryEditParam {
     @NotBlank(message = "开户行不能为空")
     @ApiModelProperty(value = "开户行")
     private String openAccountBank;
+
+    // 原因
+    private String cause;
 
 
 }

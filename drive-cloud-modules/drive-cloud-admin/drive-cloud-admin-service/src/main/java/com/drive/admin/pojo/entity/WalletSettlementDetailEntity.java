@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,6 +40,7 @@ public class WalletSettlementDetailEntity extends BaseEntity {
 
 
 	// 主键
+	@TableId(type= IdType.ID_WORKER)
 	private String id;
 
 	// 清算总表id
