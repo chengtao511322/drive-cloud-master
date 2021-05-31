@@ -8,22 +8,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.enums.StudyEnrollEnum;
 import com.drive.admin.pojo.dto.OneFeeSystemCoachStudentEditParam;
 import com.drive.admin.pojo.dto.OneFeeSystemCoachStudentPageQueryParam;
-import com.drive.admin.pojo.entity.CoachInfoEntity;
-import com.drive.admin.pojo.entity.OneFeeSystemCoachStudentEntity;
-import com.drive.admin.pojo.entity.StudentInfoEntity;
-import com.drive.admin.pojo.entity.StudentOrderEntity;
+import com.drive.admin.pojo.entity.*;
 import com.drive.admin.pojo.vo.OneFeeSystemCoachStudentVo;
 import com.drive.admin.repository.OneFeeSystemCoachStudentRepository;
-import com.drive.admin.service.CoachInfoService;
-import com.drive.admin.service.OneFeeSystemCoachStudentService;
-import com.drive.admin.service.StudentInfoService;
-import com.drive.admin.service.StudentOrderService;
+import com.drive.admin.service.*;
 import com.drive.admin.service.mapstruct.OneFeeSystemCoachStudentMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.utils.BeanConvertUtils;
+import com.drive.common.core.utils.StringUtils;
 import com.drive.common.data.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +55,8 @@ public class  OneFeeSystemCoachStudentRepositoryImpl extends BaseController<OneF
     private StudentInfoService studentInfoService;
     @Autowired
     private CoachInfoService coachInfoService;
+    @Autowired
+    private OneFeeSystemPriceService oneFeeSystemPriceService;
 
     /*
      *
@@ -74,8 +71,25 @@ public class  OneFeeSystemCoachStudentRepositoryImpl extends BaseController<OneF
     public ResObject pageList(OneFeeSystemCoachStudentPageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
         Page<OneFeeSystemCoachStudentEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-        QueryWrapper queryWrapper = this.getQueryWrapper(oneFeeSystemCoachStudentMapStruct, param);
-
+        //QueryWrapper queryWrapper = this.getQueryWrapper(oneFeeSystemCoachStudentMapStruct, param);
+        QueryWrapper queryWrapper = new QueryWrapper<>();
+        queryWrapper.setEntity((OneFeeSystemCoachStudentEntity)oneFeeSystemCoachStudentMapStruct.pageQueryParamToEntity(param));
+        //处理subject开头的排序字段问题
+        String sortColumn = param.getSortColumn();
+        if(StrUtil.isNotEmpty(sortColumn) && StrUtil.startWith(sortColumn,"subject")){
+            sortColumn = StringUtils.lowerCamelToLowerUnderscoreAdd(sortColumn,"subject");
+            if (param.getIsAsc()) {
+                queryWrapper.orderByAsc(sortColumn);
+            } else {
+                queryWrapper.orderByDesc(sortColumn);
+            }
+        }
+        String underSortColumn = StringUtils.lowerCamelToLowerUnderscore(sortColumn);
+        if (param.getIsAsc()) {
+            queryWrapper.orderByAsc(underSortColumn);
+        } else {
+            queryWrapper.orderByDesc(underSortColumn);
+        }
         // 用户手机号查询
         if (StrUtil.isNotEmpty(param.getVagueRealNameSearch()) || StrUtil.isNotEmpty(param.getVaguePhoneSearch())){
             List<StudentInfoEntity> studentInfoList = new ArrayList<>();
@@ -99,7 +113,7 @@ public class  OneFeeSystemCoachStudentRepositoryImpl extends BaseController<OneF
             queryWrapper.in("coach_id",coachInfoList.stream().map(CoachInfoEntity::getId).collect(Collectors.toList()));
         }
         // 订单号模糊查询
-        //queryWrapper.in(StrUtil.isNotEmpty(param.getVagueOrderNoSearch()),"order_no",param.getVagueOrderNoSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueOrderNoSearch()),"order_no",param.getVagueOrderNoSearch());
         IPage<OneFeeSystemCoachStudentEntity> pageList = oneFeeSystemCoachStudentService.page(page,queryWrapper);
         if (pageList.getRecords().size() <= 0){
             return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
@@ -110,6 +124,11 @@ public class  OneFeeSystemCoachStudentRepositoryImpl extends BaseController<OneF
             if (StrUtil.isNotEmpty(item.getStudentId())){
                 StudentInfoEntity studentInfo = studentInfoService.getById(item.getStudentId());
                 if (studentInfo != null)item.setStudentName(studentInfo.getRealName());
+            }
+            //原班型
+            if(StrUtil.isNotEmpty(item.getOriginalClassId())){
+                OneFeeSystemPriceEntity oneFeeSystemPriceInfo = oneFeeSystemPriceService.getById(item.getOriginalClassId());
+                if(oneFeeSystemPriceInfo != null)item.setOriginalClassName(oneFeeSystemPriceInfo.getName());
             }
         });
         log.info(this.getClass() + "pageList-方法请求结果{}",oneFeeSystemCoachStudentVoPage);

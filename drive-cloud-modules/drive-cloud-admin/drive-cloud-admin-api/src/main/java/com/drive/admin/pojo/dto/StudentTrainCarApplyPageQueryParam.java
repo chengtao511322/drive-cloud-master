@@ -248,4 +248,7 @@ public class StudentTrainCarApplyPageQueryParam extends BasePageQueryParam {
 	@ApiModelProperty(value = "学员姓名模糊查询字段")
 	private String vagueStudentNameSearch;
 
+	//课程开始时间段搜索
+	private String[] dateTimeSearchArr = new String[2];
+
 }
