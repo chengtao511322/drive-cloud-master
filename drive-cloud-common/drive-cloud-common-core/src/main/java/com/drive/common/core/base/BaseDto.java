@@ -16,11 +16,10 @@ import java.util.Map;
 @Data
 public class BaseDto implements Serializable {
 
-
     // 创建时间
     private LocalDateTime createTime;
 
-
+    // 修改时间
     private LocalDateTime updateTime;
     
 
