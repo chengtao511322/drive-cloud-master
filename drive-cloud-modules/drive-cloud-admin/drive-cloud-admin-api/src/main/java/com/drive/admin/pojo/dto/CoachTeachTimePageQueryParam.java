@@ -213,6 +213,9 @@ public class CoachTeachTimePageQueryParam extends BasePageQueryParam {
 
 	private String[] dateTimeSearchArr = new String[2];
 
+	//课程单号模糊
+	private String vagueIdSearch;
+
 
 
 }

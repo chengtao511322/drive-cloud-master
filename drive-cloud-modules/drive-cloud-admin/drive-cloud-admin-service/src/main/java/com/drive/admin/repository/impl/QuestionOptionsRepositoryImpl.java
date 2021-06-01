@@ -65,6 +65,8 @@ public class  QuestionOptionsRepositoryImpl extends BaseController<QuestionOptio
 
         //  模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueQuestionBankIdSearch()),"question_bank_id",param.getVagueQuestionBankIdSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueOptionContentSearch()),"option_content",param.getVagueOptionContentSearch());
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());

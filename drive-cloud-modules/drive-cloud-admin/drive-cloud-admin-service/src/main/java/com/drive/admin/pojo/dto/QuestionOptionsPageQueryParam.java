@@ -64,4 +64,10 @@ public class QuestionOptionsPageQueryParam extends BasePageQueryParam {
 	// 模糊查询字段
 	//private String vagueNameSearch
 
+	//模糊题号
+	private String vagueQuestionBankIdSearch;
+
+	//模糊选项
+	private String vagueOptionContentSearch;
+
 }

@@ -251,4 +251,7 @@ public class StudentTrainCarApplyPageQueryParam extends BasePageQueryParam {
 	//课程开始时间段搜索
 	private String[] dateTimeSearchArr = new String[2];
 
+	//预约单号模糊搜索
+	private String vagueTrainApplyNoSearch;
+
 }

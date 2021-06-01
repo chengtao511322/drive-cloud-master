@@ -89,6 +89,10 @@ public class  DriveSchoolRepositoryImpl extends BaseController<DriveSchoolPageQu
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
+        //驾校名称模糊
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueSchoolNameSearch()),"school_name",param.getVagueSchoolNameSearch());
+        //联系人名称模糊
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueContactsNameSearch()),"contacts",param.getVagueContactsNameSearch());
         //Optional.ofNullable(driveSchoolService.getById(item.getSchoolId())).ifPresent(u ->{item.setSchoolName(u.getSchoolName());});
         IPage<DriveSchoolEntity> pageList = driveSchoolService.page(page, queryWrapper);
         //Optional.ofNullable(pageList).orElse(page);

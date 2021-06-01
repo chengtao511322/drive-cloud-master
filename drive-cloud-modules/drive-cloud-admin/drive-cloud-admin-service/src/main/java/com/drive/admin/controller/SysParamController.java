@@ -106,7 +106,7 @@ public class SysParamController extends BaseController<SysParamPageQueryParam, S
 	@PostMapping
 	public ResObject save(@Valid @RequestBody SysParamInstallParam sysParamInstallParam) {
 		//创建人
-		sysParamInstallParam.setCreateUser(SecurityUtils.getUsername());
+		//sysParamInstallParam.setCreateUser(SecurityUtils.getUsername());
 		return sysParamRepository.save(sysParamInstallParam);
 	}
 
@@ -120,7 +120,7 @@ public class SysParamController extends BaseController<SysParamPageQueryParam, S
 	@PutMapping
 	public ResObject edit(@Valid @RequestBody SysParamEditParam sysParamEditParam) {
 		//更新人
-		sysParamEditParam.setUpdateUser(SecurityUtils.getUsername());
+		//sysParamEditParam.setUpdateUser(SecurityUtils.getUsername());
 		return sysParamRepository.update(sysParamEditParam);
 	}
 

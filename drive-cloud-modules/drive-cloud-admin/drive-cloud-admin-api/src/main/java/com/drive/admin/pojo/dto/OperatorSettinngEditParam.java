@@ -51,12 +51,10 @@ public class OperatorSettinngEditParam {
     private String isDelete;
 
     // 创建时间
-    @NotBlank(message = "创建时间不能为空")
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 
     // 更新时间
-    @NotBlank(message = "更新时间不能为空")
     @ApiModelProperty(value = "更新时间")
     private LocalDateTime updateTime;
 

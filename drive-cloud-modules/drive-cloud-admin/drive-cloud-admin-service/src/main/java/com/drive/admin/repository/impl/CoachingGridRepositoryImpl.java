@@ -61,7 +61,8 @@ public class  CoachingGridRepositoryImpl extends BaseController<CoachingGridPage
         Page<CoachingGridEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         // 条件查询
         QueryWrapper queryWrapper = this.getQueryWrapper(coachingGridMapStruct, param);
-
+        //驾校名称模糊
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueDriveSchooNameSearch()),"drive_schoo_name",param.getVagueDriveSchooNameSearch());
         //  模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
         queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"phone",param.getVaguePhoneSearch());

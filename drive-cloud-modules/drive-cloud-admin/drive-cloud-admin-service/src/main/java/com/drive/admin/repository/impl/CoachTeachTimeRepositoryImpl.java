@@ -81,6 +81,8 @@ public class  CoachTeachTimeRepositoryImpl extends BaseController<CoachTeachTime
         if (param.getDateTimeSearchArr() != null && param.getDateTimeSearchArr().length > 0 ){
             queryWrapper.between("class_date",param.getDateTimeSearchArr()[0],param.getDateTimeSearchArr()[1]);
         }
+        //课程单号模糊查询
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueIdSearch()),"id",param.getVagueIdSearch());
         // 用户手机号查询
         if (StrUtil.isNotEmpty(param.getVagueRealNameSearch()) || StrUtil.isNotEmpty(param.getVaguePhoneSearch())){
             List<StudentInfoEntity> studentInfoList = new ArrayList<>();

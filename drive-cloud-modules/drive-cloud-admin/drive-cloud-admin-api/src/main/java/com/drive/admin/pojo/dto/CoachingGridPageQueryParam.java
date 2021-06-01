@@ -89,7 +89,7 @@ public class CoachingGridPageQueryParam extends BasePageQueryParam {
 	// 驾校名称
 	private String driveSchooName;
 	// 模糊查询字段
-	//private String vagueNameSearch
+	private String vagueDriveSchooNameSearch;
 
 	// 创建者
 	private String createUser;
