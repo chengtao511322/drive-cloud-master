@@ -155,14 +155,14 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	/**
 	* 删除运营商基础信息
 	*/
-	@ApiOperation("删除运营商基础信息")
+	/*@ApiOperation("删除运营商基础信息")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:delete')")
 	@EventLog(message = "删除运营商基础信息", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(operatorService.removeByIds(Arrays.asList(ids)));
-	}
+	}*/
 
 	/**
 	* 通过主键删除运营商基础信息

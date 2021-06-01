@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.drive.admin.enums.OperatorEnum;
 import com.drive.admin.pojo.entity.UserCommonlyAddressEntity;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
-import com.drive.admin.service.CoachingGridService;
-import com.drive.admin.service.StudentInfoService;
+import com.drive.admin.service.*;
 import com.drive.admin.util.AdminCacheUtil;
 import com.drive.common.core.base.BaseController;
 import com.drive.admin.repository.UserCommonlyAddressRepository;
@@ -21,13 +20,12 @@ import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.utils.BeanConvertUtils;
 import lombok.extern.slf4j.Slf4j;
 import com.drive.common.core.biz.ResObject;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.drive.admin.service.UserCommonlyAddressService;
 import com.drive.common.data.utils.ExcelUtils;
-import java.util.List;
-import java.util.Arrays;
+
+import java.util.*;
 import java.io.IOException;
-import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +51,12 @@ public class  UserCommonlyAddressRepositoryImpl extends BaseController<UserCommo
     private StudentInfoService studentInfoService;
 
     @Autowired
+    private CoachInfoService coachInfoService;
+
+    @Autowired
+    private ServiceInfoService serviceInfoService;
+
+    @Autowired
     private CoachingGridService coachingGridService;
 
     /*
@@ -71,8 +75,33 @@ public class  UserCommonlyAddressRepositoryImpl extends BaseController<UserCommo
         // 条件查询
         QueryWrapper queryWrapper = this.getQueryWrapper(userCommonlyAddressMapStruct, param);
 
-        //  模糊查询
-        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        //用户名模糊查询
+        if(StrUtil.isNotEmpty(param.getVagueUserNameSearch())){
+            ArrayList userIdsStr = new ArrayList<>();
+            //学员id
+            QueryWrapper studentWrapper = new QueryWrapper<>().select("id").like("username", param.getVagueUserNameSearch());
+            List<Map<String,Object>> studentUserIds = studentInfoService.listMaps(studentWrapper);
+            studentUserIds.stream().forEach((item) -> {
+                userIdsStr.addAll(item.values());
+            });
+            //教练id
+            QueryWrapper coachWrapper = new QueryWrapper<>().select("id").like("real_name", param.getVagueUserNameSearch());
+            List<Map<String,Object>> coachUserIds = coachInfoService.listMaps(coachWrapper);
+            coachUserIds.stream().forEach((item) -> {
+                userIdsStr.addAll(item.values());
+            });
+            //客服id
+            QueryWrapper serviceInfoWrapper = new QueryWrapper<>().select("id").like("real_name", param.getVagueUserNameSearch());
+            List<Map<String,Object>> serviceInfoIds = serviceInfoService.list(serviceInfoWrapper);
+            coachUserIds.stream().forEach((item) -> {
+                userIdsStr.addAll(item.values());
+            });
+
+            if(userIdsStr != null && userIdsStr.size() > 0){
+                queryWrapper.in("user_id",userIdsStr);
+            }
+        }
+
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
