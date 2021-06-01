@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-                                                                                                                                                                                    
+
 /**
  *
  * 学员学车预约表 服务类
@@ -116,6 +116,10 @@ public class  StudentTrainCarApplyRepositoryImpl extends BaseController<StudentT
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
+        // 课程时间日期搜索classDate
+        if (param.getDateTimeSearchArr().length > 0 && StrUtil.isNotEmpty(param.getDateTimeSearchArr()[0])  && StrUtil.isNotEmpty(param.getDateTimeSearchArr()[1])){
+            queryWrapper.between("class_date",param.getDateTimeSearchArr()[0],param.getDateTimeSearchArr()[1]);
+        }
         IPage<StudentTrainCarApplyEntity> pageList = studentTrainCarApplyService.page(page, queryWrapper);
         if (pageList.getRecords().size() <= 0){
             log.error("数据空");
@@ -160,10 +164,10 @@ public class  StudentTrainCarApplyRepositoryImpl extends BaseController<StudentT
     }
 
     /**
-    * 对象条件查询返回单条学员学车预约表数据
-    * @param param
-    * @return
-    */
+     * 对象条件查询返回单条学员学车预约表数据
+     * @param param
+     * @return
+     */
     @Override
     public ResObject getInfo(StudentTrainCarApplyPageQueryParam param) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",param);

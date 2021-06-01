@@ -102,6 +102,34 @@ public class StringUtils {
     }
 
     /**
+     * 驼峰式的字符串转换为下划线并在指定字符后加下划线
+     * 处理如subject1CostFreeNumber 字段驼峰转下划线时会转为 subject1_cost_free_number(实际table字段subject_1_cost_free_number)
+     * 导致以该字段为查询条件时数据库报 找不到字段的错误
+     * @author chentao
+     * @param str 需要转下划线的驼峰字符串,
+     * @param afterStrAddUnder 在该字符串后加下划线
+     */
+    public static String lowerCamelToLowerUnderscoreAdd(String str,String... afterStrAddUnder){
+        //驼峰转下划线
+        final String underString = lowerCamelToLowerUnderscore(str);
+        if(afterStrAddUnder == null){
+            return underString;
+        }
+        StringBuilder sb = new StringBuilder(underString);
+        //在给定字符后添加下划线
+        for (String s : afterStrAddUnder) {
+            int macthIndex = sb.indexOf(s, 0);
+            if(macthIndex != -1){
+                int addCharIndex = macthIndex + s.length();
+                sb.insert(addCharIndex,"_");
+            }else {
+                continue;
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
      * 字符串格式化
      * @param s
      * @param args
@@ -119,6 +147,7 @@ public class StringUtils {
     {
         return (T) obj;
     }
+
 }
 
 

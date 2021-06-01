@@ -158,6 +158,9 @@ public class OneFeeSystemCoachStudentVo {
 	@Excel(name = "平台提成金额（所有上级运营商提成金）", width = 20)
 	private BigDecimal serviceChangeMoney;
 
+	//原班型名称
+	private String originalClassName;
+
 
 
 	public void setCoachId(String coachId) {
