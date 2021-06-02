@@ -84,6 +84,7 @@ public class  UserCommonlyAddressRepositoryImpl extends BaseController<UserCommo
             studentUserIds.stream().forEach((item) -> {
                 userIdsStr.addAll(item.values());
             });
+
             //教练id
             QueryWrapper coachWrapper = new QueryWrapper<>().select("id").like("real_name", param.getVagueUserNameSearch());
             List<Map<String,Object>> coachUserIds = coachInfoService.listMaps(coachWrapper);
