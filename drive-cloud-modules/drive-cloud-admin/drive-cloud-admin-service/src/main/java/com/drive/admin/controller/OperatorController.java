@@ -48,8 +48,8 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	private OperatorMapStruct operatorMapStruct;
 
 	/**
-	* 运营商基础信息 分页列表
-	*/
+	 * 运营商基础信息 分页列表
+	 */
 	@ApiOperation("运营商基础信息分页列表")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
 	@PostMapping(value = "/pageList")
@@ -58,8 +58,8 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 
 	}
 	/**
-	* 运营商基础信息 列表
-	*/
+	 * 运营商基础信息 列表
+	 */
 	@ApiOperation("运营商基础信息列表")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
 	@PostMapping(value = "/findList")
@@ -68,8 +68,8 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	}
 
 	/**
-	* 获取运营商基础信息
-	*/
+	 * 获取运营商基础信息
+	 */
 	@ApiOperation("获取运营商基础信息")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
@@ -78,8 +78,8 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 		return operatorRepository.getById(id);
 	}
 	/**
-	* 获取运营商基础信息
-	*/
+	 * 获取运营商基础信息
+	 */
 	@ApiOperation("获取运营商基础信息")
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:query')")
@@ -100,8 +100,8 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	}
 
 	/**
-	* 新增运营商基础信息
-	*/
+	 * 新增运营商基础信息
+	 */
 	@ApiOperation("新增运营商基础信息")
 	@ApiImplicitParam(name = "OperatorEditParam ", value = "新增运营商基础信息", dataType = "OperatorEditParam")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:add')")
@@ -112,8 +112,8 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	}
 
 	/**
-	* 修改运营商基础信息
-	*/
+	 * 修改运营商基础信息
+	 */
 	@ApiOperation("修改运营商基础信息")
 	@ApiImplicitParam(name = "OperatorEditParam ", value = "修改运营商基础信息", dataType = "OperatorEditParam")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:edit')")
@@ -151,22 +151,30 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	ResObject updateOperator(@Valid @RequestBody OperatorEditParam operatorEditParam){
 		return operatorRepository.updateOperator(operatorEditParam);
 	}
+	@ApiOperation("删除运营商基础信息")
+	@ApiImplicitParam(name = "OperatorEditParam ", value = "删除运营商基础信息", dataType = "OperatorEditParam")
+	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:add')")
+	@EventLog(message = "删除运营商基础信息", businessType = EventLogEnum.UPDATE)
+	@PutMapping("/delOperator")
+	ResObject delOperator(@Valid @RequestBody OperatorEditParam operatorEditParam){
+		return operatorRepository.delOperator(operatorEditParam);
+	}
 
 	/**
-	* 删除运营商基础信息
-	*/
-	/*@ApiOperation("删除运营商基础信息")
+	 * 删除运营商基础信息
+	 */
+	@ApiOperation("删除运营商基础信息")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:delete')")
 	@EventLog(message = "删除运营商基础信息", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/{ids}")
 	public ResObject delete(@PathVariable String[] ids) {
 		return R.toRes(operatorService.removeByIds(Arrays.asList(ids)));
-	}*/
+	}
 
 	/**
-	* 通过主键删除运营商基础信息
-	*/
+	 * 通过主键删除运营商基础信息
+	 */
 	@ApiOperation("通过主键删除运营商基础信息")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delById')")
@@ -177,8 +185,8 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 	}
 
 	/**
-	* 导出运营商基础信息
-	*/
+	 * 导出运营商基础信息
+	 */
 	@ApiOperation("导出运营商基础信息")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:export')")
 	@SneakyThrows
@@ -190,8 +198,8 @@ public class OperatorController extends BaseController<OperatorPageQueryParam, O
 
 
 	/**
-	* 状态启用/停用
-	*/
+	 * 状态启用/停用
+	 */
 	@ApiOperation("状态启用/停用运营商基础信息")
 	//@PreAuthorize("hasPermission('/admin/operator',  'admin:operator:changeStatus')")
 	@SneakyThrows
