@@ -74,7 +74,7 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
         IPage<${entity}Entity> pageList = ${className}Service.page(page, queryWrapper);
-        if (pageList.getRecords().size() <= 0){
+        if (pageList.getRecords().isEmpty()){
             log.error("数据空");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
@@ -101,7 +101,7 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
         // 如 queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"phone",param.getPhone());
         List<${entity}Entity> ${className}List = ${className}Service.list(queryWrapper);
-        if (${className}List == null){
+        if (${className}List.isEmpty()){
             log.error("数据空");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),${className}List);
         }
@@ -266,9 +266,9 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
             log.error("ID数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
-        ${entity}Entity ${entity}Entity = new ${entity}Entity();
-        ${entity}Entity.setId(param.getId());
-        ${entity}Entity.setStatus(param.getStatus());
+        ${entity}Entity ${className}Entity = new ${entity}Entity();
+        ${className}Entity.setId(param.getId());
+        ${className}Entity.setStatus(param.getStatus());
         //${entity}Entity.setUpdateTime()
         Boolean result = ${className}Service.updateById(${entity}Entity);
         log.info(this.getClass() +"changeStatus方法请求对象参数{}，请求结果{}",${entity}Entity,result);

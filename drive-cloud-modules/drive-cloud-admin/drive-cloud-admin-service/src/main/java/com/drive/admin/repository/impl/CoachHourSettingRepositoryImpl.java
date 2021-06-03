@@ -45,6 +45,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -93,7 +94,7 @@ public class  CoachHourSettingRepositoryImpl extends BaseController<CoachHourSet
         queryWrapper.apply(StrUtil.isNotEmpty(param.getEffectiveTimeSearch()),
                 "date_format (effective_time,'%Y-%m-%d') = date_format('" + param.getEffectiveTimeSearch() + "','%Y-%m-%d')");
         //  模糊查询
-        //queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"effective_time",param.getBeginTime(),param.getEndTime());

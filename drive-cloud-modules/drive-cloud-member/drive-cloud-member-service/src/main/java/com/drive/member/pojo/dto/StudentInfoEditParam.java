@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * @author xiaoguo
  */
 @Data
-public class StudentInfoEditParam {
+public class StudentInfoEditParam implements java.io.Serializable{
 
 
     private String id;

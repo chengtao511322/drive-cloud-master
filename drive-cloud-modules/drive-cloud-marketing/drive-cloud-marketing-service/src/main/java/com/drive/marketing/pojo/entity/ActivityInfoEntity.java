@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("activity_info")
-public class ActivityInfoEntity extends BaseEntity implements java.io.Serializable{
+public class ActivityInfoEntity extends BaseEntity{
 
     @TableId(type= IdType.ID_WORKER)
     private String id;

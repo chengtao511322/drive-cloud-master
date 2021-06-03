@@ -70,7 +70,7 @@ public class  EvaluateTagRepositoryImpl extends BaseController<EvaluateTagPageQu
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
         IPage<EvaluateTagEntity> pageList = evaluateTagService.page(page, queryWrapper);
-        if (pageList.getRecords().size() <= 0){
+        if (pageList.getRecords().isEmpty()){
             log.error("数据空");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
