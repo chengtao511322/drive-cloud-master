@@ -48,7 +48,7 @@ public class OneFeeSystemPriceServiceImpl extends BaseService<OneFeeSystemPriceM
         return super.save(entity);
     }
 
-    @CacheEvict(value = "redisCache", key = "'classItem:class_'+#entity.getId()")
+    @CacheEvict(value = "redisCache", key = "'classItem:class_'+#id")
     @Override
     public boolean removeById(Serializable id) {
         return super.removeById(id);
