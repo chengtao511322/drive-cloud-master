@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * @author xiaoguo
  */
 @Data
-public class ActivityApplyVo {
+public class ActivityApplyVo implements java.io.Serializable{
 
 
 	@Excel(name = "", width = 20)

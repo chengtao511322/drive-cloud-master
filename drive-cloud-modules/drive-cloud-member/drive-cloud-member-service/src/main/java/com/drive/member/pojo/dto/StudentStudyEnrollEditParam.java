@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * @author xiaoguo
  */
 @Data
-public class StudentStudyEnrollEditParam {
+public class StudentStudyEnrollEditParam implements java.io.Serializable{
 
 
     // 学员报名单号

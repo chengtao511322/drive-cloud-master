@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 
 /**
  * 
@@ -15,7 +17,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Data
 @TableName("mark_coupon_product_relation")
-public class CouponProductRelationEntity {
+public class CouponProductRelationEntity implements Serializable {
 
 
 	@TableId(type= IdType.ID_WORKER)
@@ -29,8 +31,9 @@ public class CouponProductRelationEntity {
 
 	// 类型
 	private Long type;
-
+	// 类型名称
 	private String typeName;
+	// 产品名称
 	private String productName;
 
 }
