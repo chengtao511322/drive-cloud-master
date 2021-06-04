@@ -83,8 +83,8 @@ public class ActivityController extends BaseController<ActivityInfoPageQueryPara
      * 部门 分页列表
      */
     @ApiOperation("活动分页列表")
-    @GetMapping(value = "/pageList")
-    public ResObject pageList(@Valid ActivityInfoPageQueryParam param) {
+    @PostMapping(value = "/pageList")
+    public ResObject pageList(@Valid @RequestBody ActivityInfoPageQueryParam param) {
         return activityInfoRepository.pageList(param);
     }
 

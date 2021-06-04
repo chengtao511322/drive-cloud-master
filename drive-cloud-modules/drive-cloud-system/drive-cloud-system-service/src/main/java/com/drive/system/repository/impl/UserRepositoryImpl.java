@@ -61,6 +61,8 @@ public class UserRepositoryImpl extends BaseController implements UserRepository
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueUserNameSearch()),"u.user_name",param.getVagueUserNameSearch());
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNickNameSearch()),"u.nick_name",param.getVagueNickNameSearch());
         queryWrapper.like(StrUtil.isNotEmpty(param.getVaguePhoneSearch()),"u.phone",param.getVaguePhoneSearch());
+        if(StrUtil.isNotEmpty(param.getStatus())) queryWrapper.eq("u.status",param.getStatus());
+        //queryWrapper.like(StrUtil.isNotEmpty(param.getStatus()),"u.status",param.getStatus());
         IPage<UserEntity> pageList = userService.getUserList(page, queryWrapper);
         if (pageList.getRecords().isEmpty()){
             return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);

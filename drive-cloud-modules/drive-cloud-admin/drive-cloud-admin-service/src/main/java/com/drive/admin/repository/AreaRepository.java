@@ -27,6 +27,13 @@ public interface AreaRepository extends BaseRepository<AreaPageQueryParam, AreaE
      */
     ResObject allOptionalAreaList(String operatorId);
 
+    /**
+     * 通过运营商id查询该运营商下的区域
+     */
+    ResObject getOptionalAreaById(String operatorId);
+
+
+
 
 }
 

@@ -3,6 +3,7 @@ package com.drive.admin.pojo.vo;
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import cn.hutool.core.util.StrUtil;
 import com.drive.admin.util.AdminCacheUtil;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -21,13 +22,16 @@ public class OneFeeSystemCoachStudentVo {
 
 	// 主键
 	@Excel(name = "主键", width = 20)
+	@ApiModelProperty(value = "测试111")
 	private String id;
 
 	// 教练id
 	@Excel(name = "教练id", width = 20)
+	@ApiModelProperty(value = "测试1222")
 	private String coachId;
 
 	@Excel(name = "教练名称", width = 20)
+	@ApiModelProperty(value = "测试33")
 	private String coachName;
 
 	// 学员id

@@ -118,7 +118,7 @@ public class DictTypeController extends BaseController<DictTypePageQueryParam, D
     @PutMapping
     public ResObject edit(@Valid @RequestBody DictTypeEditParam dictTypeEditParam) {
         DictTypeEntity dictTypeEntity = dictTypeService.lambdaQuery().eq(DictTypeEntity::getDictCode, dictTypeEditParam.getDictCode()).one();
-        if (dictTypeEntity != null) {
+        if (dictTypeEntity != null && dictTypeEntity.getDictTypeId() != dictTypeEditParam.getDictTypeId()) {
             return R.failure("字典编码已存在, 请使用其他字典编码");
         }
 

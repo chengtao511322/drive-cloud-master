@@ -12,6 +12,7 @@ import lombok.Data;
 public abstract class BasePageQueryParam implements java.io.Serializable{
 
     // 起始页数
+
     private Integer pageNum = 0;
 
     private Integer pageNo = 0;

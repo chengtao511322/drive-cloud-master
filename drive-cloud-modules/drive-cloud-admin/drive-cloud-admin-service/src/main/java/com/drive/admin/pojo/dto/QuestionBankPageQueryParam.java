@@ -99,4 +99,12 @@ public class QuestionBankPageQueryParam extends BasePageQueryParam {
 	// 模糊查询字段
 	//private String vagueNameSearch
 
+	//题号模糊搜索
+	@ApiModelProperty(value = "模糊搜索题号")
+	private String vagueQuestionNoSearch;
+
+	//内容模糊搜索
+	@ApiModelProperty(value = "题目内容模糊搜索")
+	private String vagueQuestionContentSearch;
+
 }

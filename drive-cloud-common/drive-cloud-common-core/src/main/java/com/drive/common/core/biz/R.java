@@ -19,7 +19,15 @@ public class R implements java.io.Serializable{
 	}
 
 
-	public static ResObject success(Object data) {
+
+
+	public static  ResObject success(Object data) {
+		ResObject resObject = new ResObject(ResCodeEnum.SUCCESS.getCode(), DEFAULT_SUCCESS, DEFAULT_SUCCESS_MESSAGE,SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.SYSTEM_SUCCESS.subMsg());
+		resObject.setData(data);
+		return resObject;
+	}
+
+	public static <T> ResObject<T> success1(T data) {
 		ResObject resObject = new ResObject(ResCodeEnum.SUCCESS.getCode(), DEFAULT_SUCCESS, DEFAULT_SUCCESS_MESSAGE,SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.SYSTEM_SUCCESS.subMsg());
 		resObject.setData(data);
 		return resObject;

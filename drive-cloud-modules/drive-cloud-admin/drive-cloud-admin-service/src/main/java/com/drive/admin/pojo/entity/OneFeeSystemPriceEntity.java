@@ -1,9 +1,6 @@
 package com.drive.admin.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.drive.common.core.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,6 +21,7 @@ public class OneFeeSystemPriceEntity extends BaseEntity {
 
 
 	// 主键
+	@TableId(type= IdType.ID_WORKER)
 	private String id;
 
 	// 名称

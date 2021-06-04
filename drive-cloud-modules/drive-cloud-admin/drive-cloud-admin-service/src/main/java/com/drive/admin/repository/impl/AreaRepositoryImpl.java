@@ -26,10 +26,12 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-                
+
 /**
  *
  *  服务类
@@ -302,12 +304,39 @@ public class  AreaRepositoryImpl extends BaseController<AreaPageQueryParam, Area
         List<AreaVo> areaVoList = areaMapStruct.toVoList(allList);
         //把可用区域存入redis
 
-
         if (areaVoList == null){
             log.error("数据空");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
         }
         return R.success(areaVoList);
+    }
+
+    @Override
+    public ResObject getOptionalAreaById(String operatorId) {
+        log.info(this.getClass()+"allOptionalAreaList-方法请求参数{}");
+        QueryWrapper<OperatorAreaEntity> areaEntityQueryWrapper = new QueryWrapper<>();
+        //查询已划分的运营商区域
+        QueryWrapper<OperatorAreaEntity> objectQueryWrapper = new QueryWrapper<>();
+        objectQueryWrapper.in("operator_id",operatorId);
+        List<OperatorAreaEntity> operatorAreaEntityList = operatorAreaService.list(objectQueryWrapper);
+        //遍历获取省市区id
+        if(operatorAreaEntityList != null && operatorAreaEntityList.size()>0){
+            ArrayList<String> ids = new ArrayList<>();
+            operatorAreaEntityList.stream().forEach((item)->{
+                ids.add(item.getAreaId());
+                ids.add(item.getProvinceId());
+                ids.add(item.getCityId());
+            });
+            //去掉重复的区域id
+            List<String> idStrs = ids.stream().distinct().collect(Collectors.toList());
+            //查询区域编码
+            QueryWrapper<AreaEntity> areaQueryWrapper = new QueryWrapper<>();
+            areaQueryWrapper.in("ba_code",idStrs.toArray());
+            List<AreaEntity> allList = areaService.list(areaQueryWrapper);
+            List<AreaVo> areaVoList = areaMapStruct.toVoList(allList);
+            return R.success(areaVoList);
+        }
+        return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
     }
 }
 

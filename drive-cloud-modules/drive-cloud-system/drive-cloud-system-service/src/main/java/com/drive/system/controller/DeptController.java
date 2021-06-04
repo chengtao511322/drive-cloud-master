@@ -79,7 +79,7 @@ public class DeptController extends BaseController<DeptPageQueryParam, DeptEntit
     @ApiOperation("部门分页列表")
     @PreAuthorize("hasPermission('/dept',  'system:dept:query')")
     @GetMapping(value = "/pageList")
-    public ResObject pageList(@Valid DeptPageQueryParam param) {
+    public ResObject<Page<DeptVo>> pageList(@Valid DeptPageQueryParam param) {
         Page<DeptEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         IPage<DeptEntity> pageList = deptService.page(page, this.getQueryWrapper(deptMapStruct, param));
         Page<DeptVo> deptVoPage = deptMapStruct.toVoList(pageList);
@@ -114,7 +114,7 @@ public class DeptController extends BaseController<DeptPageQueryParam, DeptEntit
     @ApiOperation("部门列表")
     @PreAuthorize("hasPermission('/dept',  'system:dept:query')")
     @GetMapping(value = "/allList")
-    public ResObject allList() {
+    public ResObject<List<DeptVo>> allList() {
         List<DeptEntity> allList = deptService.list();
         List<DeptVo> allVoList = deptMapStruct.toVoList(allList);
         return R.success(allVoList);
@@ -127,7 +127,7 @@ public class DeptController extends BaseController<DeptPageQueryParam, DeptEntit
     @ApiImplicitParam(name = "deptId", required = true, dataType = "Long", paramType = "path")
     @PreAuthorize("hasPermission('/dept',  'system:dept:query')")
     @GetMapping("/{deptId}")
-    public ResObject get(@PathVariable Long deptId) {
+    public ResObject<DeptEntity> get(@PathVariable Long deptId) {
         DeptEntity dept = deptService.getById(deptId);
         return R.success(dept);
     }

@@ -54,7 +54,7 @@ public class PostController extends BaseController<PostPageQueryParam, PostEntit
     @ApiOperation("岗位信息分页列表")
     @PreAuthorize("hasPermission('/post',  'system:post:query')")
     @GetMapping(value = "/pageList")
-    public ResObject pageList(@Valid PostPageQueryParam param) {
+    public ResObject<Page<PostVo>> pageList(@Valid PostPageQueryParam param) {
 
         Page<PostEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         QueryWrapper queryWrapper = this.getQueryWrapper(postMapStruct, param);
@@ -72,7 +72,7 @@ public class PostController extends BaseController<PostPageQueryParam, PostEntit
     @ApiImplicitParam(name = "postId", required = true, dataType = "Long", paramType = "path")
     @PreAuthorize("hasPermission('/post',  'system:post:query')")
     @GetMapping("/{postId}")
-    public ResObject get(@PathVariable Long postId) {
+    public ResObject<PostEntity> get(@PathVariable Long postId) {
         PostEntity post = postService.getById(postId);
         return R.success(post);
     }
@@ -105,7 +105,7 @@ public class PostController extends BaseController<PostPageQueryParam, PostEntit
     @PutMapping
     public ResObject edit(@Valid @RequestBody PostEditParam postEditParam) {
         PostEntity postEntity = postService.lambdaQuery().eq(PostEntity::getPostCode, postEditParam.getPostCode()).one();
-        if (postEntity != null) {
+        if (postEntity != null && postEntity.getPostId() != postEditParam.getPostId()) {
             return R.failure("岗位编码已存在, 请使用其他岗位编码");
         }
 

@@ -164,12 +164,30 @@ public class AreaController extends BaseController<AreaPageQueryParam, AreaEntit
 	 * 查询运营商可选择城市区域列表
 	 * @return
 	 */
-	@ApiOperation("可选择城市区域列表")
+	@ApiOperation("可选择城市区域列表(包含当前传入的运营商id下的区域)")
 	@GetMapping(value = "/allOptionalAreaList/{operatorId}")
 	public ResObject allOptionalAreaList(@PathVariable String operatorId){
 		return areaRepository.allOptionalAreaList(operatorId);
 	}
 
+	/**
+	 * 查询运营商可选择城市区域列表
+	 * @return
+	 */
+	@ApiOperation("可选择城市区域列表")
+	@GetMapping(value = "/allOptionalAreaList")
+	public ResObject getAllOptionalAreaList(){
+		return areaRepository.allOptionalAreaList(null);
+	}
+
+	/**
+	 * 通过运营商id查询当前运营商区域
+	 */
+	@ApiOperation("只获取该运营商下的区域")
+	@GetMapping(value = "/allOptionalAreaListWithOperatorId/{operatorId}")
+	public ResObject getOptionalAreaListByOptionalId(@PathVariable String operatorId){
+		return areaRepository.getOptionalAreaById(operatorId);
+	}
 
 
 }

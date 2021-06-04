@@ -167,7 +167,6 @@ public class OneFeeSystemPriceController extends BaseController<OneFeeSystemPric
 	@ApiOperation("删除教练信息表")
 	@ApiImplicitParam(name = "id", required = true, dataType = "Long", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/coachInfo',  'admin:coachInfo:delete')")
-	@EventLog(message = "删除教练信息表", businessType = EventLogEnum.DELETE)
 	@DeleteMapping("/delById/{id}")
 	public ResObject delete(@PathVariable String id) {
 		return oneFeeSystemPriceRepository.deleteById(id);

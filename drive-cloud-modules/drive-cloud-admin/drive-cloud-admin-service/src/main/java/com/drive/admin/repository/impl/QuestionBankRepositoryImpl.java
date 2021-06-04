@@ -62,6 +62,8 @@ public class  QuestionBankRepositoryImpl extends BaseController<QuestionBankPage
 
         //  模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueQuestionNoSearch()),"question_no",param.getVagueQuestionNoSearch());
+        queryWrapper.like(StrUtil.isNotEmpty(param.getVagueQuestionContentSearch()),"question_content",param.getVagueQuestionContentSearch());
         //  开始时间 结束时间都有才进入
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());

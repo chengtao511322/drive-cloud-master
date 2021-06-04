@@ -1,8 +1,10 @@
 package com.drive.admin.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.pojo.dto.OneFeeSystemCoachStudentEditParam;
 import com.drive.admin.pojo.dto.OneFeeSystemCoachStudentPageQueryParam;
 import com.drive.admin.pojo.entity.OneFeeSystemCoachStudentEntity;
+import com.drive.admin.pojo.vo.OneFeeSystemCoachStudentVo;
 import com.drive.admin.repository.OneFeeSystemCoachStudentRepository;
 import com.drive.admin.service.OneFeeSystemCoachStudentService;
 import com.drive.admin.service.mapstruct.OneFeeSystemCoachStudentMapStruct;
@@ -48,7 +50,7 @@ public class OneFeeSystemCoachStudentController extends BaseController<OneFeeSys
 	@ApiOperation("一费制学员教练关联表分页列表")
 	//@PreAuthorize("hasPermission('/admin/oneFeeSystemCoachStudent',  'admin:oneFeeSystemCoachStudent:query')")
 	@PostMapping(value = "/pageList")
-	public ResObject pageList(@Valid @RequestBody OneFeeSystemCoachStudentPageQueryParam param) {
+	public ResObject<Page<OneFeeSystemCoachStudentVo>> pageList(@Valid @RequestBody OneFeeSystemCoachStudentPageQueryParam param) {
 		return oneFeeSystemCoachStudentRepository.pageList(param);
 	}
 	/**

@@ -169,6 +169,7 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         queryWrapper.like(StrUtil.isNotEmpty(param.getZoneName()),"zone_name",param.getZoneName());
         queryWrapper.eq(StrUtil.isNotEmpty(param.getTenantId()),"tenant_id",param.getTenantId());
         queryWrapper.eq(StrUtil.isNotEmpty(param.getStatus()),"status",param.getStatus());
+        queryWrapper.eq(StrUtil.isNotEmpty(param.getType()),"type",param.getType());
         Page<ActivityInfoEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         queryWrapper.orderByDesc("create_time");
         IPage<ActivityInfoEntity> pageList = activityInfoService.page(page, queryWrapper);
