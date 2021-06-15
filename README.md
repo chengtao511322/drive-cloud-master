@@ -224,3 +224,28 @@ java -Xmx3550m -Xms3550m -Xss128k -XX:NewRatio=4 -XX:SurvivorRatio=4 -XX:MaxPerm
 -XX:SurvivorRatio=4：设置年轻代中Eden区与Survivor区的大小比值。设置为4，则两个Survivor区与一个Eden区的比值为2:4，一个Survivor区占整个年轻代的1/6
 -XX:MaxPermSize=16m:设置持久代大小为16m。
 -XX:MaxTenuringThreshold=0：设置垃圾最大年龄。如果设置为0的话，则年轻代对象不经过Survivor区，直接进入年老代。对于年老代比较多的应用，可以提高效率。如果将此值设置为一个较大值，则年轻代对象会在Survivor区进行多次复制，这样可以增加对象再年轻代的存活时间，增加在年轻代即被回收的概论。
+
+
+
+### 分布式事务使用
+项目对应的配置文件加入
+事务管理器地址
+本地Tm:125.0.8.191:8070  对应的管理后台 http://125.0.8.191:7970/
+生产Tm：172.24.86.61:8070  对应的管理后台 http://47.108.95.60:7970
+
+
+tx-lcn:
+  client:
+    manager-address: 125.0.8.191:8070
+  logger:
+    enabled: true
+
+项目启动类加上注解
+/**TC开启分布式事务注解**/
+@EnableDistributedTransaction
+
+在对应产生分布式事务方法上面加入
+
+@LcnTransaction //分布式事务注解
+
+具体方法参考 drive-cloud-admin 项目 里面的 AccountController -increaseAmount方法
