@@ -12,7 +12,7 @@ import java.util.List;
  * @author xiaoguo
  */
 @Data
-public class TreeSelect implements Serializable {
+public class    TreeSelect implements Serializable {
     /**
      * 节点ID
      */

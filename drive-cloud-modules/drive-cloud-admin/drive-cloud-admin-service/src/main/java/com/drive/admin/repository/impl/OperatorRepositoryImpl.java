@@ -27,6 +27,7 @@ import com.drive.common.data.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -322,6 +323,7 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
             List<OperatorAreaEntity> operatorArea = BeanConvertUtils.copyList(operatorAreaInstallParams, OperatorAreaEntity.class);
             operatorArea.stream().forEach((item) ->{
                 item.setOperatorId(operator.getId());
+                item.setIsDelete(0);
             });
             Boolean res = operatorAreaService.saveOrUpdateBatch(operatorArea);
             if (!res)return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
@@ -360,6 +362,8 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
             List<OperatorAreaEntity> operatorArea = BeanConvertUtils.copyList(operatorAreaInstallParams, OperatorAreaEntity.class);
             operatorArea.stream().forEach((item) ->{
                 item.setOperatorId(operator.getId());
+                //设置为0，避免没有值报错
+                item.setIsDelete(0);
             });
             Boolean res = operatorAreaService.saveOrUpdateBatch(operatorArea);
             if (!res)return R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());

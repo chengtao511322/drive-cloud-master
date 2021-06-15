@@ -63,7 +63,7 @@ public class OperatorAreaEntity extends BaseEntity {
 
 	// 是否删除
 	@TableLogic
-   	@TableField(value="is_delete")
+   	@TableField(value="is_delete",fill = FieldFill.INSERT)
 	private Integer isDelete;
 
 
