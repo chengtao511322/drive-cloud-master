@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.bbs.mapper.InvitationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.bbs.pojo.entity.InvitationEntity">
+        <id column="id" property="id" />
+        <result column="text_content" property="textContent" />
+        <result column="img_url" property="imgUrl" />
+        <result column="video_url" property="videoUrl" />
+        <result column="user_id" property="userId" />
+        <result column="user_operate_status" property="userOperateStatus" />
+        <result column="address" property="address" />
+        <result column="praise_size" property="praiseSize" />
+        <result column="collection_size" property="collectionSize" />
+        <result column="browse_size" property="browseSize" />
+        <result column="release_time" property="releaseTime" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="status" property="status" />
+        <result column="is_delete" property="isDelete" />
+        <result column="comment_size" property="commentSize" />
+        <result column="is_give" property="isGive" />
+        <result column="is_shield" property="isShield" />
+        <result column="is_initial_issue" property="isInitialIssue" />
+        <result column="raw_text_content" property="rawTextContent" />
+        <result column="is_top" property="isTop" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, text_content, img_url, video_url, user_id, user_operate_status, address, praise_size, collection_size, browse_size, release_time, create_time, update_time, status, is_delete, comment_size, is_give, is_shield, is_initial_issue, raw_text_content, is_top
+    </sql>
+
+</mapper>

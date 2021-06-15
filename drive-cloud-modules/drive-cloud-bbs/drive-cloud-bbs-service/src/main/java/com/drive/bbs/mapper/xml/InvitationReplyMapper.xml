@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drive.bbs.mapper.InvitationReplyMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.drive.bbs.pojo.entity.InvitationReplyEntity">
+        <id column="id" property="id" />
+        <result column="super_id" property="superId" />
+        <result column="invitation_id" property="invitationId" />
+        <result column="user_id" property="userId" />
+        <result column="user_operate_status" property="userOperateStatus" />
+        <result column="status" property="status" />
+        <result column="text_content" property="textContent" />
+        <result column="img_url" property="imgUrl" />
+        <result column="video_url" property="videoUrl" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="reply_time" property="replyTime" />
+        <result column="is_delete" property="isDelete" />
+        <result column="raw_text_content" property="rawTextContent" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, super_id, invitation_id, user_id, user_operate_status, status, text_content, img_url, video_url, create_time, update_time, reply_time, is_delete, raw_text_content
+    </sql>
+
+</mapper>

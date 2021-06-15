@@ -25,6 +25,7 @@
         <module>drive-cloud-wechat/drive-cloud-wechat-api</module>
         <module>drive-cloud-pay</module>
         <module>drive-cloud-apply</module>
+        <module>drive-cloud-bbs</module>
     </modules>
 
     <build>

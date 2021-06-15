@@ -1,14 +1,14 @@
-package ${cfg.modulesPack}.repository.impl;
+package com.drive.bbs.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import ${cfg.modulesPack}.pojo.entity.${entity}Entity;
+import com.drive.bbs.pojo.entity.UserLikeEntity;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
-import ${cfg.BaseController};
-import ${cfg.modulesPack}.repository.${entity}Repository;
-import ${cfg.modulesPack}.pojo.entity.*;
-import ${cfg.modulesPack}.pojo.vo.*;
-import ${cfg.modulesPack}.pojo.dto.*;
-import ${cfg.modulesPack}.service.mapstruct.*;
+import com.drive.common.core.base.BaseController;
+import com.drive.bbs.repository.UserLikeRepository;
+import com.drive.bbs.pojo.entity.*;
+import com.drive.bbs.pojo.vo.*;
+import com.drive.bbs.pojo.dto.*;
+import com.drive.bbs.service.mapstruct.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import cn.hutool.core.util.StrUtil;
@@ -18,54 +18,47 @@ import com.drive.common.core.utils.BeanConvertUtils;
 import lombok.extern.slf4j.Slf4j;
 import com.drive.common.core.biz.ResObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import ${cfg.modulesPack}.service.${entity}Service;
+import com.drive.bbs.service.UserLikeService;
 import com.drive.common.data.utils.ExcelUtils;
 import java.util.List;
 import java.util.Arrays;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
-## 将变量首字母变小写，定义驼峰法变量名
-#set($className = $!cfg.stringUtils.uncapitalize($!entity))
 
-#foreach($field in ${table.fields})
-    #if(${field.keyFlag})
-        #set($pkColumn = ${field})
-    #end
-#end
-
+                                    
 /**
  *
- * $!{table.comment} 服务类
+ * 用户点赞表 服务类
  *
- * @author ${author}
+ * @author xiaoguo
  */
 @Slf4j
 @Service
-public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryParam, ${entity}Entity>  implements ${entity}Repository{
+public class  UserLikeRepositoryImpl extends BaseController<UserLikePageQueryParam, UserLikeEntity>  implements UserLikeRepository{
 
-    //  ${table.comment} 服务
+    //  用户点赞表 服务
     @Autowired
-    private ${entity}Service ${className}Service;
-    //  ${table.comment} DO-DTO转化
+    private UserLikeService userLikeService;
+    //  用户点赞表 DO-DTO转化
     @Autowired
-    private ${entity}MapStruct ${className}MapStruct;
+    private UserLikeMapStruct userLikeMapStruct;
 
     /*
      *
      *功能描述
-     * @author ${author}
-     * @description ${table.comment} 分页列表
+     * @author xiaoguo
+     * @description 用户点赞表 分页列表
      * @date 2020/2/12 17:09
-     * @param  * @param ${entity}PageQueryParam
+     * @param  * @param UserLikePageQueryParam
      * @return
      */
     @Override
-    public ResObject pageList(${entity}PageQueryParam param) {
+    public ResObject pageList(UserLikePageQueryParam param) {
         log.info(this.getClass() + "pageList-方法请求参数{}",param);
-        Page<${entity}Entity> page = new Page<>(param.getPageNum(), param.getPageSize());
+        Page<UserLikeEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
         // 条件查询
-        QueryWrapper queryWrapper = this.getQueryWrapper(${className}MapStruct, param);
+        QueryWrapper queryWrapper = this.getQueryWrapper(userLikeMapStruct, param);
 
         //  模糊查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
@@ -73,75 +66,75 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         if (StrUtil.isNotEmpty(param.getBeginTime()) && StrUtil.isNotEmpty(param.getEndTime())){
             queryWrapper.between(StrUtil.isNotEmpty(param.getBeginTime()),"create_time",param.getBeginTime(),param.getEndTime());
         }
-        IPage<${entity}Entity> pageList = ${className}Service.page(page, queryWrapper);
+        IPage<UserLikeEntity> pageList = userLikeService.page(page, queryWrapper);
         if (pageList.getRecords().isEmpty()){
             log.error("数据空");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
-        Page<${entity}Vo> ${className}VoPage = ${className}MapStruct.toVoList(pageList);
-        log.info(this.getClass() + "pageList-方法请求结果{}",${className}VoPage);
-        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),${className}VoPage);
+        Page<UserLikeVo> userLikeVoPage = userLikeMapStruct.toVoList(pageList);
+        log.info(this.getClass() + "pageList-方法请求结果{}",userLikeVoPage);
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),userLikeVoPage);
     }
 
     /*
      *
      *功能描述
-     * @author ${author}
-     * @description ${table.comment} 查询列表
+     * @author xiaoguo
+     * @description 用户点赞表 查询列表
      * @date 2020/2/12 17:09
-     * @param  * @param ${entity}PageQueryParam
+     * @param  * @param UserLikePageQueryParam
      * @return
      */
     @Override
-    public ResObject findList(${entity}PageQueryParam param) {
+    public ResObject findList(UserLikePageQueryParam param) {
         log.info(this.getClass() + "findList-方法请求参数{}",param);
         // 这里判断条件进行查询
-        QueryWrapper queryWrapper= this.getQueryWrapper(${className}MapStruct, param);
+        QueryWrapper queryWrapper= this.getQueryWrapper(userLikeMapStruct, param);
         // 通过名称查询
         queryWrapper.like(StrUtil.isNotEmpty(param.getVagueNameSearch()),"name",param.getVagueNameSearch());
         // 如 queryWrapper.eq(StrUtil.isNotEmpty(param.getPhone()),"phone",param.getPhone());
-        List<${entity}Entity> ${className}List = ${className}Service.list(queryWrapper);
-        if (${className}List.isEmpty()){
+        List<UserLikeEntity> userLikeList = userLikeService.list(queryWrapper);
+        if (userLikeList.isEmpty()){
             log.error("数据空");
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),${className}List);
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),userLikeList);
         }
-        List<${entity}Vo> ${className}VoList = ${className}MapStruct.toVoList(${className}List);
-        log.info(this.getClass() + "findList-方法请求结果{}",${className}VoList);
-        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),${className}VoList);
+        List<UserLikeVo> userLikeVoList = userLikeMapStruct.toVoList(userLikeList);
+        log.info(this.getClass() + "findList-方法请求结果{}",userLikeVoList);
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),userLikeVoList);
     }
 
     /**
-    * 对象条件查询返回单条${table.comment}数据
+    * 对象条件查询返回单条用户点赞表数据
     * @param param
     * @return
     */
     @Override
-    public ResObject getInfo(${entity}PageQueryParam param) {
+    public ResObject getInfo(UserLikePageQueryParam param) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",param);
         if (param == null){
             return R.failure("数据空");
         }
         // 这里判断条件进行查询
-        QueryWrapper queryWrapper = this.getQueryWrapper(${className}MapStruct, param);
+        QueryWrapper queryWrapper = this.getQueryWrapper(userLikeMapStruct, param);
         // 这里有且只返回一条数据
         queryWrapper.last("limit 1");
-        ${entity}Entity ${className} = ${className}Service.getOne(queryWrapper);
-        if (${className} == null){
+        UserLikeEntity userLike = userLikeService.getOne(queryWrapper);
+        if (userLike == null){
             log.error("数据空");
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),${className});
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),userLike);
         }
-        ${entity}Vo ${className}Vo = BeanConvertUtils.copy(${className}, ${entity}Vo.class);
-        log.info(this.getClass() + "getInfo-方法请求结果{}",${className}Vo);
-        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),${className}Vo);
+        UserLikeVo userLikeVo = BeanConvertUtils.copy(userLike, UserLikeVo.class);
+        log.info(this.getClass() + "getInfo-方法请求结果{}",userLikeVo);
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),userLikeVo);
     }
 
     /*
      *
      *功能描述
-     * @author ${author}
-     * @description 通过ID获取 ${table.comment} 单条数据
+     * @author xiaoguo
+     * @description 通过ID获取 用户点赞表 单条数据
      * @date 2020/2/12 17:09
-     * @param  * @param ${entity}PageQueryParam
+     * @param  * @param UserLikePageQueryParam
      * @return
      */
     @Override
@@ -151,34 +144,34 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
             return R.failure("数据空");
         }
         // 通过ID 获取 单条数据
-        ${entity}Entity ${className} = ${className}Service.getById(${pkColumn.propertyName});
-        if (${className} == null){
+        UserLikeEntity userLike = userLikeService.getById(id);
+        if (userLike == null){
             log.error("数据空");
-            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),${className});
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),userLike);
         }
-        ${entity}Vo ${className}Vo = BeanConvertUtils.copy(${className}, ${entity}Vo.class);
-        log.info(this.getClass() + "getById-方法请求结果{}",${className}Vo);
-        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),${className}Vo);
+        UserLikeVo userLikeVo = BeanConvertUtils.copy(userLike, UserLikeVo.class);
+        log.info(this.getClass() + "getById-方法请求结果{}",userLikeVo);
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_SEARCH_SUCCESS.subMsg(),userLikeVo);
     }
 
     /*
      *
      *功能描述
-     * @author ${author}
-     * @description 保存${table.comment} 数据
+     * @author xiaoguo
+     * @description 保存用户点赞表 数据
      * @date 2020/2/12 17:09
-     * @param  * @param ${entity}PageQueryParam
+     * @param  * @param UserLikePageQueryParam
      * @return
      */
     @Override
-    public ResObject save(${entity}InstallParam installParam) {
+    public ResObject save(UserLikeInstallParam installParam) {
         log.info(this.getClass() + "save方法请求参数{}",installParam);
         if (installParam == null){
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
-        ${entity}Entity ${className} = BeanConvertUtils.copy(installParam, ${entity}Entity.class);
-        Boolean result = ${className}Service.save(${className});
+        UserLikeEntity userLike = BeanConvertUtils.copy(installParam, UserLikeEntity.class);
+        Boolean result = userLikeService.save(userLike);
         log.info(this.getClass() + "save-方法请求结果{}",result);
         // 判断结果
         return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_INSTALL_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
@@ -187,21 +180,21 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
     /*
      *
      *功能描述
-     * @author ${author}
-     * @description  修改${table.comment} 数据
+     * @author xiaoguo
+     * @description  修改用户点赞表 数据
      * @date 2020/2/12 17:09
-     * @param  * @param ${entity}PageQueryParam
+     * @param  * @param UserLikePageQueryParam
      * @return
      */
     @Override
-    public ResObject update(${entity}EditParam updateParam) {
+    public ResObject update(UserLikeEditParam updateParam) {
         log.info(this.getClass() + "update方法请求参数{}",updateParam);
         if (updateParam == null){
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
-        ${entity}Entity ${className} = BeanConvertUtils.copy(updateParam, ${entity}Entity.class);
-        Boolean result = ${className}Service.updateById(${className});
+        UserLikeEntity userLike = BeanConvertUtils.copy(updateParam, UserLikeEntity.class);
+        Boolean result = userLikeService.updateById(userLike);
         log.info(this.getClass() + "update-方法请求结果{}",result);
         // 判断结果
         return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_UPDATE_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
@@ -210,10 +203,10 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
     /*
      *
      *功能描述
-     * @author ${author}
-     * @description 数组删除${table.comment} 数据
+     * @author xiaoguo
+     * @description 数组删除用户点赞表 数据
      * @date 2020/2/12 17:09
-     * @param  * @param ${entity}PageQueryParam
+     * @param  * @param UserLikePageQueryParam
      * @return
      */
     @Override
@@ -222,11 +215,11 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
             log.error("数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
-        return R.toRes(${className}Service.removeByIds(Arrays.asList(${pkColumn.propertyName}s)));
+        return R.toRes(userLikeService.removeByIds(Arrays.asList(ids)));
     }
 
     /**
-     * *通过id删除${table.comment} 信息
+     * *通过id删除用户点赞表 信息
      **/
     @Override
     public ResObject deleteById(String id) {
@@ -237,22 +230,22 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
         }
         //QueryWrapper<String> queryWrapper = new QueryWrapper<String>();
         //queryWrapper.eq(StrUtil.isNotEmpty(id),"id",id);
-        Boolean result = ${className}Service.removeById(id);
+        Boolean result = userLikeService.removeById(id);
         log.info(this.getClass() + "deleteById-方法请求结果{}",result);
         // 判断结果
         return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_DELETE_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_DELETE_FAILL.subCode(),SubResultCode.DATA_DELETE_FAILL.subMsg());
     }
 
     /**
-     * *导出${table.comment} 信息
+     * *导出用户点赞表 信息
      **/
     @Override
-    public ResObject exportXls(${entity}PageQueryParam param, HttpServletResponse response)throws IOException {
+    public ResObject exportXls(UserLikePageQueryParam param, HttpServletResponse response)throws IOException {
         log.info(this.getClass() + "exportXls方法请求参数{}",param);
-        QueryWrapper queryWrapper = this.getQueryWrapper(${className}MapStruct, param);
-        List<${entity}Entity> list = ${className}Service.list(queryWrapper);
-        List<${entity}Vo>${className}List = ${className}MapStruct.toVoList(list);
-        ExcelUtils.exportExcel(${className}List, ${entity}Vo.class, "", new ExportParams(), response);
+        QueryWrapper queryWrapper = this.getQueryWrapper(userLikeMapStruct, param);
+        List<UserLikeEntity> list = userLikeService.list(queryWrapper);
+        List<UserLikeVo>userLikeList = userLikeMapStruct.toVoList(list);
+        ExcelUtils.exportExcel(userLikeList, UserLikeVo.class, "", new ExportParams(), response);
         return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.EXPORT_DATA_SUCCESS.subMsg());
     }
 
@@ -260,18 +253,18 @@ public class  ${entity}RepositoryImpl extends BaseController<${entity}PageQueryP
      * *修改状态
      **/
     @Override
-    public ResObject changeStatus(${entity}EditParam param) {
+    public ResObject changeStatus(UserLikeEditParam param) {
         log.info(this.getClass() + "changeStatus方法请求参数{}",param);
         if (StrUtil.isEmpty(param.getId())){
             log.error("ID数据空");
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
         }
-        ${entity}Entity ${className}Entity = new ${entity}Entity();
-        ${className}Entity.setId(param.getId());
-        ${className}Entity.setStatus(param.getStatus());
-        //${entity}Entity.setUpdateTime()
-        Boolean result = ${className}Service.updateById(${className}Entity);
-        log.info(this.getClass() +"changeStatus方法请求对象参数{}，请求结果{}",${className}Entity,result);
+        UserLikeEntity userLikeEntity = new UserLikeEntity();
+        userLikeEntity.setId(param.getId());
+        userLikeEntity.setStatus(param.getStatus());
+        //UserLikeEntity.setUpdateTime()
+        Boolean result = userLikeService.updateById(userLikeEntity);
+        log.info(this.getClass() +"changeStatus方法请求对象参数{}，请求结果{}",userLikeEntity,result);
         // 判断结果
         return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_STATUS_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_STATUS_FAILL.subCode(),SubResultCode.DATA_STATUS_FAILL.subMsg());
     }

@@ -197,6 +197,7 @@ if (condition) {
 
 Optional.ofNullable(driveSchoolService.getById(item.getSchoolId())).ifPresent(u ->{item.setSchoolName(u.getSchoolName())});
 
+
 Optional.ofNullable(coachInfoVo).orElseThrow(()-> new BizException("取指错误"));
 
 方法	描述
@@ -232,7 +233,8 @@ java -Xmx3550m -Xms3550m -Xss128k -XX:NewRatio=4 -XX:SurvivorRatio=4 -XX:MaxPerm
 事务管理器地址
 本地Tm:125.0.8.191:8070  对应的管理后台 http://125.0.8.191:7970/
 生产Tm：172.24.86.61:8070  对应的管理后台 http://47.108.95.60:7970
-
+ 
+ txManagerPassword = codingapi
 
 tx-lcn:
   client:
