@@ -2,6 +2,7 @@ package com.drive.basics.repository.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.drive.basics.pojo.dto.OperatorAreaInstallParam;
 import com.drive.basics.pojo.dto.OperatorEditParam;
 import com.drive.basics.pojo.dto.OperatorPageQueryParam;
@@ -108,6 +109,7 @@ public class OperatorRepositoryImpl extends BaseController<OperatorPageQueryPara
         return R.success(operatorItemVos);
     }
 
+    @LcnTransaction //分布式事务注解
     @Transactional
     @Override
     public ResObject saveOperator(@Valid OperatorEditParam operatorEditParam) {

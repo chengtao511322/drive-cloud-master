@@ -1,5 +1,6 @@
 package com.drive.admin;
 
+import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.drive.common.core.utils.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -18,6 +19,8 @@ import java.lang.management.ManagementFactory;
 @EnableFeignClients(basePackages = "com.drive")
 @SpringCloudApplication
 @EnableCaching
+/**TC开启分布式事务注解**/
+@EnableDistributedTransaction
 @Slf4j
 public class DriveCloudAdminApplication {
 

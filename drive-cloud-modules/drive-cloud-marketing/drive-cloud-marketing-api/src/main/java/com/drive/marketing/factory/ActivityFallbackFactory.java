@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 /**
  * 服务降级处理
  *
- * @author DreamChan
+ * @author xiaoguo
  */
 @Component
 @Slf4j
@@ -30,6 +30,11 @@ public class ActivityFallbackFactory implements FallbackFactory<RemoteActivitySe
 
             @Override
             public ResObject saveCoupon(CouponEditParam couponEditParam) {
+                return R.failure();
+            }
+
+            @Override
+            public ResObject saveCouponData(CouponEditParam couponEditParam) {
                 return R.failure();
             }
         };

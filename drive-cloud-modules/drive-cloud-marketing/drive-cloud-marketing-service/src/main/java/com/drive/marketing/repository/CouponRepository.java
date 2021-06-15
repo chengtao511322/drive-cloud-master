@@ -18,6 +18,13 @@ public interface CouponRepository {
     ResObject publishCoupon(CouponEditParam couponEditParam);
 
     /**
+     * 保存优惠券
+     * @param couponEditParam
+     * @return
+     */
+    ResObject saveCoupon(CouponEditParam couponEditParam);
+
+    /**
      * 发布优惠券
      * @param couponEditParam
      * @return

@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
@@ -127,6 +128,8 @@ public class CouponController extends BaseController<CouponPageQueryParam, Coupo
 	//@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:add')")
 	@EventLog(message = "新增", businessType = EventLogEnum.CREATE)
 	// @GlobalTransactional
+	@LcnTransaction //分布式事务注解
+	@Transactional(rollbackFor = Exception.class)
 	@PostMapping
 	public ResObject save(@Valid @RequestBody CouponEditParam couponEditParam) {
 		Long userId = SecurityUtils.getLoginUser().getUserId();
@@ -134,6 +137,16 @@ public class CouponController extends BaseController<CouponPageQueryParam, Coupo
 		coupon.setCreateBy(String.valueOf(userId));
 		coupon.setReleaseTime(LocalDateTime.now());
 		return R.toRes(couponService.save(coupon));
+	}
+
+	@ApiOperation("新增")
+	@ApiImplicitParam(name = "CouponEditParam ", value = "新增", dataType = "CouponEditParam")
+	//@PreAuthorize("hasPermission('/marketing/coupon',  'marketing:coupon:add')")
+	@EventLog(message = "新增", businessType = EventLogEnum.CREATE)
+	// @GlobalTransactional
+	@PostMapping("/saveCoupon")
+	public ResObject saveCoupon(@Valid @RequestBody CouponEditParam couponEditParam) {
+		return couponRepository.saveCoupon(couponEditParam);
 	}
 
 	/**

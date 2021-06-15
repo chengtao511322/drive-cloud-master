@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
@@ -98,6 +99,19 @@ public class CouponRepositoryImpl implements CouponRepository {
         }
 
         return R.toRes(result);
+    }
+
+    @LcnTransaction //分布式事务注解
+    @Override
+    public ResObject saveCoupon(CouponEditParam couponEditParam) {
+        log.info(this.getClass() + "publishCoupon方法请求参数{}",couponEditParam);
+        Long userId = SecurityUtils.getLoginUser().getUserId();
+        CouponEntity coupon = couponMapStruct.toEntity(couponEditParam);
+        coupon.setCreateBy(String.valueOf(userId));
+        coupon.setReleaseTime(LocalDateTime.now());
+        Boolean result = couponService.save(coupon);
+        //int i = 1 / 0;
+        return  R.success(result);
     }
 
     @Override

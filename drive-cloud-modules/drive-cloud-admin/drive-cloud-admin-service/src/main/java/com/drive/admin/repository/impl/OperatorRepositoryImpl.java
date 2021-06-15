@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.pojo.dto.*;
 import com.drive.admin.pojo.entity.OperatorAreaEntity;
@@ -300,6 +301,7 @@ public class  OperatorRepositoryImpl extends BaseController<OperatorPageQueryPar
         return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.DATA_STATUS_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_STATUS_FAILL.subCode(),SubResultCode.DATA_STATUS_FAILL.subMsg());
     }
 
+    @LcnTransaction //分布式事务注解
     @Override
     public ResObject installOperator(OperatorInstallParam operatorEditParam) {
         log.info(this.getClass() + "installOperator-方法请求参数{}",operatorEditParam);

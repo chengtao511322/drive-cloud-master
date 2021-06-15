@@ -1,5 +1,6 @@
 package com.drive.marketing;
 
+import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
@@ -15,6 +16,8 @@ import java.lang.management.ManagementFactory;
 @EnableFeignClients(basePackages = "com.drive")
 @SpringCloudApplication
 @EnableAsync//开启异步调用
+/**TC开启分布式事务注解**/
+@EnableDistributedTransaction
 @Slf4j
 public class DriveCloudMarketingApplication {
 
