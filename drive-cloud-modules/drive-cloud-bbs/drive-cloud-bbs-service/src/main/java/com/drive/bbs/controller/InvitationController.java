@@ -3,6 +3,9 @@ package com.drive.bbs.controller;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.drive.bbs.pojo.dto.InvitationEditParam;
+import com.drive.bbs.pojo.dto.InvitationInstallParam;
+import com.drive.bbs.pojo.dto.InvitationPageQueryParam;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,8 +26,6 @@ import com.drive.common.log.annotation.EventLog;
 import io.swagger.annotations.Api;
 import com.drive.common.core.base.BaseController;
 import com.drive.bbs.pojo.entity.*;
-import com.drive.bbs.pojo.vo.*;
-import com.drive.bbs.pojo.dto.*;
 import com.drive.bbs.service.mapstruct.*;
 import com.drive.bbs.service.InvitationService;
 import com.drive.bbs.repository.InvitationRepository;

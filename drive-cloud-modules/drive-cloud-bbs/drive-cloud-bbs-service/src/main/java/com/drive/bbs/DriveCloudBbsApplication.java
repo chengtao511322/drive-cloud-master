@@ -18,7 +18,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringCloudApplication
 @EnableCaching
 /**TC开启分布式事务注解**/
-@EnableDistributedTransaction
+// @EnableDistributedTransaction
 @Slf4j
 public class DriveCloudBbsApplication {
 
