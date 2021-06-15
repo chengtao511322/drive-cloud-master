@@ -52,7 +52,7 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
-public class ChannelManagerActivityRepositoryImpl implements ChannelManagerActivityRepository {
+public class    ChannelManagerActivityRepositoryImpl implements ChannelManagerActivityRepository {
 
     @Autowired
     private ChannelManagerActivityService channelManagerActivityService;

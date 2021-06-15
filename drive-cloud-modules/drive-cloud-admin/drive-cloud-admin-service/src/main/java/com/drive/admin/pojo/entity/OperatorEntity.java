@@ -38,7 +38,7 @@ public class OperatorEntity extends BaseEntity {
 
 	// 是否删除
 	@TableLogic
-   	@TableField(value="is_delete")
+   	@TableField(value="is_delete",fill = FieldFill.INSERT)
 	private String isDelete;
 
 	// 创建时间

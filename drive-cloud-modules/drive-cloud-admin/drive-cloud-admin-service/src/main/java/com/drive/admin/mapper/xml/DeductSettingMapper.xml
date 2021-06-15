@@ -4,6 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.drive.admin.pojo.entity.DeductSettingEntity">
+        <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="user_type" property="userType" />
         <result column="manager_hour_proportion" property="managerHourProportion" />
@@ -17,7 +18,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-            name, user_type, manager_hour_proportion, manager_apply_amount, agency_hour_proportion, agency_apply_amount, operator_id, recommend_manager_id, recommend_agency_id
+            id,name, user_type, manager_hour_proportion, manager_apply_amount, agency_hour_proportion, agency_apply_amount, operator_id, recommend_manager_id, recommend_agency_id
     </sql>
 
 </mapper>

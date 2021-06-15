@@ -66,8 +66,8 @@ public class TreeUtil {
 
     /**
      * 生成树形结构
-     * @param roots
-     * @param others
+     * @param roots 根节点
+     * @param others 子节点
      * @param <V>
      * @return
      */
@@ -84,9 +84,9 @@ public class TreeUtil {
 
     /**
      * 获取子节点列表
-     * @param others
-     * @param beanTree
-     * @param map
+     * @param others 所有子节点
+     * @param beanTree  根节点
+     * @param map 过滤已加入过的节点
      * @param <V>
      */
     private static <V extends TreeVoFeature<V>> void addChildren(List<V> others, V beanTree, Map<String, String> map) {
