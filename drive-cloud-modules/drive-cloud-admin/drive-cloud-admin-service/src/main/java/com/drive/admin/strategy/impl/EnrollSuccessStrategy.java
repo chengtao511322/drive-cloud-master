@@ -249,10 +249,9 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
             BigDecimal vipEnrollPrice = driveSchool.getVipEnrollPrice();
             if(isSubtract){
                 // isSubtract 为true，则认为是报名完成之后升班的
-
                 vipEnrollPrice = vipEnrollPrice.subtract(driveSchool.getEnrollPrice());
             }
-
+            // 判断VIP报名价格
             if(vipEnrollPrice != null){
                 accountFlowDetail.setId(IdWorker.getIdStr());
                 accountFlowDetail.setItemType(StudyEnrollEnum.AFD_SCHOOL_ENROLL_COST.getCode());
@@ -290,6 +289,11 @@ public class EnrollSuccessStrategy implements StudyEnrollStrategy {
     }
 
 
+    /**
+     * 创建优惠券明细
+     * @param tStudentOrder
+     * @param tAccountFlow
+     */
     public void createCouponAccountFlowDetail(StudentOrderEntity tStudentOrder,AccountFlowEntity tAccountFlow){
         if(StrUtil.isNotEmpty(tStudentOrder.getColumcouponId())) {
             // 创建运营商支出流水

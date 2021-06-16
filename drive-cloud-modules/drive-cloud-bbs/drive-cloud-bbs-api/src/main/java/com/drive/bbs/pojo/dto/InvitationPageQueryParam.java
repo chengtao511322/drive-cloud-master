@@ -123,9 +123,10 @@ public class InvitationPageQueryParam extends BasePageQueryParam {
 	// 模糊查询字段
 	//private String vagueNameSearch
 
-	// 模糊查询
+	// 模糊查询 内容
 	private String vagueTextContentSearch;
 
+	// 模糊查询 和谐前内容
 	private String vagueRawTextContentSearch;
 
 }

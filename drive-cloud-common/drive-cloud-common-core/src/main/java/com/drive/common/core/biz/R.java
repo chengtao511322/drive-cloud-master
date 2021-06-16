@@ -63,6 +63,12 @@ public class R implements java.io.Serializable{
 		return resObject;
 	}
 
+	/**
+	 * 成功；自定义业务码
+	 * @param subCode 
+	 * @param subMsg
+	 * @return
+	 */
 	public static ResObject success(String subCode, String subMsg) {
 		ResObject resObject = new ResObject();
 		resObject.setCode(ResCodeEnum.SUCCESS.getCode());
@@ -72,6 +78,14 @@ public class R implements java.io.Serializable{
 		resObject.setSubMsg(subMsg);
 		return resObject;
 	}
+
+	/**
+	 * 成功 自定义业务码处理
+	 * @param subCode
+	 * @param subMsg
+	 * @param object
+	 * @return
+	 */
 	public static ResObject success(String subCode, String subMsg,Object object) {
 		ResObject resObject = new ResObject();
 		resObject.setCode(ResCodeEnum.SUCCESS.getCode());
@@ -84,6 +98,10 @@ public class R implements java.io.Serializable{
 	}
 
 
+	/**
+	 * 失败
+	 * @return
+	 */
 	public static ResObject failure() {
 		return new ResObject(ResCodeEnum.FAILURE.getCode(), DEFAULT_FAILURE, DEFAULT_FAILURE_MESSAGE,SubResultCode.SYSTEM_FAILL.subCode(),SubResultCode.SYSTEM_FAILL.subMsg());
 	}
@@ -99,12 +117,17 @@ public class R implements java.io.Serializable{
 		return resObject;
 	}
 
+	/**
+	 * 返回错误消息
+	 * @param data
+	 * @return
+	 */
 	public static ResObject failure(Object data) {
 		ResObject resObject = new ResObject();
 		resObject.setCode(ResCodeEnum.ERROR.getCode());
 		resObject.setIsSuccess(DEFAULT_FAILURE);
 		resObject.setMsg(ResCodeEnum.ERROR.getMsg());
-		// ,SubResultCode.SYSTEM_FAILL.subCode(),SubResultCode.SYSTEM_FAILL.subMsg()
+		// SubResultCode.SYSTEM_FAILL.subCode(),SubResultCode.SYSTEM_FAILL.subMsg()
 		resObject.setSubCode(SubResultCode.SYSTEM_FAILL.subCode());
 		resObject.setSubMsg(SubResultCode.SYSTEM_FAILL.subMsg());
 		resObject.setData(data);

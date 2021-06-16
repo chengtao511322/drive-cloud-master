@@ -360,6 +360,7 @@ public class  PlatformWalletRepositoryImpl extends BaseController<PlatformWallet
                 if (platformWallet == null) throw new BizException(500,SubResultCode.DATA_UPDATE_FAILL.subCode(),"该账户未设置钱包账户");
                 // 相加
                 platformWallet.setWalletAmount(platformWallet.getWalletAmount().subtract(item.getItemAmount()));
+                // 修改钱包金额
                 Boolean platformWalletResult =platformWalletService.updateById(platformWallet);
                 if (!platformWalletResult) throw new BizException(500,SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
                 //记录钱包流水明细

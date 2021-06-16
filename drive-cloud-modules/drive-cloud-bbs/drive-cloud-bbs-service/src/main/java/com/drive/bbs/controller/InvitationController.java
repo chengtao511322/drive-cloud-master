@@ -71,6 +71,7 @@ public class InvitationController extends BaseController<InvitationPageQueryPara
 		return invitationRepository.findList(param);
 	}
 
+
 	/**
 	* 获取论坛帖子表
 	*/

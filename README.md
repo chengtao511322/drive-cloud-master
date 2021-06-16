@@ -251,3 +251,14 @@ tx-lcn:
 @LcnTransaction //分布式事务注解
 
 具体方法参考 drive-cloud-admin 项目 里面的 AccountController -increaseAmount方法
+
+
+### 手写Lock锁使用
+DriveLock driveLock = new DriveLock();
+// 上锁
+driveLock.lock();
+// 解锁
+driveLock.unlock();
+
+案例参考 
+DriveThreadLock 类中的使用
