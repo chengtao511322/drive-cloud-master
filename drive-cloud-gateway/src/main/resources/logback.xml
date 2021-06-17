@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false">
     <!--定义日志文件的存储地址 -->
-    <property name="APP_NAME" value="drive-cloud-auth"/>
+    <property name="APP_NAME" value="drive-cloud-gateway"/>
     <property name="LOG_HOME" value="/driverprince/logs"/>
 
     <!-- 日志输出格式 -->
