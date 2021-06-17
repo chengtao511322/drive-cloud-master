@@ -7,11 +7,11 @@
 
 #----- 默认（公有）配置
 # 地址，默认localhost
-host = 125.0.8.191
-#host = 172.24.86.61
+#host = 125.0.8.191
+host = 172.24.86.61
 # 端口，默认6379
-port = 6379
-#port = 5300
+#port = 6379
+port = 5300
 # 超时，默认2000
 timeout = 2000
 # 连接超时，默认timeout
@@ -19,8 +19,8 @@ connectionTimeout = 2000
 # 读取超时，默认timeout
 soTimeout = 2000
 # 密码，默认无
-password = xiaoguo
-#password = yqkj888.
+#password = xiaoguo
+password = yqkj888.
 # 数据库序号，默认0
 database = 0
 # 客户端名，默认"Hutool"
