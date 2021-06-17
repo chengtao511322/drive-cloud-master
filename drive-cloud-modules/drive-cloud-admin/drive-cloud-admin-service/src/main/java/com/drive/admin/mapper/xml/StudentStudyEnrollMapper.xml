@@ -239,7 +239,7 @@
                 (select  SUM(tstca.class_hours) from t_student_train_car_apply tstca where tstca.student_id = tsse.student_id  and (tstca.apply_status='1' or tstca.apply_status='4' or tstca.apply_status='6'or tstca.apply_status='7' ) and tstca.subject_type='3' and train_type='2')  as   subjectType3TestAppointmentSumTime,
                 (select  SUM(tstca.class_hours) from t_student_train_car_apply tstca where tstca.student_id = tsse.student_id  and tstca.apply_status='5' and tstca.subject_type='3' and train_type='2')  as   subjectType3TestCompleteSumTime,
                 (select tste.enroll_status from  t_student_test_enroll  tste  where  tste.student_id = tsse.student_id  and  (tste.enroll_status='1' or tste.enroll_status='2' or tste.enroll_status='5' or tste.enroll_status='8' or tste.enroll_status='10') and subject_type='3') as subjectTypeTest3EnrollStatus,
-                (select  coach_id from  one_fee_system_coach_student ofscs where ofscs.student_id = tsse.student_id and ofscs.bind_status = '2' and ofscs.pay_status='2') as  coachId,
+                (select  coach_id from  one_fee_system_coach_student ofscs where ofscs.student_id = tsse.student_id  and ofscs.is_delete = '0' and  ofscs.bind_status = '2' and ofscs.pay_status='2') as  coachId,
                 (select  product_id from t_student_order tso where tso.study_enroll_no = tsse.study_enroll_no ) as classId
 				from   t_student_study_enroll  tsse
                 ${ew.customSqlSegment}
