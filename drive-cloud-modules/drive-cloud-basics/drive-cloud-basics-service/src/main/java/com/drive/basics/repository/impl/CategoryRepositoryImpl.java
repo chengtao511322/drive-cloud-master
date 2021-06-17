@@ -239,9 +239,14 @@ public class  CategoryRepositoryImpl extends BaseController<CategoryPageQueryPar
             for (com.drive.admin.pojo.dto.TreeNodeCategoryDto item:
             treeNodeCategoryDtoList) {
                 TreeNodeCategoryDto treeNodeCategoryDto = new TreeNodeCategoryDto();
+                StringBuilder sb = new StringBuilder(item.getLabel());
                 treeNodeCategoryDto.setpId("34");
                 treeNodeCategoryDto.setValue(item.getValue());
-                treeNodeCategoryDto.setLabel(item.getLabel());
+                if(item.getDriveType() != null){
+                    sb.append("(C"+item.getDriveType()+"-"+item.getPrice()+")");
+                }
+                treeNodeCategoryDto.setLabel(sb.toString());
+                //treeNodeCategoryDto.setDriveType(item.getDriveType());
                 categoryList.add(treeNodeCategoryDto);
             }
         }

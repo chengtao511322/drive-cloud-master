@@ -44,7 +44,9 @@
             id,
           id as value,
             class_type as type,
-            `name` as label
+            `name` as label,
+            drive_type as driveType,
+            price as price
         FROM
             one_fee_system_price
         WHERE

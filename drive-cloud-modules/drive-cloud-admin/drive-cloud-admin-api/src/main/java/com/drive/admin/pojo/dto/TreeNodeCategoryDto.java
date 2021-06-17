@@ -14,5 +14,10 @@ public class TreeNodeCategoryDto extends BaseTreeNode {
 
     private String type;
 
+    //驾照类型
+    private String driveType;
+
+    //班型价格
+    private String price;
 
 }

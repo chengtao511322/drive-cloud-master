@@ -122,9 +122,11 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getStatus()),"t1.status",activityEditParam.getStatus());
         // 优惠券名称
         wrapper.like(StrUtil.isNotEmpty(activityEditParam.getCouponName()),"t2.name",activityEditParam.getCouponName());
+        //用户手机号查询
+        wrapper.like(StrUtil.isNotEmpty(activityEditParam.getUserName()),"t1.phone",activityEditParam.getPhone());
         // 优惠券领取时间
         wrapper.between(StrUtil.isNotEmpty(activityEditParam.getBeginTime()),"get_time",activityEditParam.getBeginTime(),activityEditParam.getEndTime());
-        wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getTenantId()),"tenant_id",activityEditParam.getTenantId());
+        wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getTenantId()),"t1.tenant_id",activityEditParam.getTenantId());
         wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getPromoteUserId()),"promote_user_id",activityEditParam.getPromoteUserId());
         // 查询数据
         wrapper.orderByDesc("t1.create_time");
