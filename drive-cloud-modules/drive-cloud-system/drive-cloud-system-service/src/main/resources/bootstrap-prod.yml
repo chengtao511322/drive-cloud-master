@@ -1,0 +1,30 @@
+# Tomcat
+server:
+  port: 9251
+  undertow:
+    buffer-size: 1024
+    direct-buffers: true
+    io-threads: 16
+    worker-threads: 256
+
+# Spring
+spring: 
+  application:
+    # 应用名称
+    name: @project.artifactId@
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址 ${zuihou.nacos.ip}:${zuihou.nacos.port}
+        server-addr: ${nacos_host:172.24.86.62}:${nacos_port:6688}
+      config:
+        # 配置中心地址
+        server-addr: ${nacos_host:172.24.86.62}:${nacos_port:6688}
+        # 配置文件格式
+        file-extension: yml
+        # 共享配置
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+        namespace: 26c5828f-4b2a-424a-8f18-aaa301ea58e7
+        group: PROD_GROUP
+

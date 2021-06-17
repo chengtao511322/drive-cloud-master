@@ -1,0 +1,64 @@
+# Tomcat
+server:
+  port: 9666
+  undertow:
+    buffer-size: 1024
+    direct-buffers: true
+    io-threads: 16
+    worker-threads: 256
+# Spring
+spring:
+  application:
+    # 应用名称
+    name: @project.artifactId@
+    #name: drive-cloud-marketing
+  cache:
+      type: simple
+      cache-names: test
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址 172.24.86.62
+        server-addr: ${nacos_host:125.0.8.191}:${nacos_port:6648}
+      config:
+        # 配置中心地址
+        server-addr: ${nacos_host:125.0.8.191}:${nacos_port:6648}
+        # 配置文件格式
+        file-extension: yml
+        # 共享配置
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+        namespace: dev
+        group: DEV_GROUP
+  devtools:
+    restart:
+      enabled: true  #设置开启热部署
+      additional-paths: src/main/java #重启目录
+
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: my_test_tx_group
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: 125.0.8.191:6648
+      username: nacos
+      password: xiaoguo
+  config:
+    type: nacos
+    nacos:
+      server-addr: 125.0.8.191:6648
+      group: SEATA_GROUP
+      username: nacos
+      password: xiaoguo
+      namespace:
+  service:
+    vgroup-mapping:
+      my_test_tx_group: default
+    disable-global-transaction: false
+  client:
+    rm:
+      report-success-enable: false
+
