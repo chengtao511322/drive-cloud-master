@@ -27,8 +27,8 @@ import java.util.Map;
 public class GeneratorMain {
 
     //生成文件所在项目路径  E:\Project\gitWork\drive-cloud-master
-    private static String baseProjectPath = "E:\\Project\\gitWork\\drive-cloud-master\\drive-cloud-modules\\drive-cloud-admin\\drive-cloud-admin-service\\";
-    private static String baseProjectApiPath = "E:\\Project\\gitWork\\drive-cloud-master\\drive-cloud-modules\\drive-cloud-admin\\drive-cloud-admin-api\\";
+    private static String baseProjectPath = "E:\\Project\\gitWork\\drive-cloud-master\\drive-cloud-modules\\drive-cloud-bbs\\drive-cloud-bbs-service\\";
+    private static String baseProjectApiPath = "E:\\Project\\gitWork\\drive-cloud-master\\drive-cloud-modules\\drive-cloud-bbs\\drive-cloud-bbs-api\\";
 
 
     //文件存放路径
@@ -43,7 +43,7 @@ public class GeneratorMain {
 
     //数据库连接参数配置  driverprince_production
     private static String driverName = "com.mysql.cj.jdbc.Driver";
-    private static String url = "jdbc:mysql://125.0.8.191:3306/driverprince_production?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai";
+    private static String url = "jdbc:mysql://125.0.8.191:3304/drive_bbs?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai";
     private static String username = "root";
     private static String password = "xiaoguo";
 
@@ -51,14 +51,14 @@ public class GeneratorMain {
     private static Boolean fileOverride = true;
 
     //table前缀
-    private static String prefix = "t";
+    private static String prefix = "bbs";
 
     //模块名称
-    private static String modulesName = "admin";
+    private static String modulesName = "bbs";
 
     //要生成的表名templatestemplates
     private static String[] tables = {
-            "t_wallet_settlement_summary",
+            "bbs_user_like",
     };
 
 
