@@ -3,8 +3,10 @@ package com.drive.admin.api;
 
 import com.drive.admin.factory.RecommendUserFallbackFactory;
 import com.drive.admin.pojo.vo.RecommendUserVo;
+import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.constant.ServiceNameConstants;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +28,7 @@ public interface RemoteRecommendUserFeignService {
      */
     @GetMapping(value = "/recommendUser/{id}")
     ResObject<RecommendUserVo> get(@PathVariable(value = "id") String id);
+
 
     /**
      *  推广人员信息表列表

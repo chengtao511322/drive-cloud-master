@@ -5,11 +5,10 @@ import com.drive.admin.factory.StudentFallbackFactory;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.constant.ServiceNameConstants;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 用户服务
@@ -24,8 +23,9 @@ public interface RemoteStudentFeignService {
      * @return
      */
 
-    @RequestMapping(value = "/studentInfo/{id}",method = RequestMethod.GET)
-    ResObject<StudentInfoVo> get(@PathVariable(value = "id") String id);
+    @GetMapping(value = "/studentInfo/{id}")
+    ResObject<StudentInfoVo> get(@PathVariable String id);
+
 
     /**
      * 事务回滚
@@ -33,5 +33,10 @@ public interface RemoteStudentFeignService {
      */
     @PostMapping("/activity/reduceInventoryRollback")
     ResObject reduceInventoryRollback();
+
+
+    @ApiOperation("通过ID获取学员信息表")
+    @GetMapping("studentInfo/getByIdInfo/{id}")
+    ResObject<StudentInfoVo> getByIdInfo(@PathVariable("id") String id);
 
 }

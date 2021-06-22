@@ -3,6 +3,7 @@ package com.drive.admin.factory;
 
 import com.drive.admin.api.RemoteRecommendUserFeignService;
 import com.drive.admin.pojo.vo.RecommendUserVo;
+import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import feign.hystrix.FallbackFactory;
@@ -30,6 +31,7 @@ public class RecommendUserFallbackFactory implements FallbackFactory<RemoteRecom
             public ResObject<RecommendUserVo> get(String id) {
                 return R.failure();
             }
+
 
             @Override
             public ResObject<List<RecommendUserVo>> getRecommendUserByChannelManagerId(String channelManagerId) {

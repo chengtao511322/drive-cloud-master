@@ -23,11 +23,13 @@ import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
+import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.core.utils.StringUtils;
 import com.drive.common.security.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
@@ -38,6 +40,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -62,6 +65,18 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
     @Autowired
     private ServiceReturnVisitHistoryService serviceReturnVisitHistoryService;
 
+
+    @Override
+    public ResObject<StudentInfoVo> getByIdInfo(String id) {
+        log.info("-getByIdInfo-方法请求参数{}",id);
+        if (StrUtil.isEmpty(id)){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        StudentInfoEntity studentInfo = studentInfoService.getById(id);
+        if (studentInfo == null)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        StudentInfoVo studentInfoVo = BeanConvertUtils.copy(studentInfo,StudentInfoVo.class);
+        return R.success(studentInfoVo);
+    }
 
     @Transactional
     @Override

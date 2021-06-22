@@ -29,9 +29,13 @@ import com.drive.marketing.service.IActivityInfoService;
 import com.drive.marketing.service.mapstruct.ActivityMapStruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 @Slf4j
@@ -44,19 +48,25 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
     private ActivityMapStruct activityMapStruct;
 
     @Autowired
+    @Lazy
     private RemoteStudentFeignService remoteStudentFeignService;
 
     @Autowired
     private CouponGetService couponGetService;
 
     @Autowired
+    @Lazy
     private RemoteOperatorFeignService remoteOperatorFeignService;
 
     @Autowired
+    @Lazy
     private RemoteRecommendUserFeignService remoteRecommendUserFeignService;
 
     @Autowired
+    @Lazy
     private RecommendManagertRepository recommendManagertRepository;
+
+    private Lock lock = new ReentrantLock(true);
 
     @Override
     public ResObject reduceInventoryRollback() {
@@ -132,32 +142,20 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         if (pageList.getRecords().size() <= 0){
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
         }
+        /*ResObject res = remoteRecommendUserFeignService.getByIdInfo("83eaf614fc8c4632b99d");
+        log.info("请求学员接口{}",res);*/
         // 循环瞬间
         pageList.getRecords().forEach((item) ->{
-            StudentInfoVo studentInfoVo = null;
-            OperatorVo operatorVo = null;
-            ResObject resObject = remoteStudentFeignService.get(item.getUserId());
-            log.info("请求学员接口{}",resObject);
-            // 判断接口是否请求成功
-            if (resObject.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && resObject.getData() != null){
-                studentInfoVo = (StudentInfoVo) resObject.getData();
-            }
+            StudentInfoVo studentInfoVo = this.getStudent(item.getUserId());
+            OperatorVo operatorVo = this.getOperatorVo(item.getTenantId());
+            RecommendUserVo recommendUserVo = this.getRecommendUserVo(item.getTenantId());
+            log.info("学员数据{}",studentInfoVo);
             log.info("转化好的学员对象{}",studentInfoVo);
             if (studentInfoVo!= null && StrUtil.isNotEmpty(studentInfoVo.getUsername()))item.setUserName(studentInfoVo.getUsername());
             if (studentInfoVo!= null && StrUtil.isNotEmpty(studentInfoVo.getPhone()))item.setPhone(studentInfoVo.getPhone());
-            // 查询运营商
-            ResObject<OperatorVo> operatorVoResObject =remoteOperatorFeignService.get(item.getTenantId());
-            log.info("请求运营商接口数据{}",operatorVoResObject);
-            if (operatorVoResObject.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && operatorVoResObject.getData() != null){
-                operatorVo = operatorVoResObject.getData();
-            }
-            log.info("转化后的运营商数据{}",operatorVo);
             if (operatorVo!= null && StrUtil.isNotEmpty(operatorVo.getName()))item.setTenantName(operatorVo.getName());
-            // 查询推广商
-            ResObject<RecommendUserVo>  promoteUser = remoteRecommendUserFeignService.get(item.getPromoteUserId());
-            if (promoteUser.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && promoteUser.getData() != null){
-                item.setPromoteUser(promoteUser.getData());
-            }
+            if (recommendUserVo!= null )item.setPromoteUser(recommendUserVo);
+
         });
         return R.success(pageList);
     }
@@ -187,5 +185,59 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         });*/
         log.info(this.getClass() + "方法请求结果{}",deptVoPage.getRecords());
         return R.success(deptVoPage);
+    }
+
+    /**
+     * 异步查学员
+     * @param id
+     * @return
+     */
+    @Async
+    StudentInfoVo getStudent(String id){
+       StudentInfoVo studentInfoVo = null;
+       ResObject resObject = remoteStudentFeignService.getByIdInfo(id);
+
+       log.info("请求学员接口{}",resObject);
+       // 判断接口是否请求成功
+       if (resObject.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && resObject.getData() != null){
+           studentInfoVo = (StudentInfoVo) resObject.getData();
+       }
+       return studentInfoVo;
+
+    }
+
+    /**
+     * 异步查运营商
+     * @param id
+     * @return
+     */
+    @Async
+    OperatorVo getOperatorVo(String tenantId){
+        OperatorVo operatorVo = null;
+        // 查询运营商
+        ResObject<OperatorVo> operatorVoResObject =remoteOperatorFeignService.get(tenantId);
+        log.info("请求运营商接口数据{}",operatorVoResObject);
+        if (operatorVoResObject.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && operatorVoResObject.getData() != null){
+            operatorVo = operatorVoResObject.getData();
+        }
+        log.info("转化后的运营商数据{}",operatorVo);
+        return operatorVo;
+    }
+
+    /**
+     * 查询推广商
+     * @param promoteUserId
+     * @return
+     */
+    @Async
+    RecommendUserVo getRecommendUserVo(String promoteUserId){
+        RecommendUserVo recommendUserVo = null;
+        // 查询推广商
+        ResObject<RecommendUserVo>  promoteUser = remoteRecommendUserFeignService.get(promoteUserId);
+        if (promoteUser.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && promoteUser.getData() != null){
+            recommendUserVo = promoteUser.getData();
+        }
+        log.info("转化后的运营商数据{}",recommendUserVo);
+        return recommendUserVo;
     }
 }
