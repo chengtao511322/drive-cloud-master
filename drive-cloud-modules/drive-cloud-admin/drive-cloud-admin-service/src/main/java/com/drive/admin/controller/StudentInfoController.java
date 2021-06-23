@@ -107,6 +107,15 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 		return studentInfoRepository.getById(id);
 	}
 
+
+	@ApiOperation("通过ID获取学员信息表")
+	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
+	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
+	@GetMapping("/getByIdInfo/{id}")
+	public ResObject<StudentInfoVo> getByIdInfo(@PathVariable("id") String id) {
+		return studentInfoRepository.getByIdInfo(id);
+	}
+
 	/**
 	* 新增学员信息表
 	*/

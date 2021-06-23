@@ -18,13 +18,35 @@ public class DriveThreadLock {
     static int i = 100;
 
     private static Lock lock = new ReentrantLock();
+    private static DriveLock driveLock = new DriveLock();
+
+
+    void a() throws Exception {
+        driveLock.lock();
+        System.out.println("a");
+        b();
+        driveLock.unlock();
+    }
+
+    void b() throws Exception {
+        driveLock.lock();
+        System.out.println("b");
+        c();
+        driveLock.unlock();
+    }
+
+    void c() throws Exception {
+        driveLock.lock();
+         System.out.println("c");
+        driveLock.unlock();
+    }
 
 
 
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
         // 自定义lock
-        DriveLock driveLock = new DriveLock();
+        /*DriveLock driveLock = new DriveLock();
 
         Runnable runnable = new Runnable() {
                     @Override
@@ -54,8 +76,12 @@ public class DriveThreadLock {
                 t1.start();
                 t2.start();
 
-            }
+            }*/
 
+
+        DriveThreadLock driveThreadLock = new DriveThreadLock();
+        driveThreadLock.a();
+    }
 
 }
 
