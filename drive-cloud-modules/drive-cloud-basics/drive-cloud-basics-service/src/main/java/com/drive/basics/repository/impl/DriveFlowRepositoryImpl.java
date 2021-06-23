@@ -164,7 +164,7 @@ public class  DriveFlowRepositoryImpl extends BaseController<DriveFlowPageQueryP
         Boolean result = driveFlowService.saveOrUpdate(driveFlow);
         log.info(this.getClass() + "save-方法请求结果{}",result);
         // 判断结果
-        return result ?R.success(SubResultCode.DATA_INSTALL_SUCCESS.subCode(),SubResultCode.DATA_INSTALL_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
+        return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.SYSTEM_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_INSTALL_FAILL.subCode(),SubResultCode.DATA_INSTALL_FAILL.subMsg());
     }
 
     /**
@@ -181,7 +181,7 @@ public class  DriveFlowRepositoryImpl extends BaseController<DriveFlowPageQueryP
         Boolean result = driveFlowService.updateById(driveFlow);
         log.info(this.getClass() + "update-方法请求结果{}",result);
         // 判断结果
-        return result ?R.success(SubResultCode.DATA_UPDATE_SUCCESS.subCode(),SubResultCode.DATA_UPDATE_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
+        return result ?R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.SYSTEM_SUCCESS.subMsg()):R.failure(SubResultCode.DATA_UPDATE_FAILL.subCode(),SubResultCode.DATA_UPDATE_FAILL.subMsg());
     }
 
     /**

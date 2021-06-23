@@ -37,6 +37,11 @@ public class RecommendUserFallbackFactory implements FallbackFactory<RemoteRecom
             public ResObject<List<RecommendUserVo>> getRecommendUserByChannelManagerId(String channelManagerId) {
                 return R.failure("服务降级，服务熔断");
             }
+
+            @Override
+            public ResObject<RecommendUserVo> getRecommendUserByPhone(String phone) {
+                return R.failure("服务降级，服务熔断");
+            }
         };
     }
 }

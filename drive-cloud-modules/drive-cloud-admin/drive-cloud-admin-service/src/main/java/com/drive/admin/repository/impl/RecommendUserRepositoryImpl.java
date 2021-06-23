@@ -8,13 +8,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.enums.StatusEnum;
 import com.drive.admin.pojo.dto.RecommendUserEditParam;
 import com.drive.admin.pojo.dto.RecommendUserPageQueryParam;
+import com.drive.admin.pojo.dto.StudentInfoPageQueryParam;
 import com.drive.admin.pojo.entity.RecommendManagerEntity;
 import com.drive.admin.pojo.entity.RecommendUserEntity;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.entity.TestTrainPriceEntity;
 import com.drive.admin.pojo.vo.RecommendUserVo;
+import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.admin.repository.RecommendManagerRepository;
 import com.drive.admin.repository.RecommendUserRepository;
+import com.drive.admin.repository.StudentInfoRepository;
 import com.drive.admin.service.RecommendManagerService;
 import com.drive.admin.service.RecommendUserService;
 import com.drive.admin.service.StudentInfoService;
@@ -59,6 +62,9 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
 
     @Autowired
     private StudentInfoService studentInfoService;
+
+    @Autowired
+    private StudentInfoRepository studentInfoRepository;
 
     /*
      *功能描述
@@ -307,6 +313,36 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
         log.info(this.getClass() +"changeStatus方法请求对象参数{}，请求结果{}",RecommendUserEntity,result);
         // 判断结果
         return result ?R.success(result):R.failure(result);
+    }
+
+    /**
+     * 通过手机号查询推广商信息
+     */
+    @Override
+    public ResObject getRecommendUserInfoByPhone(String phone){
+        log.info(this.getClass() + "通过手机号查询推广商{}",phone);
+        if (StrUtil.isEmpty(phone)){
+            log.error("数据空");
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        StudentInfoPageQueryParam studentParam = new StudentInfoPageQueryParam();
+        studentParam.setPhone(phone);
+        ResObject studentRes = studentInfoRepository.getInfo(studentParam);
+        //查询到数据
+        if(studentRes.getCode() == 200 && studentRes.getData() != null){
+            //查询推广商的id
+            StudentInfoVo studentInfoVo = (StudentInfoVo) studentRes.getData();
+            RecommendUserPageQueryParam recommendUserPageQueryParam = new RecommendUserPageQueryParam();
+            recommendUserPageQueryParam.setStudentId(studentInfoVo.getId());
+            ResObject recommendRes = this.getInfo(recommendUserPageQueryParam);
+            if(recommendRes.getCode() == 200 && recommendRes.getData() != null){
+                return recommendRes;
+            }else {
+                return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+            }
+        }else {
+            return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        }
     }
 
 }

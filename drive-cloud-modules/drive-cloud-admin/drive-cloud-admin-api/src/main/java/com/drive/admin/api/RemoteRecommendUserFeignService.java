@@ -2,6 +2,7 @@ package com.drive.admin.api;
 
 
 import com.drive.admin.factory.RecommendUserFallbackFactory;
+import com.drive.admin.pojo.dto.RecommendUserPageQueryParam;
 import com.drive.admin.pojo.vo.RecommendUserVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.common.core.biz.ResObject;
@@ -11,7 +12,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -38,5 +41,11 @@ public interface RemoteRecommendUserFeignService {
     // @ApiOperation("推广人员信息表列表")
     @GetMapping(value = "/recommendUser/getRecommendUserByChannelManagerId/{channelManagerId}")
     ResObject<List<RecommendUserVo>> getRecommendUserByChannelManagerId(@PathVariable(value = "channelManagerId") String channelManagerId);
+
+    /**
+     *  根据手机号获取推广人员信息
+     */
+    @PostMapping(value = "/recommendUser/getRecommendUser/{phone}")
+    ResObject<RecommendUserVo> getRecommendUserByPhone(@PathVariable(value = "phone") String phone);
 
 }

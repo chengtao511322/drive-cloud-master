@@ -557,12 +557,12 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
     }
 
     @Override
-    public ResObject getInfo(StudentInfoPageQueryParam param) {
+    public ResObject<StudentInfoVo> getInfo(StudentInfoPageQueryParam param) {
         log.info(this.getClass() + "getInfo-方法请求参数{}",param);
         QueryWrapper queryWrapper = this.getQueryWrapper(studentInfoMapStruct, param);
         StudentInfoEntity studentInfo = studentInfoService.getOne(queryWrapper);
         StudentInfoVo studentInfoVo = BeanConvertUtils.convertBean(studentInfo,StudentInfoVo.class);
-        // 空
+        //
         if(studentInfoVo == null){
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),studentInfoVo);
         }

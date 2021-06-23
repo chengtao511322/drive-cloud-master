@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.api.RemoteRecommendUserFeignService;
 import com.drive.admin.api.RemoteStudentFeignService;
+import com.drive.admin.pojo.dto.RecommendUserPageQueryParam;
 import com.drive.admin.pojo.vo.RecommendUserVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.basics.feign.RemoteOperatorFeignService;
@@ -134,10 +135,24 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         wrapper.like(StrUtil.isNotEmpty(activityEditParam.getCouponName()),"t2.name",activityEditParam.getCouponName());
         //用户手机号查询
         wrapper.like(StrUtil.isNotEmpty(activityEditParam.getUserName()),"t1.phone",activityEditParam.getPhone());
+        //推广商手机号查询
+        if(StrUtil.isNotEmpty(activityEditParam.getPromoteUserPhone())){
+            ResObject<RecommendUserVo> res = remoteRecommendUserFeignService.getRecommendUserByPhone(activityEditParam.getPromoteUserPhone());
+            if(res.getSubCode().equalsIgnoreCase("success") && res.getCode() == 200 &&res.getData() != null){
+                RecommendUserVo rcVo = res.getData();
+                wrapper.eq("promote_user_id",rcVo.getId());
+            }else {
+                //手机号未查到
+                return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+            }
+        }
         // 优惠券领取时间
         wrapper.between(StrUtil.isNotEmpty(activityEditParam.getBeginTime()),"get_time",activityEditParam.getBeginTime(),activityEditParam.getEndTime());
         wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getTenantId()),"t1.tenant_id",activityEditParam.getTenantId());
-        wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getPromoteUserId()),"promote_user_id",activityEditParam.getPromoteUserId());
+        //wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getPromoteUserId()),"promote_user_id",activityEditParam.getPromoteUserId());
+        //优惠券使用时间范围
+        wrapper.ge(StrUtil.isNotEmpty(activityEditParam.getUseBeginTime()),"t2.start_time",activityEditParam.getUseBeginTime());
+        wrapper.le(StrUtil.isNotEmpty(activityEditParam.getUseEndTime()),"t2.end_time",activityEditParam.getUseEndTime());
         // 查询数据
         wrapper.orderByDesc("t1.create_time");
         IPage<ActivityCouponGetVo> pageList = couponGetService.findCouponPageListByActivityId(page, wrapper);
@@ -150,7 +165,7 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         pageList.getRecords().forEach((item) ->{
             StudentInfoVo studentInfoVo = this.getStudent(item.getUserId());
             OperatorVo operatorVo = this.getOperatorVo(item.getTenantId());
-            RecommendUserVo recommendUserVo = this.getRecommendUserVo(item.getTenantId());
+            RecommendUserVo recommendUserVo = this.getRecommendUserVo(item.getPromoteUserId());
             log.info("学员数据{}",studentInfoVo);
             log.info("转化好的学员对象{}",studentInfoVo);
             if (studentInfoVo!= null && StrUtil.isNotEmpty(studentInfoVo.getUsername()))item.setUserName(studentInfoVo.getUsername());

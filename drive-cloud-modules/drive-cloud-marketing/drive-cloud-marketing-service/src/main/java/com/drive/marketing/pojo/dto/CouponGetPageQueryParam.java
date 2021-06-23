@@ -73,6 +73,9 @@ public class CouponGetPageQueryParam extends BasePageQueryParam {
 	// 推广ID
 	private String promoteUserId;
 
+	//推广商手机号
+	private String promoteUserPhone;
+
 	private String useBeginTime;
 
 	private String useEndTime;

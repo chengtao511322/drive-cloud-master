@@ -34,6 +34,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -235,6 +236,7 @@ public class DeptController extends BaseController<DeptPageQueryParam, DeptEntit
      * @return
      */
     @GetMapping(value = "/initCache")
+    @Async
     public ResObject initCache(){
         deptService.init();
         roleDeptService.init();

@@ -2,10 +2,14 @@ package com.drive.admin.controller;
 
 import com.drive.admin.pojo.dto.RecommendUserEditParam;
 import com.drive.admin.pojo.dto.RecommendUserPageQueryParam;
+import com.drive.admin.pojo.dto.StudentInfoPageQueryParam;
 import com.drive.admin.pojo.entity.RecommendUserEntity;
 import com.drive.admin.pojo.vo.RecommendUserVo;
+import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.admin.repository.RecommendUserRepository;
+import com.drive.admin.repository.StudentInfoRepository;
 import com.drive.admin.service.RecommendUserService;
+import com.drive.admin.service.StudentInfoService;
 import com.drive.admin.service.mapstruct.RecommendUserMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
@@ -43,6 +47,8 @@ public class RecommendUserController extends BaseController<RecommendUserPageQue
 	private RecommendUserRepository recommendUserRepository;
 	@Autowired
 	private RecommendUserMapStruct recommendUserMapStruct;
+	@Autowired
+	private StudentInfoRepository studentInfoRepository;
 
 	/**
 	* 推广人员信息表 分页列表
@@ -59,9 +65,12 @@ public class RecommendUserController extends BaseController<RecommendUserPageQue
 	@ApiOperation("推广人员信息表列表")
 	//@PreAuthorize("hasPermission('/admin/recommendUser',  'admin:recommendUser:query')")
 	@PostMapping(value = "/findList")
-	public<RecommendUserVo> ResObject findList(@Valid @RequestBody RecommendUserPageQueryParam param) {
+	ResObject findList(@Valid @RequestBody RecommendUserPageQueryParam param) {
 		return recommendUserRepository.findList(param);
 	}
+
+
+
 	@ApiOperation("通过渠道经理ID获取推广人员信息表列表")
 	//@PreAuthorize("hasPermission('/admin/recommendUser',  'admin:recommendUser:getRecommendUserByChannelManagerId')")
 	@GetMapping(value = "/getRecommendUserByChannelManagerId/{channelManagerId}")
@@ -153,6 +162,17 @@ public class RecommendUserController extends BaseController<RecommendUserPageQue
 	@PostMapping("/changeStatus")
 	public ResObject changeStatus(@Valid @RequestBody RecommendUserEditParam recommendUserEditParam) {
 		return recommendUserRepository.changeStatus(recommendUserEditParam);
+	}
+
+
+	/**
+	 * 根据手机号获取推广人员信息
+	 */
+	@ApiOperation("根据手机号获取推广人员信息")
+	@PostMapping("/getRecommendUser/{phone}")
+	public ResObject getRecommendUserByPhone(@PathVariable(value = "phone") String phone){
+		//通过手机号查询用户信息
+		return recommendUserRepository.getRecommendUserInfoByPhone(phone);
 	}
 
 }
