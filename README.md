@@ -49,32 +49,62 @@ mvn  clean package -D maven.test.skip=true
 3.driveCloudSystemApplication
 4.driveCloudMintorApplication
 5.driveCloudOssApplication
+
+业务服务Application
 ```
 
 ### 项目结构说明
 ```
-drive-cloud
-    |----drive-cloud-auth                     认证模块
-    |----drive-cloud-common
-        |----drive-cloud-common-core          通用核心模块
-        |----drive-cloud-common-data          数据模块
-        |----drive-cloud-common-datascope     数据权限
-        |----drive-cloud-common-log           日志处理
-        |----drive-cloud-common-redis         缓存模块
-        |----drive-cloud-common-security      资源服务器
-        |----drive-cloud-common-swagger       接口文档
-    |----drive-cloud-gateway                  网关模块
-    |----drive-cloud-modules
-        |----drive-cloud-generate             代码生成
-        |----drive-cloud-monitor              日志模块
+
+
+|----drive-cloud
+    
+	|----drive-cloud-auth                     认证模块
+    
+	|----drive-cloud-common
+        
+		|----drive-cloud-common-core          通用核心模块
+        
+		|----drive-cloud-common-data          数据模块
+        
+		|----drive-cloud-common-datascope     数据权限
+        
+		|----drive-cloud-common-log           日志处理
+        
+		|----drive-cloud-common-redis         缓存模块
+        
+		|----drive-cloud-common-security      资源服务器
+        
+		|----drive-cloud-common-swagger       接口文档
+    
+	|----drive-cloud-gateway                  网关模块
+    
+	|----drive-cloud-modules
+        
+		|----drive-cloud-generate             代码生成
+        
+		|----drive-cloud-monitor              日志模块
             |----drive-cloud-monitor-api      日志服务API
             |----drive-cloud-monitor-service  日志服务
-        |----drive-cloud-oss                  对象存储服务模块
+        
+		|----drive-cloud-oss                  对象存储服务模块
             |----drive-cloud-oss-api          对象存储API
             |----drive-cloud-oss-service      对象存储服务
-        |----drive-cloud-system               系统模块
+        
+		|----drive-cloud-system               系统模块
             |----drive-cloud-system-api       系统服务API
             |----drive-cloud-system-service   系统服务
+		
+		|----drive-cloud-admin               老系统模块
+            |----drive-cloud-admin-api       老系统服务API
+            |----drive-cloud-admin-service   老系统服务
+		|----drive-cloud-marketing             活动营销模块
+            |----drive-cloud-marketing-api       活动营销模块API
+            |----drive-cloud-marketing-service   活动营销模块服务
+		|----drive-cloud-basics             基础模块
+            |----drive-cloud-basics-api       基础模块API
+            |----drive-cloud-basics-service   基础模块服务
+=
 ```
 
 
@@ -98,8 +128,12 @@ drive-cloud
 
 注意: 代码生成是直接对数据库表直接读取，没有对字段进行细化区分，生成的前端代码与实际业务需求不符，需要自己手动修改相应页面显示数据与表单类型，来实现自己的实际业务需求。
 
+分布式配置中心：（所有项目的配置文件都在nacos上面）
+内网：http://125.0.8.191:6648/nacos
+生产：http://47.108.95.60:6688/nacos
 
-## 演示图
+
+## 验证框架使用
 
 
 
@@ -232,7 +266,7 @@ java -Xmx3550m -Xms3550m -Xss128k -XX:NewRatio=4 -XX:SurvivorRatio=4 -XX:MaxPerm
 项目对应的配置文件加入
 事务管理器地址
 本地Tm:125.0.8.191:8070  对应的管理后台 http://125.0.8.191:7970/
-生产Tm：172.24.86.61:8070  对应的管理后台 http://47.108.95.60:7970
+生产Tm：172.24.86.62:8070  对应的管理后台 http://47.108.95.60:7970
  
  txManagerPassword = codingapi
 
@@ -252,6 +286,26 @@ tx-lcn:
 
 具体方法参考 drive-cloud-admin 项目 里面的 AccountController -increaseAmount方法
 
+
+# 分布式锁使用
+该项目采用redis实现分布式锁，需要注意锁续命问题 以及，如果宕机后锁释放，后续改为zookerper实现分布式锁
+// 上锁
+RedisLock.tryGetDistributedLock()
+// 解锁
+RedisLock.releaseDistributedLock()
+
+##Redis 分布式锁的缺点
+其实上⾯那种⽅案最⼤的问题，就是如果你对某个 redis master 实例，写⼊了 myLock 这种锁 
+key 的 value，此时会异步复制给对应的 master slave 实例。 
+但是这个过程中⼀旦发⽣ redis master 宕机，主备切换，redis slave 变为了 redis master。 
+接着就会导致，客户端 2 来尝试加锁的时候，在新的 redis master 上完成了加锁，⽽客户端 1 
+也以为⾃⼰成功加了锁。 
+此时就会导致多个客户端对⼀个分布式锁完成了加锁。 
+这时系统在业务语义上⼀定会出现问题，导致各种脏数据的产⽣。 
+所以这个就是 redis cluster，或者是 redis master-slave 架构的主从异步复制导致的 redis 分布式 
+锁的最⼤缺陷：在 redis master 实例宕机的时候，可能导致多个客户端同时完成加锁。
+
+ 
 
 ### 手写Lock锁使用
 DriveLock driveLock = new DriveLock();
