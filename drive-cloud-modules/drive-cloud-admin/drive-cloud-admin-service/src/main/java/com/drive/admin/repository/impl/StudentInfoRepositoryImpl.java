@@ -11,6 +11,7 @@ import com.drive.admin.pojo.dto.StudentInfoPageQueryParam;
 import com.drive.admin.pojo.entity.ServiceInfoEntity;
 import com.drive.admin.pojo.entity.ServiceReturnVisitHistoryEntity;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
+import com.drive.admin.pojo.vo.StudentInfoRpcVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.admin.repository.StudentInfoRepository;
 import com.drive.admin.service.AreaService;
@@ -67,7 +68,7 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
 
 
     @Override
-    public ResObject<StudentInfoVo> getByIdInfo(String id) {
+    public ResObject<StudentInfoRpcVo> getByIdInfo(String id) {
         log.info("-getByIdInfo-方法请求参数{}",id);
         if (StrUtil.isEmpty(id)){
             return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
@@ -75,7 +76,8 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         StudentInfoEntity studentInfo = studentInfoService.getById(id);
         if (studentInfo == null)return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
         StudentInfoVo studentInfoVo = BeanConvertUtils.copy(studentInfo,StudentInfoVo.class);
-        return R.success(studentInfoVo);
+        StudentInfoRpcVo studentInfoRpcVo = BeanConvertUtils.copy(studentInfoVo,StudentInfoRpcVo.class);
+        return R.success(studentInfoRpcVo);
     }
 
     @Transactional

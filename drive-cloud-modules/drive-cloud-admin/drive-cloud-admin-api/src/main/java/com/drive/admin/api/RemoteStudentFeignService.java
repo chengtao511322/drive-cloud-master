@@ -1,7 +1,9 @@
 package com.drive.admin.api;
 
 
+import com.drive.admin.factory.RecommendUserFallbackFactory;
 import com.drive.admin.factory.StudentFallbackFactory;
+import com.drive.admin.pojo.vo.StudentInfoRpcVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.constant.ServiceNameConstants;
@@ -37,6 +39,6 @@ public interface RemoteStudentFeignService {
 
     @ApiOperation("通过ID获取学员信息表")
     @GetMapping("studentInfo/getByIdInfo/{id}")
-    ResObject<StudentInfoVo> getByIdInfo(@PathVariable("id") String id);
+    ResObject<StudentInfoRpcVo> getByIdInfo(@PathVariable("id") String id);
 
 }

@@ -1,5 +1,7 @@
 package com.drive.marketing.testMar;
 
+import com.drive.common.redis.service.RedisLock;
+
 /**
  * @Author 小郭
  * @Description //TODO

@@ -12,9 +12,13 @@ public class SpringContextUtil {
 	  public static void setApplicationContext(ApplicationContext context) {
 	    applicationContext = context;
 	  }
-	  
-	   public static Object getBean(String beanId) {
-	    return applicationContext.getBean(beanId);
+
+	public static ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+
+	public static Object getBean(String beanId) {
+	    return getApplicationContext().getBean(beanId);
 	  }
 
 	/**
@@ -25,7 +29,7 @@ public class SpringContextUtil {
 	 * @return
 	 */
 	public static <T> T getBean(Class<T> clazz) {
-		return applicationContext.getBean(clazz);
+		return getApplicationContext().getBean(clazz);
 	}
 
 	/**
@@ -37,7 +41,7 @@ public class SpringContextUtil {
 	 * @return
 	 */
 	public static <T> T getBean(String name, Class<T> clazz) {
-		return applicationContext.getBean(name, clazz);
+		return getApplicationContext().getBean(name, clazz);
 	}
 
 }

@@ -3,6 +3,7 @@ package com.drive.admin.repository;
 import com.drive.admin.pojo.dto.StudentInfoEditParam;
 import com.drive.admin.pojo.dto.StudentInfoPageQueryParam;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
+import com.drive.admin.pojo.vo.StudentInfoRpcVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.biz.ResObject;
@@ -23,7 +24,7 @@ public interface StudentInfoRepository extends BaseRepository<StudentInfoPageQue
      * @param id
      * @return
      */
-    ResObject<StudentInfoVo> getByIdInfo(String id);
+    ResObject<StudentInfoRpcVo> getByIdInfo(String id);
 
     /**
      *

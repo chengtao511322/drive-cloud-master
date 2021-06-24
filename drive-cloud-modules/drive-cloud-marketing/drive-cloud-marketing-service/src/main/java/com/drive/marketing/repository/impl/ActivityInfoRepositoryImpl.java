@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.api.RemoteRecommendUserFeignService;
 import com.drive.admin.api.RemoteStudentFeignService;
 import com.drive.admin.pojo.vo.RecommendUserVo;
+import com.drive.admin.pojo.vo.StudentInfoRpcVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.basics.feign.RemoteOperatorFeignService;
 import com.drive.basics.pojo.vo.OperatorVo;
@@ -15,18 +16,19 @@ import com.drive.common.core.biz.ResCodeEnum;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.enums.StatusEnum;
+import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.marketing.pojo.dto.ActivityCouponRelationEditParam;
 import com.drive.marketing.pojo.dto.ActivityInfoPageQueryParam;
 import com.drive.marketing.pojo.dto.CouponGetPageQueryParam;
 import com.drive.marketing.pojo.entity.ActivityInfoEntity;
-import com.drive.marketing.pojo.vo.ActivityCouponGetVo;
-import com.drive.marketing.pojo.vo.ActivityCouponRelationVo;
-import com.drive.marketing.pojo.vo.ActivityInfoVo;
+import com.drive.marketing.pojo.entity.CouponGetEntity;
+import com.drive.marketing.pojo.vo.*;
 import com.drive.marketing.repository.ActivityInfoRepository;
 import com.drive.marketing.repository.RecommendManagertRepository;
 import com.drive.marketing.service.CouponGetService;
 import com.drive.marketing.service.IActivityInfoService;
 import com.drive.marketing.service.mapstruct.ActivityMapStruct;
+import com.drive.marketing.service.mapstruct.CouponGetMapStruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -46,6 +48,8 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
 
     @Autowired
     private ActivityMapStruct activityMapStruct;
+    @Autowired
+    private CouponGetMapStruct couponGetMapStruct;
 
     @Autowired
     @Lazy
@@ -123,7 +127,7 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         // 分页对象
         Page<ActivityCouponGetVo> page = new Page<ActivityCouponGetVo>(activityEditParam.getPageNum(), activityEditParam.getPageSize());
         // 删除状态
-        wrapper.eq("t2.is_delete", StatusEnum.ENABLE);
+        wrapper.eq("t2.is_delete", StatusEnum.ENABLE.getCode());
         // 优惠券状态
         wrapper.eq("t2.status",1);
         // 活动ID 查询
@@ -146,14 +150,12 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         log.info("请求学员接口{}",res);*/
         // 循环瞬间
         pageList.getRecords().forEach((item) ->{
-            StudentInfoVo studentInfoVo = this.getStudent(item.getUserId());
-            OperatorVo operatorVo = this.getOperatorVo(item.getTenantId());
-            RecommendUserVo recommendUserVo = this.getRecommendUserVo(item.getTenantId());
+            StudentInfoRpcVo studentInfoVo = this.getStudent(item.getUserId());
+            RecommendUserVo recommendUserVo = this.getRecommendUserVo(item.getPromoteUserId());
             log.info("学员数据{}",studentInfoVo);
             log.info("转化好的学员对象{}",studentInfoVo);
             if (studentInfoVo!= null && StrUtil.isNotEmpty(studentInfoVo.getUsername()))item.setUserName(studentInfoVo.getUsername());
             if (studentInfoVo!= null && StrUtil.isNotEmpty(studentInfoVo.getPhone()))item.setPhone(studentInfoVo.getPhone());
-            if (operatorVo!= null && StrUtil.isNotEmpty(operatorVo.getName()))item.setTenantName(operatorVo.getName());
             if (recommendUserVo!= null )item.setPromoteUser(recommendUserVo);
 
         });
@@ -193,14 +195,14 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
      * @return
      */
     @Async
-    StudentInfoVo getStudent(String id){
-       StudentInfoVo studentInfoVo = null;
-       ResObject resObject = remoteStudentFeignService.getByIdInfo(id);
+    StudentInfoRpcVo getStudent(String id){
+       StudentInfoRpcVo studentInfoVo = null;
+       ResObject<StudentInfoRpcVo> resObject = remoteStudentFeignService.getByIdInfo(id);
 
        log.info("请求学员接口{}",resObject);
        // 判断接口是否请求成功
        if (resObject.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && resObject.getData() != null){
-           studentInfoVo = (StudentInfoVo) resObject.getData();
+           studentInfoVo = resObject.getData();
        }
        return studentInfoVo;
 
