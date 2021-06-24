@@ -2,6 +2,7 @@
 package com.drive.admin.factory;
 
 import com.drive.admin.api.RemoteStudentFeignService;
+import com.drive.admin.pojo.vo.StudentInfoRpcVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.common.core.biz.R;
 import com.drive.common.core.biz.ResObject;
@@ -36,7 +37,7 @@ public class StudentFallbackFactory implements FallbackFactory<RemoteStudentFeig
             }
 
             @Override
-            public ResObject<StudentInfoVo> getByIdInfo(String id) {
+            public ResObject<StudentInfoRpcVo> getByIdInfo(String id) {
                 return R.failure();
             }
         };

@@ -1,6 +1,8 @@
 package com.drive.marketing.pojo.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.drive.admin.pojo.vo.RecommendUserVo;
+import com.drive.admin.pojo.vo.StudentInfoVo;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -100,6 +102,14 @@ public class CouponGetVo implements java.io.Serializable{
 	private BigDecimal channelManagerAmount;
 	// 渠道经理ID
 	private String channelManagerId;
+
+	private RecommendUserVo promoteUser;
+
+	private StudentInfoVo studentInfoVo;
+
+
+
+
 
 
 	public void setStatus(String status) {

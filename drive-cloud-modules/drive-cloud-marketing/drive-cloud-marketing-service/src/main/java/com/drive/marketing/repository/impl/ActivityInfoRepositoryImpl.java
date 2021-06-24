@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.drive.admin.api.RemoteRecommendUserFeignService;
 import com.drive.admin.api.RemoteStudentFeignService;
-import com.drive.admin.pojo.dto.RecommendUserPageQueryParam;
 import com.drive.admin.pojo.vo.RecommendUserVo;
+import com.drive.admin.pojo.vo.StudentInfoRpcVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.basics.feign.RemoteOperatorFeignService;
 import com.drive.basics.pojo.vo.OperatorVo;
@@ -16,18 +16,19 @@ import com.drive.common.core.biz.ResCodeEnum;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.enums.StatusEnum;
+import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.marketing.pojo.dto.ActivityCouponRelationEditParam;
 import com.drive.marketing.pojo.dto.ActivityInfoPageQueryParam;
 import com.drive.marketing.pojo.dto.CouponGetPageQueryParam;
 import com.drive.marketing.pojo.entity.ActivityInfoEntity;
-import com.drive.marketing.pojo.vo.ActivityCouponGetVo;
-import com.drive.marketing.pojo.vo.ActivityCouponRelationVo;
-import com.drive.marketing.pojo.vo.ActivityInfoVo;
+import com.drive.marketing.pojo.entity.CouponGetEntity;
+import com.drive.marketing.pojo.vo.*;
 import com.drive.marketing.repository.ActivityInfoRepository;
 import com.drive.marketing.repository.RecommendManagertRepository;
 import com.drive.marketing.service.CouponGetService;
 import com.drive.marketing.service.IActivityInfoService;
 import com.drive.marketing.service.mapstruct.ActivityMapStruct;
+import com.drive.marketing.service.mapstruct.CouponGetMapStruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -47,6 +48,8 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
 
     @Autowired
     private ActivityMapStruct activityMapStruct;
+    @Autowired
+    private CouponGetMapStruct couponGetMapStruct;
 
     @Autowired
     @Lazy
@@ -124,7 +127,7 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         // 分页对象
         Page<ActivityCouponGetVo> page = new Page<ActivityCouponGetVo>(activityEditParam.getPageNum(), activityEditParam.getPageSize());
         // 删除状态
-        wrapper.eq("t2.is_delete", StatusEnum.ENABLE);
+        wrapper.eq("t2.is_delete", StatusEnum.ENABLE.getCode());
         // 优惠券状态
         wrapper.eq("t2.status",1);
         // 活动ID 查询
@@ -133,26 +136,10 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getStatus()),"t1.status",activityEditParam.getStatus());
         // 优惠券名称
         wrapper.like(StrUtil.isNotEmpty(activityEditParam.getCouponName()),"t2.name",activityEditParam.getCouponName());
-        //用户手机号查询
-        wrapper.like(StrUtil.isNotEmpty(activityEditParam.getUserName()),"t1.phone",activityEditParam.getPhone());
-        //推广商手机号查询
-        if(StrUtil.isNotEmpty(activityEditParam.getPromoteUserPhone())){
-            ResObject<RecommendUserVo> res = remoteRecommendUserFeignService.getRecommendUserByPhone(activityEditParam.getPromoteUserPhone());
-            if(res.getSubCode().equalsIgnoreCase("success") && res.getCode() == 200 &&res.getData() != null){
-                RecommendUserVo rcVo = res.getData();
-                wrapper.eq("promote_user_id",rcVo.getId());
-            }else {
-                //手机号未查到
-                return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
-            }
-        }
         // 优惠券领取时间
         wrapper.between(StrUtil.isNotEmpty(activityEditParam.getBeginTime()),"get_time",activityEditParam.getBeginTime(),activityEditParam.getEndTime());
-        wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getTenantId()),"t1.tenant_id",activityEditParam.getTenantId());
-        //wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getPromoteUserId()),"promote_user_id",activityEditParam.getPromoteUserId());
-        //优惠券使用时间范围
-        wrapper.ge(StrUtil.isNotEmpty(activityEditParam.getUseBeginTime()),"t2.start_time",activityEditParam.getUseBeginTime());
-        wrapper.le(StrUtil.isNotEmpty(activityEditParam.getUseEndTime()),"t2.end_time",activityEditParam.getUseEndTime());
+        wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getTenantId()),"tenant_id",activityEditParam.getTenantId());
+        wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getPromoteUserId()),"promote_user_id",activityEditParam.getPromoteUserId());
         // 查询数据
         wrapper.orderByDesc("t1.create_time");
         IPage<ActivityCouponGetVo> pageList = couponGetService.findCouponPageListByActivityId(page, wrapper);
@@ -163,14 +150,12 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         log.info("请求学员接口{}",res);*/
         // 循环瞬间
         pageList.getRecords().forEach((item) ->{
-            StudentInfoVo studentInfoVo = this.getStudent(item.getUserId());
-            OperatorVo operatorVo = this.getOperatorVo(item.getTenantId());
+            StudentInfoRpcVo studentInfoVo = this.getStudent(item.getUserId());
             RecommendUserVo recommendUserVo = this.getRecommendUserVo(item.getPromoteUserId());
             log.info("学员数据{}",studentInfoVo);
             log.info("转化好的学员对象{}",studentInfoVo);
             if (studentInfoVo!= null && StrUtil.isNotEmpty(studentInfoVo.getUsername()))item.setUserName(studentInfoVo.getUsername());
             if (studentInfoVo!= null && StrUtil.isNotEmpty(studentInfoVo.getPhone()))item.setPhone(studentInfoVo.getPhone());
-            if (operatorVo!= null && StrUtil.isNotEmpty(operatorVo.getName()))item.setTenantName(operatorVo.getName());
             if (recommendUserVo!= null )item.setPromoteUser(recommendUserVo);
 
         });
@@ -210,14 +195,14 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
      * @return
      */
     @Async
-    StudentInfoVo getStudent(String id){
-       StudentInfoVo studentInfoVo = null;
-       ResObject resObject = remoteStudentFeignService.getByIdInfo(id);
+    StudentInfoRpcVo getStudent(String id){
+       StudentInfoRpcVo studentInfoVo = null;
+       ResObject<StudentInfoRpcVo> resObject = remoteStudentFeignService.getByIdInfo(id);
 
        log.info("请求学员接口{}",resObject);
        // 判断接口是否请求成功
        if (resObject.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && resObject.getData() != null){
-           studentInfoVo = (StudentInfoVo) resObject.getData();
+           studentInfoVo = resObject.getData();
        }
        return studentInfoVo;
 

@@ -10,7 +10,7 @@ import lombok.Data;
  * @author xiaoguo
  */
 @Data
-public class AreaVo {
+public class AreaVo implements java.io.Serializable{
 
 
 	// 区域编码

@@ -3,6 +3,7 @@ package com.drive.admin.controller;
 import com.drive.admin.pojo.dto.StudentInfoEditParam;
 import com.drive.admin.pojo.dto.StudentInfoPageQueryParam;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
+import com.drive.admin.pojo.vo.StudentInfoRpcVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.admin.repository.StudentInfoRepository;
 import com.drive.admin.service.StudentInfoService;
@@ -112,7 +113,7 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
 	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
 	@GetMapping("/getByIdInfo/{id}")
-	public ResObject<StudentInfoVo> getByIdInfo(@PathVariable("id") String id) {
+	public ResObject<StudentInfoRpcVo> getByIdInfo(@PathVariable("id") String id) {
 		return studentInfoRepository.getByIdInfo(id);
 	}
 

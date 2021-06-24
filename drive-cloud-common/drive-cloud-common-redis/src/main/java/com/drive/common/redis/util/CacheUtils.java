@@ -18,8 +18,8 @@ import java.util.List;
 public class CacheUtils<T>
 {
 
-    /**
-     * 设置字典缓存
+    private static         RedisService redisService = SpringContextUtil.getBean(RedisService.class);
+  /* 设置字典缓存
      * 
      * @param key 参数键
      * @param dictDatas 字典数据列表
@@ -47,7 +47,6 @@ public class CacheUtils<T>
      */
     public static String getCache(String key)
     {
-        RedisService redisService = SpringContextUtil.getBean(RedisService.class);
         String str =redisService.getStr(key);
         return str;
     }

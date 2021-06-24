@@ -30,30 +30,29 @@
     </sql>
 
     <select id="findCouponPageListByActivityId" parameterType="com.drive.marketing.pojo.dto.CouponGetPageQueryParam" resultType="com.drive.marketing.pojo.vo.ActivityCouponGetVo">
-       SELECT
-            t1.user_id as userId,
-            t1.user_id as couponId,
-            t1.`status` as `status`,
-            t1.get_time as getTime,
-            t1.get_type as getType,
-            t1.coupon_code as couponCode,
-            t1.period_time_start as periodTimeStart,
-            t1.period_time_end as periodTimeEnd,
-            t1.promote_user_id as promoteUserId,
-            t2.type as type,
-            t2.name as name,
-            t2.amount as  amount,
-            t2.min_point as minPoint,
-            t2.note as note,
-            t2.use_day as useDay,
-            t2.tenant_id as tenantId
+        SELECT
+        t1.user_id as userId,
+        t1.user_id as couponId,
+        t1.`status` as `status`,
+        t1.get_time as getTime,
+        t1.get_type as getType,
+        t1.coupon_code as couponCode,
+        t1.period_time_start as periodTimeStart,
+        t1.period_time_end as periodTimeEnd,
+        t1.promote_user_id as promoteUserId,
+        t2.type as type,
+        t2.name as name,
+        t2.amount as  amount,
+        t2.min_point as minPoint,
+        t2.note as note,
+        t2.use_day as useDay,
+        t2.tenant_id as tenantId
         FROM
-            mark_coupon_get t1
+        mark_coupon_get t1
         LEFT JOIN mark_coupon t2 ON t1.coupon_id = t2.id
         <where>
             ${ew.sqlSegment}
         </where>
-
     </select>
 
 </mapper>
