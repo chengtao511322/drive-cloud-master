@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -30,6 +31,11 @@ public class RecommendUserFallbackFactory implements FallbackFactory<RemoteRecom
             @Override
             public ResObject<RecommendUserVo> get(String id) {
                 return R.failure();
+            }
+
+            @Override
+            public ResObject<Map<String, RecommendUserVo>> batchRecommendUserVo(String[] ids) {
+                    return R.failure();
             }
 
 

@@ -14,13 +14,17 @@ import com.drive.admin.pojo.entity.RecommendUserEntity;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.vo.DeductSettingVo;
 import com.drive.admin.pojo.vo.RecommendManagerVo;
+import com.drive.admin.pojo.vo.RecommendUserVo;
+import com.drive.admin.pojo.vo.StudentInfoRpcVo;
 import com.drive.admin.repository.RecommendManagerRepository;
+import com.drive.admin.repository.StudentInfoRepository;
 import com.drive.admin.service.DeductSettingService;
 import com.drive.admin.service.RecommendManagerService;
 import com.drive.admin.service.StudentInfoService;
 import com.drive.admin.service.mapstruct.RecommendManagerMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
+import com.drive.common.core.biz.ResCodeEnum;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.exception.BizException;
@@ -31,10 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -58,6 +59,9 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
 
     @Autowired
     private DeductSettingService deductSettingService;
+
+    @Autowired
+    private StudentInfoRepository studentInfoRepository;
 
 
     /**
@@ -368,6 +372,28 @@ public class  RecommendManagerRepositoryImpl extends BaseController<RecommendMan
             }
         }
         return R.success();
+    }
+
+    @Override
+    public ResObject<Map<String, RecommendManagerVo>> batchRecommendManager(String[] ids) {
+        log.info("-batchRecommendManager-方法请求参数{}",ids);
+        if (ids.length <=0){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        List<RecommendManagerEntity> recommendManagerEntityList = recommendManagerService.listByIds(Arrays.asList(ids));
+        if (recommendManagerEntityList.isEmpty())return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        List<RecommendManagerVo> recommendManagerVoList = BeanConvertUtils.copyList(recommendManagerEntityList,RecommendManagerVo.class);
+        String[] studentIds = recommendManagerVoList.stream().map(RecommendManagerVo::getStudentId).toArray(String[]::new);
+        ResObject<Map<String, StudentInfoRpcVo>> studentResult = studentInfoRepository.batchStudent(studentIds);
+        if (studentResult.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && studentResult.getData() != null){
+            Map<String, StudentInfoRpcVo>  studentInfoRpcVoMap = studentResult.getData();
+            recommendManagerVoList.stream().forEach((item) ->{
+               item.setPhone(studentInfoRpcVoMap.get(item.getStudentId()).getPhone());
+            });
+        }
+
+        Map<String, RecommendManagerVo> appleMap = recommendManagerVoList.stream().collect(Collectors.toMap(RecommendManagerVo::getId, a -> a,(k1, k2)->k1));
+        return R.success(appleMap);
     }
 }
 

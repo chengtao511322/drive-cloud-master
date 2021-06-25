@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -80,6 +81,15 @@ public class RecommendUserController extends BaseController<RecommendUserPageQue
 	@GetMapping("/{id}")
 	public ResObject get(@PathVariable String id) {
 		return recommendUserRepository.getById(id);
+	}
+
+
+	@ApiOperation("获取推广人员信息表")
+	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
+	//@PreAuthorize("hasPermission('/admin/recommendUser',  'admin:recommendUser:query')")
+	@GetMapping("/batchRecommendUserVo/{ids}")
+	public ResObject<Map<String, RecommendUserVo>> batchRecommendUserVo(@PathVariable(value = "ids") String[] ids) {
+		return recommendUserRepository.batchRecommendUserVo(ids);
 	}
 
 	/**

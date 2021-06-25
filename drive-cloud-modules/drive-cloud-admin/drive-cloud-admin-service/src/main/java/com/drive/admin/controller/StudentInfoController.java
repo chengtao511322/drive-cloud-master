@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -115,6 +116,13 @@ public class StudentInfoController extends BaseController<StudentInfoPageQueryPa
 	@GetMapping("/getByIdInfo/{id}")
 	public ResObject<StudentInfoRpcVo> getByIdInfo(@PathVariable("id") String id) {
 		return studentInfoRepository.getByIdInfo(id);
+	}
+	@ApiOperation("通过ID获取学员信息表")
+	@ApiImplicitParam(name = "ids", required = true, dataType = "String", paramType = "path")
+	//@PreAuthorize("hasPermission('/admin/studentInfo',  'admin:studentInfo:query')")
+	@GetMapping("/batchStudent/{ids}")
+	public ResObject<Map<String, StudentInfoRpcVo>> batchStudent(@PathVariable("ids") String[] ids) {
+		return studentInfoRepository.batchStudent(ids);
 	}
 
 	/**

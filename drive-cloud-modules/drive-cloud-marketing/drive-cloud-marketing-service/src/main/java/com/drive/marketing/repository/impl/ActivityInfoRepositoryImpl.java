@@ -35,9 +35,12 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -148,16 +151,18 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         }
         /*ResObject res = remoteRecommendUserFeignService.getByIdInfo("83eaf614fc8c4632b99d");
         log.info("请求学员接口{}",res);*/
+        String[] studentIds = pageList.getRecords().stream().map(ActivityCouponGetVo::getUserId).toArray(String[]::new);
+        String[] promoteUserIds = pageList.getRecords().stream().map(ActivityCouponGetVo::getPromoteUserId).toArray(String[]::new);
+
+        Map<String, StudentInfoRpcVo> studentInfoVo = this.getBatchStudent(studentIds);
+        log.info("学员数据{}",studentInfoVo);
+
+        Map<String, RecommendUserVo> recommendUserVo = this.getRecommendUserVo(promoteUserIds);
         // 循环瞬间
         pageList.getRecords().forEach((item) ->{
-            StudentInfoRpcVo studentInfoVo = this.getStudent(item.getUserId());
-            RecommendUserVo recommendUserVo = this.getRecommendUserVo(item.getPromoteUserId());
-            log.info("学员数据{}",studentInfoVo);
-            log.info("转化好的学员对象{}",studentInfoVo);
-            if (studentInfoVo!= null && StrUtil.isNotEmpty(studentInfoVo.getUsername()))item.setUserName(studentInfoVo.getUsername());
-            if (studentInfoVo!= null && StrUtil.isNotEmpty(studentInfoVo.getPhone()))item.setPhone(studentInfoVo.getPhone());
-            if (recommendUserVo!= null )item.setPromoteUser(recommendUserVo);
-
+            if (studentInfoVo != null && studentInfoVo.get(item.getUserId()) != null)item.setUserName(studentInfoVo.get(item.getUserId()).getUsername());
+            if (studentInfoVo != null && studentInfoVo.get(item.getUserId()) != null)item.setPhone(studentInfoVo.get(item.getUserId()).getPhone());
+            if (recommendUserVo != null && recommendUserVo.get(item.getPromoteUserId()) != null)item.setPromoteUser(recommendUserVo.get(item.getPromoteUserId()));
         });
         return R.success(pageList);
     }
@@ -195,16 +200,16 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
      * @return
      */
     @Async
-    StudentInfoRpcVo getStudent(String id){
-       StudentInfoRpcVo studentInfoVo = null;
-       ResObject<StudentInfoRpcVo> resObject = remoteStudentFeignService.getByIdInfo(id);
+    Map<String, StudentInfoRpcVo> getBatchStudent(String[] ids){
+        Map<String, StudentInfoRpcVo> studentInfoVos = null;
+        ResObject<Map<String, StudentInfoRpcVo>> resObject = remoteStudentFeignService.batchStudent(ids);
 
        log.info("请求学员接口{}",resObject);
        // 判断接口是否请求成功
        if (resObject.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && resObject.getData() != null){
-           studentInfoVo = resObject.getData();
+           studentInfoVos =  resObject.getData();
        }
-       return studentInfoVo;
+       return studentInfoVos;
 
     }
 
@@ -232,10 +237,10 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
      * @return
      */
     @Async
-    RecommendUserVo getRecommendUserVo(String promoteUserId){
-        RecommendUserVo recommendUserVo = null;
+    Map<String, RecommendUserVo> getRecommendUserVo(String[] promoteUserId){
+        Map<String, RecommendUserVo> recommendUserVo = null;
         // 查询推广商
-        ResObject<RecommendUserVo>  promoteUser = remoteRecommendUserFeignService.get(promoteUserId);
+        ResObject<Map<String, RecommendUserVo>>  promoteUser = remoteRecommendUserFeignService.batchRecommendUserVo(promoteUserId);
         if (promoteUser.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && promoteUser.getData() != null){
             recommendUserVo = promoteUser.getData();
         }

@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 /**
  * 用户服务
  * @author DreamChan
@@ -40,5 +42,14 @@ public interface RemoteStudentFeignService {
     @ApiOperation("通过ID获取学员信息表")
     @GetMapping("studentInfo/getByIdInfo/{id}")
     ResObject<StudentInfoRpcVo> getByIdInfo(@PathVariable("id") String id);
+
+    /**
+     * 批量获取学员数据
+     * @param id
+     * @return
+     */
+    @ApiOperation("通过ID批量获取学员信息表")
+    @GetMapping("studentInfo/batchStudent/{ids}")
+    ResObject<Map<String, StudentInfoRpcVo>> batchStudent(@PathVariable("ids") String[] ids);
 
 }
