@@ -3,6 +3,8 @@ package com.drive.admin.controller;
 import com.drive.admin.pojo.dto.RecommendManagerEditParam;
 import com.drive.admin.pojo.dto.RecommendManagerPageQueryParam;
 import com.drive.admin.pojo.entity.RecommendManagerEntity;
+import com.drive.admin.pojo.vo.RecommendManagerVo;
+import com.drive.admin.pojo.vo.RecommendUserVo;
 import com.drive.admin.repository.RecommendManagerRepository;
 import com.drive.admin.service.RecommendManagerService;
 import com.drive.admin.service.mapstruct.RecommendManagerMapStruct;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.Map;
 
 
 /**
@@ -72,6 +75,14 @@ public class RecommendManagerController extends BaseController<RecommendManagerP
 		return recommendManagerRepository.getById(id);
 	}
 
+
+	@ApiOperation("获取推广渠道经理")
+	@ApiImplicitParam(name = "id", required = true, dataType = "String", paramType = "path")
+	//@PreAuthorize("hasPermission('/admin/recommendManager',  'admin:recommendManager:query')")
+	@GetMapping("/batchRecommendManager/{ids}")
+	ResObject<Map<String, RecommendManagerVo>> batchRecommendManager(@PathVariable(value = "ids") String[] ids){
+		return recommendManagerRepository.batchRecommendManager(ids);
+	}
 	/**
 	* 新增推广渠道经理
 	*/

@@ -10,6 +10,8 @@ import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 
 /**
  * 服务降级处理
@@ -38,6 +40,11 @@ public class StudentFallbackFactory implements FallbackFactory<RemoteStudentFeig
 
             @Override
             public ResObject<StudentInfoRpcVo> getByIdInfo(String id) {
+                return R.failure();
+            }
+
+            @Override
+            public ResObject<Map<String, StudentInfoRpcVo>> batchStudent(String[] ids) {
                 return R.failure();
             }
         };

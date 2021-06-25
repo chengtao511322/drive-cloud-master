@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 推广商用户服务
@@ -31,6 +32,14 @@ public interface RemoteRecommendUserFeignService {
      */
     @GetMapping(value = "/recommendUser/{id}")
     ResObject<RecommendUserVo> get(@PathVariable(value = "id") String id);
+
+    /**
+     * 批量获取数据
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/recommendUser/batchRecommendUserVo/{ids}")
+    ResObject<Map<String, RecommendUserVo>> batchRecommendUserVo(@PathVariable(value = "ids") String[] ids);
 
 
     /**

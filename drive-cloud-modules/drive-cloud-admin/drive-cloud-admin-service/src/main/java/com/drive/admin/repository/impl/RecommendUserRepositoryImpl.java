@@ -13,7 +13,10 @@ import com.drive.admin.pojo.entity.RecommendManagerEntity;
 import com.drive.admin.pojo.entity.RecommendUserEntity;
 import com.drive.admin.pojo.entity.StudentInfoEntity;
 import com.drive.admin.pojo.entity.TestTrainPriceEntity;
+import com.drive.admin.pojo.vo.RecommendManagerVo;
 import com.drive.admin.pojo.vo.RecommendUserVo;
+import com.drive.admin.pojo.vo.StudentInfoRpcVo;
+import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.admin.repository.RecommendManagerRepository;
 import com.drive.admin.repository.RecommendUserRepository;
@@ -24,6 +27,7 @@ import com.drive.admin.service.StudentInfoService;
 import com.drive.admin.service.mapstruct.RecommendUserMapStruct;
 import com.drive.common.core.base.BaseController;
 import com.drive.common.core.biz.R;
+import com.drive.common.core.biz.ResCodeEnum;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.exception.BizException;
@@ -35,10 +39,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -345,5 +346,25 @@ public class  RecommendUserRepositoryImpl extends BaseController<RecommendUserPa
         }
     }
 
+    @Override
+    public ResObject<Map<String, RecommendUserVo>> batchRecommendUserVo(String[] ids) {
+        log.info("-batchRecommendUserVo-方法请求参数{}",ids);
+        if (ids.length <=0){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        List<RecommendUserEntity> recommendUserEntityList = recommendUserService.listByIds(Arrays.asList(ids));
+        if (recommendUserEntityList.isEmpty())return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        List<RecommendUserVo> recommendUserVoList = BeanConvertUtils.copyList(recommendUserEntityList,RecommendUserVo.class);
+        String[] studentIds = recommendUserVoList.stream().map(RecommendUserVo::getStudentId).toArray(String[]::new);
+        ResObject<Map<String, StudentInfoRpcVo>> studentResult = studentInfoRepository.batchStudent(studentIds);
+        if (studentResult.getCode().equals(ResCodeEnum.SUCCESS.getCode()) && studentResult.getData() != null){
+            Map<String, StudentInfoRpcVo>  studentInfoRpcVoMap = studentResult.getData();
+            recommendUserVoList.stream().forEach((item) ->{
+                item.setPhone(studentInfoRpcVoMap.get(item.getStudentId()).getPhone());
+            });
+        }
+        Map<String, RecommendUserVo> appleMap = recommendUserVoList.stream().collect(Collectors.toMap(RecommendUserVo::getId, a -> a,(k1, k2)->k1));
+        return R.success(appleMap);
+    }
 }
 

@@ -9,6 +9,7 @@ import com.drive.common.core.base.BaseRepository;
 import com.drive.common.core.biz.ResObject;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -25,6 +26,13 @@ public interface StudentInfoRepository extends BaseRepository<StudentInfoPageQue
      * @return
      */
     ResObject<StudentInfoRpcVo> getByIdInfo(String id);
+
+    /**
+     * 批量查询数据
+     * @param ids
+     * @return
+     */
+    ResObject<Map<String, StudentInfoRpcVo>> batchStudent(String[] ids);
 
     /**
      *

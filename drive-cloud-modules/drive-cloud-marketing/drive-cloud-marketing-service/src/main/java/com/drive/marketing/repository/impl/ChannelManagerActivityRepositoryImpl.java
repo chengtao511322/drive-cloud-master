@@ -9,6 +9,7 @@ import com.drive.admin.api.RemoteRecommendUserFeignService;
 import com.drive.admin.api.RemoteStudentFeignService;
 import com.drive.admin.pojo.vo.RecommendManagerVo;
 import com.drive.admin.pojo.vo.RecommendUserVo;
+import com.drive.admin.pojo.vo.StudentInfoRpcVo;
 import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.basics.feign.RemoteChannelAuthFeignService;
 import com.drive.basics.feign.RemoteChannelFeignService;
@@ -23,6 +24,9 @@ import com.drive.common.core.enums.StatusEnum;
 import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.marketing.asyn.ChannelManagerAsync;
+import com.drive.marketing.feign.RecommendManagerFeign;
+import com.drive.marketing.feign.RecommendUserFeign;
+import com.drive.marketing.feign.StudentFeign;
 import com.drive.marketing.pojo.dto.ActivityCouponRelationEditParam;
 import com.drive.marketing.pojo.dto.ChannelManagerActivityEditParam;
 import com.drive.marketing.pojo.dto.ChannelManagerActivityPageQueryParam;
@@ -30,6 +34,7 @@ import com.drive.marketing.pojo.entity.ActivityInfoEntity;
 import com.drive.marketing.pojo.entity.ChannelManagerActivityEntity;
 import com.drive.marketing.pojo.entity.CouponEntity;
 import com.drive.marketing.pojo.entity.CouponGetEntity;
+import com.drive.marketing.pojo.vo.ActivityCouponGetVo;
 import com.drive.marketing.pojo.vo.ActivityCouponRelationVo;
 import com.drive.marketing.pojo.vo.ChannelManagerActivityVo;
 import com.drive.marketing.pojo.vo.CouponGetVo;
@@ -42,12 +47,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -71,6 +78,13 @@ public class    ChannelManagerActivityRepositoryImpl implements ChannelManagerAc
 
     @Autowired
     private RemoteChannelAuthFeignService channelAuthFeignService;
+
+    @Autowired
+    private RecommendUserFeign recommendUserFeign;
+    @Autowired
+    private RecommendManagerFeign recommendManagerFeign;
+    @Autowired
+    private StudentFeign studentFeign;
 
 
     //@Autowired
@@ -196,14 +210,17 @@ public class    ChannelManagerActivityRepositoryImpl implements ChannelManagerAc
         // 循环
         Page<ChannelManagerActivityVo> channelManagerActivityVoPage = channelManagerActivityMapStruct.toVoList(pageList);
         // 循环取数据
+        // 批量获取数据
+        String[] promotionUserIds = channelManagerActivityVoPage.getRecords().stream().map(ChannelManagerActivityVo::getPromotionUserId).toArray(String[]::new);
+        String[] channelManagerIds = channelManagerActivityVoPage.getRecords().stream().map(ChannelManagerActivityVo::getChannelManagerId).toArray(String[]::new);
+        Map<String, RecommendUserVo> recommendUserVo = recommendUserFeign.getBatchRecommendUserVo(promotionUserIds);
+        Map<String, RecommendManagerVo> channelManagerVo = recommendManagerFeign.getBatchRecommendManagerVo(channelManagerIds);
         channelManagerActivityVoPage.getRecords().stream().forEach((item) ->{
             // 查询渠道经理 RecommendManagerVo
-            ResObject<RecommendManagerVo> recommendManagerVo = remoteRecommendManagerFeignService.get(item.getChannelManagerId());
-            if (recommendManagerVo.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setChannelManager(recommendManagerVo.getData());
+            if (channelManagerVo != null)item.setChannelManager(channelManagerVo.get(item.getChannelManagerId()));
             //JSONObject recommendUser = recommendManagertRepository.getRecommendUser(item.getPromotionUserId());
             // 查询推广商
-            ResObject<RecommendUserVo> recommendUser = remoteRecommendUserFeignService.get(item.getPromotionUserId());
-            if (recommendUser.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setRecommendUser(recommendUser.getData());
+            if (recommendUserVo != null)item.setRecommendUser(recommendUserVo.get(item.getPromotionUserId()));
             // 查询优惠券
             ActivityCouponRelationEditParam activityCouponRelationEditParam = new ActivityCouponRelationEditParam();
             // 设置活动ID
@@ -248,15 +265,16 @@ public class    ChannelManagerActivityRepositoryImpl implements ChannelManagerAc
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<ChannelManagerActivityVo> channelManagerActivityVoPage = channelManagerActivityMapStruct.toVoList(pageList);
+        // 批量获取数据
+        String[] promotionUserIds = channelManagerActivityVoPage.getRecords().stream().map(ChannelManagerActivityVo::getPromotionUserId).toArray(String[]::new);
+        String[] channelManagerIds = channelManagerActivityVoPage.getRecords().stream().map(ChannelManagerActivityVo::getChannelManagerId).toArray(String[]::new);
+        Map<String, RecommendUserVo> recommendUserVo = recommendUserFeign.getBatchRecommendUserVo(promotionUserIds);
+        Map<String, RecommendManagerVo> channelManagerVo = recommendManagerFeign.getBatchRecommendManagerVo(channelManagerIds);
         channelManagerActivityVoPage.getRecords().forEach((item) ->{
-// 查询渠道经理 RecommendManagerVo
-
-            ResObject<RecommendManagerVo> recommendManagerVo = remoteRecommendManagerFeignService.get(item.getChannelManagerId());
-            if (recommendManagerVo.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setChannelManager(recommendManagerVo.getData());
+            if (channelManagerVo != null)item.setChannelManager(channelManagerVo.get(item.getChannelManagerId()));
             //JSONObject recommendUser = recommendManagertRepository.getRecommendUser(item.getPromotionUserId());
             // 查询推广商
-            ResObject<RecommendUserVo> recommendUser = remoteRecommendUserFeignService.get(item.getPromotionUserId());
-            if (recommendUser.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setRecommendUser(recommendUser.getData());
+            if (recommendUserVo != null)item.setRecommendUser(recommendUserVo.get(item.getPromotionUserId()));
         });
         log.info(this.getClass() + "findList-方法请求结果{}",channelManagerActivityVoPage);
         return R.success(channelManagerActivityVoPage);
@@ -287,15 +305,17 @@ public class    ChannelManagerActivityRepositoryImpl implements ChannelManagerAc
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<ChannelManagerActivityVo> channelManagerActivityVoPage = channelManagerActivityMapStruct.toVoList(pageList);
+        String[] promotionUserIds = channelManagerActivityVoPage.getRecords().stream().map(ChannelManagerActivityVo::getPromotionUserId).toArray(String[]::new);
+        String[] channelManagerIds = channelManagerActivityVoPage.getRecords().stream().map(ChannelManagerActivityVo::getChannelManagerId).toArray(String[]::new);
+        Map<String, RecommendUserVo> recommendUserVo = recommendUserFeign.getBatchRecommendUserVo(promotionUserIds);
+        Map<String, RecommendManagerVo> channelManagerVo = recommendManagerFeign.getBatchRecommendManagerVo(channelManagerIds);
         channelManagerActivityVoPage.getRecords().forEach((item) ->{
             //JSONObject jsonObject = recommendManagertRepository.getRecommendManagert(item.getChannelManagerId());
             // 查询渠道经理 RecommendManagerVo
-            ResObject<RecommendManagerVo> recommendManagerVo = remoteRecommendManagerFeignService.get(item.getChannelManagerId());
-            if (recommendManagerVo.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setChannelManager(recommendManagerVo.getData());
+            if (channelManagerVo != null)item.setChannelManager(channelManagerVo.get(item.getChannelManagerId()));
             //JSONObject recommendUser = recommendManagertRepository.getRecommendUser(item.getPromotionUserId());
             // 查询推广商
-            ResObject<RecommendUserVo> recommendUser = remoteRecommendUserFeignService.get(item.getPromotionUserId());
-            if (recommendUser.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setRecommendUser(recommendUser.getData());
+            if (recommendUserVo != null)item.setRecommendUser(recommendUserVo.get(item.getPromotionUserId()));
         });
         log.info(this.getClass() + "findList-方法请求结果{}",channelManagerActivityVoPage);
         return R.success(channelManagerActivityVoPage);
@@ -331,20 +351,22 @@ public class    ChannelManagerActivityRepositoryImpl implements ChannelManagerAc
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<ChannelManagerActivityVo> channelManagerActivityVoPage = channelManagerActivityMapStruct.toVoList(pageList);
+
+        String[] promotionUserIds = channelManagerActivityVoPage.getRecords().stream().map(ChannelManagerActivityVo::getPromotionUserId).toArray(String[]::new);
+        String[] channelManagerIds = channelManagerActivityVoPage.getRecords().stream().map(ChannelManagerActivityVo::getChannelManagerId).toArray(String[]::new);
+        Map<String, RecommendUserVo> recommendUserVo = recommendUserFeign.getBatchRecommendUserVo(promotionUserIds);
+        Map<String, RecommendManagerVo> channelManagerVo = recommendManagerFeign.getBatchRecommendManagerVo(channelManagerIds);
         channelManagerActivityVoPage.getRecords().forEach((item) ->{
             //JSONObject jsonObject = recommendManagertRepository.getRecommendManagert(item.getChannelManagerId());
             // 查询渠道经理 RecommendManagerVo
-            ResObject<RecommendManagerVo> recommendManagerVo = remoteRecommendManagerFeignService.get(item.getChannelManagerId());
-            if (recommendManagerVo.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setChannelManager(recommendManagerVo.getData());
+            if (channelManagerVo != null)item.setChannelManager(channelManagerVo.get(item.getChannelManagerId()));
             //JSONObject recommendUser = recommendManagertRepository.getRecommendUser(item.getPromotionUserId());
             // 查询推广商
-            ResObject<RecommendUserVo> recommendUser = remoteRecommendUserFeignService.get(item.getPromotionUserId());
-            if (recommendUser.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setRecommendUser(recommendUser.getData());
+            if (recommendUserVo != null)item.setRecommendUser(recommendUserVo.get(item.getPromotionUserId()));
         });
         log.info(this.getClass() + "findList-方法请求结果{}",channelManagerActivityVoPage);
         return R.success(channelManagerActivityVoPage);
     }
-
     @Override
     public ResObject findChannelManagerOrPromotionPageList(ChannelManagerActivityPageQueryParam param) {
         log.info(this.getClass() + "findChannelManagerOrPromotionPageList 请求方法{}",param);
@@ -378,16 +400,18 @@ public class    ChannelManagerActivityRepositoryImpl implements ChannelManagerAc
             log.error("数据空");
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
+        String[] promotionUserIds = pageList.getRecords().stream().map(ChannelManagerActivityVo::getPromotionUserId).toArray(String[]::new);
+        String[] channelManagerIds = pageList.getRecords().stream().map(ChannelManagerActivityVo::getChannelManagerId).toArray(String[]::new);
+        Map<String, RecommendUserVo> recommendUserVo = recommendUserFeign.getBatchRecommendUserVo(promotionUserIds);
+        Map<String, RecommendManagerVo> channelManagerVo = recommendManagerFeign.getBatchRecommendManagerVo(channelManagerIds);
         // Page<ChannelManagerActivityVo> channelManagerActivityVoPage = channelManagerActivityMapStruct.toVoList(pageList);
         pageList.getRecords().forEach((item) ->{
             //JSONObject jsonObject = recommendManagertRepository.getRecommendManagert(item.getChannelManagerId());
             // 查询渠道经理 RecommendManagerVo
-            ResObject<RecommendManagerVo> recommendManagerVo = remoteRecommendManagerFeignService.get(item.getChannelManagerId());
-            if (recommendManagerVo.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setChannelManager(recommendManagerVo.getData());
+            if (channelManagerVo != null)item.setChannelManager(channelManagerVo.get(item.getChannelManagerId()));
             //JSONObject recommendUser = recommendManagertRepository.getRecommendUser(item.getPromotionUserId());
             // 查询推广商
-            ResObject<RecommendUserVo> recommendUser = remoteRecommendUserFeignService.get(item.getPromotionUserId());
-            if (recommendUser.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setRecommendUser(recommendUser.getData());
+            if (recommendUserVo != null)item.setRecommendUser(recommendUserVo.get(item.getPromotionUserId()));
         });
         log.info(this.getClass() + "findChannelManagerOrPromotionPageList-方法请求结果{}",pageList.getRecords());
         return R.success(pageList);
@@ -423,14 +447,17 @@ public class    ChannelManagerActivityRepositoryImpl implements ChannelManagerAc
         }
         // 循环
         Page<CouponGetVo> couponGetVoPage = couponGetMapStruct.toVoList(pageList);
+
+        String[] studentIds = couponGetVoPage.getRecords().stream().map(CouponGetVo::getUserId).toArray(String[]::new);
+        String[] couponIds = couponGetVoPage.getRecords().stream().map(CouponGetVo::getCouponId).toArray(String[]::new);
+        Map<String, StudentInfoRpcVo> studentInfoVo = studentFeign.getBatchStudent(studentIds);
+        Map<String, CouponEntity> coupon = couponService.batchCoupon(couponIds);
+
         couponGetVoPage.getRecords().stream().forEach((item) ->{
             if (StrUtil.isNotEmpty(item.getUserId())){
-                ResObject<StudentInfoVo> studentInfoVoResObject = remoteStudentFeignService.get(item.getUserId());
-                StudentInfoVo studentInfoVo = studentInfoVoResObject.getData();
-                if (studentInfoVo != null)item.setPhone(studentInfoVo.getPhone());
-                if (studentInfoVo != null)item.setUserName(studentInfoVo.getUsername());
-                CouponEntity couponEntity = couponService.getById(item.getCouponId());
-                if (couponEntity != null)item.setCouponName(couponEntity.getName());
+                if (studentInfoVo != null && StrUtil.isNotEmpty(studentInfoVo.get(item.getUserId()).getPhone()))item.setPhone(studentInfoVo.get(item.getUserId()).getPhone());
+                if (studentInfoVo != null && StrUtil.isNotEmpty(studentInfoVo.get(item.getUserId()).getUsername()))item.setUserName(studentInfoVo.get(item.getUserId()).getUsername());
+                if (coupon != null && StrUtil.isNotEmpty(coupon.get(item.getCouponId()).getName()))item.setCouponName(coupon.get(item.getCouponId()).getName());
             }
         });
         log.info(this.getClass() + "findPromotionUserPageList-方法请求结果{}",couponGetVoPage.getRecords());
@@ -477,15 +504,18 @@ public class    ChannelManagerActivityRepositoryImpl implements ChannelManagerAc
             return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg(),pageList);
         }
         Page<ChannelManagerActivityVo> channelManagerActivityVoPage = channelManagerActivityMapStruct.toVoList(pageList);
+        // 批量获取数据
+        String[] promotionUserIds = channelManagerActivityVoPage.getRecords().stream().map(ChannelManagerActivityVo::getPromotionUserId).toArray(String[]::new);
+        String[] channelManagerIds = channelManagerActivityVoPage.getRecords().stream().map(ChannelManagerActivityVo::getChannelManagerId).toArray(String[]::new);
+        Map<String, RecommendUserVo> recommendUserVo = recommendUserFeign.getBatchRecommendUserVo(promotionUserIds);
+        Map<String, RecommendManagerVo> channelManagerVo = recommendManagerFeign.getBatchRecommendManagerVo(channelManagerIds);
         channelManagerActivityVoPage.getRecords().forEach((item) ->{
             //JSONObject jsonObject = recommendManagertRepository.getRecommendManagert(item.getChannelManagerId());
             // 查询渠道经理 RecommendManagerVo
-            ResObject<RecommendManagerVo> recommendManagerVo = remoteRecommendManagerFeignService.get(item.getChannelManagerId());
-            if (recommendManagerVo.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setChannelManager(recommendManagerVo.getData());
+            if (channelManagerVo != null)item.setChannelManager(channelManagerVo.get(item.getChannelManagerId()));
             //JSONObject recommendUser = recommendManagertRepository.getRecommendUser(item.getPromotionUserId());
             // 查询推广商
-            ResObject<RecommendUserVo> recommendUser = remoteRecommendUserFeignService.get(item.getPromotionUserId());
-            if (recommendUser.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setRecommendUser(recommendUser.getData());
+            if (recommendUserVo != null)item.setRecommendUser(recommendUserVo.get(item.getPromotionUserId()));
         });
         log.info(this.getClass() + "findChannelManagerOrPromotionPageList-方法请求结果{}",pageList.getRecords());
         return R.success(channelManagerActivityVoPage);
@@ -996,15 +1026,18 @@ public class    ChannelManagerActivityRepositoryImpl implements ChannelManagerAc
         List<ChannelManagerActivityEntity> pageList = channelManagerActivityService.list(queryWrapper);
         List<ChannelManagerActivityVo> listVo = BeanConvertUtils.copyList(pageList,ChannelManagerActivityVo.class);
         // Page<ChannelManagerActivityVo> channelManagerActivityVoPage = channelManagerActivityMapStruct.toVoList(pageList);
+        // 批量获取数据
+        String[] promotionUserIds = listVo.stream().map(ChannelManagerActivityVo::getPromotionUserId).toArray(String[]::new);
+        String[] channelManagerIds = listVo.stream().map(ChannelManagerActivityVo::getChannelManagerId).toArray(String[]::new);
+        Map<String, RecommendUserVo> recommendUserVo = recommendUserFeign.getBatchRecommendUserVo(promotionUserIds);
+        Map<String, RecommendManagerVo> channelManagerVo = recommendManagerFeign.getBatchRecommendManagerVo(channelManagerIds);
         listVo.stream().forEach((item) ->{
             //JSONObject jsonObject = recommendManagertRepository.getRecommendManagert(item.getChannelManagerId());
             // 查询渠道经理 RecommendManagerVo
-            ResObject<RecommendManagerVo> recommendManagerVo = remoteRecommendManagerFeignService.get(item.getChannelManagerId());
-            if (recommendManagerVo.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setChannelManager(recommendManagerVo.getData());
+            if (channelManagerVo != null)item.setChannelManager(channelManagerVo.get(item.getChannelManagerId()));
             //JSONObject recommendUser = recommendManagertRepository.getRecommendUser(item.getPromotionUserId());
             // 查询推广商
-            ResObject<RecommendUserVo> recommendUser = remoteRecommendUserFeignService.get(item.getPromotionUserId());
-            if (recommendUser.getCode().equals(ResCodeEnum.SUCCESS.getCode()))item.setRecommendUser(recommendUser.getData());
+            if (recommendUserVo != null)item.setRecommendUser(recommendUserVo.get(item.getPromotionUserId()));
         });
         log.info(this.getClass() + "findChannelManagerOrPromotionPageList-方法请求结果{}",listVo);
         return listVo;
@@ -1031,4 +1064,6 @@ public class    ChannelManagerActivityRepositoryImpl implements ChannelManagerAc
         }
         return R.failure("出错");
     }
+
+
 }

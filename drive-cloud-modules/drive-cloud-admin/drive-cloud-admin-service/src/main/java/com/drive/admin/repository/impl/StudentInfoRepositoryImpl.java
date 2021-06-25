@@ -38,10 +38,7 @@ import redis.clients.jedis.Jedis;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -78,6 +75,26 @@ public class  StudentInfoRepositoryImpl extends BaseController<StudentInfoPageQu
         StudentInfoVo studentInfoVo = BeanConvertUtils.copy(studentInfo,StudentInfoVo.class);
         StudentInfoRpcVo studentInfoRpcVo = BeanConvertUtils.copy(studentInfoVo,StudentInfoRpcVo.class);
         return R.success(studentInfoRpcVo);
+    }
+
+    /**
+     * List<User> users = userMapper.selectBatchIds(Arrays.asList(1, 2, 3));
+     *         System.out.println(users);
+     * @param ids
+     * @return
+     */
+    @Override
+    public ResObject<Map<String, StudentInfoRpcVo>> batchStudent(String[] ids) {
+        log.info("-getByIdInfo-方法请求参数{}",ids);
+        if (ids.length <=0){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        List<StudentInfoEntity> studentInfoList = studentInfoService.listByIds(Arrays.asList(ids));
+        if (studentInfoList.isEmpty())return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        List<StudentInfoVo> studentInfoVoList = BeanConvertUtils.copyList(studentInfoList,StudentInfoVo.class);
+        List<StudentInfoRpcVo> studentInfoRpcVoList = BeanConvertUtils.copyList(studentInfoVoList,StudentInfoRpcVo.class);
+        Map<String, StudentInfoRpcVo> appleMap = studentInfoRpcVoList.stream().collect(Collectors.toMap(StudentInfoRpcVo::getId, a -> a,(k1, k2)->k1));
+        return R.success(appleMap);
     }
 
     @Transactional
