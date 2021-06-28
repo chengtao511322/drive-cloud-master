@@ -241,7 +241,7 @@ public class CouponRepositoryImpl implements CouponRepository {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime periodTimeStart = LocalDateTime.parse(TmDateUtil.getCurrentDatetime(new Date()),df);
         couponGetDo.setPeriodTimeStart(periodTimeStart);
-        LocalDateTime periodTimeEnd = LocalDateTime.parse(TmDateUtil.toString(TmDateUtil.addDay(new Date(),useDay)),df);
+        LocalDateTime periodTimeEnd = LocalDateTime.parse(TmDateUtil.toString1(TmDateUtil.addDay(new Date(),useDay)),df);
         couponGetDo.setPeriodTimeEnd(periodTimeEnd);
         //优惠券 设置有效期内  结束
         // couponGetEntity.setPeriodTimeEnd(TmDateUtil.toString(TmDateUtil.addDay(new Date(),useDay)));

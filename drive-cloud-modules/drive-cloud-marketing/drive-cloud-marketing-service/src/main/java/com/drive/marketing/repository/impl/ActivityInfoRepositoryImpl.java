@@ -139,10 +139,26 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getStatus()),"t1.status",activityEditParam.getStatus());
         // 优惠券名称
         wrapper.like(StrUtil.isNotEmpty(activityEditParam.getCouponName()),"t2.name",activityEditParam.getCouponName());
+        //用户手机号查询
+        wrapper.like(StrUtil.isNotEmpty(activityEditParam.getUserName()),"t1.phone",activityEditParam.getPhone());
+        //推广商手机号查询
+        if(StrUtil.isNotEmpty(activityEditParam.getPromoteUserPhone())){
+            ResObject<RecommendUserVo> res = remoteRecommendUserFeignService.getRecommendUserByPhone(activityEditParam.getPromoteUserPhone());
+            if(res.getSubCode().equalsIgnoreCase("success") && res.getCode() == 200 &&res.getData() != null){
+                RecommendUserVo rcVo = res.getData();
+                wrapper.eq("promote_user_id",rcVo.getId());
+            }else {
+                //手机号未查到
+                return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+            }
+        }
         // 优惠券领取时间
         wrapper.between(StrUtil.isNotEmpty(activityEditParam.getBeginTime()),"get_time",activityEditParam.getBeginTime(),activityEditParam.getEndTime());
-        wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getTenantId()),"tenant_id",activityEditParam.getTenantId());
-        wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getPromoteUserId()),"promote_user_id",activityEditParam.getPromoteUserId());
+        wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getTenantId()),"t1.tenant_id",activityEditParam.getTenantId());
+        //wrapper.eq(StrUtil.isNotEmpty(activityEditParam.getPromoteUserId()),"promote_user_id",activityEditParam.getPromoteUserId());
+        //优惠券使用时间范围
+        wrapper.ge(StrUtil.isNotEmpty(activityEditParam.getUseBeginTime()),"t2.start_time",activityEditParam.getUseBeginTime());
+        wrapper.le(StrUtil.isNotEmpty(activityEditParam.getUseEndTime()),"t2.end_time",activityEditParam.getUseEndTime());
         // 查询数据
         wrapper.orderByDesc("t1.create_time");
         IPage<ActivityCouponGetVo> pageList = couponGetService.findCouponPageListByActivityId(page, wrapper);
@@ -197,7 +213,7 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
 
     /**
      * 异步查学员
-     * @param id
+     * @param ids
      * @return
      */
     @Async
@@ -216,7 +232,7 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
 
     /**
      * 异步查运营商
-     * @param id
+     * @param tenantId
      * @return
      */
     @Async
@@ -247,5 +263,23 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         }
         log.info("转化后的运营商数据{}",recommendUserVo);
         return recommendUserVo;
+    }
+
+    /**
+     * 批量查询活动信息
+     * @param ids 活动id
+     * @return
+     */
+    @Override
+    public ResObject<Map<String, ActivityInfoVo>> batchActivityInfo(String[] ids) {
+        log.info("-getByIdInfo-方法请求参数{}",ids);
+        if(ids.length <= 0){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        List<ActivityInfoEntity> activityInfoList= activityInfoService.listByIds(Arrays.asList(ids));
+        if (activityInfoList.isEmpty())return R.success(SubResultCode.DATA_NULL.subCode(),SubResultCode.DATA_NULL.subMsg());
+        List<ActivityInfoVo> activityInfoVos = BeanConvertUtils.copyList(activityInfoList,ActivityInfoVo.class);
+        Map<String, ActivityInfoVo> appleMap = activityInfoVos.stream().collect(Collectors.toMap(ActivityInfoVo::getId, a -> a,(k1, k2)->k1));
+        return R.success(appleMap);
     }
 }

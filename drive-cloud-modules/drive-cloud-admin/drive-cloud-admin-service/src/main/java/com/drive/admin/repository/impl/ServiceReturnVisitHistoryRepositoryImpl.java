@@ -82,7 +82,7 @@ public class  ServiceReturnVisitHistoryRepositoryImpl extends BaseController<Ser
     @Autowired
     private AreaService areaService;
 
-    private final Jedis jedis = RedisDS.create().getJedis();
+    //private final Jedis jedis = RedisDS.create().getJedis();
 
     /*
      *

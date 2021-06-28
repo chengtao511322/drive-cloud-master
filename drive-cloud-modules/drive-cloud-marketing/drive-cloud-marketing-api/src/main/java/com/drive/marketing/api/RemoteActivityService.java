@@ -35,4 +35,6 @@ public interface RemoteActivityService {
 
     @PostMapping("/coupon/saveCoupon")
     ResObject saveCouponData(@RequestBody CouponEditParam couponEditParam);
+
+
 }

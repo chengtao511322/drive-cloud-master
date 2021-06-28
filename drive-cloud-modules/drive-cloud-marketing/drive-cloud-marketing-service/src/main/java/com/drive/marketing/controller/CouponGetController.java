@@ -21,6 +21,7 @@ import com.drive.marketing.pojo.dto.CouponGetPageQueryParam;
 import com.drive.marketing.pojo.entity.ActivityInfoEntity;
 import com.drive.marketing.pojo.entity.CouponGetEntity;
 import com.drive.marketing.pojo.vo.CouponGetVo;
+import com.drive.marketing.repository.CouponGetRepository;
 import com.drive.marketing.repository.RecommendManagertRepository;
 import com.drive.marketing.service.CouponGetService;
 import com.drive.marketing.service.IActivityInfoService;
@@ -71,74 +72,87 @@ public class CouponGetController extends BaseController<CouponGetPageQueryParam,
 	@Autowired
 	private RecommendManagertRepository recommendManagertRepository;
 
+	@Autowired
+	private CouponGetRepository couponGetRepository;
 
 	/**
 	*  分页列表
 	*/
+//	@ApiOperation("分页列表")
+//	//@PreAuthorize("hasPermission('/marketing/couponGet',  'marketing:couponGet:query')")
+//	@GetMapping(value = "/pageList")
+//	public ResObject pageList(@Valid CouponGetPageQueryParam param) throws IOException {
+//		log.info(this.getClass() + "方法pageList请求参数{}" , param);
+//		Page<CouponGetEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
+//		IPage<CouponGetEntity> pageList = couponGetService.page(page, this.getQueryWrapper(couponGetMapStruct, param));
+//		Page<CouponGetVo> couponGetVoPage = couponGetMapStruct.toVoList(pageList);
+//		/*QueryWrapper<CouponGetEntity> wrapper = new QueryWrapper<CouponGetEntity>();
+//		wrapper.eq("source","1323709835872100353");
+//		wrapper.eq("coupon_id","1323905452816822274");
+//		List<CouponGetEntity> pageList = couponGetService.list(wrapper);
+//		List<CouponGetVo> couponGetVos = BeanConvertUtils.copyList(pageList,CouponGetVo.class);*/
+//		List<CouponGetVo> nweCouponGetVo = new ArrayList<>();
+//		couponGetVoPage.getRecords().stream().forEach((item) ->{
+//			// 用户
+//			if (StrUtil.isNotEmpty(item.getUserId())){
+//				ResObject<StudentInfoVo> resObject = remoteStudentFeignService.get(item.getUserId());
+//				if (resObject.getCode().equals(200)){
+//					StudentInfoVo studentInfoVo = resObject.getData();
+//					if (studentInfoVo!=null){
+//						if(StrUtil.isEmpty(studentInfoVo.getUsername())){
+//							item.setUserName(studentInfoVo.getRealName());
+//						}else{
+//							item.setUserName(studentInfoVo.getUsername());
+//						}
+//						if (StrUtil.isNotEmpty(studentInfoVo.getPhone()))item.setPhone(studentInfoVo.getPhone());
+//					}
+//
+//				}
+//			}
+//			// 活动
+//			if (StrUtil.isNotEmpty(item.getSource())){
+//				ActivityInfoEntity activityInfoEntity = activityInfoService.getById(item.getSource());
+//				if (activityInfoEntity != null){
+//					item.setActivity(activityInfoEntity.getZoneName());
+//				}
+//			}
+//
+//			if (StrUtil.isNotEmpty(item.getPromoteUserId())){
+//				JSONObject jsonObject = recommendManagertRepository.getRecommendUser(item.getPromoteUserId());
+//				if (jsonObject != null){
+//					JSONObject studentInfo = (JSONObject) jsonObject.get("tStudentInfo");
+//					item.setPromoteUserName(jsonObject.getString("name"));
+//					item.setPromoteUserPhone(studentInfo.getString("phone"));
+//				}
+//			}
+//			nweCouponGetVo.add(item);
+//		});
+//
+//		/*Workbook workbook = null;
+//		Date start = new Date();
+//		ExportParams params = new ExportParams("扫码领700优惠券参加人员统计", "扫码领700优惠券");
+//		workbook = ExcelExportUtil.exportExcel(params, CouponGetVo.class, nweCouponGetVo);
+//		System.out.println(new Date().getTime() - start.getTime());
+//		File savefile = new File("D:/excel/");
+//		if (!savefile.exists()) {
+//			savefile.mkdirs();
+//		}
+//		FileOutputStream fos = new FileOutputStream("D:/excel/ExcelExportBigData.bigDataExport.xlsx");
+//		workbook.write(fos);
+//		fos.close();*/
+//		//log.info(this.getClass() + "方法pageList请求结果{}", couponGetVoPage);
+//		return R.success(couponGetVoPage);
+//	}
+
+	/**
+	 *  分页列表
+	 */
 	@ApiOperation("分页列表")
 	//@PreAuthorize("hasPermission('/marketing/couponGet',  'marketing:couponGet:query')")
 	@GetMapping(value = "/pageList")
 	public ResObject pageList(@Valid CouponGetPageQueryParam param) throws IOException {
-		log.info(this.getClass() + "方法pageList请求参数{}" , param);
-		Page<CouponGetEntity> page = new Page<>(param.getPageNum(), param.getPageSize());
-		IPage<CouponGetEntity> pageList = couponGetService.page(page, this.getQueryWrapper(couponGetMapStruct, param));
-		Page<CouponGetVo> couponGetVoPage = couponGetMapStruct.toVoList(pageList);
-		/*QueryWrapper<CouponGetEntity> wrapper = new QueryWrapper<CouponGetEntity>();
-		wrapper.eq("source","1323709835872100353");
-		wrapper.eq("coupon_id","1323905452816822274");
-		List<CouponGetEntity> pageList = couponGetService.list(wrapper);
-		List<CouponGetVo> couponGetVos = BeanConvertUtils.copyList(pageList,CouponGetVo.class);*/
-		List<CouponGetVo> nweCouponGetVo = new ArrayList<>();
-		couponGetVoPage.getRecords().stream().forEach((item) ->{
-			// 用户
-			if (StrUtil.isNotEmpty(item.getUserId())){
-				ResObject<StudentInfoVo> resObject = remoteStudentFeignService.get(item.getUserId());
-				if (resObject.getCode().equals(200)){
-					StudentInfoVo studentInfoVo = resObject.getData();
-					if (studentInfoVo!=null){
-						if(StrUtil.isEmpty(studentInfoVo.getUsername())){
-							item.setUserName(studentInfoVo.getRealName());
-						}else{
-							item.setUserName(studentInfoVo.getUsername());
-						}
-						if (StrUtil.isNotEmpty(studentInfoVo.getPhone()))item.setPhone(studentInfoVo.getPhone());
-					}
-
-				}
-			}
-			// 活动
-			if (StrUtil.isNotEmpty(item.getSource())){
-				ActivityInfoEntity activityInfoEntity = activityInfoService.getById(item.getSource());
-				if (activityInfoEntity != null){
-					item.setActivity(activityInfoEntity.getZoneName());
-				}
-			}
-
-			if (StrUtil.isNotEmpty(item.getPromoteUserId())){
-				JSONObject jsonObject = recommendManagertRepository.getRecommendUser(item.getPromoteUserId());
-				if (jsonObject != null){
-					JSONObject studentInfo = (JSONObject) jsonObject.get("tStudentInfo");
-					item.setPromoteUserName(jsonObject.getString("name"));
-					item.setPromoteUserPhone(studentInfo.getString("phone"));
-				}
-			}
-			nweCouponGetVo.add(item);
-		});
-
-		/*Workbook workbook = null;
-		Date start = new Date();
-		ExportParams params = new ExportParams("扫码领700优惠券参加人员统计", "扫码领700优惠券");
-		workbook = ExcelExportUtil.exportExcel(params, CouponGetVo.class, nweCouponGetVo);
-		System.out.println(new Date().getTime() - start.getTime());
-		File savefile = new File("D:/excel/");
-		if (!savefile.exists()) {
-			savefile.mkdirs();
-		}
-		FileOutputStream fos = new FileOutputStream("D:/excel/ExcelExportBigData.bigDataExport.xlsx");
-		workbook.write(fos);
-		fos.close();*/
-		//log.info(this.getClass() + "方法pageList请求结果{}", couponGetVoPage);
-		return R.success(couponGetVoPage);
+		QueryWrapper queryWrapper = this.getQueryWrapper(couponGetMapStruct, param);
+		return couponGetRepository.pageList(param,queryWrapper);
 	}
 
 	/**

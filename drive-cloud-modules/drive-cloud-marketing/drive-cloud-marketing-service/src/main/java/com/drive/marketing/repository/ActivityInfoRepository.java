@@ -1,9 +1,13 @@
 package com.drive.marketing.repository;
 
+import com.drive.admin.pojo.vo.StudentInfoRpcVo;
 import com.drive.common.core.biz.ResObject;
 import com.drive.marketing.pojo.dto.ActivityCouponRelationEditParam;
 import com.drive.marketing.pojo.dto.ActivityInfoPageQueryParam;
 import com.drive.marketing.pojo.dto.CouponGetPageQueryParam;
+import com.drive.marketing.pojo.vo.ActivityInfoVo;
+
+import java.util.Map;
 
 public interface ActivityInfoRepository {
 
@@ -36,4 +40,11 @@ public interface ActivityInfoRepository {
      * @return
      */
     ResObject pageList(ActivityInfoPageQueryParam param);
+
+    /**
+     * 批量查询活动数据
+     * @param ids 活动id
+     * @return
+     */
+    ResObject<Map<String, ActivityInfoVo>> batchActivityInfo(String[] ids);
 }
