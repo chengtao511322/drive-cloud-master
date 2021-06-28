@@ -10,6 +10,8 @@ public enum StatusEnum {
     DISABLE("1", "停用"),
     NO("0", "否"),
     YES("1", "是"),
+    GET_COUPON("2", "已经领取"),
+    NOT_GET_COUPON("1", "没有领取"),
 
     ;
 

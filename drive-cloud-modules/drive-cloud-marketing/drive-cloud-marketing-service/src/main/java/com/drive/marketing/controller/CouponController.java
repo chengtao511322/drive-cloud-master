@@ -18,6 +18,7 @@ import com.drive.common.log.annotation.EventLog;
 import com.drive.common.security.utils.SecurityUtils;
 import com.drive.marketing.pojo.dto.CouponAcquirePageQueryParam;
 import com.drive.marketing.pojo.dto.CouponEditParam;
+import com.drive.marketing.pojo.dto.CouponGetEditParam;
 import com.drive.marketing.pojo.dto.CouponPageQueryParam;
 import com.drive.marketing.pojo.entity.CouponEntity;
 import com.drive.marketing.pojo.entity.CouponGetEntity;
@@ -198,6 +199,12 @@ public class CouponController extends BaseController<CouponPageQueryParam, Coupo
 	@ApiOperation(value = "发布优惠券信息", notes = "远程调用发布优惠券信息")
 	ResObject publishCoupon(@RequestBody CouponEditParam couponEditParam){
 		return couponRepository.publishCoupon(couponEditParam);
+	}
+
+	@PostMapping("/sendCouponUser")
+	@ApiOperation(value = "根据用户ID发优惠券信息", notes = "远程调用发布优惠券信息")
+	ResObject sendCouponUser(@RequestBody CouponGetEditParam couponGetEditParam){
+		return couponRepository.sendCouponUser(couponGetEditParam);
 	}
 
 	@PostMapping("/updateCoupon")

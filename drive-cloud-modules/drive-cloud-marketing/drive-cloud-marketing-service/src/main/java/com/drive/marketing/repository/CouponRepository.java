@@ -3,6 +3,7 @@ package com.drive.marketing.repository;
 import com.drive.common.core.biz.ResObject;
 import com.drive.marketing.pojo.dto.CouponAcquirePageQueryParam;
 import com.drive.marketing.pojo.dto.CouponEditParam;
+import com.drive.marketing.pojo.dto.CouponGetEditParam;
 import com.drive.marketing.pojo.dto.CouponPageQueryParam;
 import com.drive.marketing.pojo.vo.CouponGetVo;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,4 +39,11 @@ public interface CouponRepository {
      */
 
     ResObject<CouponGetVo> getCoupon(@PathVariable @RequestBody CouponAcquirePageQueryParam couponPageQueryParam);
+
+    /**
+     * 用户发劵
+     * @param couponEditParam
+     * @return
+     */
+    ResObject sendCouponUser(CouponGetEditParam couponGetEditParam);
 }

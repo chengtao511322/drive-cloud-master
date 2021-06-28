@@ -68,5 +68,7 @@ public class CouponGetEditParam {
     // 推广ID
     private String promoteUserId;
 
+    private String couponGetId;
+
 
 }
