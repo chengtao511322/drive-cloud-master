@@ -5,7 +5,10 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.drive.admin.api.RemoteStudentFeignService;
+import com.drive.admin.pojo.vo.StudentInfoVo;
 import com.drive.common.core.biz.R;
+import com.drive.common.core.biz.ResCodeEnum;
 import com.drive.common.core.biz.ResObject;
 import com.drive.common.core.biz.SubResultCode;
 import com.drive.common.core.enums.StatusEnum;
@@ -13,9 +16,11 @@ import com.drive.common.core.exception.BizException;
 import com.drive.common.core.utils.BeanConvertUtils;
 import com.drive.common.core.utils.DateUtils;
 import com.drive.common.core.utils.Redeem;
+import com.drive.common.core.utils.TmDateUtil;
 import com.drive.common.security.utils.SecurityUtils;
 import com.drive.marketing.pojo.dto.CouponAcquirePageQueryParam;
 import com.drive.marketing.pojo.dto.CouponEditParam;
+import com.drive.marketing.pojo.dto.CouponGetEditParam;
 import com.drive.marketing.pojo.dto.CouponPageQueryParam;
 import com.drive.marketing.pojo.entity.*;
 import com.drive.marketing.pojo.vo.CouponGetVo;
@@ -29,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -55,6 +61,9 @@ public class CouponRepositoryImpl implements CouponRepository {
 
     @Autowired
     private ActivityProjectSettingService activityProjectSettingService;
+
+    @Autowired
+    private RemoteStudentFeignService remoteStudentFeignService;
 
     @Override
     @Transactional
@@ -202,4 +211,58 @@ public class CouponRepositoryImpl implements CouponRepository {
         //couponGetEntityDO.setCouponEntity(couponEntity);
         return R.success(couponGetVo);
     }
+
+    @Override
+    public ResObject sendCouponUser(CouponGetEditParam couponGetEditParam) {
+        log.info(this.getClass() + "sendCouponUser-方法请求参数{}",couponGetEditParam);
+        if (StrUtil.isEmpty(couponGetEditParam.getUserId())){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        if (StrUtil.isEmpty(couponGetEditParam.getCouponGetId())){
+            return R.failure(SubResultCode.PARAMISBLANK.subCode(),SubResultCode.PARAMISBLANK.subMsg());
+        }
+        // 查询优惠券状态
+        CouponGetEntity couponGetDo = couponGetService.getById(couponGetEditParam.getCouponGetId());
+        Optional.ofNullable(couponGetDo).orElseThrow(()-> new BizException(500,SubResultCode.NOT_COUPON_USE.subCode(),SubResultCode.NOT_COUPON_USE.subMsg()));
+        if (!(couponGetDo.getStatus().equals(StatusEnum.NOT_GET_COUPON.getCode())))return R.failure(SubResultCode.COUPON_ALREADY_FBAGGAGE.subCode(),"该优惠券已经领取或者使用");
+        StudentInfoVo studentInfoVo = null;
+        // 查询用户信息
+        ResObject resObject = remoteStudentFeignService.get(couponGetEditParam.getUserId());
+        if (resObject.getCode().equals(ResCodeEnum.SUCCESS.getCode())){
+            studentInfoVo = (StudentInfoVo) resObject.getData();
+        }
+        // 查询优惠券
+        CouponEntity couponEntityDo = couponService.getById(couponGetDo.getCouponId());
+        Optional.ofNullable(couponEntityDo).orElseThrow(()-> new BizException(500,SubResultCode.NOT_COUPON_USE.subCode(),SubResultCode.NOT_COUPON_USE.subMsg()));
+        if (!(couponGetDo.getStatus().equals(StatusEnum.YES.getCode())))return R.failure(SubResultCode.COUPON_ALREADY_FBAGGAGE.subCode(),"该优惠券已经领取或者使用");
+        // 优惠券可使用期限
+        int useDay = couponEntityDo.getUseDay();
+        //优惠券 有效期开始日
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime periodTimeStart = LocalDateTime.parse(TmDateUtil.getCurrentDatetime(new Date()),df);
+        couponGetDo.setPeriodTimeStart(periodTimeStart);
+        LocalDateTime periodTimeEnd = LocalDateTime.parse(TmDateUtil.toString(TmDateUtil.addDay(new Date(),useDay)),df);
+        couponGetDo.setPeriodTimeEnd(periodTimeEnd);
+        //优惠券 设置有效期内  结束
+        // couponGetEntity.setPeriodTimeEnd(TmDateUtil.toString(TmDateUtil.addDay(new Date(),useDay)));
+        //优惠券 设置优惠券码
+        // 设置领取状态    优惠券使用状态:1 未领取  2 已经领取 3 已经使用 4：优惠券过期
+        couponGetDo.setStatus(StatusEnum.GET_COUPON.getCode());
+        Optional.ofNullable(studentInfoVo).ifPresent(u ->{
+            couponGetDo.setPhone(u.getPhone());
+            couponGetDo.setUserName(u.getUsername());
+        });
+        couponGetDo.setGetTime(LocalDateTime.now());
+        // 后台发送
+        couponGetDo.setGetType("0");
+        couponGetDo.setTenantId(couponEntityDo.getTenantId());
+        couponGetDo.setUserId(couponGetEditParam.getUserId());
+        Boolean result = couponGetService.updateById(couponGetDo);
+        if (!result){
+            return R.failure();
+        }
+        return R.success(SubResultCode.SYSTEM_SUCCESS.subCode(),SubResultCode.COUPON_PRESENT_SUCCESS.subMsg());
+    }
+
+
 }

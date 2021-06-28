@@ -158,6 +158,7 @@ public class ActivityInfoRepositoryImpl implements ActivityInfoRepository {
         log.info("学员数据{}",studentInfoVo);
 
         Map<String, RecommendUserVo> recommendUserVo = this.getRecommendUserVo(promoteUserIds);
+        log.info("推广商数据{}",recommendUserVo);
         // 循环瞬间
         pageList.getRecords().forEach((item) ->{
             if (studentInfoVo != null && studentInfoVo.get(item.getUserId()) != null)item.setUserName(studentInfoVo.get(item.getUserId()).getUsername());
